@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shannon Capacity Explorer</title>
+<style>
+  :root {
+    --bg: #0f1117; --surface: #1a1d27; --surface2: #22263a;
+    --border: rgba(255,255,255,0.08); --text: #e8eaf0; --muted: #8892a4;
+    --accent: #4f8ef7; --accent2: #f7884f; --green: #4fd1a0; --purple: #a78bfa;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg); color: var(--text);
+    font-family: 'SF Mono','Fira Code','Consolas',monospace;
+    min-height: 100vh; display: flex; flex-direction: column;
+    align-items: center; padding: 2rem 1rem;
+  }
+  h1 { font-size: 1.1rem; font-weight: 500; letter-spacing: .12em;
+       text-transform: uppercase; color: var(--muted); margin-bottom: .3rem; }
+  .formula { font-size: 1.4rem; color: var(--text); margin-bottom: 2rem; letter-spacing: .02em; }
+  .formula em { color: var(--accent); font-style: normal; }
+  .formula span { color: var(--accent2); }
+  .main { width: 100%; max-width: 780px; display: grid;
+          grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+  @media (max-width:620px) { .main { grid-template-columns: 1fr; } }
+  .panel { background: var(--surface); border: 1px solid var(--border);
+           border-radius: 12px; padding: 1.5rem; }
+  .result-panel { display: flex; flex-direction: column; align-items: center;
+                  justify-content: center; gap: .4rem; }
+  .result-label { font-size: .75rem; letter-spacing: .1em; color: var(--muted);
+                  text-transform: uppercase; }
+  .result-value { font-size: 3.2rem; font-weight: 300; color: var(--green); line-height: 1; }
+  .result-unit  { font-size: 1rem; color: var(--muted); }
+  .result-eff   { font-size: .85rem; color: var(--purple); margin-top: .5rem; }
+  .slider-group { margin-bottom: 1.4rem; }
+  .slider-header { display: flex; justify-content: space-between;
+                   align-items: baseline; margin-bottom: .6rem; }
+  .slider-name { font-size: .8rem; color: var(--muted); letter-spacing: .08em; }
+  .slider-val  { font-size: 1.1rem; font-weight: 500; }
+  .slider-val.bw  { color: var(--accent); }
+  .slider-val.snr { color: var(--accent2); }
+  input[type="range"] { -webkit-appearance: none; width: 100%; height: 4px;
+    border-radius: 2px; outline: none; cursor: pointer; }
+  input[type="range"].bw  { background: linear-gradient(to right,
+    var(--accent) 0%, var(--accent) var(--pct,10%), var(--surface2) var(--pct,10%)); }
+  input[type="range"].snr { background: linear-gradient(to right,
+    var(--accent2) 0%, var(--accent2) var(--pct,50%), var(--surface2) var(--pct,50%)); }
+  input[type="range"].bw::-webkit-slider-thumb  {
+    -webkit-appearance:none; width:18px; height:18px; border-radius:50%;
+    background:var(--accent);  border:2px solid var(--bg); cursor:pointer; }
+  input[type="range"].snr::-webkit-slider-thumb {
+    -webkit-appearance:none; width:18px; height:18px; border-radius:50%;
+    background:var(--accent2); border:2px solid var(--bg); cursor:pointer; }
+  .insight-bar { width:100%; max-width:780px; display:grid;
+    grid-template-columns:1fr 1fr; gap:1.5rem; margin-top:1.5rem; }
+  @media (max-width:620px) { .insight-bar { grid-template-columns:1fr; } }
+  .insight { background:var(--surface); border:1px solid var(--border);
+    border-radius:10px; padding:1rem 1.2rem; font-size:.82rem;
+    color:var(--muted); line-height:1.6; }
+  .insight strong { color:var(--text); font-weight:500; }
+  .delta { color:var(--green); font-weight:500; }
+  /* Chart.js canvas wrapper — fixed CSS height, no backing-store math needed */
+  .chart-container {
+    width: 100%; max-width: 780px; margin-top: 1.5rem;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 10px; padding: .8rem; position: relative; height: 240px;
+  }
+  .legend { width:100%; max-width:780px; display:flex; gap:1.5rem;
+    margin-top:.8rem; font-size:.78rem; color:var(--muted); flex-wrap:wrap; }
+  .legend span::before { content:''; display:inline-block; width:20px; height:3px;
+    border-radius:2px; margin-right:6px; vertical-align:middle; }
+  .l-bw::before  { background:var(--accent); }
+  .l-snr::before { background:var(--accent2); }
+  .misconception { width:100%; max-width:780px; background:var(--surface);
+    border:1px solid rgba(167,139,250,.3); border-radius:10px;
+    padding:1rem 1.4rem; margin-top:1.5rem; font-size:.82rem;
+    color:var(--muted); line-height:1.6; }
+  .misconception strong { color:var(--purple); }
+</style>
+</head>
+<body>
+<h1>Shannon Capacity Explorer</h1>
+<div class="formula">C = <em>B</em> · log₂(1 + <span>S/N</span>) &nbsp; bits/s</div>
+
+<div class="main">
+  <div class="panel">
+    <div class="slider-group">
+      <div class="slider-header">
+        <span class="slider-name">BANDWIDTH  B</span>
+        <span class="slider-val bw" id="bw-display">20 MHz</span>
+      </div>
+      <input type="range" class="bw" id="bw" min="1" max="200" value="20" step="1">
+    </div>
+    <div class="slider-group">
+      <div class="slider-header">
+        <span class="slider-name">SNR  S/N</span>
+        <span class="slider-val snr" id="snr-display">20 dB</span>
+      </div>
+      <input type="range" class="snr" id="snr" min="0" max="40" value="20" step="1">
+    </div>
+    <div class="slider-group" style="margin-bottom:0">
+      <div class="slider-header">
+        <span class="slider-name" style="font-size:.72rem">SNR LINEAR</span>
+        <span style="font-size:.85rem;color:var(--muted)" id="snr-lin">100×</span>
+      </div>
+    </div>
+  </div>
+  <div class="panel result-panel">
+    <span class="result-label">Channel Capacity</span>
+    <span class="result-value" id="cap-val">132.9</span>
+    <span class="result-unit" id="cap-unit">Mbits/s</span>
+    <span class="result-eff"  id="spec-eff">Spectral efficiency: 6.64 bits/s/Hz</span>
+  </div>
+</div>
+
+<div class="insight-bar">
+  <div class="insight">
+    <strong>Double bandwidth:</strong><br>
+    <span class="delta" id="double-bw">—</span>
+  </div>
+  <div class="insight">
+    <strong>Double S/N power:</strong><br>
+    <span class="delta" id="double-snr">—</span>
+  </div>
+</div>
+
+<div class="chart-container">
+  <canvas id="chart" role="img" aria-label="Shannon capacity vs bandwidth and SNR"></canvas>
+</div>
+<div class="legend">
+  <span class="l-bw">Sweep bandwidth (SNR fixed at current value)</span>
+  <span class="l-snr">Sweep SNR (bandwidth fixed at current value)</span>
+</div>
+
+<div class="misconception">
+  <strong>Common misconception:</strong> "More power always means more capacity."
+  At high SNR, doubling transmit power adds only ~1 bit/s/Hz (log₂ 2 = 1).
+  Bandwidth is the more efficient lever — but spectrum is scarce and licensed.
+  This fundamental trade-off motivates the entire design space of wireless systems.
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+// ─── Safe number helpers ────────────────────────────────────────────────────
+function safeLog2(x) {
+  if (!isFinite(x) || x <= 0) return 0;
+  return Math.log2(x);
+}
+function safeFixed(x, dp) {
+  if (!isFinite(x)) return '—';
+  return x.toFixed(dp);
+}
+
+// ─── Shannon formula ────────────────────────────────────────────────────────
+function shannon(B_MHz, SNR_dB) {
+  // Clamp inputs to physically meaningful range
+  const B   = Math.max(0.001, Math.min(10000, B_MHz)) * 1e6;
+  const snr = Math.pow(10, Math.max(-30, Math.min(100, SNR_dB)) / 10);
+  return B * safeLog2(1 + snr);
+}
+
+function fmt(bps) {
+  if (!isFinite(bps) || bps < 0) return '—';
+  if (bps >= 1e12) return (bps/1e12).toFixed(2) + ' Tbits/s';
+  if (bps >= 1e9)  return (bps/1e9).toFixed(2)  + ' Gbits/s';
+  if (bps >= 1e6)  return (bps/1e6).toFixed(1)  + ' Mbits/s';
+  return (bps/1e3).toFixed(1) + ' kbits/s';
+}
+
+// ─── Slider fill ────────────────────────────────────────────────────────────
+function updateSliderFill(el) {
+  const min = parseFloat(el.min), max = parseFloat(el.max), val = parseFloat(el.value);
+  if (max === min) return;
+  const pct = ((val - min) / (max - min) * 100).toFixed(1) + '%';
+  el.style.setProperty('--pct', pct);
+}
+
+// ─── Chart.js instance ──────────────────────────────────────────────────────
+// Chart.js handles its own DPR scaling correctly when the canvas lives
+// inside a CSS-height container with responsive:true + maintainAspectRatio:false.
+// We never touch canvas.width / canvas.height manually.
+const BW_STEPS  = 200;   // x-axis points for the bandwidth sweep
+const SNR_STEPS = 41;    // 0..40 dB
+
+const bwLabels  = Array.from({length: BW_STEPS},  (_, i) => i + 1);     // 1..200 MHz
+const snrValues = Array.from({length: SNR_STEPS},  (_, i) => i);         // 0..40 dB
+
+let chart = null;
+
+function buildOrUpdateChart(fixedBW, fixedSNR) {
+  // Bandwidth sweep: for each B in 1..200 MHz at fixed SNR
+  const bwData = bwLabels.map(b => {
+    const c = shannon(b, fixedSNR) / 1e6;
+    return isFinite(c) ? Math.round(c * 10) / 10 : null;
+  });
+
+  // SNR sweep: for each SNR in 0..40 dB at fixed B
+  // Map SNR index onto the same 1..200 x-axis range so both curves share an axis
+  const snrData = snrValues.map(s => {
+    const xPos = s * (BW_STEPS / (SNR_STEPS - 1));   // 0..200
+    const c    = shannon(fixedBW, s) / 1e6;
+    return { x: isFinite(xPos) ? xPos : 0, y: isFinite(c) ? Math.round(c * 10) / 10 : null };
+  });
+
+  if (chart) {
+    chart.data.datasets[0].data = bwData;
+    chart.data.datasets[1].data = snrData;
+    chart.update('none');
+    return;
+  }
+
+  const ctx = document.getElementById('chart').getContext('2d');
+  chart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: bwLabels,
+      datasets: [
+        {
+          label: 'Sweep B (SNR fixed)',
+          data: bwData,
+          borderColor: 'rgba(79,142,247,0.85)',
+          borderWidth: 2, pointRadius: 0, tension: 0.3,
+          fill: { target: 'origin', above: 'rgba(79,142,247,0.06)' },
+          yAxisID: 'y', spanGaps: true
+        },
+        {
+          label: 'Sweep SNR (B fixed)',
+          data: snrData,
+          borderColor: 'rgba(247,136,79,0.85)',
+          borderWidth: 2, pointRadius: 0, tension: 0.3,
+          fill: { target: 'origin', above: 'rgba(247,136,79,0.06)' },
+          yAxisID: 'y', spanGaps: true
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: { enabled: false }
+      },
+      scales: {
+        x: {
+          ticks: {
+            color: '#8892a4', font: { size: 10 }, maxRotation: 0,
+            autoSkip: false,
+            callback: (_, i) => [0,49,99,149,199].includes(i) ? (i+1)+' MHz' : null
+          },
+          grid:   { color: 'rgba(255,255,255,0.04)' },
+          border: { color: 'rgba(255,255,255,0.08)' }
+        },
+        y: {
+          position: 'left',
+          title: { display: true, text: 'Capacity (Mbits/s)',
+                   color: '#8892a4', font: { size: 10 } },
+          ticks:  { color: '#8892a4', font: { size: 10 } },
+          grid:   { color: 'rgba(255,255,255,0.04)' },
+          border: { color: 'rgba(255,255,255,0.08)' }
+        }
+      }
+    }
+  });
+}
+
+// ─── Main update ────────────────────────────────────────────────────────────
+const bwSlider  = document.getElementById('bw');
+const snrSlider = document.getElementById('snr');
+
+function update() {
+  const B   = Math.max(1, Math.min(200, parseInt(bwSlider.value,  10) || 20));
+  const SNR = Math.max(0, Math.min(40,  parseInt(snrSlider.value, 10) || 0));
+
+  const C      = shannon(B, SNR);
+  const snrLin = Math.pow(10, SNR / 10);
+
+  // Display
+  document.getElementById('bw-display').textContent  = B + ' MHz';
+  document.getElementById('snr-display').textContent = SNR + ' dB';
+  document.getElementById('snr-lin').textContent     = snrLin.toFixed(0) + '×';
+
+  if (C >= 1e9) {
+    document.getElementById('cap-val').textContent  = (C/1e9).toFixed(2);
+    document.getElementById('cap-unit').textContent = 'Gbits/s';
+  } else {
+    document.getElementById('cap-val').textContent  = (C/1e6).toFixed(1);
+    document.getElementById('cap-unit').textContent = 'Mbits/s';
+  }
+  const effRaw = C / (B * 1e6);
+  document.getElementById('spec-eff').textContent =
+    'Spectral efficiency: ' + (isFinite(effRaw) ? effRaw.toFixed(2) : '—') + ' bits/s/Hz';
+
+  // Double-B insight
+  const C2B = shannon(B * 2, SNR);
+  const ratioB = (C > 0 && isFinite(C2B)) ? C2B / C : 0;
+  document.getElementById('double-bw').textContent =
+    fmt(C2B) + ' (×' + ratioB.toFixed(2) + ')';
+
+  // Double-SNR-power insight (double the linear SNR)
+  const snrDbDoubled = 10 * Math.log10(snrLin * 2);
+  const C2S  = shannon(B, snrDbDoubled);
+  const diff = C2S - C;
+  const gain = isFinite(diff) && diff >= 0
+    ? (diff < 1e6 ? '+' + (diff/1e3).toFixed(0) + ' kbits/s'
+                  : '+' + (diff/1e6).toFixed(1) + ' Mbits/s')
+    : '—';
+  document.getElementById('double-snr').textContent =
+    gain + ' (' + safeFixed(C2S/(B*1e6), 2) + ' vs ' + safeFixed(C/(B*1e6), 2) + ' bits/s/Hz)';
+
+  updateSliderFill(bwSlider);
+  updateSliderFill(snrSlider);
+  buildOrUpdateChart(B, SNR);
+}
+
+bwSlider.addEventListener('input',  update);
+snrSlider.addEventListener('input', update);
+update();
+</script>
+</body>
+</html>

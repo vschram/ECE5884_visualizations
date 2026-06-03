@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gaussian Noise & SNR Explorer</title>
+<style>
+  :root {
+    --bg:#f8f7f4; --surface:#ffffff; --surface2:#f0ede8;
+    --border:rgba(0,0,0,.09); --text:#1a1a1a; --muted:#7a7570;
+    --signal:#1a6ef5; --noise:#e85d24; --received:#0e9f6e; --gauss:#7c3aed;
+  }
+  @media (prefers-color-scheme:dark) {
+    :root { --bg:#111318; --surface:#1c1f2a; --surface2:#22263a;
+      --border:rgba(255,255,255,.08); --text:#e8eaf0; --muted:#8892a4; }
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:system-ui,-apple-system,sans-serif;
+    padding:1.5rem; max-width:820px; margin:0 auto; }
+  h2   { font-size:1.1rem; font-weight:600; margin-bottom:.25rem; }
+  .sub { font-size:.82rem; color:var(--muted); margin:.3rem 0 1.4rem; line-height:1.5; }
+  .controls { display:flex; gap:2rem; align-items:flex-end; flex-wrap:wrap;
+    background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:1rem 1.2rem; margin-bottom:1.2rem; }
+  .ctrl { flex:1; min-width:140px; }
+  .ctrl label { display:flex; justify-content:space-between; font-size:.78rem;
+    color:var(--muted); letter-spacing:.05em; margin-bottom:.4rem; }
+  .ctrl label strong { color:var(--text); font-size:.9rem; }
+  input[type="range"] { width:100%; cursor:pointer; }
+  .canvases { display:flex; flex-direction:column; gap:.8rem; }
+  .chart-wrap { background:var(--surface); border:1px solid var(--border);
+    border-radius:10px; padding:.8rem 1rem .6rem; }
+  .chart-title { font-size:.72rem; letter-spacing:.08em; text-transform:uppercase;
+    color:var(--muted); margin-bottom:.5rem; display:flex;
+    justify-content:space-between; align-items:center; }
+  /* Canvas sized purely by CSS; JS reads offsetWidth only after layout */
+  canvas { display:block; width:100%; }
+  .stats-row { display:grid; grid-template-columns:repeat(4,1fr);
+    gap:.8rem; margin-top:.8rem; }
+  @media (max-width:500px) { .stats-row { grid-template-columns:repeat(2,1fr); } }
+  .stat { background:var(--surface); border:1px solid var(--border);
+    border-radius:8px; padding:.7rem .9rem; text-align:center; }
+  .stat-label { font-size:.68rem; color:var(--muted); text-transform:uppercase;
+    letter-spacing:.07em; display:block; margin-bottom:.2rem; }
+  .stat-val { font-size:1.25rem; font-weight:600; }
+  .stat-val.blue   { color:var(--signal); }
+  .stat-val.red    { color:var(--noise); }
+  .stat-val.green  { color:var(--received); }
+  .stat-val.purple { color:var(--gauss); }
+  .insight-box { background:var(--surface); border:1px solid var(--border);
+    border-left:3px solid var(--gauss); border-radius:8px;
+    padding:.9rem 1.1rem; margin-top:.8rem; font-size:.82rem;
+    color:var(--muted); line-height:1.6; }
+  .insight-box strong { color:var(--text); }
+  .legend { display:flex; gap:1.2rem; flex-wrap:wrap;
+    margin-top:.5rem; font-size:.75rem; color:var(--muted); }
+  .legend span { display:flex; align-items:center; gap:5px; }
+  .dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+</style>
+</head>
+<body>
+<h2>Gaussian Noise &amp; SNR Explorer</h2>
+<p class="sub">
+  Thermal noise in wireless receivers follows a Gaussian distribution — N(0, σ²).
+  Drag the SNR slider to see how noise overwhelms the signal,
+  and how the received-signal distribution widens.
+</p>
+
+<div class="controls">
+  <div class="ctrl">
+    <label>SNR <strong id="snr-val">15 dB</strong></label>
+    <input type="range" id="snr-slider" min="-5" max="30" value="15" step="1">
+  </div>
+  <div class="ctrl">
+    <label>Signal frequency <strong id="freq-val">3 Hz</strong></label>
+    <input type="range" id="freq-slider" min="1" max="8" value="3" step="1">
+  </div>
+  <div class="ctrl">
+    <label>Samples <strong id="ns-val">200</strong></label>
+    <input type="range" id="ns-slider" min="50" max="500" value="200" step="50">
+  </div>
+</div>
+
+<div class="canvases">
+  <div class="chart-wrap">
+    <div class="chart-title">
+      <span>Time-domain waveforms</span>
+      <span id="ber-hint" style="color:var(--gauss);font-size:.7rem;"></span>
+    </div>
+    <!-- height attribute sets the intrinsic CSS height; JS never sets canvas.height -->
+    <canvas id="wave-canvas" height="140"></canvas>
+  </div>
+  <div class="chart-wrap">
+    <div class="chart-title">
+      <span>Amplitude distribution (histogram) of received signal</span>
+    </div>
+    <canvas id="hist-canvas" height="120"></canvas>
+  </div>
+</div>
+
+<div class="legend">
+  <span><span class="dot" style="background:var(--signal)"></span> Clean signal x(t)</span>
+  <span><span class="dot" style="background:var(--noise)"></span> Noise n(t) ~ N(0,σ²)</span>
+  <span><span class="dot" style="background:var(--received)"></span> Received y(t) = x(t)+n(t)</span>
+  <span><span class="dot" style="background:var(--gauss);border-radius:2px"></span> Gaussian PDF overlay</span>
+</div>
+
+<div class="stats-row">
+  <div class="stat"><span class="stat-label">Signal power</span>
+    <span class="stat-val blue"   id="sp-val">—</span></div>
+  <div class="stat"><span class="stat-label">Noise power σ²</span>
+    <span class="stat-val red"    id="np-val">—</span></div>
+  <div class="stat"><span class="stat-label">SNR (set)</span>
+    <span class="stat-val green"  id="snr-meas">—</span></div>
+  <div class="stat"><span class="stat-label">Noise std dev σ</span>
+    <span class="stat-val purple" id="sig-val">—</span></div>
+</div>
+
+<div class="insight-box" id="insight">Move the SNR slider to begin.</div>
+
+<script>
+// ─── Canvas helpers ──────────────────────────────────────────────────────────
+// MAX_DIM: Chrome/Firefox cap the canvas backing store at 32767 px per side.
+// We clamp DPR-scaled dimensions to stay well within that limit.
+const MAX_CANVAS_PX = 4096;
+
+/**
+ * Resize a canvas to match its CSS layout width × CSS height,
+ * scaled by devicePixelRatio, clamped to MAX_CANVAS_PX.
+ * Returns the logical {w, h} in CSS pixels (what you should draw into).
+ * Saves and resets the transform so the context is always in a clean state.
+ */
+function resizeCanvas(canvas) {
+  const dpr  = Math.min(window.devicePixelRatio || 1, 3); // clamp DPR ≤ 3
+  const cssW = Math.max(1, canvas.offsetWidth  || canvas.parentElement.offsetWidth || 600);
+  const cssH = Math.max(1, canvas.offsetHeight || parseInt(canvas.getAttribute('height')) || 140);
+
+  const backW = Math.min(Math.round(cssW * dpr), MAX_CANVAS_PX);
+  const backH = Math.min(Math.round(cssH * dpr), MAX_CANVAS_PX);
+
+  // Only reassign when dimensions actually changed — avoids redundant clears
+  if (canvas.width !== backW || canvas.height !== backH) {
+    canvas.width  = backW;
+    canvas.height = backH;
+  }
+
+  const ctx = canvas.getContext('2d');
+  // Always reset transform before applying DPR scale — prevents accumulation
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  const scaleX = backW / cssW;
+  const scaleY = backH / cssH;
+  ctx.scale(scaleX, scaleY);
+
+  return { w: cssW, h: cssH };
+}
+
+// ─── Deterministic PRNG (LCG) ────────────────────────────────────────────────
+let seed = 42;
+function resetSeed() { seed = 42; }
+function rng() {
+  seed = ((seed * 1664525) + 1013904223) >>> 0;
+  return seed / 0x100000000;
+}
+function randn() {
+  // Box–Muller; guard against log(0)
+  let u = 0, v = 0, tries = 0;
+  while (u === 0 && tries++ < 100) u = rng();
+  while (v === 0 && tries++ < 100) v = rng();
+  if (u === 0) u = 1e-9;
+  return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
+}
+
+// ─── Read sliders with clamped, validated values ──────────────────────────
+function getState() {
+  const snrDb  = Math.max(-5,  Math.min(30,  parseInt(document.getElementById('snr-slider').value,  10) || 0));
+  const freq   = Math.max(1,   Math.min(8,   parseInt(document.getElementById('freq-slider').value, 10) || 3));
+  const nSamps = Math.max(50,  Math.min(500, parseInt(document.getElementById('ns-slider').value,   10) || 200));
+  return { snrDb, freq, nSamps };
+}
+
+// ─── Draw waveform canvas ────────────────────────────────────────────────────
+const waveCv = document.getElementById('wave-canvas');
+const histCv = document.getElementById('hist-canvas');
+
+function drawWave() {
+  resetSeed();
+  const { snrDb, freq, nSamps } = getState();
+
+  // Compute noise power; guard against SNR producing non-finite sigma
+  const sigPow   = 1.0;
+  const snrLin   = Math.pow(10, snrDb / 10);
+  const noisePow = snrLin > 0 ? sigPow / snrLin : sigPow * 1e3;
+  const sigma    = Math.sqrt(Math.max(0, noisePow));
+
+  // Build time-series arrays
+  const signal   = new Float32Array(nSamps);
+  const noise    = new Float32Array(nSamps);
+  const received = new Float32Array(nSamps);
+
+  for (let i = 0; i < nSamps; i++) {
+    const t = i / nSamps;
+    const s = Math.sin(2 * Math.PI * freq * t);
+    const n = isFinite(sigma) ? randn() * sigma : 0;
+    signal[i]   = s;
+    noise[i]    = n;
+    received[i] = s + n;
+  }
+
+  // ── Draw waveform ───────────────────────────────────────────────────────
+  const { w, h } = resizeCanvas(waveCv);
+  const wCtx = waveCv.getContext('2d');
+  const pad  = 16;
+  const mid  = h / 2;
+  // Amplitude scale: keep signal within ±40 % of half-height regardless of sigma
+  const amp  = (h / 2 - pad) / 2.5;
+
+  wCtx.clearRect(0, 0, w, h);
+
+  // Zero line
+  wCtx.beginPath();
+  wCtx.strokeStyle = 'rgba(128,128,128,0.2)';
+  wCtx.lineWidth   = 0.5;
+  wCtx.moveTo(pad, mid);
+  wCtx.lineTo(w - pad, mid);
+  wCtx.stroke();
+
+  function drawLine(arr, color, alpha, lw, scl) {
+    const n = arr.length;
+    if (n < 2) return;
+    wCtx.beginPath();
+    wCtx.strokeStyle = color;
+    wCtx.globalAlpha = alpha;
+    wCtx.lineWidth   = lw;
+    for (let i = 0; i < n; i++) {
+      const x = pad + (i / (n - 1)) * (w - 2 * pad);
+      // Clamp y to visible area to avoid infinite/NaN coordinates
+      const rawY = mid + (isFinite(arr[i]) ? arr[i] : 0) * scl;
+      const y    = Math.max(-1, Math.min(h + 1, rawY));
+      i === 0 ? wCtx.moveTo(x, y) : wCtx.lineTo(x, y);
+    }
+    wCtx.stroke();
+    wCtx.globalAlpha = 1;
+  }
+
+  drawLine(noise,    '#e85d24', 0.55, 1.0, amp * 0.8);
+  drawLine(received, '#0e9f6e', 0.9,  1.5, amp);
+  drawLine(signal,   '#1a6ef5', 1.0,  2.0, amp);
+
+  // ── Update stats ────────────────────────────────────────────────────────
+  document.getElementById('sp-val').textContent    = sigPow.toFixed(3);
+  document.getElementById('np-val').textContent    = isFinite(noisePow) ? noisePow.toFixed(4) : '—';
+  document.getElementById('snr-meas').textContent  = snrDb + ' dB';
+  document.getElementById('sig-val').textContent   = isFinite(sigma)    ? sigma.toFixed(4)    : '—';
+  document.getElementById('freq-val').textContent  = freq + ' Hz';
+  document.getElementById('ns-val').textContent    = nSamps;
+  document.getElementById('snr-val').textContent   = snrDb + ' dB';
+
+  // ── Insight text ────────────────────────────────────────────────────────
+  const insight = document.getElementById('insight');
+  if (snrDb < 0) {
+    insight.innerHTML = '<strong>SNR &lt; 0 dB:</strong> Noise power exceeds signal power. The receiver cannot reliably recover the original signal — bit errors are very high. This represents a deeply faded wireless channel.';
+    document.getElementById('ber-hint').textContent = '⚠ Noise dominates signal';
+  } else if (snrDb < 5) {
+    insight.innerHTML = '<strong>Low SNR (0–5 dB):</strong> The signal is barely visible beneath noise. Strong error-correction coding (LDPC, turbo codes) and diversity are essential to recover data reliably.';
+    document.getElementById('ber-hint').textContent = '';
+  } else if (snrDb < 15) {
+    insight.innerHTML = '<strong>Medium SNR (5–15 dB):</strong> Typical indoor WLAN or edge-of-cell cellular. QPSK or 16-QAM are appropriate. Channel coding provides the safety margin for low bit-error rates.';
+    document.getElementById('ber-hint').textContent = '';
+  } else {
+    insight.innerHTML = '<strong>High SNR (15+ dB):</strong> Strong signal — typical close to the base station. Higher-order modulation (64-QAM, 256-QAM) maximises throughput. Gaussian noise is barely visible.';
+    document.getElementById('ber-hint').textContent = '';
+  }
+
+  drawHist(received, sigma, w);
+}
+
+// ─── Draw histogram canvas ───────────────────────────────────────────────────
+function drawHist(data, sigma, _waveW) {
+  const { w: hw, h: hh } = resizeCanvas(histCv);
+  const hCtx = histCv.getContext('2d');
+  const pad   = 20;
+  const bins  = 40;
+  // Dynamic range: widen to ±4σ (minimum ±4) to catch all data
+  const range = Math.max(4, Math.min(30, 4 * Math.max(sigma, 1)));
+  const counts = new Array(bins).fill(0);
+
+  for (let i = 0; i < data.length; i++) {
+    const v = data[i];
+    if (!isFinite(v)) continue;
+    const idx = Math.floor((v + range) / (2 * range) * bins);
+    if (idx >= 0 && idx < bins) counts[idx]++;
+  }
+
+  const maxCount = counts.reduce((a, b) => Math.max(a, b), 0);
+
+  hCtx.clearRect(0, 0, hw, hh);
+
+  const bw = (hw - 2 * pad) / bins;
+  for (let i = 0; i < bins; i++) {
+    const x    = pad + i * bw;
+    // Guard: maxCount may be 0 if all samples are out of range
+    const frac = maxCount > 0 ? counts[i] / maxCount : 0;
+    const barH = Math.max(0, frac * (hh - 2 * pad));
+    hCtx.fillStyle = 'rgba(14,159,110,0.35)';
+    hCtx.fillRect(x, hh - pad - barH, Math.max(1, bw - 1), barH);
+  }
+
+  // Gaussian PDF overlay — use the true total sigma of received signal
+  // received = signal + noise  →  var(received) ≈ 0.5 (half-power of sine) + sigma²
+  const totalSigma = Math.sqrt(Math.max(1e-9, 0.5 + sigma * sigma));
+  hCtx.beginPath();
+  hCtx.strokeStyle = '#7c3aed';
+  hCtx.lineWidth   = 2;
+  hCtx.globalAlpha = 0.9;
+  const plotW = hw - 2 * pad;
+  for (let px = 0; px <= plotW; px++) {
+    const v   = (px / plotW) * (2 * range) - range;
+    const pdf = Math.exp(-v * v / (2 * totalSigma * totalSigma));
+    if (!isFinite(pdf)) continue;
+    const y   = hh - pad - pdf * (hh - 2 * pad);
+    px === 0 ? hCtx.moveTo(pad + px, y) : hCtx.lineTo(pad + px, y);
+  }
+  hCtx.stroke();
+  hCtx.globalAlpha = 1;
+
+  // Axis tick labels: show ±range in 4 steps
+  hCtx.fillStyle  = 'rgba(128,128,128,0.8)';
+  hCtx.font       = '10px system-ui,sans-serif';
+  hCtx.textAlign  = 'center';
+  const step = range / 2;
+  for (let v = -range; v <= range + 0.01; v += step) {
+    const x = pad + (v + range) / (2 * range) * plotW;
+    hCtx.fillText(v.toFixed(1), x, hh - 4);
+  }
+}
+
+// ─── Debounced redraw on resize ──────────────────────────────────────────────
+let resizeTimer = null;
+window.addEventListener('resize', () => {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(drawWave, 80);
+});
+
+// ─── Slider event wiring ─────────────────────────────────────────────────────
+['snr-slider', 'freq-slider', 'ns-slider'].forEach(id => {
+  document.getElementById(id).addEventListener('input', drawWave);
+});
+
+// Initial draw — defer one frame so layout is complete and offsetWidth is valid
+requestAnimationFrame(drawWave);
+</script>
+</body>
+</html>

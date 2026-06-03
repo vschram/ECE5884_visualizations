@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Three Scales of Path Loss</title>
+<style>
+  :root {
+    --bg:#0d1117; --surface:#161b22; --surface2:#21262d;
+    --border:rgba(255,255,255,.07); --text:#c9d1d9; --muted:#8b949e;
+    --pl:#58a6ff; --sh:#f0883e; --ff:#3fb950; --total:#f778ba;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text);
+    font-family:'SF Mono','Fira Code',monospace;
+    padding:1.4rem; max-width:860px; margin:0 auto; }
+  h2  { font-size:1rem; font-weight:600; letter-spacing:.06em; color:var(--text); }
+  .sub { font-size:.78rem; color:var(--muted); margin:.3rem 0 1.2rem;
+    line-height:1.5; font-family:system-ui,sans-serif; }
+  .grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:.8rem; margin-bottom:1rem; }
+  @media (max-width:580px) { .grid { grid-template-columns:1fr; } }
+  .ctrl-card { background:var(--surface); border:1px solid var(--border);
+    border-radius:8px; padding:.9rem; }
+  .ctrl-card .label { font-size:.7rem; color:var(--muted); letter-spacing:.08em;
+    text-transform:uppercase; margin-bottom:.5rem; display:flex; justify-content:space-between; }
+  .ctrl-card .val { color:var(--text); font-weight:600; font-size:.85rem; }
+  input[type="range"] { width:100%; cursor:pointer; margin-bottom:.2rem; }
+  .color-bar { height:3px; border-radius:2px; margin-top:4px; }
+  .chart-wrap { background:var(--surface); border:1px solid var(--border);
+    border-radius:10px; padding:1rem; margin-bottom:.8rem; }
+  /* Fix both dimensions in CSS so the browser never reflows the canvas element.
+     Assigning canvas.width in JS on a % -width canvas causes offsetWidth to
+     change on the next layout pass, which the next draw() reads back as a
+     larger value — producing the snowballing resize on every click. */
+  canvas { display:block; width:100%; height:280px; }
+  .legend { display:flex; flex-wrap:wrap; gap:1.2rem; margin:.6rem 0;
+    font-size:.75rem; color:var(--muted); font-family:system-ui,sans-serif; }
+  .legend span { display:flex; align-items:center; gap:5px; }
+  .lbox { width:16px; height:3px; border-radius:1px; }
+  .table-wrap { display:grid; grid-template-columns:1fr 1fr; gap:.8rem; margin-top:.8rem; }
+  @media (max-width:480px) { .table-wrap { grid-template-columns:1fr; } }
+  .table-card { background:var(--surface); border:1px solid var(--border);
+    border-radius:8px; padding:.8rem 1rem; }
+  .table-card h3 { font-size:.7rem; color:var(--muted); letter-spacing:.08em;
+    text-transform:uppercase; margin-bottom:.6rem; }
+  .table-card table { width:100%; border-collapse:collapse; font-size:.78rem;
+    font-family:system-ui,sans-serif; }
+  .table-card td { padding:.3rem .4rem; border-bottom:1px solid var(--border); color:var(--muted); }
+  .table-card td:first-child { color:var(--text); font-weight:500; width:55%; }
+  .table-card tr:last-child td { border-bottom:none; }
+  .marker-info { background:var(--surface); border:1px solid var(--border);
+    border-radius:8px; padding:.8rem 1rem; font-size:.8rem;
+    font-family:system-ui,sans-serif; color:var(--muted); line-height:1.6; margin-top:.8rem; }
+  .marker-info strong { color:var(--text); }
+</style>
+</head>
+<body>
+<h2>Three Scales of Wireless Propagation Loss</h2>
+<p class="sub">
+  Goldsmith Ch. 2 — Adjust the sliders to explore how path loss exponent,
+  shadowing variance, and speed shape the received power profile.
+  The plot uses a log-distance axis to reveal all three scales simultaneously.
+</p>
+
+<div class="grid">
+  <div class="ctrl-card">
+    <div class="label">Path loss exponent n <span class="val" id="n-val">3.0</span></div>
+    <input type="range" id="n-sl" min="2" max="6" value="3.0" step="0.1">
+    <div class="color-bar" style="background:var(--pl)"></div>
+    <div style="font-size:.68rem;color:var(--muted);margin-top:.3rem;font-family:system-ui">
+      2 = free space · 3–4 = urban · 5–6 = indoors
+    </div>
+  </div>
+  <div class="ctrl-card">
+    <div class="label">Shadowing std σ (dB) <span class="val" id="sh-val">8 dB</span></div>
+    <input type="range" id="sh-sl" min="0" max="16" value="8" step="0.5">
+    <div class="color-bar" style="background:var(--sh)"></div>
+    <div style="font-size:.68rem;color:var(--muted);margin-top:.3rem;font-family:system-ui">
+      Slow log-normal fading (buildings, hills)
+    </div>
+  </div>
+  <div class="ctrl-card">
+    <div class="label">Speed (km/h) <span class="val" id="sp-val">60 km/h</span></div>
+    <input type="range" id="sp-sl" min="0" max="200" value="60" step="5">
+    <div class="color-bar" style="background:var(--ff)"></div>
+    <div style="font-size:.68rem;color:var(--muted);margin-top:.3rem;font-family:system-ui">
+      Fast Rayleigh fading rate (via Doppler)
+    </div>
+  </div>
+</div>
+
+<div class="chart-wrap">
+  <canvas id="main-canvas" height="280"></canvas>
+</div>
+
+<div class="legend">
+  <span><span class="lbox" style="background:var(--pl)"></span>Large-scale path loss PL(d)</span>
+  <span><span class="lbox" style="background:var(--sh)"></span>+ Shadowing (log-normal Xσ)</span>
+  <span><span class="lbox" style="background:var(--ff)"></span>+ Multipath fast fading</span>
+  <span><span class="lbox" style="background:var(--total)"></span>Total received power</span>
+</div>
+
+<div class="table-wrap">
+  <div class="table-card">
+    <h3>Current parameters</h3>
+    <table>
+      <tr><td>Path loss at 100 m</td><td id="pl100">—</td></tr>
+      <tr><td>Path loss at 1 km</td><td id="pl1k">—</td></tr>
+      <tr><td>Shadowing margin (2σ)</td><td id="sh-margin">—</td></tr>
+      <tr><td>Doppler freq f_d</td><td id="dopp">—</td></tr>
+      <tr><td>Coherence time T_c</td><td id="coh-t">—</td></tr>
+    </table>
+  </div>
+  <div class="table-card">
+    <h3>n environments (Goldsmith Table 2.2)</h3>
+    <table>
+      <tr><td>Free space</td><td>n = 2</td></tr>
+      <tr><td>Urban cellular</td><td>n = 2.7–3.5</td></tr>
+      <tr><td>Shadowed urban</td><td>n = 3–5</td></tr>
+      <tr><td>Indoor LoS</td><td>n = 1.6–1.8</td></tr>
+      <tr><td>Obstructed indoor</td><td>n = 4–6</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="marker-info" id="marker-info">
+  Click anywhere on the chart to read off the received power at that distance.
+</div>
+
+<script>
+// ─── Constants ───────────────────────────────────────────────────────────────
+const FC  = 1e9;          // carrier 1 GHz
+const C_  = 3e8;          // speed of light
+const D0  = 1;            // reference distance 1 m
+const NUM_PTS = 500;      // number of data points along x-axis
+const D_MIN   = 1;        // 1 m
+const D_MAX   = 2000;     // 2 km
+const MAX_CANVAS_PX = 4096;
+
+// ─── Canvas resize helper ────────────────────────────────────────────────────
+// We measure from the *parent* element, not the canvas itself.
+// Measuring canvas.offsetWidth after assigning canvas.width can return
+// a different value on the very next layout pass (the canvas intrinsic size
+// changed), causing each click → draw() → measure → assign → layout shift
+// → larger measure → ... snowball.  The parent div is stable.
+let cachedSize = null;   // { w, h } in CSS px — set once per genuine resize
+
+function resizeCanvas(canvas) {
+  const dpr     = Math.min(window.devicePixelRatio || 1, 3);
+  const parent  = canvas.parentElement;
+  const cssW    = Math.max(1, (parent ? parent.clientWidth  : 0) || 700);
+  const cssH    = 280;   // fixed logical height — matches the CSS rule above
+  const backW   = Math.min(Math.round(cssW * dpr), MAX_CANVAS_PX);
+  const backH   = Math.min(Math.round(cssH * dpr), MAX_CANVAS_PX);
+
+  if (canvas.width !== backW || canvas.height !== backH) {
+    canvas.width  = backW;
+    canvas.height = backH;
+  }
+  cachedSize = { w: cssW, h: cssH };
+
+  const ctx = canvas.getContext('2d');
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.scale(backW / cssW, backH / cssH);
+  return cachedSize;
+}
+
+// Lightweight redraw that skips backing-store resize — safe to call from clicks.
+function redrawOnly() {
+  if (!cachedSize) { draw(); return; }
+  const ctx = cv.getContext('2d');
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.scale(cv.width / cachedSize.w, cv.height / cachedSize.h);
+  drawContent(ctx, cachedSize.w, cachedSize.h);
+}
+
+// ─── Deterministic PRNG ───────────────────────────────────────────────────────
+let seed = 1234;
+function resetSeed() { seed = 1234; }
+function rng() {
+  seed = ((seed * 1664525) + 1013904223) >>> 0;
+  return seed / 0x100000000;
+}
+function randn() {
+  let u = 0, v = 0, t = 0;
+  while (u === 0 && t++ < 200) u = rng();
+  t = 0;
+  while (v === 0 && t++ < 200) v = rng();
+  if (u <= 0) u = 1e-12;
+  return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
+}
+
+// ─── Path loss formula ────────────────────────────────────────────────────────
+function logPath(d, n) {
+  if (d <= 0 || !isFinite(d)) return 0;
+  const lambda = C_ / FC;
+  const PL0_dB = 20 * Math.log10(4 * Math.PI * D0 / lambda);
+  return PL0_dB + 10 * n * Math.log10(Math.max(d / D0, 1e-9));
+}
+
+// ─── Read + clamp slider values ───────────────────────────────────────────────
+function getParams() {
+  return {
+    n:     Math.max(2,   Math.min(6,   parseFloat(document.getElementById('n-sl').value)  || 3)),
+    sigma: Math.max(0,   Math.min(16,  parseFloat(document.getElementById('sh-sl').value) || 0)),
+    speed: Math.max(0,   Math.min(200, parseFloat(document.getElementById('sp-sl').value) || 0))
+  };
+}
+
+// ─── Generate propagation series ─────────────────────────────────────────────
+function generateSeries(n, sigma, speed) {
+  resetSeed();
+  const dArr = new Float64Array(NUM_PTS);
+  const plArr = new Float64Array(NUM_PTS);   // large-scale path loss (dBm)
+  const plSh  = new Float64Array(NUM_PTS);   // + shadowing
+  const total = new Float64Array(NUM_PTS);   // + fast fading
+
+  const decorr   = 20;   // shadowing decorrelation distance (m)
+  let shadowAcc  = 0;
+  let prevLogD   = Math.log(D_MIN);
+
+  // --- Jake's model parameters (fixed random offsets, deterministic) ---
+  const K = 8;
+  const jakePhases = [];
+  for (let k = 0; k < K; k++) jakePhases.push(rng() * 2 * Math.PI);
+
+  // Pre-seed noise for shadowing; remaining rng() calls belong to fast fading
+  for (let i = 0; i < NUM_PTS; i++) {
+    const d = D_MIN * Math.pow(D_MAX / D_MIN, i / (NUM_PTS - 1));
+    dArr[i] = d;
+
+    const pl_dB = logPath(d, n);
+    plArr[i]    = -pl_dB;
+
+    // Shadowing: Ornstein–Uhlenbeck in log domain
+    const logD  = Math.log(d);
+    const dStep = logD - prevLogD;
+    prevLogD    = logD;
+
+    let rho = Math.exp(-dStep / Math.log(1 + decorr));
+    // Clamp rho strictly to [0, 1) to prevent sqrt of negative
+    rho = Math.max(0, Math.min(0.9999999, rho));
+    const innovation = Math.sqrt(1 - rho * rho);
+    const nv         = randn();
+    shadowAcc = rho * shadowAcc + innovation * (isFinite(nv) ? nv : 0) * sigma;
+    // Clamp to 4σ to prevent extreme outliers distorting the y-axis
+    if (sigma > 0) shadowAcc = Math.max(-4 * sigma, Math.min(4 * sigma, shadowAcc));
+
+    plSh[i] = -pl_dB + shadowAcc;
+  }
+
+  // Fast fading using Jake's model (summed sinusoids)
+  const lambda = C_ / FC;
+  const fd     = speed / 3.6 / lambda;   // Doppler frequency [Hz]
+
+  for (let i = 0; i < NUM_PTS; i++) {
+    const d = dArr[i];
+    if (speed === 0) {
+      // No motion → no Doppler → no fast fading
+      total[i] = plSh[i];
+      continue;
+    }
+
+    let re = 0, im = 0;
+    for (let k = 0; k < K; k++) {
+      const phi   = 2 * Math.PI * k / K;
+      const fk    = fd * Math.cos(phi);
+      // Phase argument: keep mod 2π to prevent floating-point precision loss
+      // at large d × fk products (which blow up for high speed + large distance)
+      const phase = ((2 * Math.PI * fk * d) % (2 * Math.PI)) + jakePhases[k];
+      re += Math.cos(phase);
+      im += Math.sin(phase);
+    }
+    // Normalise by K; add 1e-9 floor to avoid log(0)
+    const power_norm   = (re * re + im * im) / K + 1e-9;
+    const rayleigh_dB  = 10 * Math.log10(power_norm);
+    // Clamp to ±30 dB — extreme outliers occur near destructive nulls
+    total[i] = plSh[i] + Math.max(-30, Math.min(30, rayleigh_dB));
+  }
+
+  return { dArr, plArr, plSh, total };
+}
+
+// ─── Canvas drawing ──────────────────────────────────────────────────────────
+const cv  = document.getElementById('main-canvas');
+let clickDist = null;
+// Cache the last-generated series so redrawOnly() can repaint without
+// regenerating data (important: click redraws must not change data).
+let lastSeries = null;
+let lastParams = null;
+
+function draw() {
+  const { n, sigma, speed } = getParams();
+  lastParams = { n, sigma, speed };
+  lastSeries = generateSeries(n, sigma, speed);
+  const { w, h } = resizeCanvas(cv);
+  const ctx = cv.getContext('2d');
+  drawContent(ctx, w, h);
+  updateStats(n, sigma, speed);
+}
+
+function drawContent(ctx, w, h) {
+  if (!lastSeries) return;
+  const { dArr, plArr, plSh, total } = lastSeries;
+
+  const padL = 56, padR = 20, padT = 18, padB = 36;
+  const plotW = w - padL - padR;
+  const plotH = h - padT - padB;
+
+  // Fixed y-axis range ensures consistent, readable display
+  const yMin = -130;
+  const yMax = -20;
+
+  function xScale(d) {
+    const logFrac = (Math.log10(Math.max(d, D_MIN)) - Math.log10(D_MIN)) /
+                    (Math.log10(D_MAX) - Math.log10(D_MIN));
+    return padL + Math.max(0, Math.min(1, logFrac)) * plotW;
+  }
+  function yScale(dBval) {
+    if (!isFinite(dBval)) return padT; // clamp non-finite to top of plot
+    const frac = 1 - (Math.max(yMin, Math.min(yMax, dBval)) - yMin) / (yMax - yMin);
+    return padT + frac * plotH;
+  }
+
+  ctx.clearRect(0, 0, w, h);
+
+  // Grid lines
+  ctx.strokeStyle = 'rgba(255,255,255,0.05)';
+  ctx.lineWidth   = 0.5;
+  for (let dB = yMin; dB <= yMax; dB += 10) {
+    const y = yScale(dB);
+    ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(padL + plotW, y); ctx.stroke();
+  }
+  for (const d of [1, 2, 5, 10, 20, 50, 100, 200, 500, 1000, 2000]) {
+    const x = xScale(d);
+    ctx.beginPath(); ctx.moveTo(x, padT); ctx.lineTo(x, padT + plotH); ctx.stroke();
+  }
+
+  // Axes
+  ctx.strokeStyle = 'rgba(255,255,255,0.15)';
+  ctx.lineWidth   = 1;
+  ctx.beginPath();
+  ctx.moveTo(padL, padT); ctx.lineTo(padL, padT + plotH); ctx.lineTo(padL + plotW, padT + plotH);
+  ctx.stroke();
+
+  // Y-axis tick labels
+  ctx.fillStyle  = 'rgba(139,148,158,0.9)';
+  ctx.font       = '10px SF Mono,Fira Code,monospace';
+  ctx.textAlign  = 'right';
+  for (let dB = yMin; dB <= yMax; dB += 20) {
+    ctx.fillText(dB + ' dB', padL - 4, yScale(dB) + 3);
+  }
+
+  // X-axis tick labels
+  ctx.textAlign = 'center';
+  ctx.font      = '10px system-ui,sans-serif';
+  for (const d of [1, 5, 10, 50, 100, 500, 1000]) {
+    ctx.fillText(d < 1000 ? d + 'm' : d / 1000 + 'km', xScale(d), padT + plotH + 14);
+  }
+
+  // Axis titles
+  ctx.save();
+  ctx.translate(12, padT + plotH / 2);
+  ctx.rotate(-Math.PI / 2);
+  ctx.textAlign = 'center';
+  ctx.font      = '10px system-ui,sans-serif';
+  ctx.fillText('Received power Pr/Pt (dB)', 0, 0);
+  ctx.restore();
+
+  ctx.textAlign  = 'center';
+  ctx.font       = '10px system-ui,sans-serif';
+  ctx.fillStyle  = 'rgba(139,148,158,0.9)';
+  ctx.fillText('Distance d', padL + plotW / 2, h - 4);
+
+  // Draw a data series with proper gap handling for clipped points
+  function drawSeries(arr, color, alpha, lw, dash) {
+    ctx.beginPath();
+    ctx.strokeStyle = color;
+    ctx.globalAlpha = alpha;
+    ctx.lineWidth   = lw;
+    ctx.setLineDash(dash || []);
+
+    let penDown = false;   // track whether the path is open
+    for (let i = 0; i < arr.length; i++) {
+      if (!isFinite(arr[i])) { penDown = false; continue; }
+      const x = xScale(dArr[i]);
+      const y = yScale(arr[i]);
+      // If point is outside plot bounds, lift the pen so we don't draw
+      // a spurious diagonal line from the last valid point to this one
+      const inView = y >= padT - 1 && y <= padT + plotH + 1;
+      if (!inView) { penDown = false; continue; }
+
+      if (!penDown) { ctx.moveTo(x, y); penDown = true; }
+      else            ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+    ctx.globalAlpha = 1;
+    ctx.setLineDash([]);
+  }
+
+  drawSeries(total,  '#f778ba', 0.65, 1.2);
+  drawSeries(plSh,   '#f0883e', 0.75, 1.5);
+  drawSeries(plArr,  '#58a6ff', 1.0,  2.5);
+
+  // Click-distance marker
+  if (clickDist !== null) {
+    let idx = 0;
+    for (let i = 0; i < dArr.length; i++) {
+      if (dArr[i] >= clickDist) { idx = i; break; }
+    }
+    const xm = xScale(clickDist);
+    ctx.setLineDash([4, 4]);
+    ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+    ctx.lineWidth   = 1;
+    ctx.beginPath(); ctx.moveTo(xm, padT); ctx.lineTo(xm, padT + plotH); ctx.stroke();
+    ctx.setLineDash([]);
+
+    const plV  = isFinite(plArr[idx]) ? plArr[idx].toFixed(1) : '—';
+    const shV  = isFinite(plSh[idx])  ? plSh[idx].toFixed(1)  : '—';
+    const totV = isFinite(total[idx]) ? total[idx].toFixed(1) : '—';
+    const dist = clickDist < 1000
+      ? Math.round(clickDist) + ' m'
+      : (clickDist / 1000).toFixed(1) + ' km';
+    document.getElementById('marker-info').innerHTML =
+      `<strong>d = ${dist}</strong> &nbsp;|&nbsp; ` +
+      `<span style="color:var(--pl)">Path loss: ${plV} dB</span> &nbsp;|&nbsp; ` +
+      `<span style="color:var(--sh)">+Shadow: ${shV} dB</span> &nbsp;|&nbsp; ` +
+      `<span style="color:var(--total)">Total: ${totV} dB</span>`;
+  }
+}  // end drawContent()
+
+function updateStats(n, sigma, speed) {
+  const lambda = C_ / FC;
+  const fd     = speed > 0 ? (speed / 3.6 / lambda) : 0;
+  const tc     = fd > 0 ? (9 / (16 * Math.PI * fd) * 1000).toFixed(0) + ' ms' : '∞';
+  document.getElementById('pl100').textContent     = logPath(100,  n).toFixed(1) + ' dB';
+  document.getElementById('pl1k').textContent      = logPath(1000, n).toFixed(1) + ' dB';
+  document.getElementById('sh-margin').textContent = (2 * sigma).toFixed(1)      + ' dB';
+  document.getElementById('dopp').textContent      = fd > 0 ? fd.toFixed(1) + ' Hz' : '0 Hz';
+  document.getElementById('coh-t').textContent     = tc;
+  document.getElementById('n-val').textContent     = n.toFixed(1);
+  document.getElementById('sh-val').textContent    = sigma.toFixed(1) + ' dB';
+  document.getElementById('sp-val').textContent    = speed + ' km/h';
+}
+
+// ─── Debounced resize ────────────────────────────────────────────────────────
+let resizeTimer = null;
+window.addEventListener('resize', () => {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(draw, 80);
+});
+
+// ─── Slider wiring ────────────────────────────────────────────────────────────
+['n-sl', 'sh-sl', 'sp-sl'].forEach(id =>
+  document.getElementById(id).addEventListener('input', draw)
+);
+
+// ─── Click-to-read — uses redrawOnly() so canvas dimensions are never touched
+cv.addEventListener('click', e => {
+  const rect  = cv.getBoundingClientRect();
+  const padL  = 56;
+  // Use the stable cachedSize width rather than cv.offsetWidth, which can
+  // read back a post-assignment layout value and restart the growth cycle.
+  const logicalW = cachedSize ? cachedSize.w : cv.offsetWidth;
+  const plotW = logicalW - padL - 20;
+  if (plotW <= 0) return;
+  const frac  = (e.clientX - rect.left - padL) / plotW;
+  if (frac < 0 || frac > 1) return;
+  const logD  = Math.log10(D_MIN) + frac * (Math.log10(D_MAX) - Math.log10(D_MIN));
+  clickDist   = Math.pow(10, logD);
+  redrawOnly();   // repaint without touching canvas dimensions
+});
+
+// ─── Initial draw — deferred one frame so layout is complete ─────────────────
+requestAnimationFrame(draw);
+</script>
+</body>
+</html>
