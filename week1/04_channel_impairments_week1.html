@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Week 1 Channel Impairments Interactive Demo</title>
+<style>
+:root{
+  --bg:#0d1117;--surface:#161b22;--surface2:#21262d;--border:rgba(255,255,255,.09);
+  --text:#c9d1d9;--muted:#8b949e;--blue:#58a6ff;--orange:#f0883e;--green:#3fb950;
+  --pink:#f778ba;--purple:#a371f7;--red:#ff7b72;--yellow:#d29922;
+}
+*{box-sizing:border-box;margin:0;padding:0} body{background:var(--bg);color:var(--text);font-family:"SF Mono","Fira Code",ui-monospace,monospace;max-width:1180px;margin:0 auto;padding:1.35rem;}
+h1{font-size:1.08rem;letter-spacing:.04em;font-weight:700;margin-bottom:.45rem} .sub{font:0.84rem/1.55 system-ui,sans-serif;color:var(--muted);max-width:980px;margin-bottom:1rem}
+.tabs{display:flex;gap:.45rem;flex-wrap:wrap;margin:1rem 0}.tab{background:var(--surface);border:1px solid var(--border);color:var(--muted);padding:.45rem .7rem;border-radius:999px;font:0.75rem system-ui,sans-serif;cursor:pointer}.tab.active{color:var(--text);border-color:rgba(88,166,255,.55);box-shadow:0 0 0 2px rgba(88,166,255,.10) inset}.hint{font:0.75rem/1.45 system-ui,sans-serif;color:var(--muted);margin:-.2rem 0 .8rem}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;margin-bottom:.9rem}@media(max-width:920px){.grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:540px){.grid{grid-template-columns:1fr}}
+.ctrl{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.8rem}.label{font-size:.67rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);display:flex;justify-content:space-between;gap:1rem;margin-bottom:.45rem}.val{font-size:.76rem;color:var(--text);font-weight:700;white-space:nowrap}input[type=range]{width:100%;accent-color:#58a6ff}.ctrl p{font:0.68rem/1.35 system-ui,sans-serif;color:var(--muted);margin-top:.35rem}.row{display:grid;grid-template-columns:2fr 1fr;gap:.85rem}.row2{display:grid;grid-template-columns:1fr 1fr;gap:.85rem;margin-top:.85rem}@media(max-width:900px){.row,.row2{grid-template-columns:1fr}}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1rem}.card h2{font-size:.82rem;letter-spacing:.05em;margin-bottom:.3rem}.card .desc{font:0.75rem/1.45 system-ui,sans-serif;color:var(--muted);margin-bottom:.65rem}canvas{display:block;width:100%;height:315px}.small canvas{height:260px}.legend{display:flex;gap:1rem;flex-wrap:wrap;font:0.74rem system-ui,sans-serif;color:var(--muted);margin-top:.6rem}.legend span{display:flex;align-items:center;gap:.35rem}.sw{width:18px;height:3px;border-radius:2px;display:inline-block}.metrics{display:grid;grid-template-columns:repeat(2,1fr);gap:.55rem;margin-top:.2rem}@media(max-width:540px){.metrics{grid-template-columns:1fr}}.metric{background:var(--surface2);border:1px solid var(--border);border-radius:9px;padding:.65rem}.metric b{display:block;font-size:.68rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:.2rem}.metric span{font-size:.95rem;color:var(--text)}.note{font:0.76rem/1.55 system-ui,sans-serif;color:var(--muted);background:rgba(88,166,255,.06);border:1px solid rgba(88,166,255,.18);border-radius:10px;padding:.75rem;margin-top:.85rem}.pill{display:inline-block;padding:.08rem .4rem;border:1px solid var(--border);border-radius:999px;color:var(--text);background:var(--surface2);font-size:.68rem}.map table{width:100%;border-collapse:collapse;font:0.76rem/1.35 system-ui,sans-serif;color:var(--muted)}.map td{border-bottom:1px solid var(--border);padding:.45rem .25rem;vertical-align:top}.map td:first-child{color:var(--text);font-weight:650;width:31%}.map tr:last-child td{border-bottom:0}.marker{font:0.78rem/1.5 system-ui,sans-serif;color:var(--muted);margin-top:.65rem}.marker strong{color:var(--text)}
+</style>
+</head>
+<body>
+<h1>Week 1: Wireless Channel Impairments</h1>
+<p class="sub">Interactive companion to the lecture slides on path loss, log-normal shadowing, AWGN, multipath propagation, and co-channel interference. Move the sliders to see how large-scale and small-scale propagation effects combine, and how the receiver moves from noise-limited to interference-limited operation.</p>
+
+<div class="tabs">
+  <button class="tab active" data-mode="power">Received power</button>
+  <button class="tab" data-mode="snr">SNR</button>
+  <button class="tab" data-mode="sinr">SINR</button>
+  <button class="tab" data-mode="margin">Coverage margin</button>
+</div>
+<p class="hint">Click the main plot to inspect the link budget at a particular transmitter--receiver distance.</p>
+
+<div class="grid">
+  <div class="ctrl"><div class="label">Transmit power <span class="val" id="pt-val"></span></div><input id="pt" type="range" min="-10" max="40" step="1" value="20"><p>Controls the EIRP-like link budget term in dBm.</p></div>
+  <div class="ctrl"><div class="label">Carrier frequency <span class="val" id="fc-val"></span></div><input id="fc" type="range" min="0.7" max="6" step="0.1" value="2.4"><p>Higher frequency gives larger free-space loss for fixed antenna gains.</p></div>
+  <div class="ctrl"><div class="label">Path-loss exponent n <span class="val" id="n-val"></span></div><input id="n" type="range" min="1.6" max="6" step="0.1" value="3.2"><p>n=2 free space; larger n represents obstructed or indoor environments.</p></div>
+  <div class="ctrl"><div class="label">Shadowing σ <span class="val" id="sigma-val"></span></div><input id="sigma" type="range" min="0" max="16" step="0.5" value="6"><p>Gaussian in dB; log-normal in linear received power.</p></div>
+  <div class="ctrl"><div class="label">AWGN bandwidth B <span class="val" id="bw-val"></span></div><input id="bw" type="range" min="0" max="7" step="0.1" value="4"><p>Thermal noise power increases as kTB; shown via noise floor.</p></div>
+  <div class="ctrl"><div class="label">Noise figure <span class="val" id="nf-val"></span></div><input id="nf" type="range" min="0" max="12" step="0.5" value="5"><p>Receiver electronics add noise beyond the ideal thermal floor.</p></div>
+  <div class="ctrl"><div class="label">Multipath depth <span class="val" id="mp-val"></span></div><input id="mp" type="range" min="0" max="30" step="1" value="12"><p>Rapid constructive/destructive fading over distances around λ/2.</p></div>
+  <div class="ctrl"><div class="label">Interferer power <span class="val" id="int-val"></span></div><input id="int" type="range" min="-30" max="40" step="1" value="5"><p>Models co-channel interferers from frequency reuse.</p></div>
+</div>
+
+<div class="row">
+  <div class="card">
+    <h2 id="plot-title">Received power versus distance</h2>
+    <p class="desc" id="plot-desc">Large-scale path loss is the mean trend; shadowing and multipath create measured fluctuations around it.</p>
+    <canvas id="main"></canvas>
+    <div class="legend" id="legend"></div>
+    <div class="marker" id="marker">Click the plot to inspect values.</div>
+  </div>
+  <div class="card">
+    <h2>Link-budget readout</h2>
+    <p class="desc">Values are computed at the selected marker distance, or at 100 m before the first click.</p>
+    <div class="metrics">
+      <div class="metric"><b>Distance</b><span id="m-dist">—</span></div>
+      <div class="metric"><b>Path loss</b><span id="m-pl">—</span></div>
+      <div class="metric"><b>Received power</b><span id="m-pr">—</span></div>
+      <div class="metric"><b>Noise power</b><span id="m-noise">—</span></div>
+      <div class="metric"><b>SNR</b><span id="m-snr">—</span></div>
+      <div class="metric"><b>SINR</b><span id="m-sinr">—</span></div>
+      <div class="metric"><b>Regime</b><span id="m-regime">—</span></div>
+      <div class="metric"><b>λ / 2</b><span id="m-lambda">—</span></div>
+    </div>
+    <div class="note" id="teaching-note"></div>
+  </div>
+</div>
+
+<div class="row2">
+  <div class="card small">
+    <h2>AWGN effect on constellation</h2>
+    <p class="desc">The same SNR at the marker controls the spread of the noisy QPSK constellation.</p>
+    <canvas id="const"></canvas>
+  </div>
+  <div class="card small">
+    <h2>Lecture mapping</h2>
+    <p class="desc">How the interactive elements map to Week 1 topics.</p>
+    <div class="map"><table>
+      <tr><td>Path loss</td><td>Free-space/Friis baseline and log-distance path loss model; average received power decreases with distance.</td></tr>
+      <tr><td>Shadowing</td><td>Slow variations around the mean path-loss curve, modelled by Xσ in dB.</td></tr>
+      <tr><td>Multipath</td><td>Delayed copies add at the receiver; constructive and destructive interference creates small-scale fading.</td></tr>
+      <tr><td>AWGN and SNR</td><td>Additive noise n(t), thermal noise power kTB, and SNR degradation visible in the constellation.</td></tr>
+      <tr><td>CCI / ACI</td><td>Interferer slider demonstrates cellular reuse and the transition from SNR to SINR.</td></tr>
+    </table></div>
+  </div>
+</div>
+
+<script>
+const C=3e8, K_BOLTZ=-174; // dBm/Hz at room temperature
+const D_MIN=1, D_MAX=2000, NPTS=650; let mode='power', selectedD=100;
+const ids=['pt','fc','n','sigma','bw','nf','mp','int'];
+function $(id){return document.getElementById(id)}
+let seed=7; function rng(){seed=(seed*1664525+1013904223)>>>0;return seed/4294967296} function randn(){let u=0,v=0;while(u===0)u=rng();while(v===0)v=rng();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v)}
+function p(){return {pt:+$('pt').value, fc:+$('fc').value*1e9, n:+$('n').value, sigma:+$('sigma').value, bwMHz:Math.pow(10,+$('bw').value/2), nf:+$('nf').value, mp:+$('mp').value, pint:+$('int').value}}
+function fmtDb(x){return (isFinite(x)?x.toFixed(1):'—')+' dB'} function fmtDbm(x){return (isFinite(x)?x.toFixed(1):'—')+' dBm'} function fmtDist(d){return d<1000?Math.round(d)+' m':(d/1000).toFixed(2)+' km'}
+function fspl(d,fc){return 20*Math.log10(4*Math.PI*d*fc/C)}
+function plLog(d,q){return fspl(1,q.fc)+10*q.n*Math.log10(Math.max(d,1))}
+function noiseDbm(q){return K_BOLTZ+10*Math.log10(q.bwMHz*1e6)+q.nf}
+function resize(cv){const dpr=Math.min(devicePixelRatio||1,3), r=cv.getBoundingClientRect(); const w=Math.max(300,r.width), h=parseFloat(getComputedStyle(cv).height); cv.width=Math.round(w*dpr);cv.height=Math.round(h*dpr); const ctx=cv.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0); return {ctx,w,h}}
+function series(q){seed=19; const out=[]; let shadow=0; const phases=[0,1,2,3,4,5,6,7].map(()=>rng()*2*Math.PI); for(let i=0;i<NPTS;i++){const d=D_MIN*Math.pow(D_MAX/D_MIN,i/(NPTS-1)); const rho=.985; shadow=rho*shadow+Math.sqrt(1-rho*rho)*randn()*q.sigma; if(q.sigma>0)shadow=Math.max(-4*q.sigma,Math.min(4*q.sigma,shadow)); let fade=0; if(q.mp>0){let re=0,im=0; for(let k=0;k<phases.length;k++){const ang=2*Math.PI*(d/(C/q.fc))*Math.cos(2*Math.PI*k/phases.length)+phases[k]; re+=Math.cos(ang); im+=Math.sin(ang)} fade=10*Math.log10((re*re+im*im)/phases.length+1e-4); fade=Math.max(-q.mp,Math.min(q.mp,fade));} const pl=plLog(d,q); const mean=q.pt-pl; const sh=mean+shadow; const pr=sh+fade; const no=noiseDbm(q); const id=plLog(Math.max(35,d*1.65),{...q,n:Math.max(2,q.n-.25) }); const ip=q.pint-id; const snr=pr-no; const linN=Math.pow(10,no/10), linI=Math.pow(10,ip/10), linS=Math.pow(10,pr/10); const sinr=10*Math.log10(linS/(linN+linI)); out.push({d,pl,mean,sh,pr,no,ip,snr,sinr,margin:sinr-5});} return out}
+function axes(ctx,w,h,ymin,ymax){const L=58,R=16,T=18,B=36, pw=w-L-R, ph=h-T-B; ctx.clearRect(0,0,w,h); ctx.strokeStyle='rgba(255,255,255,.06)';ctx.lineWidth=.7; for(let y=Math.ceil(ymin/10)*10;y<=ymax;y+=10){let py=T+(1-(y-ymin)/(ymax-ymin))*ph; ctx.beginPath();ctx.moveTo(L,py);ctx.lineTo(L+pw,py);ctx.stroke()} for(const d of [1,2,5,10,20,50,100,200,500,1000,2000]){let x=L+(Math.log10(d)-Math.log10(D_MIN))/(Math.log10(D_MAX)-Math.log10(D_MIN))*pw;ctx.beginPath();ctx.moveTo(x,T);ctx.lineTo(x,T+ph);ctx.stroke()} ctx.strokeStyle='rgba(255,255,255,.18)';ctx.beginPath();ctx.moveTo(L,T);ctx.lineTo(L,T+ph);ctx.lineTo(L+pw,T+ph);ctx.stroke(); ctx.fillStyle='rgba(139,148,158,.95)';ctx.font='10px system-ui';ctx.textAlign='right'; for(let y=Math.ceil(ymin/20)*20;y<=ymax;y+=20){let py=T+(1-(y-ymin)/(ymax-ymin))*ph;ctx.fillText(y+' dB',L-5,py+3)} ctx.textAlign='center'; for(const d of [1,5,10,50,100,500,1000]){let x=L+(Math.log10(d)-Math.log10(D_MIN))/(Math.log10(D_MAX)-Math.log10(D_MIN))*pw;ctx.fillText(d<1000?d+'m':(d/1000)+'km',x,T+ph+15)} return {L,R,T,B,pw,ph,x:d=>L+(Math.log10(d)-Math.log10(D_MIN))/(Math.log10(D_MAX)-Math.log10(D_MIN))*pw,y:v=>T+(1-(Math.max(ymin,Math.min(ymax,v))-ymin)/(ymax-ymin))*ph}}
+function drawLine(ctx,S,a,key,color,wid=2,dash=[]){ctx.beginPath();ctx.strokeStyle=color;ctx.lineWidth=wid;ctx.setLineDash(dash); S.forEach((r,i)=>{const x=a.x(r.d),y=a.y(r[key]); if(i===0)ctx.moveTo(x,y); else ctx.lineTo(x,y)}); ctx.stroke();ctx.setLineDash([])}
+function drawMain(){const q=p(), S=series(q), cv=$('main'), {ctx,w,h}=resize(cv); let key='pr', ymin=-140,ymax=40, title='Received power versus distance', desc='Large-scale path loss is the mean trend; shadowing and multipath create measured fluctuations around it.'; if(mode==='snr'){key='snr';ymin=-30;ymax=80;title='SNR versus distance';desc='AWGN sets the noise floor. Increasing bandwidth or receiver noise figure lowers SNR.'} if(mode==='sinr'){key='sinr';ymin=-30;ymax=80;title='SINR versus distance';desc='When interference is strong, improving noise alone does not recover the link.'} if(mode==='margin'){key='margin';ymin=-40;ymax=60;title='Coverage margin versus distance';desc='Margin is shown relative to a simple 5 dB SINR operating threshold.'} $('plot-title').textContent=title; $('plot-desc').textContent=desc; const A=axes(ctx,w,h,ymin,ymax); if(mode==='power'){drawLine(ctx,S,A,'mean','#58a6ff',2.4);drawLine(ctx,S,A,'sh','#f0883e',1.8);drawLine(ctx,S,A,'pr','#f778ba',1.2); ctx.strokeStyle='rgba(255,255,255,.28)';ctx.setLineDash([5,4]);ctx.beginPath();ctx.moveTo(A.L,A.y(S[0].no));ctx.lineTo(A.L+A.pw,A.y(S[0].no));ctx.stroke();ctx.setLineDash([]); legend([['#58a6ff','Mean path loss'],['#f0883e','+ log-normal shadowing'],['#f778ba','+ multipath fading'],['rgba(255,255,255,.55)','Noise floor']]);} else {drawLine(ctx,S,A,key,mode==='snr'?'#3fb950':mode==='sinr'?'#a371f7':'#d29922',2.2); if(mode!=='snr'){drawLine(ctx,S,A,'snr','#3fb950',1.4,[5,4]);} ctx.strokeStyle='rgba(255,255,255,.25)';ctx.setLineDash([4,4]);ctx.beginPath();ctx.moveTo(A.L,A.y(5));ctx.lineTo(A.L+A.pw,A.y(5));ctx.stroke();ctx.setLineDash([]); legend(mode==='snr' ? [['#3fb950','SNR'],['rgba(255,255,255,.55)','5 dB reference']] : [[mode==='sinr'?'#a371f7':'#d29922',mode==='sinr'?'SINR':'Coverage margin'],['#3fb950','SNR reference'],['rgba(255,255,255,.55)','5 dB threshold']]);}
+ const xm=A.x(selectedD); ctx.setLineDash([4,4]);ctx.strokeStyle='rgba(255,255,255,.35)';ctx.beginPath();ctx.moveTo(xm,A.T);ctx.lineTo(xm,A.T+A.ph);ctx.stroke();ctx.setLineDash([]); updateMetrics(S.reduce((a,b)=>Math.abs(b.d-selectedD)<Math.abs(a.d-selectedD)?b:a),q); drawConst();}
+function legend(items){$('legend').innerHTML=items.map(([c,t])=>`<span><i class="sw" style="background:${c}"></i>${t}</span>`).join('')}
+function updateMetrics(r,q){$('m-dist').textContent=fmtDist(r.d);$('m-pl').textContent=fmtDb(r.pl);$('m-pr').textContent=fmtDbm(r.pr);$('m-noise').textContent=fmtDbm(r.no);$('m-snr').textContent=fmtDb(r.snr);$('m-sinr').textContent=fmtDb(r.sinr);$('m-lambda').textContent=((C/q.fc)/2*100).toFixed(1)+' cm'; const reg=(r.ip-r.no)>6?'interference-limited':(r.no-r.ip)>6?'noise-limited':'mixed';$('m-regime').textContent=reg; $('marker').innerHTML=`<strong>${fmtDist(r.d)}</strong> · Pr ${fmtDbm(r.pr)} · SNR ${fmtDb(r.snr)} · SINR ${fmtDb(r.sinr)} · interferer ${fmtDbm(r.ip)}`; $('teaching-note').innerHTML = reg==='interference-limited' ? 'The interferer is above the thermal noise floor. This illustrates why dense cellular systems are often <span class="pill">interference-limited</span> rather than purely noise-limited.' : reg==='noise-limited' ? 'The noise floor dominates the denominator. This is the <span class="pill">AWGN/SNR</span> regime shown by the constellation demo.' : 'Noise and interference are comparable, so both SNR and SINR matter for the received signal quality.'}
+function drawConst(){const q=p(), S=series(q), r=S.reduce((a,b)=>Math.abs(b.d-selectedD)<Math.abs(a.d-selectedD)?b:a); const {ctx,w,h}=resize($('const')); ctx.clearRect(0,0,w,h); const L=30,T=20,sz=Math.min(w-60,h-45), cx=w/2, cy=T+sz/2; ctx.strokeStyle='rgba(255,255,255,.12)';ctx.beginPath();ctx.moveTo(cx-sz/2,cy);ctx.lineTo(cx+sz/2,cy);ctx.moveTo(cx,cy-sz/2);ctx.lineTo(cx,cy+sz/2);ctx.stroke(); seed=101; const snrLin=Math.pow(10,Math.max(-5,Math.min(35,r.snr))/10), sigma=Math.sqrt(1/(2*snrLin)); const scale=sz/4.2; const syms=[[-1,-1],[-1,1],[1,-1],[1,1]]; ctx.fillStyle='rgba(88,166,255,.22)'; for(let i=0;i<320;i++){const s=syms[i%4], x=s[0]+randn()*sigma, y=s[1]+randn()*sigma; ctx.beginPath();ctx.arc(cx+x*scale,cy-y*scale,2,0,7);ctx.fill()} ctx.fillStyle='#f778ba'; syms.forEach(s=>{ctx.beginPath();ctx.arc(cx+s[0]*scale,cy-s[1]*scale,4,0,7);ctx.fill()}); ctx.fillStyle='rgba(139,148,158,.95)';ctx.font='12px system-ui';ctx.textAlign='center';ctx.fillText('QPSK with AWGN at selected distance: SNR '+r.snr.toFixed(1)+' dB',cx,h-10)}
+function updateLabels(){const q=p();$('pt-val').textContent=q.pt+' dBm';$('fc-val').textContent=(q.fc/1e9).toFixed(1)+' GHz';$('n-val').textContent=q.n.toFixed(1);$('sigma-val').textContent=q.sigma.toFixed(1)+' dB';$('bw-val').textContent=q.bwMHz.toFixed(1)+' MHz';$('nf-val').textContent=q.nf.toFixed(1)+' dB';$('mp-val').textContent=q.mp.toFixed(0)+' dB';$('int-val').textContent=q.pint+' dBm'}
+ids.forEach(id=>$(id).addEventListener('input',()=>{updateLabels();drawMain()})); document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));b.classList.add('active');mode=b.dataset.mode;drawMain()}); $('main').addEventListener('click',e=>{const r=$('main').getBoundingClientRect(); const frac=Math.max(0,Math.min(1,(e.clientX-r.left-58)/(r.width-74))); selectedD=D_MIN*Math.pow(D_MAX/D_MIN,frac); drawMain()}); window.addEventListener('resize',drawMain); updateLabels(); requestAnimationFrame(drawMain);
+</script>
+</body>
+</html>
