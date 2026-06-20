@@ -1,0 +1,1137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Guided Free-Space Propagation Explorer</title>
+<style>
+  :root {
+    --bg: #f4f6fa;
+    --panel: #ffffff;
+    --ink: #172033;
+    --muted: #667085;
+    --line: #d8dee9;
+    --accent: #2457d6;
+    --accent-dark: #173d9b;
+    --accent-soft: #edf2ff;
+    --good: #067647;
+    --good-bg: #ecfdf3;
+    --warn: #b54708;
+    --warn-bg: #fffaeb;
+    --bad: #b42318;
+    --bad-bg: #fef3f2;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    color: var(--ink);
+    background: var(--bg);
+    line-height: 1.5;
+  }
+
+  header {
+    padding: 24px clamp(18px, 4vw, 48px) 20px;
+    color: white;
+    background: linear-gradient(135deg, #111a31, #1947aa);
+  }
+  header h1 {
+    margin: 0 0 6px;
+    font-size: clamp(1.55rem, 3vw, 2.15rem);
+  }
+  header p {
+    margin: 0;
+    max-width: 850px;
+    color: #dce6ff;
+  }
+
+  main {
+    width: min(1180px, calc(100% - 28px));
+    margin: 20px auto 34px;
+  }
+
+  .progress-card,
+  .lesson-card,
+  .controls-card,
+  .visual-card,
+  .result-card {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    box-shadow: 0 8px 24px rgba(16, 24, 40, 0.055);
+  }
+
+  .progress-card { padding: 14px 16px; margin-bottom: 16px; }
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+  }
+  .step-button {
+    appearance: none;
+    border: 1px solid transparent;
+    border-radius: 12px;
+    padding: 10px 8px;
+    background: transparent;
+    color: var(--muted);
+    font: inherit;
+    font-size: 0.88rem;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .step-button:hover { background: #f7f9fc; }
+  .step-button.active {
+    color: var(--accent-dark);
+    border-color: #b8c8f8;
+    background: var(--accent-soft);
+  }
+  .step-button .number {
+    display: inline-grid;
+    place-items: center;
+    width: 24px;
+    height: 24px;
+    margin-right: 5px;
+    border-radius: 999px;
+    color: white;
+    background: #98a2b3;
+  }
+  .step-button.active .number { background: var(--accent); }
+
+  .lesson-card { padding: clamp(18px, 3vw, 28px); }
+  .lesson { display: none; }
+  .lesson.active { display: block; }
+
+  .topic-label {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: var(--accent-soft);
+    color: var(--accent-dark);
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+  .lesson h2 {
+    margin: 10px 0 6px;
+    font-size: clamp(1.35rem, 2.5vw, 1.8rem);
+  }
+  .lead {
+    max-width: 880px;
+    margin: 0 0 18px;
+    color: var(--muted);
+  }
+
+  .equation {
+    margin: 14px 0 18px;
+    padding: 14px 16px;
+    overflow-x: auto;
+    border: 1px solid #c5d2f7;
+    border-radius: 14px;
+    background: var(--accent-soft);
+    text-align: center;
+    font-family: Cambria, "Times New Roman", serif;
+    font-size: clamp(1.02rem, 2vw, 1.22rem);
+  }
+  .equation .secondary {
+    display: block;
+    margin-top: 5px;
+    color: #3c4b68;
+    font-size: 0.91em;
+  }
+
+  .workspace {
+    display: grid;
+    grid-template-columns: minmax(250px, 330px) minmax(0, 1fr);
+    gap: 16px;
+    align-items: start;
+  }
+  .controls-card,
+  .visual-card { padding: 16px; }
+  .controls-card h3,
+  .visual-card h3 {
+    margin: 0 0 12px;
+    font-size: 1rem;
+  }
+
+  .control { margin: 15px 0; }
+  .control label {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 5px;
+    font-size: 0.9rem;
+    font-weight: 700;
+  }
+  .control output {
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  input[type="range"] {
+    width: 100%;
+    accent-color: var(--accent);
+  }
+  select,
+  .secondary-button {
+    width: 100%;
+    padding: 9px 10px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    color: var(--ink);
+    background: white;
+    font: inherit;
+  }
+  .secondary-button {
+    cursor: pointer;
+    font-weight: 700;
+  }
+  .hint {
+    margin-top: 3px;
+    color: var(--muted);
+    font-size: 0.8rem;
+  }
+
+  canvas {
+    display: block;
+    width: 100%;
+    height: 360px;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: white;
+  }
+  .caption {
+    margin: 9px 2px 0;
+    color: var(--muted);
+    font-size: 0.86rem;
+  }
+
+  .results {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+    margin-top: 14px;
+  }
+  .result-card {
+    min-height: 92px;
+    padding: 12px;
+    box-shadow: none;
+  }
+  .result-name { color: var(--muted); font-size: 0.79rem; }
+  .result-value {
+    margin-top: 4px;
+    font-size: 1.22rem;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+  }
+  .result-sub { margin-top: 2px; color: var(--muted); font-size: 0.76rem; }
+
+  .notice {
+    margin-top: 14px;
+    padding: 11px 13px;
+    border: 1px solid;
+    border-radius: 12px;
+    font-size: 0.9rem;
+  }
+  .notice.good { color: var(--good); background: var(--good-bg); border-color: #a6f4c5; }
+  .notice.warn { color: var(--warn); background: var(--warn-bg); border-color: #fedf89; }
+  .notice.bad { color: var(--bad); background: var(--bad-bg); border-color: #fecdca; }
+
+  .prompt {
+    margin-top: 16px;
+    padding: 12px 14px;
+    border-left: 4px solid var(--accent);
+    border-radius: 0 10px 10px 0;
+    background: #f7f9ff;
+  }
+  .prompt strong { color: var(--accent-dark); }
+
+  .synthesis-card {
+    margin-top: 14px;
+    padding: 14px 16px;
+    border: 1px solid #c5d2f7;
+    border-radius: 14px;
+    background: #f7f9ff;
+  }
+  .synthesis-card h3 { margin: 0 0 7px; font-size: 1rem; color: var(--accent-dark); }
+  .budget-line {
+    margin: 0 0 7px;
+    overflow-wrap: anywhere;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.92rem;
+    font-weight: 700;
+  }
+  .synthesis-card p:last-child { margin-bottom: 0; }
+
+  details {
+    margin-top: 14px;
+    padding: 0 2px;
+  }
+  summary { cursor: pointer; font-weight: 750; }
+  details p, details ul { color: var(--muted); font-size: 0.9rem; }
+  details ul { padding-left: 20px; }
+
+  .navigation {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 16px;
+  }
+  .nav-button {
+    min-width: 120px;
+    padding: 10px 16px;
+    border: 1px solid var(--line);
+    border-radius: 11px;
+    background: white;
+    color: var(--ink);
+    font: inherit;
+    font-weight: 800;
+    cursor: pointer;
+  }
+  .nav-button.primary {
+    border-color: var(--accent);
+    color: white;
+    background: var(--accent);
+  }
+  .nav-button:disabled { opacity: 0.4; cursor: default; }
+
+  .two-controls {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  @media (max-width: 850px) {
+    .workspace { grid-template-columns: 1fr; }
+    canvas { height: 330px; }
+  }
+  @media (max-width: 650px) {
+    .steps { grid-template-columns: 1fr 1fr; }
+    .step-button { text-align: left; }
+    .results { grid-template-columns: 1fr; }
+    .two-controls { grid-template-columns: 1fr; }
+    canvas { height: 300px; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>Guided Free-Space Propagation Explorer</h1>
+  <p>Work through four short experiments. Each step introduces one idea and one illustration.</p>
+</header>
+
+<main>
+  <nav class="progress-card" aria-label="Lesson progress">
+    <div class="steps">
+      <button class="step-button active" data-step="0"><span class="number">1</span>Friis link</button>
+      <button class="step-button" data-step="1"><span class="number">2</span>Distance &amp; far field</button>
+      <button class="step-button" data-step="2"><span class="number">3</span>Aperture &amp; EIRP</button>
+      <button class="step-button" data-step="3"><span class="number">4</span>FSPL &amp; link budget</button>
+    </div>
+  </nav>
+
+  <section class="lesson-card">
+    <!-- STEP 1 -->
+    <article class="lesson active" data-lesson="0">
+      <span class="topic-label">Step 1 of 4</span>
+      <h2>Friis transmission equation</h2>
+      <p class="lead">Adjust the link parameters and observe how the received power changes.</p>
+
+      <div class="equation">
+        P<sub>r</sub> = P<sub>t</sub>G<sub>t</sub>G<sub>r</sub>
+        (λ / 4πd)<sup>2</sup> / L
+        <span class="secondary">FSPL = (4πd/λ)<sup>2</sup>; L ≥ 1 is the total linear system-loss factor.</span>
+        <span class="secondary">P<sub>r,dBm</sub> = P<sub>t,dBm</sub> + G<sub>t,dBi</sub> + G<sub>r,dBi</sub> − FSPL<sub>dB</sub> − L<sub>dB</sub></span>
+      </div>
+
+      <div class="workspace">
+        <section class="controls-card">
+          <h3>Change the link</h3>
+          <div class="control">
+            <label for="s1Pt">Transmit power <output id="s1PtVal"></output></label>
+            <input id="s1Pt" type="range" min="-10" max="40" step="1" value="20" />
+          </div>
+          <div class="control">
+            <label for="s1D">Distance <output id="s1DVal"></output></label>
+            <input id="s1D" type="range" min="0" max="3" step="0.001" value="1" />
+            <div class="hint">1 m–1 km (log scale)</div>
+          </div>
+          <div class="control">
+            <label for="s1F">Frequency <output id="s1FVal"></output></label>
+            <input id="s1F" type="range" min="8" max="11" step="0.0001" value="9.3802" />
+            <div class="hint">100 MHz–100 GHz (log scale)</div>
+          </div>
+          <div class="two-controls">
+            <div class="control">
+              <label for="s1Gt">Tx gain <output id="s1GtVal"></output></label>
+              <input id="s1Gt" type="range" min="0" max="30" step="1" value="2" />
+            </div>
+            <div class="control">
+              <label for="s1Gr">Rx gain <output id="s1GrVal"></output></label>
+              <input id="s1Gr" type="range" min="0" max="30" step="1" value="2" />
+            </div>
+          </div>
+          <div class="control">
+            <label for="s1Loss">Additional system loss <output id="s1LossVal"></output></label>
+            <input id="s1Loss" type="range" min="0" max="15" step="0.5" value="2" />
+          </div>
+          <button class="secondary-button" id="reset1">Reset this experiment</button>
+        </section>
+
+        <section class="visual-card">
+          <h3>Received-power illustration</h3>
+          <canvas id="friisCanvas" aria-label="Transmitter to receiver Friis link illustration"></canvas>
+          <p class="caption">The values and receiver colour update as the link changes.</p>
+        </section>
+      </div>
+
+      <div class="results">
+        <div class="result-card"><div class="result-name">Wavelength λ</div><div class="result-value" id="s1Lambda"></div><div class="result-sub">λ = c/f</div></div>
+        <div class="result-card"><div class="result-name">Free-space path loss</div><div class="result-value" id="s1Fspl"></div><div class="result-sub">unit-gain propagation term</div></div>
+        <div class="result-card"><div class="result-name">Received power</div><div class="result-value" id="s1Pr"></div><div class="result-sub" id="s1PrLinear"></div></div>
+      </div>
+
+      <div class="prompt"><strong>Try this:</strong> Double the distance. Received power falls by 6.02 dB.</div>
+    </article>
+
+    <!-- STEP 2 -->
+    <article class="lesson" data-lesson="1">
+      <span class="topic-label">Step 2 of 4</span>
+      <h2>Distance and far-field check</h2>
+      <p class="lead">Move the receiver and compare its distance with three useful antenna reference distances.</p>
+
+      <div class="equation">
+        P<sub>r</sub> ∝ 1/d<sup>2</sup>
+        <span class="secondary">Compare d with 2D<sup>2</sup>/λ, λ/(2π), and D.</span>
+      </div>
+
+      <div class="workspace">
+        <section class="controls-card">
+          <h3>Move the receiver</h3>
+          <div class="control">
+            <label for="s2D">Link distance <output id="s2DVal"></output></label>
+            <input id="s2D" type="range" min="-2" max="3" step="0.001" value="1" />
+            <div class="hint">1 cm–1 km (log scale)</div>
+          </div>
+          <div class="control">
+            <label for="s2F">Frequency <output id="s2FVal"></output></label>
+            <input id="s2F" type="range" min="8" max="11" step="0.0001" value="9.3802" />
+          </div>
+          <div class="control">
+            <label for="s2Size">Largest antenna dimension D <output id="s2SizeVal"></output></label>
+            <input id="s2Size" type="range" min="-3" max="0" step="0.0001" value="-1.0969" />
+            <div class="hint">1 mm–1 m; D = max(D<sub>t</sub>, D<sub>r</sub>)</div>
+          </div>
+          <button class="secondary-button" id="reset2">Reset this experiment</button>
+        </section>
+
+        <section class="visual-card">
+          <h3>Far-field distance checks</h3>
+          <canvas id="farFieldCanvas" aria-label="Far-field reference scales and receiver position"></canvas>
+          <p class="caption">Compare the receiver distance d with D, λ/(2π), and 2D²/λ on the logarithmic axis.</p>
+        </section>
+      </div>
+
+      <div class="results">
+        <div class="result-card"><div class="result-name">Phase-front distance</div><div class="result-value" id="s2Df"></div><div class="result-sub">2D²/λ</div></div>
+        <div class="result-card"><div class="result-name">Wavelength reference</div><div class="result-value" id="s2Reactive"></div><div class="result-sub">λ/(2π)</div></div>
+        <div class="result-card"><div class="result-name">Distance/reference ratio</div><div class="result-value" id="s2Ratio"></div><div class="result-sub">d / max[D, λ/(2π), 2D²/λ]</div></div>
+      </div>
+      <div id="s2Notice" class="notice"></div>
+
+      <div class="prompt"><strong>Try this:</strong> Set D = 1 mm and f = 100 MHz. Notice that λ/(2π), not 2D²/λ, becomes the largest reference distance.</div>
+    </article>
+
+    <!-- STEP 3 -->
+    <article class="lesson" data-lesson="2">
+      <span class="topic-label">Step 3 of 4</span>
+      <h2>Effective aperture and EIRP</h2>
+      <p class="lead">Change frequency and gain to see how effective aperture and EIRP respond.</p>
+
+      <div class="equation">
+        A<sub>e,max</sub> = Gλ<sup>2</sup>/(4π)
+        <span class="secondary">EIRP = P<sub>t</sub>G<sub>t</sub> &nbsp;&nbsp;or&nbsp;&nbsp; EIRP<sub>dBm</sub> = P<sub>t,dBm</sub> + G<sub>t,dBi</sub></span>
+      </div>
+
+      <div class="workspace">
+        <section class="controls-card">
+          <h3>Change frequency and gain</h3>
+          <div class="control">
+            <label for="s3F">Frequency <output id="s3FVal"></output></label>
+            <input id="s3F" type="range" min="9" max="10" step="0.0001" value="9.3802" />
+            <div class="hint">1–10 GHz (log scale)</div>
+          </div>
+          <div class="control">
+            <label for="s3Pt">Transmit power <output id="s3PtVal"></output></label>
+            <input id="s3Pt" type="range" min="-10" max="40" step="1" value="20" />
+          </div>
+          <div class="two-controls">
+            <div class="control">
+              <label for="s3Gt">Tx gain <output id="s3GtVal"></output></label>
+              <input id="s3Gt" type="range" min="0" max="15" step="1" value="10" />
+            </div>
+            <div class="control">
+              <label for="s3Gr">Rx gain <output id="s3GrVal"></output></label>
+              <input id="s3Gr" type="range" min="0" max="15" step="1" value="10" />
+            </div>
+          </div>
+          <button class="secondary-button" id="reset3">Reset this experiment</button>
+        </section>
+
+        <section class="visual-card">
+          <h3>Effective aperture and EIRP</h3>
+          <canvas id="apertureCanvas" aria-label="Effective aperture and EIRP illustration"></canvas>
+          <p class="caption">Circle area is proportional to effective aperture. The bar shows EIRP.</p>
+        </section>
+      </div>
+
+      <div class="results">
+        <div class="result-card"><div class="result-name">Tx antenna equivalent aperture</div><div class="result-value" id="s3AeT"></div><div class="result-sub">by reciprocity</div></div>
+        <div class="result-card"><div class="result-name">Rx effective aperture</div><div class="result-value" id="s3AeR"></div><div class="result-sub">A<sub>e,max</sub></div></div>
+        <div class="result-card"><div class="result-name">EIRP</div><div class="result-value" id="s3Eirp"></div><div class="result-sub">equivalent isotropic radiated power</div></div>
+      </div>
+
+      <div class="prompt"><strong>Try this:</strong> Increase gain by 3 dB: circle area doubles. Increase frequency at fixed gain: aperture shrinks.</div>
+    </article>
+
+    <!-- STEP 4 -->
+    <article class="lesson" data-lesson="3">
+      <span class="topic-label">Step 4 of 4</span>
+      <h2>Free-space path loss and the link budget</h2>
+      <p class="lead">Change distance and frequency to explore FSPL, then adjust gains and losses to complete the link budget.</p>
+
+      <div class="equation">
+        FSPL = (4πd/λ)<sup>2</sup>
+        <span class="secondary">FSPL<sub>dB</sub> = 20log<sub>10</sub>(4πd/λ)</span>
+      </div>
+
+      <div class="workspace">
+        <section class="controls-card">
+          <h3>Explore path loss</h3>
+          <div class="control">
+            <label for="s4D">Selected distance <output id="s4DVal"></output></label>
+            <input id="s4D" type="range" min="0" max="4" step="0.001" value="1" />
+            <div class="hint">1 m–10 km (log scale)</div>
+          </div>
+          <div class="control">
+            <label for="s4F">Frequency <output id="s4FVal"></output></label>
+            <input id="s4F" type="range" min="8" max="11" step="0.0001" value="9.3802" />
+          </div>
+          <div class="control">
+            <label for="s4Pt">Transmit power <output id="s4PtVal"></output></label>
+            <input id="s4Pt" type="range" min="-10" max="40" step="1" value="20" />
+          </div>
+          <div class="two-controls">
+            <div class="control">
+              <label for="s4Gt">Tx gain <output id="s4GtVal"></output></label>
+              <input id="s4Gt" type="range" min="0" max="30" step="1" value="2" />
+            </div>
+            <div class="control">
+              <label for="s4Gr">Rx gain <output id="s4GrVal"></output></label>
+              <input id="s4Gr" type="range" min="0" max="30" step="1" value="2" />
+            </div>
+          </div>
+          <div class="control">
+            <label for="s4Loss">Additional loss <output id="s4LossVal"></output></label>
+            <input id="s4Loss" type="range" min="0" max="15" step="0.5" value="2" />
+            <div class="hint">These controls change received power, not the FSPL curve.</div>
+          </div>
+          <button class="secondary-button" id="reset4">Reset this experiment</button>
+        </section>
+
+        <section class="visual-card">
+          <h3>Illustration: FSPL versus distance</h3>
+          <canvas id="fsplCanvas" aria-label="Free-space path loss versus distance plot"></canvas>
+          <p class="caption">A 10× increase in distance or frequency adds 20 dB of FSPL.</p>
+        </section>
+      </div>
+
+      <div class="results">
+        <div class="result-card"><div class="result-name">FSPL</div><div class="result-value" id="s4Fspl"></div><div class="result-sub">propagation only</div></div>
+        <div class="result-card"><div class="result-name">Free-space propagation gain</div><div class="result-value" id="s4PathGain"></div><div class="result-sub">−FSPL<sub>dB</sub></div></div>
+        <div class="result-card"><div class="result-name">Received power</div><div class="result-value" id="s4Pr"></div><div class="result-sub">full link budget</div></div>
+      </div>
+
+      <div class="synthesis-card">
+        <h3>Current link budget</h3>
+        <p class="budget-line" id="s4BudgetLine" aria-live="polite"></p>
+      </div>
+
+      <div class="prompt"><strong>Observe:</strong> FSPL depends on distance and frequency. Gains and additional losses affect received power, not FSPL.</div>
+    </article>
+
+    <div class="navigation">
+      <button id="prevButton" class="nav-button" disabled>Previous</button>
+      <button id="nextButton" class="nav-button primary">Next topic</button>
+    </div>
+  </section>
+</main>
+
+<script>
+'use strict';
+
+const C = 299792458;
+const STEP_COUNT = document.querySelectorAll('.lesson').length;
+const LAST_STEP = STEP_COUNT - 1;
+let activeStep = 0;
+
+const $ = id => document.getElementById(id);
+const dbToLin = db => Math.pow(10, db / 10);
+
+function fmtDistance(x) {
+  if (!Number.isFinite(x)) return '—';
+  if (x >= 1000) return `${trim(x / 1000, 3)} km`;
+  if (x >= 1) return `${trim(x, 3)} m`;
+  if (x >= 1e-2) return `${trim(x * 100, 3)} cm`;
+  if (x >= 1e-3) return `${trim(x * 1000, 3)} mm`;
+  return `${trim(x * 1e6, 3)} µm`;
+}
+
+function fmtFrequency(x) {
+  if (x >= 1e12) return `${trim(x / 1e12, 3)} THz`;
+  if (x >= 1e9) return `${trim(x / 1e9, 3)} GHz`;
+  if (x >= 1e6) return `${trim(x / 1e6, 3)} MHz`;
+  return `${trim(x, 1)} Hz`;
+}
+
+function fmtArea(x) {
+  if (!Number.isFinite(x)) return '—';
+  if (x >= 1) return `${trim(x, 3)} m²`;
+  if (x >= 1e-4) return `${trim(x * 1e4, 3)} cm²`;
+  if (x >= 1e-6) return `${trim(x * 1e6, 3)} mm²`;
+  return `${x.toExponential(2)} m²`;
+}
+
+function fmtMilliwattFromDbm(dbm) {
+  const mw = Math.pow(10, dbm / 10);
+  if (mw >= 1) return `${trim(mw, 4)} mW`;
+  if (mw >= 1e-3) return `${trim(mw * 1e3, 4)} µW`;
+  if (mw >= 1e-6) return `${trim(mw * 1e6, 4)} nW`;
+  if (mw >= 1e-9) return `${trim(mw * 1e9, 4)} pW`;
+  if (mw >= 1e-12) return `${trim(mw * 1e12, 4)} fW`;
+  if (mw >= 1e-15) return `${trim(mw * 1e15, 4)} aW`;
+  if (mw >= 1e-18) return `${trim(mw * 1e18, 4)} zW`;
+  return `${(mw * 1e-3).toExponential(2)} W`;
+}
+
+function fmtRatio(x) {
+  if (!Number.isFinite(x)) return '—';
+  if (x >= 1e4 || (x > 0 && x < 1e-3)) return `${x.toExponential(2)}×`;
+  if (x >= 100) return `${trim(x, 1)}×`;
+  return `${trim(x, 2)}×`;
+}
+
+function trim(x, digits = 2) {
+  return Number(x.toFixed(digits)).toString();
+}
+
+function resizeCanvas(canvas) {
+  const ratio = window.devicePixelRatio || 1;
+  const rect = canvas.getBoundingClientRect();
+  canvas.width = Math.max(320, Math.round(rect.width * ratio));
+  canvas.height = Math.max(250, Math.round(rect.height * ratio));
+  const ctx = canvas.getContext('2d');
+  ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+  return { ctx, width: rect.width, height: rect.height };
+}
+
+function roundedRect(ctx, x, y, w, h, r) {
+  const radius = Math.max(0, Math.min(r, Math.abs(w) / 2, Math.abs(h) / 2));
+  ctx.beginPath();
+  if (typeof ctx.roundRect === 'function') {
+    ctx.roundRect(x, y, w, h, radius);
+    return;
+  }
+  ctx.moveTo(x + radius, y);
+  ctx.lineTo(x + w - radius, y);
+  ctx.quadraticCurveTo(x + w, y, x + w, y + radius);
+  ctx.lineTo(x + w, y + h - radius);
+  ctx.quadraticCurveTo(x + w, y + h, x + w - radius, y + h);
+  ctx.lineTo(x + radius, y + h);
+  ctx.quadraticCurveTo(x, y + h, x, y + h - radius);
+  ctx.lineTo(x, y + radius);
+  ctx.quadraticCurveTo(x, y, x + radius, y);
+  ctx.closePath();
+}
+
+function friisValues() {
+  const pt = Number($('s1Pt').value);
+  const d = Math.pow(10, Number($('s1D').value));
+  const f = Math.pow(10, Number($('s1F').value));
+  const gt = Number($('s1Gt').value);
+  const gr = Number($('s1Gr').value);
+  const loss = Number($('s1Loss').value);
+  const lambda = C / f;
+  const fspl = 20 * Math.log10(4 * Math.PI * d / lambda);
+  const pr = pt + gt + gr - fspl - loss;
+  return { pt, d, f, gt, gr, loss, lambda, fspl, pr };
+}
+
+function drawFriis() {
+  const v = friisValues();
+  $('s1PtVal').textContent = `${v.pt} dBm`;
+  $('s1DVal').textContent = fmtDistance(v.d);
+  $('s1FVal').textContent = fmtFrequency(v.f);
+  $('s1GtVal').textContent = `${v.gt} dBi`;
+  $('s1GrVal').textContent = `${v.gr} dBi`;
+  $('s1LossVal').textContent = `${v.loss.toFixed(1)} dB`;
+  $('s1Lambda').textContent = fmtDistance(v.lambda);
+  $('s1Fspl').textContent = `${v.fspl.toFixed(2)} dB`;
+  $('s1Pr').textContent = `${v.pr.toFixed(2)} dBm`;
+  $('s1PrLinear').textContent = fmtMilliwattFromDbm(v.pr);
+
+  const { ctx, width: W, height: H } = resizeCanvas($('friisCanvas'));
+  ctx.clearRect(0, 0, W, H);
+
+  const txX = 72;
+  const rxX = W - 72;
+  const midY = H * 0.56;
+  const spread = Math.min(H * 0.33, 55 + 28 * Math.log10(Math.max(v.d, 1)));
+
+  ctx.strokeStyle = '#cbd5e1';
+  ctx.setLineDash([6, 6]);
+  ctx.beginPath();
+  ctx.moveTo(txX + 28, midY);
+  ctx.lineTo(rxX - 28, midY);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  const grad = ctx.createLinearGradient(txX, 0, rxX, 0);
+  grad.addColorStop(0, 'rgba(36,87,214,0.45)');
+  grad.addColorStop(1, 'rgba(36,87,214,0.05)');
+  ctx.fillStyle = grad;
+  ctx.beginPath();
+  ctx.moveTo(txX + 18, midY);
+  ctx.lineTo(rxX - 24, midY - spread);
+  ctx.lineTo(rxX - 24, midY + spread);
+  ctx.closePath();
+  ctx.fill();
+
+  ctx.fillStyle = '#1947aa';
+  roundedRect(ctx, txX - 30, midY - 42, 60, 84, 12);
+  ctx.fill();
+  ctx.fillStyle = 'white';
+  ctx.textAlign = 'center';
+  ctx.font = '700 15px system-ui';
+  ctx.fillText('Tx', txX, midY - 6);
+  ctx.font = '12px system-ui';
+  ctx.fillText(`${v.pt} dBm`, txX, midY + 17);
+
+  const rxStrength = Math.max(0.18, Math.min(1, (v.pr + 120) / 100));
+  ctx.fillStyle = `rgba(6,118,71,${0.25 + 0.75 * rxStrength})`;
+  roundedRect(ctx, rxX - 30, midY - 42, 60, 84, 12);
+  ctx.fill();
+  ctx.fillStyle = 'white';
+  ctx.font = '700 15px system-ui';
+  ctx.fillText('Rx', rxX, midY - 6);
+  ctx.font = '12px system-ui';
+  ctx.fillText(`${v.pr.toFixed(1)} dBm`, rxX, midY + 17);
+
+  ctx.fillStyle = '#344054';
+  ctx.font = '13px system-ui';
+  ctx.fillText(fmtDistance(v.d), W / 2, midY - 13);
+  ctx.fillText(`FSPL = ${v.fspl.toFixed(1)} dB`, W / 2, H - 26);
+
+  ctx.textAlign = 'left';
+  ctx.fillStyle = '#667085';
+  ctx.font = '12px system-ui';
+  ctx.fillText(`Gt = ${v.gt} dBi`, 22, 27);
+  ctx.textAlign = 'right';
+  ctx.fillText(`Gr = ${v.gr} dBi`, W - 22, 27);
+}
+
+function farFieldValues() {
+  const d = Math.pow(10, Number($('s2D').value));
+  const f = Math.pow(10, Number($('s2F').value));
+  const D = Math.pow(10, Number($('s2Size').value));
+  const lambda = C / f;
+  const phaseScale = 2 * D * D / lambda;
+  const reactiveScale = lambda / (2 * Math.PI);
+  const sizeScale = D;
+  const phaseRatio = d / phaseScale;
+  const reactiveRatio = d / reactiveScale;
+  const sizeRatio = d / sizeScale;
+  const controllingScale = Math.max(phaseScale, reactiveScale, sizeScale);
+  const teachingMargin = d / controllingScale;
+  return {
+    d, f, D, lambda, phaseScale, reactiveScale, sizeScale,
+    phaseRatio, reactiveRatio, sizeRatio, teachingMargin, controllingScale
+  };
+}
+
+function drawFarField() {
+  const v = farFieldValues();
+  $('s2DVal').textContent = fmtDistance(v.d);
+  $('s2FVal').textContent = fmtFrequency(v.f);
+  $('s2SizeVal').textContent = fmtDistance(v.D);
+  $('s2Df').textContent = fmtDistance(v.phaseScale);
+  $('s2Reactive').textContent = fmtDistance(v.reactiveScale);
+  $('s2Ratio').textContent = fmtRatio(v.teachingMargin);
+
+  const notice = $('s2Notice');
+  const largestReference = v.controllingScale;
+  const largestLabel = largestReference === v.phaseScale
+    ? '2D²/λ'
+    : largestReference === v.reactiveScale
+      ? 'λ/(2π)'
+      : 'D';
+  if (v.teachingMargin < 1) {
+    notice.className = 'notice bad';
+    notice.innerHTML = `<strong>Move the receiver farther away.</strong> d is smaller than the largest reference distance: ${largestLabel} = ${fmtDistance(largestReference)}.`;
+  } else if (v.teachingMargin < 10) {
+    notice.className = 'notice warn';
+    notice.innerHTML = '<strong>Receiver is beyond all three reference distances.</strong> The transition to the far field is gradual, not a sharp boundary.';
+  } else {
+    notice.className = 'notice good';
+    notice.innerHTML = '<strong>Receiver is well beyond all three reference distances.</strong> Friis is suitable if the other free-space assumptions also hold.';
+  }
+
+  const { ctx, width: W, height: H } = resizeCanvas($('farFieldCanvas'));
+  ctx.clearRect(0, 0, W, H);
+
+  const left = 72;
+  const right = W - 44;
+  const top = 55;
+  const bottom = H - 70;
+  const y = H * 0.56;
+  const logMin = -3;
+  const logMax = 3;
+  const rawXMap = x => left + (Math.log10(Math.max(x, 1e-12)) - logMin) / (logMax - logMin) * (right - left);
+  const clampX = x => Math.max(left, Math.min(right, x));
+  const rxX = clampX(rawXMap(v.d));
+
+  ctx.fillStyle = '#f8fafc';
+  ctx.fillRect(left, top, right - left, bottom - top);
+  ctx.textAlign = 'center';
+
+  ctx.strokeStyle = '#98a2b3';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(left, y);
+  ctx.lineTo(right, y);
+  ctx.stroke();
+
+  const ticks = [1e-3, 1e-2, 1e-1, 1, 10, 100, 1e3];
+  ctx.fillStyle = '#667085';
+  ctx.strokeStyle = '#d0d5dd';
+  ctx.lineWidth = 1;
+  ctx.font = '10px system-ui';
+  ticks.forEach(tick => {
+    const x = rawXMap(tick);
+    ctx.beginPath();
+    ctx.moveTo(x, bottom);
+    ctx.lineTo(x, bottom + 6);
+    ctx.stroke();
+    ctx.fillText(fmtDistance(tick), x, bottom + 20);
+  });
+
+  const markers = [
+    { value: v.phaseScale, label: '2D²/λ', color: '#7f56d9', labelY: top + 47 },
+    { value: v.reactiveScale, label: 'λ/(2π)', color: '#d97706', labelY: top + 64 },
+    { value: v.sizeScale, label: 'D', color: '#475467', labelY: top + 81 }
+  ];
+  markers.forEach(marker => {
+    const raw = rawXMap(marker.value);
+    const x = clampX(raw);
+    ctx.strokeStyle = marker.color;
+    ctx.setLineDash([6, 5]);
+    ctx.beginPath();
+    ctx.moveTo(x, top + 34);
+    ctx.lineTo(x, bottom + 2);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = marker.color;
+    ctx.font = '700 11px system-ui';
+    const suffix = raw < left ? ' ←' : raw > right ? ' →' : '';
+    const labelX = Math.max(left + 30, Math.min(right - 30, x));
+    ctx.fillText(`${marker.label}${suffix}`, labelX, marker.labelY);
+  });
+
+  ctx.fillStyle = '#1947aa';
+  roundedRect(ctx, left - 23, y - 39, 46, 78, 10);
+  ctx.fill();
+  ctx.fillStyle = 'white';
+  ctx.font = '700 14px system-ui';
+  ctx.fillText('Tx', left, y + 5);
+
+  ctx.fillStyle = v.teachingMargin >= 10 ? '#067647' : v.teachingMargin >= 1 ? '#b54708' : '#b42318';
+  ctx.beginPath();
+  ctx.arc(rxX, y, 14, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = '#172033';
+  ctx.font = '700 13px system-ui';
+  ctx.fillText('Rx', rxX, y - 23);
+  ctx.font = '12px system-ui';
+  const rxLabelX = Math.max(left + 42, Math.min(right - 42, rxX));
+  ctx.fillText(`d = ${fmtDistance(v.d)}`, rxLabelX, y + 36);
+
+  ctx.fillStyle = '#667085';
+  ctx.font = '11px system-ui';
+  ctx.fillText('distance d (log scale)', (left + right) / 2, H - 12);
+}
+
+function apertureValues() {
+  const f = Math.pow(10, Number($('s3F').value));
+  const pt = Number($('s3Pt').value);
+  const gt = Number($('s3Gt').value);
+  const gr = Number($('s3Gr').value);
+  const lambda = C / f;
+  const aeT = dbToLin(gt) * lambda * lambda / (4 * Math.PI);
+  const aeR = dbToLin(gr) * lambda * lambda / (4 * Math.PI);
+  const eirp = pt + gt;
+  return { f, pt, gt, gr, lambda, aeT, aeR, eirp };
+}
+
+function drawAperture() {
+  const v = apertureValues();
+  $('s3FVal').textContent = fmtFrequency(v.f);
+  $('s3PtVal').textContent = `${v.pt} dBm`;
+  $('s3GtVal').textContent = `${v.gt} dBi`;
+  $('s3GrVal').textContent = `${v.gr} dBi`;
+  $('s3AeT').textContent = fmtArea(v.aeT);
+  $('s3AeR').textContent = fmtArea(v.aeR);
+  $('s3Eirp').textContent = `${v.eirp.toFixed(1)} dBm`;
+
+  const { ctx, width: W, height: H } = resizeCanvas($('apertureCanvas'));
+  ctx.clearRect(0, 0, W, H);
+
+  // One fixed area scale for the full Step 3 slider domain.
+  // Radius is proportional to sqrt(area), so drawn circle area is proportional to Ae.
+  const fMin = 1e9;
+  const gainMaxDb = 15;
+  const lambdaMax = C / fMin;
+  const maxAllowedArea = dbToLin(gainMaxDb) * lambdaMax * lambdaMax / (4 * Math.PI);
+  const maxRadius = Math.min(82, W * 0.18, H * 0.23);
+  const radius = area => maxRadius * Math.sqrt(Math.max(0, area) / maxAllowedArea);
+  const txR = radius(v.aeT);
+  const rxR = radius(v.aeR);
+  const y = H * 0.43;
+  const txX = W * 0.28;
+  const rxX = W * 0.72;
+
+  ctx.fillStyle = 'rgba(36,87,214,0.17)';
+  ctx.strokeStyle = '#2457d6';
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.arc(txX, y, Math.max(txR, 0.7), 0, Math.PI * 2);
+  ctx.fill();
+  ctx.stroke();
+
+  ctx.fillStyle = 'rgba(6,118,71,0.17)';
+  ctx.strokeStyle = '#067647';
+  ctx.beginPath();
+  ctx.arc(rxX, y, Math.max(rxR, 0.7), 0, Math.PI * 2);
+  ctx.fill();
+  ctx.stroke();
+
+  ctx.fillStyle = '#172033';
+  ctx.textAlign = 'center';
+  ctx.font = '700 13px system-ui';
+  ctx.fillText('Equivalent receive aperture', txX, 27);
+  ctx.fillText('of Tx antenna', txX, 45);
+  ctx.fillText('Maximum Rx', rxX, 27);
+  ctx.fillText('effective aperture', rxX, 45);
+  ctx.font = '12px system-ui';
+  const valueY = y + maxRadius + 18;
+  ctx.fillText(fmtArea(v.aeT), txX, valueY);
+  ctx.fillText(fmtArea(v.aeR), rxX, valueY);
+
+  const barLeft = W * 0.18;
+  const barRight = W * 0.82;
+  const barY = H - 55;
+  const eirpMin = Number($('s3Pt').min) + Number($('s3Gt').min);
+  const eirpMax = Number($('s3Pt').max) + Number($('s3Gt').max);
+  const eirpFraction = Math.max(0, Math.min(1, (v.eirp - eirpMin) / (eirpMax - eirpMin)));
+  ctx.lineCap = 'round';
+  ctx.strokeStyle = '#e4e7ec';
+  ctx.lineWidth = 12;
+  ctx.beginPath();
+  ctx.moveTo(barLeft, barY);
+  ctx.lineTo(barRight, barY);
+  ctx.stroke();
+  ctx.strokeStyle = '#7f56d9';
+  ctx.beginPath();
+  ctx.moveTo(barLeft, barY);
+  ctx.lineTo(barLeft + (barRight - barLeft) * eirpFraction, barY);
+  ctx.stroke();
+  ctx.lineCap = 'butt';
+
+  ctx.fillStyle = '#6941c6';
+  ctx.font = '700 13px system-ui';
+  ctx.fillText(`EIRP indicator: ${v.eirp.toFixed(1)} dBm`, W / 2, barY - 16);
+  ctx.fillStyle = '#667085';
+  ctx.font = '11px system-ui';
+  ctx.textAlign = 'left';
+  ctx.fillText(`${eirpMin} dBm`, barLeft, barY + 24);
+  ctx.textAlign = 'right';
+  ctx.fillText(`${eirpMax} dBm`, barRight, barY + 24);
+}
+
+function linkBudgetValues() {
+  const d = Math.pow(10, Number($('s4D').value));
+  const f = Math.pow(10, Number($('s4F').value));
+  const pt = Number($('s4Pt').value);
+  const gt = Number($('s4Gt').value);
+  const gr = Number($('s4Gr').value);
+  const loss = Number($('s4Loss').value);
+  const lambda = C / f;
+  const fspl = 20 * Math.log10(4 * Math.PI * d / lambda);
+  const pr = pt + gt + gr - fspl - loss;
+  return { d, f, pt, gt, gr, loss, lambda, fspl, pr };
+}
+
+function niceRange(min, max) {
+  const span = Math.max(max - min, 1);
+  return [min - 0.08 * span, max + 0.08 * span];
+}
+
+function drawFspl() {
+  const v = linkBudgetValues();
+  $('s4DVal').textContent = fmtDistance(v.d);
+  $('s4FVal').textContent = fmtFrequency(v.f);
+  $('s4PtVal').textContent = `${v.pt} dBm`;
+  $('s4GtVal').textContent = `${v.gt} dBi`;
+  $('s4GrVal').textContent = `${v.gr} dBi`;
+  $('s4LossVal').textContent = `${v.loss.toFixed(1)} dB`;
+  $('s4Fspl').textContent = `${v.fspl.toFixed(2)} dB`;
+  $('s4PathGain').textContent = `${(-v.fspl).toFixed(2)} dB`;
+  $('s4Pr').textContent = `${v.pr.toFixed(2)} dBm`;
+  $('s4BudgetLine').textContent = `Pᵣ = ${v.pt.toFixed(1)} + ${v.gt.toFixed(1)} + ${v.gr.toFixed(1)} − ${v.fspl.toFixed(2)} − ${v.loss.toFixed(1)} = ${v.pr.toFixed(2)} dBm`;
+
+  const canvas = $('fsplCanvas');
+  const { ctx, width: W, height: H } = resizeCanvas(canvas);
+  ctx.clearRect(0, 0, W, H);
+
+  const margin = { left: 60, right: 22, top: 22, bottom: 62 };
+  const xLogMin = 0;
+  const xLogMax = 4;
+  const sampleCount = 220;
+  const xs = Array.from({ length: sampleCount }, (_, i) => Math.pow(10, xLogMin + (xLogMax - xLogMin) * i / (sampleCount - 1)));
+  const ys = xs.map(d => 20 * Math.log10(4 * Math.PI * d / v.lambda));
+  const [yMin, yMax] = niceRange(Math.min(...ys), Math.max(...ys));
+  const xMap = d => margin.left + (Math.log10(d) - xLogMin) / (xLogMax - xLogMin) * (W - margin.left - margin.right);
+  const yMap = y => H - margin.bottom - (y - yMin) / (yMax - yMin) * (H - margin.top - margin.bottom);
+
+  ctx.font = '12px system-ui';
+  ctx.fillStyle = '#667085';
+  ctx.strokeStyle = '#e4e7ec';
+  ctx.lineWidth = 1;
+  ctx.textAlign = 'right';
+  for (let i = 0; i <= 5; i++) {
+    const y = yMin + i * (yMax - yMin) / 5;
+    ctx.beginPath();
+    ctx.moveTo(margin.left, yMap(y));
+    ctx.lineTo(W - margin.right, yMap(y));
+    ctx.stroke();
+    ctx.fillText(y.toFixed(0), margin.left - 8, yMap(y) + 4);
+  }
+  ctx.textAlign = 'center';
+  const xTicks = Array.from({ length: xLogMax - xLogMin + 1 }, (_, i) => Math.pow(10, xLogMin + i));
+  xTicks.forEach(d => {
+    ctx.beginPath();
+    ctx.moveTo(xMap(d), margin.top);
+    ctx.lineTo(xMap(d), H - margin.bottom);
+    ctx.stroke();
+    ctx.fillText(fmtDistance(d), xMap(d), H - 35);
+  });
+  ctx.fillStyle = '#475467';
+  ctx.font = '12px system-ui';
+  ctx.fillText('distance d (log scale)', (margin.left + W - margin.right) / 2, H - 10);
+
+  ctx.strokeStyle = '#172033';
+  ctx.lineWidth = 1.3;
+  ctx.beginPath();
+  ctx.moveTo(margin.left, margin.top);
+  ctx.lineTo(margin.left, H - margin.bottom);
+  ctx.lineTo(W - margin.right, H - margin.bottom);
+  ctx.stroke();
+
+  ctx.strokeStyle = '#2457d6';
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ys.forEach((y, i) => {
+    const px = xMap(xs[i]);
+    const py = yMap(y);
+    if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+  });
+  ctx.stroke();
+
+  const markerX = xMap(v.d);
+  const markerY = yMap(v.fspl);
+  ctx.fillStyle = '#b42318';
+  ctx.beginPath();
+  ctx.arc(markerX, markerY, 6, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = '#172033';
+  ctx.font = '700 12px system-ui';
+  ctx.fillText(`${v.fspl.toFixed(1)} dB`, markerX, markerY - 13);
+
+  ctx.save();
+  ctx.translate(17, H / 2 + 35);
+  ctx.rotate(-Math.PI / 2);
+  ctx.font = '13px system-ui';
+  ctx.fillText('FSPL [dB]', 0, 0);
+  ctx.restore();
+}
+
+function showStep(index) {
+  activeStep = Math.max(0, Math.min(LAST_STEP, index));
+  document.querySelectorAll('.lesson').forEach((node, i) => node.classList.toggle('active', i === activeStep));
+  document.querySelectorAll('.step-button').forEach((node, i) => {
+    const isActive = i === activeStep;
+    node.classList.toggle('active', isActive);
+    node.setAttribute('aria-current', isActive ? 'step' : 'false');
+  });
+  $('prevButton').disabled = activeStep === 0;
+  $('nextButton').disabled = activeStep === LAST_STEP;
+  $('nextButton').textContent = activeStep === LAST_STEP ? 'Completed' : 'Next topic';
+
+  requestAnimationFrame(() => {
+    if (activeStep === 0) drawFriis();
+    if (activeStep === 1) drawFarField();
+    if (activeStep === 2) drawAperture();
+    if (activeStep === 3) drawFspl();
+  });
+}
+
+function bindInputs(ids, draw) {
+  ids.forEach(id => $(id).addEventListener('input', draw));
+}
+
+bindInputs(['s1Pt', 's1D', 's1F', 's1Gt', 's1Gr', 's1Loss'], drawFriis);
+bindInputs(['s2D', 's2F', 's2Size'], drawFarField);
+bindInputs(['s3F', 's3Pt', 's3Gt', 's3Gr'], drawAperture);
+bindInputs(['s4D', 's4F', 's4Pt', 's4Gt', 's4Gr', 's4Loss'], drawFspl);
+
+$('reset1').addEventListener('click', () => {
+  $('s1Pt').value = 20; $('s1D').value = 1; $('s1F').value = 9.3802;
+  $('s1Gt').value = 2; $('s1Gr').value = 2; $('s1Loss').value = 2;
+  drawFriis();
+});
+$('reset2').addEventListener('click', () => {
+  $('s2D').value = 1; $('s2F').value = 9.3802; $('s2Size').value = -1.09691;
+  drawFarField();
+});
+$('reset3').addEventListener('click', () => {
+  $('s3F').value = 9.3802; $('s3Pt').value = 20; $('s3Gt').value = 10; $('s3Gr').value = 10;
+  drawAperture();
+});
+$('reset4').addEventListener('click', () => {
+  $('s4D').value = 1; $('s4F').value = 9.3802; $('s4Pt').value = 20;
+  $('s4Gt').value = 2; $('s4Gr').value = 2; $('s4Loss').value = 2;
+  drawFspl();
+});
+
+document.querySelectorAll('.step-button').forEach(button => {
+  button.addEventListener('click', () => showStep(Number(button.dataset.step)));
+});
+$('prevButton').addEventListener('click', () => showStep(activeStep - 1));
+$('nextButton').addEventListener('click', () => showStep(activeStep + 1));
+window.addEventListener('resize', () => showStep(activeStep));
+
+showStep(0);
+</script>
+</body>
+</html>
