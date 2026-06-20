@@ -39,6 +39,8 @@
   .chart-title { font-size:.72rem; letter-spacing:.08em; text-transform:uppercase; color:var(--muted);
     margin-bottom:.5rem; display:flex; justify-content:space-between; align-items:center; gap:1rem; }
   canvas { display:block; width:100%; }
+  #wave-canvas { height:175px; }
+  #hist-canvas { height:135px; }
   .legend { display:flex; gap:1rem; flex-wrap:wrap; margin:.7rem 0 1rem; font-size:.75rem; color:var(--muted); }
   .legend span { display:flex; align-items:center; gap:5px; }
   .dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
@@ -85,10 +87,12 @@
     <div class="ctrl">
       <label>Bandwidth <strong id="bw-val">1 MHz</strong></label>
       <input type="range" id="bw-slider" min="3" max="80" value="60" step="1">
+      <div style="font-size:.7rem;color:var(--muted);margin-top:.3rem">sets noise floor (−174 + 10log₁₀B) and noise bandwidth</div>
     </div>
     <div class="ctrl">
-      <label>Signal frequency <strong id="freq-val">3 Hz</strong></label>
+      <label>Signal frequency <strong id="freq-val">3 cycles</strong></label>
       <input type="range" id="freq-slider" min="1" max="8" value="3" step="1">
+      <div style="font-size:.7rem;color:var(--muted);margin-top:.3rem">cycles visible in the window (normalised time)</div>
     </div>
     <div class="ctrl">
       <label>Samples <strong id="ns-val">240</strong></label>
@@ -104,23 +108,23 @@
       <span>Time-domain received waveform</span>
       <span id="mode-hint"></span>
     </div>
-    <canvas id="wave-canvas" height="175"></canvas>
+    <canvas id="wave-canvas"></canvas>
   </div>
   <div class="chart-wrap">
     <div class="chart-title">
       <span>AWGN amplitude distribution</span>
       <span>mean ≈ 0, variance = σ²</span>
     </div>
-    <canvas id="hist-canvas" height="135"></canvas>
+    <canvas id="hist-canvas"></canvas>
   </div>
 </div>
 
 <div class="legend">
   <span><span class="dot" style="background:var(--signal)"></span> Transmitted signal x(t)</span>
-  <span><span class="dot" style="background:var(--multipath)"></span> After simple multipath h(t)*x(t)</span>
-  <span><span class="dot" style="background:var(--noise)"></span> AWGN n(t) ~ N(0,σ²)</span>
+  <span id="legend-multipath" style="display:none"><span class="dot" style="background:var(--multipath)"></span> After simple multipath: 0.86·x(t) + 0.38·x(t−τ)</span>
   <span><span class="dot" style="background:var(--received)"></span> Received y(t)</span>
-  <span><span class="dot" style="background:var(--gauss);border-radius:2px"></span> Gaussian PDF</span>
+  <span><span class="dot" style="background:rgba(232,93,36,.55);border-radius:2px"></span> Noise samples n(t)</span>
+  <span><span class="dot" style="background:var(--gauss);border-radius:2px"></span> Gaussian PDF  N(0, σ²)</span>
 </div>
 
 <div class="stats-row">
@@ -134,6 +138,7 @@
   <div class="gauge-head"><strong id="condition-label">—</strong><span>SNR (in dB) = Received Power (dBm) − Noise Power (dBm)</span></div>
   <div class="gauge-bar"><div class="needle" id="needle"></div></div>
   <div class="gauge-labels"><span>Poor</span><span>Marginal</span><span>Good</span><span>Excellent</span></div>
+  <div style="font-size:.7rem;color:var(--muted);margin-top:.45rem">These thresholds are illustrative only. Required SNR depends strongly on modulation order and target BER — e.g. 5 dB suffices for BPSK but is far below the minimum for 64-QAM.</div>
 <div style="margin-top:.6rem;font-size:.78rem;color:var(--muted);line-height:1.5">
 <strong>SNR is a power ratio.</strong><br>
 Linear: SNR = P<sub>r</sub> / P<sub>n</sub><br>
@@ -172,8 +177,9 @@ function randn(){
 }
 function resizeCanvas(canvas){
   const dpr = Math.min(window.devicePixelRatio || 1, 3);
-  const cssW = Math.max(1, canvas.offsetWidth || canvas.parentElement.offsetWidth || 600);
-  const cssH = Math.max(1, canvas.offsetHeight || parseInt(canvas.getAttribute('height'),10) || 140);
+  const rect = canvas.getBoundingClientRect();
+  const cssW = Math.max(1, rect.width);
+  const cssH = Math.max(1, rect.height);
   const backW = Math.min(Math.round(cssW*dpr), MAX_CANVAS_PX);
   const backH = Math.min(Math.round(cssH*dpr), MAX_CANVAS_PX);
   if(canvas.width !== backW || canvas.height !== backH){ canvas.width = backW; canvas.height = backH; }
@@ -217,42 +223,84 @@ function draw(){
   const chan = new Float32Array(st.nSamps);
   const noise = new Float32Array(st.nSamps);
   const recv = new Float32Array(st.nSamps);
+
+  // Generate white Gaussian noise samples
+  const rawNoise = new Float32Array(st.nSamps);
+  for(let i=0;i<st.nSamps;i++) rawNoise[i] = randn()*sigma;
+
+  // Band-limit noise with a moving-average filter.
+  // Tap count: at max BW (slider=80) → 1 tap (white); at min BW (slider=3) → ~30 taps (narrow-band).
+  // bwHz ranges from 10^0.3 ≈ 2 Hz to 10^8.0; we work with the slider value directly for visual scaling.
+  const bwSlider = Number(document.getElementById('bw-slider').value); // 3..80
+  const taps = Math.max(1, Math.round((81 - bwSlider) * 0.4)); // 1 at bw=80, ~31 at bw=3
+  const scale = 1 / Math.sqrt(taps); // preserve approximate noise power
+  for(let i=0;i<st.nSamps;i++){
+    let acc=0;
+    for(let k=0;k<taps;k++){
+      const idx = i-k;
+      if(idx >= 0) acc += rawNoise[idx];
+    }
+    noise[i] = acc/taps/scale;
+  }
+
+  const delayS = Math.round(st.nSamps/(st.freq*10)); // delay in samples ≈ T/10 per cycle
   for(let i=0;i<st.nSamps;i++){
     const t = i/st.nSamps;
     const x = Math.sin(2*Math.PI*st.freq*t);
-    const delayedIdx = Math.max(0, i - Math.round(st.nSamps/(st.freq*10)));
-    const delayed = i === 0 ? 0 : clean[delayedIdx] || 0;
+    const delayedIdx = i - delayS;
+    const delayed = delayedIdx >= 0 ? clean[delayedIdx] : 0; // zero-pad, not clamp
     clean[i] = x;
     chan[i] = st.useMultipath ? 0.86*x + 0.38*delayed : x;
-    noise[i] = randn()*sigma;
     recv[i] = chan[i] + noise[i];
   }
-  drawWave(clean, chan, noise, recv, st, sigma);
+  drawWave(clean, chan, noise, recv, st, sigma, delayS);
   drawHist(noise, sigma);
-  updateStats(st, sigma);
+  updateStats(st, sigma, delayS);
 }
-function drawWave(clean, chan, noise, recv, st, sigma){
+function drawWave(clean, chan, noise, recv, st, sigma, delayS){
   const {w,h} = resizeCanvas(waveCv); const ctx = waveCv.getContext('2d');
-  const padL=35, padR=12, padT=14, padB=22, plotW=w-padL-padR, plotH=h-padT-padB, mid=padT+plotH/2;
+  const padL=38, padR=14, padT=14, padB=30, plotW=w-padL-padR, plotH=h-padT-padB, mid=padT+plotH/2;
   const maxAbs = Math.max(1.4, Math.min(7, sigma*3 + 1.3));
   const yScale = v => mid - (v/maxAbs)*(plotH/2);
   const xScale = i => padL + (i/(recv.length-1))*plotW;
   ctx.clearRect(0,0,w,h);
+
+  // horizontal grid lines and y-axis labels
   ctx.strokeStyle='rgba(128,128,128,.22)'; ctx.lineWidth=.7;
   for(const v of [-1,0,1]){ const y=yScale(v); ctx.beginPath(); ctx.moveTo(padL,y); ctx.lineTo(padL+plotW,y); ctx.stroke(); }
   ctx.fillStyle='rgba(128,128,128,.8)'; ctx.font='10px system-ui,sans-serif'; ctx.textAlign='right';
   for(const v of [-1,0,1]) ctx.fillText(v.toString(), padL-5, yScale(v)+3);
+
+  // x-axis ticks and labels (normalised time)
+  ctx.fillStyle='rgba(128,128,128,.8)'; ctx.textAlign='center'; ctx.font='10px system-ui,sans-serif';
+  const xTicks = [0, 0.25, 0.5, 0.75, 1.0];
+  const axisY = padT + plotH;
+  ctx.strokeStyle='rgba(128,128,128,.4)'; ctx.lineWidth=.7;
+  for(const t of xTicks){
+    const x = padL + t*plotW;
+    ctx.beginPath(); ctx.moveTo(x, axisY); ctx.lineTo(x, axisY+4); ctx.stroke();
+    ctx.fillText(t.toFixed(2), x, axisY+13);
+  }
+  // x-axis label
+  ctx.fillStyle='rgba(128,128,128,.75)'; ctx.font='10px system-ui,sans-serif'; ctx.textAlign='center';
+  ctx.fillText('Normalised time  t/T', padL+plotW/2, h-4);
+
   function line(arr,color,alpha,lw,dash=[]){
     ctx.beginPath(); ctx.strokeStyle=color; ctx.globalAlpha=alpha; ctx.lineWidth=lw; ctx.setLineDash(dash);
     for(let i=0;i<arr.length;i++){ const x=xScale(i), y=Math.max(-2,Math.min(h+2,yScale(arr[i]))); i===0?ctx.moveTo(x,y):ctx.lineTo(x,y); }
     ctx.stroke(); ctx.globalAlpha=1; ctx.setLineDash([]);
   }
-  line(noise,'#e85d24',.45,1);
-  if(st.useMultipath) line(chan,'#f59e0b',.95,1.6,[5,4]);
+  if(st.useMultipath){
+    line(chan,'#f59e0b',.95,1.6,[5,4]);
+    // annotate multipath trace with its equation
+    ctx.save();
+    const tauNorm = (delayS / st.nSamps).toFixed(3);
+    ctx.font='10px system-ui,sans-serif'; ctx.fillStyle='#f59e0b'; ctx.globalAlpha=0.9; ctx.textAlign='left';
+    ctx.fillText(`0.86·x(t) + 0.38·x(t−τ),  τ = ${tauNorm} T`, padL+plotW*0.35, padT+10);
+    ctx.restore();
+  }
   line(recv,'#0e9f6e',.9,1.5);
   line(clean,'#1a6ef5',1,2.1);
-  ctx.fillStyle='rgba(128,128,128,.8)'; ctx.textAlign='center'; ctx.font='10px system-ui,sans-serif';
-  ctx.fillText('Time', padL+plotW/2, h-5);
 }
 function drawHist(noise, sigma){
   const {w,h} = resizeCanvas(histCv); const ctx = histCv.getContext('2d');
@@ -267,22 +315,28 @@ function drawHist(noise, sigma){
     const bh=counts[i]/maxC*plotH;
     ctx.fillStyle='rgba(232,93,36,.34)'; ctx.fillRect(padL+i*bw, padT+plotH-bh, Math.max(1,bw-1), bh);
   }
+  // PDF scaled to match bar normalisation: peak of Gaussian is 1/sqrt(2π)/σ,
+  // and bars are normalised so maxC maps to plotH. Scale PDF peak to plotH.
+  const pdfPeak = 1 / (Math.sqrt(2*Math.PI) * (sigma || 1e-6));
   ctx.beginPath(); ctx.strokeStyle='#7c3aed'; ctx.lineWidth=2;
   for(let px=0;px<=plotW;px++){
     const v=(px/plotW)*2*range-range;
-    const pdf=Math.exp(-v*v/(2*sigma*sigma || 1e-9));
-    const y=padT+plotH-pdf*plotH;
+    const pdf=(1/(Math.sqrt(2*Math.PI)*(sigma||1e-6)))*Math.exp(-v*v/(2*(sigma*sigma||1e-9)));
+    const y=padT+plotH-(pdf/pdfPeak)*plotH;
     px===0?ctx.moveTo(padL+px,y):ctx.lineTo(padL+px,y);
   }
   ctx.stroke();
   // mean and +/- sigma markers
   function marker(v,label){ const x=padL+(v+range)/(2*range)*plotW; ctx.strokeStyle='rgba(128,128,128,.45)'; ctx.setLineDash([3,3]); ctx.beginPath(); ctx.moveTo(x,padT); ctx.lineTo(x,padT+plotH); ctx.stroke(); ctx.setLineDash([]); ctx.fillStyle='rgba(128,128,128,.85)'; ctx.font='10px system-ui,sans-serif'; ctx.textAlign='center'; ctx.fillText(label,x,h-6); }
   marker(0,'0'); marker(sigma,'+σ'); marker(-sigma,'−σ');
+  // x-axis label
+  ctx.fillStyle='rgba(128,128,128,.7)'; ctx.font='10px system-ui,sans-serif'; ctx.textAlign='right';
+  ctx.fillText('Noise amplitude (normalised units)', padL+plotW, h-6);
 }
-function updateStats(st, sigma){
+function updateStats(st, sigma, delayS){
   document.getElementById('rx-val').textContent = st.rxDbm.toFixed(0)+' dBm';
   document.getElementById('bw-val').textContent = formatBw(st.bwHz);
-  document.getElementById('freq-val').textContent = st.freq+' Hz';
+  document.getElementById('freq-val').textContent = st.freq+' cycles';
   document.getElementById('ns-val').textContent = st.nSamps;
   document.getElementById('rx-stat').textContent = st.rxDbm.toFixed(0)+' dBm';
   document.getElementById('noise-stat').textContent = st.noiseDbm.toFixed(0)+' dBm';
@@ -293,9 +347,12 @@ function updateStats(st, sigma){
   document.getElementById('needle').style.left = `calc(${pct}% - 1px)`;
   const label = snr < 0 ? 'Poor: noise power is comparable to or larger than the signal' : snr < 8 ? 'Marginal: waveform is strongly corrupted by noise' : snr < 18 ? 'Good: signal is visible above the noise floor' : 'Excellent: noise is small relative to the received signal';
   document.getElementById('condition-label').textContent = label;
+  document.getElementById('legend-multipath').style.display = st.useMultipath ? '' : 'none';
   document.getElementById('mode-hint').textContent = st.useMultipath ? 'AWGN + simple multipath' : 'AWGN only';
-  const mp = st.useMultipath ? ' The orange dashed trace shows a simple delayed echo before noise is added, illustrating that multipath is a channel distortion rather than random receiver noise.' : '';
-  document.getElementById('insight').innerHTML = `<strong>Physical link:</strong> bandwidth sets the thermal noise floor using −174 dBm/Hz + 10log₁₀(B). Increasing bandwidth raises the noise power. Increasing received power raises SNR. ${mp}<br><br><strong>Current equation:</strong> y(t) = ${st.useMultipath ? 'h(t)*x(t)' : 'x(t)'} + n(t), with n(t) ~ N(0, σ²).`;
+  const tauNorm = (delayS / st.nSamps).toFixed(3);
+  const mp = st.useMultipath ? ` The orange dashed trace shows y<sub>mp</sub>(t) = 0.86·x(t) + 0.38·x(t−τ), with τ = ${tauNorm} T (≈ 1/10th of one signal period) — a deterministic channel distortion, not random noise.` : '';
+  const sigmaEq = `σ² = P<sub>n</sub> / P<sub>s</sub> = SNR<sup>−1</sup> (linear) = 10<sup>−${st.snrDb.toFixed(1)}/10</sup> → σ = ${sigma.toFixed(3)} (normalised to unit signal amplitude)`;
+  document.getElementById('insight').innerHTML = `<strong>Noise floor:</strong> P<sub>n</sub> = −174 dBm/Hz + 10log₁₀(B) = ${st.noiseDbm.toFixed(1)} dBm for B = ${formatBw(st.bwHz)}. Wider bandwidth admits more thermal noise power, raising the noise floor and reducing SNR for the same received signal level.${mp}<br><br><strong>Link to σ:</strong> ${sigmaEq}. The noise standard deviation σ on each sample is set by the SNR; wider bandwidth → higher noise floor → larger σ → more spread in the histogram.<br><br><strong>Current model:</strong> y(t) = ${st.useMultipath ? '0.86·x(t)+0.38·x(t−τ)' : 'x(t)'} + n(t), &nbsp; n(t) ~ N(0, σ²).`;
 }
 let resizeTimer=null;
 window.addEventListener('resize',()=>{ clearTimeout(resizeTimer); resizeTimer=setTimeout(draw,80); });
