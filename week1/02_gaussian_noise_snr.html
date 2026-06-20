@@ -1,28 +1,307 @@
-
 <!DOCTYPE html>
-<html>
-<head><meta charset="utf-8"><title>Week1 AWGN SNR</title></head>
-<body style="font-family:Arial,sans-serif;padding:20px">
-<h2>Updated Week 1 AWGN / SNR Notes</h2>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AWGN, Noise Floor & SNR — Week 1 Explorer</title>
+<style>
+  :root {
+    --bg:#f8f7f4; --surface:#ffffff; --surface2:#f0ede8;
+    --border:rgba(0,0,0,.09); --text:#1a1a1a; --muted:#7a7570;
+    --signal:#1a6ef5; --noise:#e85d24; --received:#0e9f6e; --gauss:#7c3aed;
+    --multipath:#f59e0b; --warn:#dc2626;
+  }
+  @media (prefers-color-scheme:dark) {
+    :root { --bg:#111318; --surface:#1c1f2a; --surface2:#22263a;
+      --border:rgba(255,255,255,.08); --text:#e8eaf0; --muted:#8892a4; }
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:system-ui,-apple-system,sans-serif;
+    padding:1.5rem; max-width:980px; margin:0 auto; }
+  h2 { font-size:1.1rem; font-weight:650; margin-bottom:.25rem; }
+  .sub { font-size:.84rem; color:var(--muted); margin:.3rem 0 1.1rem; line-height:1.5; }
+  .toolbar { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:1rem; margin-bottom:1rem; }
+  .presets { display:flex; gap:.45rem; flex-wrap:wrap; margin-bottom:1rem; }
+  button { border:1px solid var(--border); background:var(--surface2); color:var(--text); border-radius:999px;
+    padding:.45rem .75rem; font-size:.78rem; cursor:pointer; }
+  button:hover { filter:brightness(.98); }
+  .controls { display:grid; grid-template-columns:repeat(4,1fr); gap:1rem; }
+  @media (max-width:820px) { .controls { grid-template-columns:repeat(2,1fr); } }
+  @media (max-width:520px) { .controls { grid-template-columns:1fr; } }
+  .ctrl label { display:flex; justify-content:space-between; font-size:.76rem; color:var(--muted);
+    letter-spacing:.04em; margin-bottom:.35rem; gap:.8rem; }
+  .ctrl label strong { color:var(--text); font-size:.86rem; white-space:nowrap; }
+  input[type="range"] { width:100%; cursor:pointer; }
+  .checkrow { display:flex; align-items:center; gap:.5rem; margin-top:.65rem; color:var(--muted); font-size:.8rem; }
+  input[type="checkbox"] { transform:translateY(1px); }
+  .canvases { display:flex; flex-direction:column; gap:.85rem; }
+  .chart-wrap { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:.85rem 1rem .65rem; }
+  .chart-title { font-size:.72rem; letter-spacing:.08em; text-transform:uppercase; color:var(--muted);
+    margin-bottom:.5rem; display:flex; justify-content:space-between; align-items:center; gap:1rem; }
+  canvas { display:block; width:100%; }
+  .legend { display:flex; gap:1rem; flex-wrap:wrap; margin:.7rem 0 1rem; font-size:.75rem; color:var(--muted); }
+  .legend span { display:flex; align-items:center; gap:5px; }
+  .dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+  .stats-row { display:grid; grid-template-columns:repeat(4,1fr); gap:.8rem; margin-top:.8rem; }
+  @media (max-width:720px) { .stats-row { grid-template-columns:repeat(2,1fr); } }
+  .stat { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:.75rem .8rem; text-align:center; }
+  .stat-label { font-size:.66rem; color:var(--muted); text-transform:uppercase; letter-spacing:.07em; display:block; margin-bottom:.22rem; }
+  .stat-val { font-size:1.12rem; font-weight:650; }
+  .blue { color:var(--signal); } .red { color:var(--noise); } .green { color:var(--received); } .purple { color:var(--gauss); }
+  .gauge { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:.9rem 1rem; margin-top:.8rem; }
+  .gauge-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:.55rem; font-size:.8rem; color:var(--muted); }
+  .gauge-bar { height:12px; border-radius:999px; background:linear-gradient(90deg,#dc2626 0%,#f97316 28%,#22c55e 62%,#1a6ef5 100%); position:relative; }
+  .needle { position:absolute; top:-5px; width:2px; height:22px; background:var(--text); border-radius:2px; }
+  .gauge-labels { display:flex; justify-content:space-between; font-size:.68rem; color:var(--muted); margin-top:.45rem; }
+  .note-grid { display:grid; grid-template-columns:1fr 1fr; gap:.8rem; margin-top:.8rem; }
+  @media (max-width:700px) { .note-grid { grid-template-columns:1fr; } }
+  .insight-box { background:var(--surface); border:1px solid var(--border); border-left:3px solid var(--gauss);
+    border-radius:10px; padding:.9rem 1.05rem; font-size:.83rem; color:var(--muted); line-height:1.55; }
+  .insight-box strong { color:var(--text); }
+  .mini-table { width:100%; border-collapse:collapse; margin-top:.35rem; font-size:.78rem; }
+  .mini-table td { border-bottom:1px solid var(--border); padding:.28rem .2rem; color:var(--muted); }
+  .mini-table tr:last-child td { border-bottom:none; }
+  .mini-table td:first-child { color:var(--text); font-weight:550; }
+</style>
+</head>
+<body>
+<h2>AWGN, Noise Floor &amp; SNR Explorer</h2>
+<p class="sub">
+  Week 1 focus: additive white Gaussian noise, noise floor, received signal power, SNR, and the distinction between noise and simple multipath distortion.
+</p>
 
-<div style="border:1px solid #ccc;padding:15px;border-radius:8px;max-width:700px">
-<h3>SNR Definition</h3>
-<p><strong>SNR (in dB) = Received Power (dBm) − Noise Power (dBm)</strong></p>
-
-<p>SNR is a power ratio. In linear units:</p>
-<p>SNR = P<sub>r</sub> / P<sub>n</sub></p>
-
-<p>When powers are expressed in dBm:</p>
-<p>SNR(dB) = P<sub>r</sub>(dBm) − P<sub>n</sub>(dBm)</p>
-
-<h3>Example</h3>
-<pre>
-Received Power : -80 dBm
-Noise Power    : -100 dBm
-SNR            : 20 dB
-</pre>
-
-<p>20 dB = (-80 dBm) − (-100 dBm)</p>
+<div class="toolbar">
+  <div class="presets">
+    <button data-snr="25">Excellent channel</button>
+    <button data-snr="15">Good channel</button>
+    <button data-snr="5">Marginal channel</button>
+    <button data-snr="0">Poor channel</button>
+  </div>
+  <div class="controls">
+    <div class="ctrl">
+      <label>Received signal power <strong id="rx-val">-85 dBm</strong></label>
+      <input type="range" id="rx-slider" min="-120" max="-40" value="-85" step="1">
+    </div>
+    <div class="ctrl">
+      <label>Bandwidth <strong id="bw-val">1 MHz</strong></label>
+      <input type="range" id="bw-slider" min="3" max="80" value="60" step="1">
+    </div>
+    <div class="ctrl">
+      <label>Signal frequency <strong id="freq-val">3 Hz</strong></label>
+      <input type="range" id="freq-slider" min="1" max="8" value="3" step="1">
+    </div>
+    <div class="ctrl">
+      <label>Samples <strong id="ns-val">240</strong></label>
+      <input type="range" id="ns-slider" min="80" max="600" value="240" step="40">
+    </div>
+  </div>
+  <label class="checkrow"><input type="checkbox" id="multipath-toggle"> Add simple two-path multipath distortion before AWGN</label>
 </div>
+
+<div class="canvases">
+  <div class="chart-wrap">
+    <div class="chart-title">
+      <span>Time-domain received waveform</span>
+      <span id="mode-hint"></span>
+    </div>
+    <canvas id="wave-canvas" height="175"></canvas>
+  </div>
+  <div class="chart-wrap">
+    <div class="chart-title">
+      <span>AWGN amplitude distribution</span>
+      <span>mean ≈ 0, variance = σ²</span>
+    </div>
+    <canvas id="hist-canvas" height="135"></canvas>
+  </div>
+</div>
+
+<div class="legend">
+  <span><span class="dot" style="background:var(--signal)"></span> Transmitted signal x(t)</span>
+  <span><span class="dot" style="background:var(--multipath)"></span> After simple multipath h(t)*x(t)</span>
+  <span><span class="dot" style="background:var(--noise)"></span> AWGN n(t) ~ N(0,σ²)</span>
+  <span><span class="dot" style="background:var(--received)"></span> Received y(t)</span>
+  <span><span class="dot" style="background:var(--gauss);border-radius:2px"></span> Gaussian PDF</span>
+</div>
+
+<div class="stats-row">
+  <div class="stat"><span class="stat-label">Received signal</span><span class="stat-val blue" id="rx-stat">—</span></div>
+  <div class="stat"><span class="stat-label">Noise floor</span><span class="stat-val red" id="noise-stat">—</span></div>
+  <div class="stat"><span class="stat-label">SNR</span><span class="stat-val green" id="snr-stat">—</span></div>
+  <div class="stat"><span class="stat-label">Noise std dev σ</span><span class="stat-val purple" id="sigma-stat">—</span></div>
+</div>
+
+<div class="gauge">
+  <div class="gauge-head"><strong id="condition-label">—</strong><span>SNR (in dB) = Received Power (dBm) − Noise Power (dBm)</span></div>
+  <div class="gauge-bar"><div class="needle" id="needle"></div></div>
+  <div class="gauge-labels"><span>Poor</span><span>Marginal</span><span>Good</span><span>Excellent</span></div>
+<div style="margin-top:.6rem;font-size:.78rem;color:var(--muted);line-height:1.5">
+<strong>SNR is a power ratio.</strong><br>
+Linear: SNR = P<sub>r</sub> / P<sub>n</sub><br>
+dB form: SNR(dB) = P<sub>r</sub>(dBm) − P<sub>n</sub>(dBm)
+</div>
+
+</div>
+
+<div class="note-grid">
+  <div class="insight-box" id="insight">Move the sliders to begin.</div>
+  <div class="insight-box">
+    <strong>Week 1 interpretation</strong>
+    <table class="mini-table">
+      <tr><td>AWGN</td><td>Additive noise: y(t)=x(t)+n(t)</td></tr>
+      <tr><td>White</td><td>Idealised flat noise power over bandwidth</td></tr>
+      <tr><td>Gaussian</td><td>Samples cluster around zero; large values are rare</td></tr>
+      <tr><td>Multipath</td><td>Delayed copies distort the waveform; this is not the same as noise</td></tr>
+    </table>
+  </div>
+</div>
+
+<script>
+const MAX_CANVAS_PX = 4096;
+const K_BOLTZ_DBM_HZ = -174; // thermal noise density at room temperature
+const waveCv = document.getElementById('wave-canvas');
+const histCv = document.getElementById('hist-canvas');
+
+let seed = 42;
+function resetSeed(){ seed = 42; }
+function rng(){ seed = ((seed * 1664525) + 1013904223) >>> 0; return seed / 0x100000000; }
+function randn(){
+  let u=0, v=0;
+  while(u===0) u=rng();
+  while(v===0) v=rng();
+  return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);
+}
+function resizeCanvas(canvas){
+  const dpr = Math.min(window.devicePixelRatio || 1, 3);
+  const cssW = Math.max(1, canvas.offsetWidth || canvas.parentElement.offsetWidth || 600);
+  const cssH = Math.max(1, canvas.offsetHeight || parseInt(canvas.getAttribute('height'),10) || 140);
+  const backW = Math.min(Math.round(cssW*dpr), MAX_CANVAS_PX);
+  const backH = Math.min(Math.round(cssH*dpr), MAX_CANVAS_PX);
+  if(canvas.width !== backW || canvas.height !== backH){ canvas.width = backW; canvas.height = backH; }
+  const ctx = canvas.getContext('2d');
+  ctx.setTransform(1,0,0,1,0,0);
+  ctx.scale(backW/cssW, backH/cssH);
+  return {w:cssW, h:cssH};
+}
+function log10(x){ return Math.log(x)/Math.LN10; }
+function dbmToMw(dbm){ return Math.pow(10, dbm/10); }
+function formatBw(hz){
+  if(hz >= 1e6) return (hz/1e6).toFixed(hz >= 10e6 ? 0 : 1).replace('.0','') + ' MHz';
+  if(hz >= 1e3) return (hz/1e3).toFixed(0) + ' kHz';
+  return hz.toFixed(0) + ' Hz';
+}
+function bandwidthFromSlider(v){ return Math.pow(10, Number(v)); }
+function getState(){
+  const rxDbm = Number(document.getElementById('rx-slider').value);
+  const bwHz = bandwidthFromSlider(document.getElementById('bw-slider').value/10);
+  const freq = Number(document.getElementById('freq-slider').value);
+  const nSamps = Number(document.getElementById('ns-slider').value);
+  const useMultipath = document.getElementById('multipath-toggle').checked;
+  const noiseDbm = K_BOLTZ_DBM_HZ + 10*log10(bwHz);
+  const snrDb = rxDbm - noiseDbm;
+  return {rxDbm, bwHz, noiseDbm, snrDb, freq, nSamps, useMultipath};
+}
+function setSNR(targetSnr){
+  const bwHz = bandwidthFromSlider(document.getElementById('bw-slider').value/10);
+  const noiseDbm = K_BOLTZ_DBM_HZ + 10*log10(bwHz);
+  document.getElementById('rx-slider').value = Math.max(-120, Math.min(-40, Math.round(noiseDbm + targetSnr)));
+  draw();
+}
+function draw(){
+  resetSeed();
+  const st = getState();
+  const sigPowMw = dbmToMw(st.rxDbm);
+  const noisePowMw = dbmToMw(st.noiseDbm);
+  const snrLin = sigPowMw / noisePowMw;
+  const sigma = Math.sqrt(1 / Math.max(snrLin, 1e-12)); // normalise signal amplitude to unit peak scale
+  const clean = new Float32Array(st.nSamps);
+  const chan = new Float32Array(st.nSamps);
+  const noise = new Float32Array(st.nSamps);
+  const recv = new Float32Array(st.nSamps);
+  for(let i=0;i<st.nSamps;i++){
+    const t = i/st.nSamps;
+    const x = Math.sin(2*Math.PI*st.freq*t);
+    const delayedIdx = Math.max(0, i - Math.round(st.nSamps/(st.freq*10)));
+    const delayed = i === 0 ? 0 : clean[delayedIdx] || 0;
+    clean[i] = x;
+    chan[i] = st.useMultipath ? 0.86*x + 0.38*delayed : x;
+    noise[i] = randn()*sigma;
+    recv[i] = chan[i] + noise[i];
+  }
+  drawWave(clean, chan, noise, recv, st, sigma);
+  drawHist(noise, sigma);
+  updateStats(st, sigma);
+}
+function drawWave(clean, chan, noise, recv, st, sigma){
+  const {w,h} = resizeCanvas(waveCv); const ctx = waveCv.getContext('2d');
+  const padL=35, padR=12, padT=14, padB=22, plotW=w-padL-padR, plotH=h-padT-padB, mid=padT+plotH/2;
+  const maxAbs = Math.max(1.4, Math.min(7, sigma*3 + 1.3));
+  const yScale = v => mid - (v/maxAbs)*(plotH/2);
+  const xScale = i => padL + (i/(recv.length-1))*plotW;
+  ctx.clearRect(0,0,w,h);
+  ctx.strokeStyle='rgba(128,128,128,.22)'; ctx.lineWidth=.7;
+  for(const v of [-1,0,1]){ const y=yScale(v); ctx.beginPath(); ctx.moveTo(padL,y); ctx.lineTo(padL+plotW,y); ctx.stroke(); }
+  ctx.fillStyle='rgba(128,128,128,.8)'; ctx.font='10px system-ui,sans-serif'; ctx.textAlign='right';
+  for(const v of [-1,0,1]) ctx.fillText(v.toString(), padL-5, yScale(v)+3);
+  function line(arr,color,alpha,lw,dash=[]){
+    ctx.beginPath(); ctx.strokeStyle=color; ctx.globalAlpha=alpha; ctx.lineWidth=lw; ctx.setLineDash(dash);
+    for(let i=0;i<arr.length;i++){ const x=xScale(i), y=Math.max(-2,Math.min(h+2,yScale(arr[i]))); i===0?ctx.moveTo(x,y):ctx.lineTo(x,y); }
+    ctx.stroke(); ctx.globalAlpha=1; ctx.setLineDash([]);
+  }
+  line(noise,'#e85d24',.45,1);
+  if(st.useMultipath) line(chan,'#f59e0b',.95,1.6,[5,4]);
+  line(recv,'#0e9f6e',.9,1.5);
+  line(clean,'#1a6ef5',1,2.1);
+  ctx.fillStyle='rgba(128,128,128,.8)'; ctx.textAlign='center'; ctx.font='10px system-ui,sans-serif';
+  ctx.fillText('Time', padL+plotW/2, h-5);
+}
+function drawHist(noise, sigma){
+  const {w,h} = resizeCanvas(histCv); const ctx = histCv.getContext('2d');
+  const padL=32, padR=12, padT=10, padB=24, plotW=w-padL-padR, plotH=h-padT-padB;
+  const range = Math.max(1.2, Math.min(8, 4*sigma));
+  const bins=46, counts=Array(bins).fill(0);
+  for(const v of noise){ const idx=Math.floor((v+range)/(2*range)*bins); if(idx>=0 && idx<bins) counts[idx]++; }
+  const maxC=Math.max(1,...counts);
+  ctx.clearRect(0,0,w,h);
+  const bw=plotW/bins;
+  for(let i=0;i<bins;i++){
+    const bh=counts[i]/maxC*plotH;
+    ctx.fillStyle='rgba(232,93,36,.34)'; ctx.fillRect(padL+i*bw, padT+plotH-bh, Math.max(1,bw-1), bh);
+  }
+  ctx.beginPath(); ctx.strokeStyle='#7c3aed'; ctx.lineWidth=2;
+  for(let px=0;px<=plotW;px++){
+    const v=(px/plotW)*2*range-range;
+    const pdf=Math.exp(-v*v/(2*sigma*sigma || 1e-9));
+    const y=padT+plotH-pdf*plotH;
+    px===0?ctx.moveTo(padL+px,y):ctx.lineTo(padL+px,y);
+  }
+  ctx.stroke();
+  // mean and +/- sigma markers
+  function marker(v,label){ const x=padL+(v+range)/(2*range)*plotW; ctx.strokeStyle='rgba(128,128,128,.45)'; ctx.setLineDash([3,3]); ctx.beginPath(); ctx.moveTo(x,padT); ctx.lineTo(x,padT+plotH); ctx.stroke(); ctx.setLineDash([]); ctx.fillStyle='rgba(128,128,128,.85)'; ctx.font='10px system-ui,sans-serif'; ctx.textAlign='center'; ctx.fillText(label,x,h-6); }
+  marker(0,'0'); marker(sigma,'+σ'); marker(-sigma,'−σ');
+}
+function updateStats(st, sigma){
+  document.getElementById('rx-val').textContent = st.rxDbm.toFixed(0)+' dBm';
+  document.getElementById('bw-val').textContent = formatBw(st.bwHz);
+  document.getElementById('freq-val').textContent = st.freq+' Hz';
+  document.getElementById('ns-val').textContent = st.nSamps;
+  document.getElementById('rx-stat').textContent = st.rxDbm.toFixed(0)+' dBm';
+  document.getElementById('noise-stat').textContent = st.noiseDbm.toFixed(0)+' dBm';
+  document.getElementById('snr-stat').textContent = st.snrDb.toFixed(1)+' dB';
+  document.getElementById('sigma-stat').textContent = sigma.toFixed(3);
+  const snr = st.snrDb;
+  const pct = Math.max(0, Math.min(100, (snr + 5)/35*100));
+  document.getElementById('needle').style.left = `calc(${pct}% - 1px)`;
+  const label = snr < 0 ? 'Poor: noise power is comparable to or larger than the signal' : snr < 8 ? 'Marginal: waveform is strongly corrupted by noise' : snr < 18 ? 'Good: signal is visible above the noise floor' : 'Excellent: noise is small relative to the received signal';
+  document.getElementById('condition-label').textContent = label;
+  document.getElementById('mode-hint').textContent = st.useMultipath ? 'AWGN + simple multipath' : 'AWGN only';
+  const mp = st.useMultipath ? ' The orange dashed trace shows a simple delayed echo before noise is added, illustrating that multipath is a channel distortion rather than random receiver noise.' : '';
+  document.getElementById('insight').innerHTML = `<strong>Physical link:</strong> bandwidth sets the thermal noise floor using −174 dBm/Hz + 10log₁₀(B). Increasing bandwidth raises the noise power. Increasing received power raises SNR. ${mp}<br><br><strong>Current equation:</strong> y(t) = ${st.useMultipath ? 'h(t)*x(t)' : 'x(t)'} + n(t), with n(t) ~ N(0, σ²).`;
+}
+let resizeTimer=null;
+window.addEventListener('resize',()=>{ clearTimeout(resizeTimer); resizeTimer=setTimeout(draw,80); });
+['rx-slider','bw-slider','freq-slider','ns-slider','multipath-toggle'].forEach(id=>document.getElementById(id).addEventListener('input',draw));
+document.querySelectorAll('button[data-snr]').forEach(b=>b.addEventListener('click',()=>setSNR(Number(b.dataset.snr))));
+requestAnimationFrame(draw);
+</script>
 </body>
 </html>

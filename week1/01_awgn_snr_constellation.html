@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>AWGN and SNR Constellation Demo</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root {
+    --bg: #f7f8fb;
+    --card: #ffffff;
+    --ink: #172033;
+    --muted: #5c667a;
+    --line: #d9deea;
+    --accent: #2f6fdd;
+    --bad: #b42318;
+    --good: #067647;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+  }
+  header {
+    padding: 22px 28px 12px;
+    border-bottom: 1px solid var(--line);
+    background: #fff;
+  }
+  h1 { margin: 0 0 6px; font-size: 26px; }
+  .subtitle { color: var(--muted); font-size: 15px; max-width: 1050px; }
+  main {
+    display: grid;
+    grid-template-columns: 340px 1fr;
+    gap: 18px;
+    padding: 18px;
+    max-width: 1320px;
+    margin: 0 auto;
+  }
+  .panel, .plot-card, .note-card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    box-shadow: 0 1px 8px rgba(20, 32, 60, .05);
+  }
+  .panel { padding: 18px; }
+  .control {
+    margin-bottom: 18px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #edf0f6;
+  }
+  .control:last-child { border-bottom: 0; }
+  label {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    font-weight: 650;
+    margin-bottom: 8px;
+  }
+  .value {
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+  }
+  input[type="range"], select {
+    width: 100%;
+  }
+  select {
+    padding: 9px;
+    border-radius: 8px;
+    border: 1px solid var(--line);
+    background: #fff;
+    color: var(--ink);
+    font-size: 15px;
+  }
+  .hint {
+    color: var(--muted);
+    font-size: 13px;
+    margin-top: 7px;
+    line-height: 1.35;
+  }
+  .formula {
+    background: #f2f5fb;
+    border: 1px solid #e0e6f2;
+    border-radius: 10px;
+    padding: 12px;
+    line-height: 1.55;
+    font-size: 14px;
+  }
+  .plot-card { padding: 14px; min-height: 620px; }
+  canvas {
+    display: block;
+    width: 100%;
+    height: 560px;
+    border-radius: 10px;
+    background: #ffffff;
+    border: 1px solid var(--line);
+  }
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(120px, 1fr));
+    gap: 10px;
+    margin-top: 12px;
+  }
+  .stat {
+    padding: 10px 12px;
+    border-radius: 10px;
+    background: #f8faff;
+    border: 1px solid #e3e8f4;
+  }
+  .stat b {
+    display: block;
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 3px;
+  }
+  .stat span {
+    font-size: 17px;
+    font-weight: 750;
+    font-variant-numeric: tabular-nums;
+  }
+  .note-card {
+    grid-column: 1 / -1;
+    padding: 18px 22px;
+  }
+  .notes {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+  }
+  .notes h3 { margin: 0 0 8px; font-size: 17px; }
+  .notes p, .notes li {
+    color: var(--muted);
+    line-height: 1.45;
+    font-size: 14px;
+  }
+  .notes ul { margin: 0; padding-left: 18px; }
+  button {
+    width: 100%;
+    border: 0;
+    background: var(--accent);
+    color: #fff;
+    border-radius: 10px;
+    padding: 11px 13px;
+    font-weight: 750;
+    cursor: pointer;
+    font-size: 15px;
+  }
+  button.secondary {
+    background: #eef3ff;
+    color: #1d4fa3;
+    border: 1px solid #cddcff;
+    margin-top: 8px;
+  }
+  @media (max-width: 920px) {
+    main { grid-template-columns: 1fr; }
+    .stats, .notes { grid-template-columns: 1fr; }
+    canvas { height: 430px; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>AWGN, SNR, and Constellation Blurring</h1>
+  <div class="subtitle">
+    Adjust the SNR and modulation scheme and watch how additive white Gaussian noise displaces received symbols away from the ideal constellation points. Try to identify at what SNR each modulation order starts to fail.
+  </div>
+</header>
+
+<main>
+  <aside class="panel">
+    <div class="control">
+      <label for="modulation">Constellation <span id="modLabel" class="value">QPSK</span></label>
+      <select id="modulation">
+        <option value="2">BPSK</option>
+        <option value="4" selected>QPSK / 4-QAM</option>
+        <option value="8psk">8-PSK</option>
+        <option value="16">16-QAM</option>
+        <option value="64">64-QAM</option>
+      </select>
+      <div class="hint">Notice how the decision regions shrink as M increases. The same noise power causes far more errors in 64-QAM than in BPSK.</div>
+    </div>
+
+    <div class="control">
+      <label for="snr">SNR <span id="snrLabel" class="value">15 dB</span></label>
+      <input id="snr" type="range" min="-5" max="35" value="15" step="1">
+      <div class="hint">SNR (dB) = 10 log₁₀(signal power / noise power). Drag this slider from low to high and watch the clouds tighten around each constellation point.</div>
+    </div>
+
+    <div class="control">
+      <label for="samples">Received symbols <span id="samplesLabel" class="value">1200</span></label>
+      <input id="samples" type="range" min="100" max="5000" value="1200" step="100">
+      <div class="hint">More symbols give a better picture of the noise distribution. Try a large number to see the Gaussian cloud take shape.</div>
+    </div>
+
+    <div class="control">
+      <label for="blur">Point blur <span id="blurLabel" class="value">2.0 px</span></label>
+      <input id="blur" type="range" min="0" max="7" value="2" step="0.5">
+      <div class="hint">Increases the glow on each point to make the probability density easier to see. This is purely visual — it does not change any signal statistics.</div>
+    </div>
+
+    <div class="control">
+      <label for="opacity">Cloud opacity <span id="opacityLabel" class="value">0.26</span></label>
+      <input id="opacity" type="range" min="0.05" max="0.8" value="0.26" step="0.01">
+      <div class="hint">Increase this at low SNR to see how noise clouds from adjacent constellation points overlap and merge together.</div>
+    </div>
+
+    <div class="control">
+      <label for="decision">Decision regions <span id="decisionLabel" class="value">On</span></label>
+      <select id="decision">
+        <option value="on" selected>On</option>
+        <option value="off">Off</option>
+      </select>
+      <div class="hint">The receiver decides in favour of the nearest constellation point. Toggle this off to see the raw scatter without region boundaries.</div>
+    </div>
+
+    <button id="resample">Resample noise</button>
+    <button id="animate" class="secondary">Start animation</button>
+
+    <div class="formula" style="margin-top:16px">
+      <b>The AWGN channel model</b><br>
+      y = x + n<br>
+      n<sub>I</sub>, n<sub>Q</sub> ~ N(0, σ²)<br>
+      σ² = P<sub>s</sub> / (2 · 10<sup>SNR/10</sup>)
+    </div>
+  </aside>
+
+  <section class="plot-card">
+    <canvas id="canvas" width="900" height="620"></canvas>
+    <div class="stats">
+      <div class="stat"><b>Estimated SER</b><span id="ser">--</span></div>
+      <div class="stat"><b>Noise std. per axis</b><span id="sigma">--</span></div>
+      <div class="stat"><b>Linear SNR</b><span id="snrLin">--</span></div>
+      <div class="stat"><b>Mean signal power</b><span id="power">1.00</span></div>
+    </div>
+  </section>
+
+  <section class="note-card">
+    <div class="notes">
+      <div>
+        <h3>Things to look for</h3>
+        <ul>
+          <li>At high SNR, received symbols cluster tightly around the ideal constellation points — few cross a decision boundary.</li>
+          <li>As you reduce the SNR, the clouds spread and symbols begin to land in the wrong decision region, causing errors.</li>
+          <li>Compare QPSK and 64-QAM at the same SNR. The noise power is identical, but 64-QAM has far less margin between neighbouring points.</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Why the channel is called AWGN</h3>
+        <p><b>Additive:</b> the received point <i>y</i> equals the transmitted point <i>x</i> plus a noise vector <i>n</i>. <b>Gaussian:</b> the I and Q noise components are drawn from a zero-mean normal distribution, so each cloud has a symmetric, bell-shaped density. <b>White:</b> successive noise samples are independent and have equal power in both quadrature components.</p>
+      </div>
+      <div>
+        <h3>Try this</h3>
+        <p>Set the modulation to 64-QAM and drag the SNR down from 30 dB until the SER rises above 0.01. Then switch to QPSK at the same SNR. How much lower does the SNR need to be before QPSK reaches the same error rate? What does this tell you about the spectral efficiency vs. reliability trade-off?</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+
+const controls = {
+  modulation: document.getElementById("modulation"),
+  snr: document.getElementById("snr"),
+  samples: document.getElementById("samples"),
+  blur: document.getElementById("blur"),
+  opacity: document.getElementById("opacity"),
+  decision: document.getElementById("decision")
+};
+
+let running = false;
+let frame = 0;
+
+function randn() {
+  let u = 0, v = 0;
+  while (u === 0) u = Math.random();
+  while (v === 0) v = Math.random();
+  return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
+}
+
+function constellation(type) {
+  if (type === "2") return [{x:-1,y:0}, {x:1,y:0}];
+  if (type === "4") return [{x:-1,y:-1}, {x:-1,y:1}, {x:1,y:-1}, {x:1,y:1}].map(norm);
+  if (type === "8psk") {
+    return Array.from({length: 8}, (_, k) => ({x: Math.cos(2*Math.PI*k/8), y: Math.sin(2*Math.PI*k/8)}));
+  }
+  const M = Number(type);
+  const side = Math.sqrt(M);
+  const vals = Array.from({length: side}, (_, i) => 2*i - side + 1);
+  let pts = [];
+  for (const x of vals) for (const y of vals) pts.push({x, y});
+  const meanPower = pts.reduce((s,p) => s + p.x*p.x + p.y*p.y, 0) / pts.length;
+  const scale = Math.sqrt(meanPower);
+  return pts.map(p => ({x: p.x/scale, y: p.y/scale}));
+}
+
+function norm(p) {
+  const r = Math.sqrt(p.x*p.x + p.y*p.y);
+  return {x:p.x/r, y:p.y/r};
+}
+
+function nearest(point, pts) {
+  let best = 0, bestD = Infinity;
+  for (let i=0; i<pts.length; i++) {
+    const dx = point.x - pts[i].x, dy = point.y - pts[i].y;
+    const d = dx*dx + dy*dy;
+    if (d < bestD) { bestD = d; best = i; }
+  }
+  return best;
+}
+
+function labels() {
+  const modText = {
+    "2": "BPSK",
+    "4": "QPSK",
+    "8psk": "8-PSK",
+    "16": "16-QAM",
+    "64": "64-QAM"
+  }[controls.modulation.value];
+  document.getElementById("modLabel").textContent = modText;
+  document.getElementById("snrLabel").textContent = controls.snr.value + " dB";
+  document.getElementById("samplesLabel").textContent = controls.samples.value;
+  document.getElementById("blurLabel").textContent = Number(controls.blur.value).toFixed(1) + " px";
+  document.getElementById("opacityLabel").textContent = Number(controls.opacity.value).toFixed(2);
+  document.getElementById("decisionLabel").textContent = controls.decision.value === "on" ? "On" : "Off";
+}
+
+function drawGrid(scale, cx, cy) {
+  ctx.save();
+  ctx.strokeStyle = "#e8ecf4";
+  ctx.lineWidth = 1;
+  ctx.font = "12px system-ui";
+  ctx.fillStyle = "#667085";
+  for (let v=-2; v<=2; v+=0.5) {
+    const x = cx + v*scale;
+    ctx.beginPath(); ctx.moveTo(x, 20); ctx.lineTo(x, canvas.height-45); ctx.stroke();
+    const y = cy - v*scale;
+    ctx.beginPath(); ctx.moveTo(40, y); ctx.lineTo(canvas.width-20, y); ctx.stroke();
+  }
+  ctx.strokeStyle = "#98a2b3";
+  ctx.lineWidth = 1.4;
+  ctx.beginPath(); ctx.moveTo(40, cy); ctx.lineTo(canvas.width-20, cy); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(cx, 20); ctx.lineTo(cx, canvas.height-45); ctx.stroke();
+  ctx.fillText("In-phase", canvas.width-78, cy-8);
+  ctx.fillText("Quadrature", cx+8, 34);
+  ctx.restore();
+}
+
+function drawDecisionBoundaries(pts, scale, cx, cy) {
+  if (controls.decision.value !== "on") return;
+  const step = 9;
+  const w = canvas.width, h = canvas.height - 45;
+  const image = ctx.createImageData(w, h);
+  for (let py=0; py<h; py+=step) {
+    for (let px=0; px<w; px+=step) {
+      const p = {x:(px-cx)/scale, y:(cy-py)/scale};
+      const idx = nearest(p, pts);
+      const shade = 246 - (idx % 5) * 3;
+      ctx.fillStyle = `rgba(${shade}, ${shade+2}, 255, 0.18)`;
+      ctx.fillRect(px, py, step, step);
+    }
+  }
+}
+
+function draw() {
+  labels();
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  const pts = constellation(controls.modulation.value);
+  const snrDb = Number(controls.snr.value);
+  const snrLinear = Math.pow(10, snrDb/10);
+  const sigma = Math.sqrt(1/(2*snrLinear));
+  const N = Number(controls.samples.value);
+  const scale = 210;
+  const cx = canvas.width / 2;
+  const cy = (canvas.height - 45) / 2 + 10;
+
+  drawDecisionBoundaries(pts, scale, cx, cy);
+  drawGrid(scale, cx, cy);
+
+  let errors = 0;
+  ctx.save();
+  ctx.globalAlpha = Number(controls.opacity.value);
+  ctx.shadowBlur = Number(controls.blur.value);
+  ctx.shadowColor = "rgba(47,111,221,0.55)";
+  ctx.fillStyle = "#2f6fdd";
+  for (let i=0; i<N; i++) {
+    const idx = Math.floor(Math.random() * pts.length);
+    const tx = pts[idx];
+    const rx = {x: tx.x + sigma*randn(), y: tx.y + sigma*randn()};
+    const det = nearest(rx, pts);
+    if (det !== idx) errors++;
+    const px = cx + rx.x*scale;
+    const py = cy - rx.y*scale;
+    ctx.beginPath();
+    ctx.arc(px, py, 2.2, 0, 2*Math.PI);
+    ctx.fill();
+  }
+  ctx.restore();
+
+  ctx.save();
+  ctx.fillStyle = "#101828";
+  ctx.strokeStyle = "#ffffff";
+  ctx.lineWidth = 3;
+  for (const p of pts) {
+    const px = cx + p.x*scale;
+    const py = cy - p.y*scale;
+    ctx.beginPath();
+    ctx.arc(px, py, 7.5, 0, 2*Math.PI);
+    ctx.stroke();
+    ctx.fill();
+  }
+  ctx.restore();
+
+  ctx.save();
+  ctx.fillStyle = "#475467";
+  ctx.font = "14px system-ui";
+  ctx.fillText("Black dots: ideal transmitted constellation points", 48, canvas.height - 24);
+  ctx.fillText("Blue cloud: received samples after AWGN", 365, canvas.height - 24);
+  ctx.restore();
+
+  document.getElementById("ser").textContent = (errors / N).toFixed(3);
+  document.getElementById("sigma").textContent = sigma.toFixed(3);
+  document.getElementById("snrLin").textContent = snrLinear.toFixed(2);
+  document.getElementById("power").textContent = "1.00";
+}
+
+function animate() {
+  if (!running) return;
+  frame++;
+  const current = Number(controls.snr.value);
+  const next = -5 + 20 * (1 + Math.sin(frame/35));
+  controls.snr.value = Math.round(next);
+  draw();
+  requestAnimationFrame(animate);
+}
+
+for (const c of Object.values(controls)) c.addEventListener("input", draw);
+document.getElementById("resample").addEventListener("click", draw);
+document.getElementById("animate").addEventListener("click", () => {
+  running = !running;
+  document.getElementById("animate").textContent = running ? "Stop animation" : "Start animation";
+  if (running) animate();
+});
+
+draw();
+</script>
+</body>
+</html>
