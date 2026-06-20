@@ -86,11 +86,11 @@
     line-height: 1.55;
     font-size: 14px;
   }
-  .plot-card { padding: 14px; min-height: 620px; }
+  .plot-card { padding: 14px; }
   canvas {
     display: block;
     width: 100%;
-    height: 560px;
+    aspect-ratio: 1 / 1;
     border-radius: 10px;
     background: #ffffff;
     border: 1px solid var(--line);
@@ -210,7 +210,7 @@
   </aside>
 
   <section class="plot-card">
-    <canvas id="canvas" width="900" height="620"></canvas>
+    <canvas id="canvas"></canvas>
     <div class="stats">
       <div class="stat"><b>Estimated SER</b><span id="ser">--</span></div>
       <div class="stat"><b>Noise std. per axis</b><span id="sigma">--</span></div>
@@ -307,7 +307,7 @@ function labels() {
   document.getElementById("blurLabel").textContent = Number(controls.blur.value).toFixed(1) + " px";
 }
 
-function drawGrid(scale, cx, cy) {
+function drawGrid(scale, cx, cy, W, H) {
   ctx.save();
   ctx.strokeStyle = "#e8ecf4";
   ctx.lineWidth = 1;
@@ -315,25 +315,23 @@ function drawGrid(scale, cx, cy) {
   ctx.fillStyle = "#667085";
   for (let v=-2; v<=2; v+=0.5) {
     const x = cx + v*scale;
-    ctx.beginPath(); ctx.moveTo(x, 20); ctx.lineTo(x, canvas.height-45); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(x, 20); ctx.lineTo(x, H-30); ctx.stroke();
     const y = cy - v*scale;
-    ctx.beginPath(); ctx.moveTo(40, y); ctx.lineTo(canvas.width-20, y); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(30, y); ctx.lineTo(W-20, y); ctx.stroke();
   }
   ctx.strokeStyle = "#98a2b3";
   ctx.lineWidth = 1.4;
-  ctx.beginPath(); ctx.moveTo(40, cy); ctx.lineTo(canvas.width-20, cy); ctx.stroke();
-  ctx.beginPath(); ctx.moveTo(cx, 20); ctx.lineTo(cx, canvas.height-45); ctx.stroke();
-  ctx.fillText("In-phase", canvas.width-78, cy-8);
+  ctx.beginPath(); ctx.moveTo(30, cy); ctx.lineTo(W-20, cy); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(cx, 20); ctx.lineTo(cx, H-30); ctx.stroke();
+  ctx.fillText("In-phase", W-78, cy-8);
   ctx.fillText("Quadrature", cx+8, 34);
   ctx.restore();
 }
 
-function drawDecisionBoundaries(pts, scale, cx, cy) {
+function drawDecisionBoundaries(pts, scale, cx, cy, W, H) {
   const step = 9;
-  const w = canvas.width, h = canvas.height - 45;
-  const image = ctx.createImageData(w, h);
-  for (let py=0; py<h; py+=step) {
-    for (let px=0; px<w; px+=step) {
+  for (let py=0; py<H; py+=step) {
+    for (let px=0; px<W; px+=step) {
       const p = {x:(px-cx)/scale, y:(cy-py)/scale};
       const idx = nearest(p, pts);
       const shade = 246 - (idx % 5) * 3;
@@ -344,19 +342,33 @@ function drawDecisionBoundaries(pts, scale, cx, cy) {
 }
 
 function draw() {
+  // Sync the canvas buffer to its current CSS pixel size
+  const dpr = window.devicePixelRatio || 1;
+  const rect = canvas.getBoundingClientRect();
+  const cssW = rect.width;
+  const cssH = rect.height;
+  if (canvas.width !== Math.round(cssW * dpr) || canvas.height !== Math.round(cssH * dpr)) {
+    canvas.width  = Math.round(cssW * dpr);
+    canvas.height = Math.round(cssH * dpr);
+    ctx.scale(dpr, dpr);
+  }
+  const W = cssW, H = cssH;
+
   labels();
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.clearRect(0, 0, W, H);
   const pts = constellation(controls.modulation.value);
   const snrDb = Number(controls.snr.value);
   const snrLinear = Math.pow(10, snrDb/10);
   const sigma = Math.sqrt(1/(2*snrLinear));
   const N = Number(controls.samples.value);
-  const scale = 210;
-  const cx = canvas.width / 2;
-  const cy = (canvas.height - 45) / 2 + 10;
+  // Keep scale square: use the smaller usable dimension
+  const margin = 60;
+  const scale = (Math.min(W, H) - 2 * margin) / 2.8;
+  const cx = W / 2;
+  const cy = H / 2;
 
-  drawDecisionBoundaries(pts, scale, cx, cy);
-  drawGrid(scale, cx, cy);
+  drawDecisionBoundaries(pts, scale, cx, cy, W, H);
+  drawGrid(scale, cx, cy, W, H);
 
   let errors = 0;
   ctx.save();
@@ -393,10 +405,23 @@ function draw() {
   ctx.restore();
 
   ctx.save();
+  ctx.font = "13px system-ui";
+  const lineH = 18;
+  const x0 = 14;
+  const y1 = H - 10 - lineH;
+  const y2 = H - 10;
+
+  // Black dot indicator + label
+  ctx.fillStyle = "#101828";
+  ctx.beginPath(); ctx.arc(x0 + 5, y1 - 4, 5, 0, 2*Math.PI); ctx.fill();
   ctx.fillStyle = "#475467";
-  ctx.font = "14px system-ui";
-  ctx.fillText("Black dots: ideal transmitted constellation points", 48, canvas.height - 24);
-  ctx.fillText("Blue cloud: received samples after AWGN", 365, canvas.height - 24);
+  ctx.fillText("Ideal transmitted constellation points", x0 + 15, y1);
+
+  // Blue dot indicator + label
+  ctx.fillStyle = "#2f6fdd";
+  ctx.beginPath(); ctx.arc(x0 + 5, y2 - 4, 5, 0, 2*Math.PI); ctx.fill();
+  ctx.fillStyle = "#475467";
+  ctx.fillText("Received samples after AWGN", x0 + 15, y2);
   ctx.restore();
 
   document.getElementById("ser").textContent = (errors / N).toFixed(3);
@@ -426,6 +451,7 @@ document.getElementById("animate").addEventListener("click", () => {
   if (running) animate();
 });
 
+new ResizeObserver(() => draw()).observe(canvas);
 draw();
 </script>
 </body>
