@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Rectangular Pulse and Sinc Spectrum</title>
+<style>
+:root{--ink:#162033;--muted:#667085;--line:#d8dee9;--panel:#fff;--bg:#f4f7fb;--accent:#2855d9;--accent2:#c23b4a;--ok:#147a55}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+main{max-width:1180px;margin:auto;padding:24px}.hero{display:flex;justify-content:space-between;gap:22px;align-items:flex-start;margin-bottom:18px}
+h1{font-size:clamp(25px,3vw,38px);margin:0 0 7px}.sub{color:var(--muted);max-width:760px;line-height:1.45}.badge{background:#e8edff;color:#213fa5;padding:8px 12px;border-radius:999px;font-weight:700;white-space:nowrap}
+.grid{display:grid;grid-template-columns:300px 1fr;gap:18px}.card{background:var(--panel);border:1px solid var(--line);border-radius:15px;box-shadow:0 7px 24px rgba(23,34,59,.06);padding:18px}
+.control{margin:0 0 20px}.control label{display:flex;justify-content:space-between;font-weight:700;margin-bottom:8px}.control output{font-variant-numeric:tabular-nums;color:var(--accent)}input[type=range]{width:100%}
+.metrics{display:grid;grid-template-columns:1fr 1fr;gap:10px}.metric{border:1px solid var(--line);border-radius:11px;padding:12px;background:#fbfcff}.metric b{display:block;font-size:21px;margin-top:4px}.metric span{font-size:12px;color:var(--muted)}
+.formula{margin-top:16px;padding:13px;border-left:4px solid var(--accent);background:#f2f5ff;line-height:1.55}.tip{margin-top:14px;color:var(--muted);font-size:14px;line-height:1.45}.plot{margin-bottom:16px}.plot h2{font-size:17px;margin:0 0 8px}.canvas-wrap{height:260px;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:white}canvas{width:100%;height:100%;display:block}
+.legend{display:flex;gap:18px;flex-wrap:wrap;color:var(--muted);font-size:13px;margin-top:7px}.key::before{content:"";display:inline-block;width:20px;height:3px;margin-right:7px;vertical-align:middle;background:var(--accent)}.key.red::before{background:var(--accent2)}
+@media(max-width:820px){.grid{grid-template-columns:1fr}.hero{display:block}.badge{display:inline-block;margin-top:12px}}
+</style></head>
+<body><main>
+<div class="hero"><div><h1>Time–bandwidth reciprocity</h1><div class="sub">Change the pulse duration and observe how a rectangular pulse in time produces a sinc spectrum in frequency. The spectrum is normalised so its width is easy to compare.</div></div><div class="badge">Fourier transform pair</div></div>
+<div class="grid"><section class="card">
+<div class="control"><label>Pulse duration T <output id="tOut"></output></label><input id="T" type="range" min="0.5" max="5" step="0.1" value="2"></div>
+<div class="control"><label>Pulse amplitude A <output id="aOut"></output></label><input id="A" type="range" min="0.5" max="2" step="0.1" value="1"></div>
+<div class="metrics"><div class="metric"><span>First null</span><b id="nullOut"></b></div><div class="metric"><span>Null-to-null bandwidth</span><b id="bwOut"></b></div><div class="metric"><span>Time–bandwidth product</span><b id="tbOut"></b></div><div class="metric"><span>DC spectrum magnitude</span><b id="dcOut"></b></div></div>
+<div class="formula"><b>Transform pair</b><br>p(t) = A rect(t/T)<br>P(f) = AT sinc(fT)</div>
+<div class="tip"><b>Try:</b> double T. The pulse becomes twice as wide, while the main lobe becomes half as wide. The product T·B<sub>nn</sub> remains 2.</div>
+</section><section class="card">
+<div class="plot"><h2>Time domain</h2><div class="canvas-wrap"><canvas id="time"></canvas></div><div class="legend"><span class="key">p(t)</span></div></div>
+<div class="plot"><h2>Frequency domain</h2><div class="canvas-wrap"><canvas id="freq"></canvas></div><div class="legend"><span class="key">|P(f)|/(AT)</span><span class="key red">first nulls</span></div></div>
+</section></div></main>
+<script>
+const $=id=>document.getElementById(id), T=$('T'), A=$('A');
+function setup(canvas){const r=canvas.getBoundingClientRect(),d=devicePixelRatio||1;canvas.width=r.width*d;canvas.height=r.height*d;const c=canvas.getContext('2d');c.setTransform(d,0,0,d,0,0);return {c,w:r.width,h:r.height}}
+function axes(c,w,h,xmin,xmax,ymin,ymax,xlabel,ylabel){const L=58,R=18,Tp=15,B=34,xx=x=>L+(x-xmin)/(xmax-xmin)*(w-L-R),yy=y=>Tp+(ymax-y)/(ymax-ymin)*(h-Tp-B);c.strokeStyle='#aeb7c7';c.lineWidth=1;c.beginPath();c.moveTo(L,yy(0));c.lineTo(w-R,yy(0));c.moveTo(xx(0),Tp);c.lineTo(xx(0),h-B);c.stroke();c.fillStyle='#667085';c.font='12px Segoe UI';c.textAlign='center';c.fillText(xlabel,(L+w-R)/2,h-9);c.save();c.translate(14,(Tp+h-B)/2);c.rotate(-Math.PI/2);c.fillText(ylabel,0,0);c.restore();return {xx,yy,L,R,Tp,B}}
+function tick(c,x,y,text,align='center'){c.fillStyle='#667085';c.font='11px Segoe UI';c.textAlign=align;c.fillText(text,x,y)}
+function sinc(x){return Math.abs(x)<1e-10?1:Math.sin(Math.PI*x)/(Math.PI*x)}
+function draw(){const tv=+T.value/1000,av=+A.value; $('tOut').textContent=(tv*1000).toFixed(1)+' ms';$('aOut').textContent=av.toFixed(1);$('nullOut').textContent=(1/tv/1000).toFixed(2)+' kHz';$('bwOut').textContent=(2/tv/1000).toFixed(2)+' kHz';$('tbOut').textContent='2.00';$('dcOut').textContent=(av*tv*1000).toFixed(2)+' A·ms';
+ {const {c,w,h}=setup($('time')),xmin=-5e-3,xmax=5e-3,ymin=-.2,ymax=2.25;const a=axes(c,w,h,xmin,xmax,ymin,ymax,'time t (ms)','amplitude');c.strokeStyle='#2855d9';c.lineWidth=3;c.beginPath();const pts=[[-5e-3,0],[-tv/2,0],[-tv/2,av],[tv/2,av],[tv/2,0],[5e-3,0]];pts.forEach((p,i)=>(i?c.lineTo:c.moveTo).call(c,a.xx(p[0]),a.yy(p[1])));c.stroke();[-4,-2,0,2,4].forEach(v=>tick(c,a.xx(v/1000),h-18,String(v)));tick(c,a.xx(-tv/2),a.yy(av)+17,'−T/2');tick(c,a.xx(tv/2),a.yy(av)+17,'T/2');}
+ {const {c,w,h}=setup($('freq')),xmin=-4e3,xmax=4e3,ymin=-.05,ymax=1.08;const a=axes(c,w,h,xmin,xmax,ymin,ymax,'frequency f (kHz)','normalised magnitude');c.strokeStyle='#2855d9';c.lineWidth=2.5;c.beginPath();for(let i=0;i<=800;i++){const f=xmin+(xmax-xmin)*i/800,y=Math.abs(sinc(f*tv));(i?c.lineTo:c.moveTo).call(c,a.xx(f),a.yy(y))}c.stroke();const fn=1/tv;c.strokeStyle='#c23b4a';c.setLineDash([6,5]);[-fn,fn].forEach(f=>{c.beginPath();c.moveTo(a.xx(f),a.yy(0));c.lineTo(a.xx(f),a.yy(1));c.stroke()});c.setLineDash([]);[-4,-2,0,2,4].forEach(v=>tick(c,a.xx(v*1000),h-18,String(v)));tick(c,a.xx(-fn),a.yy(.92),'−1/T');tick(c,a.xx(fn),a.yy(.92),'1/T');}}
+[T,A].forEach(x=>x.addEventListener('input',draw));addEventListener('resize',draw);draw();
+</script></body></html>
