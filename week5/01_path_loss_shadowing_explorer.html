@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Path Loss and Shadowing Explorer</title>
+<style>
+:root{--bg:#f7f8fb;--surface:#fff;--surface2:#eef2f7;--border:#dfe5ec;--text:#172033;--muted:#667085;--blue:#2563eb;--orange:#ea580c;--green:#059669;--red:#dc2626;--purple:#7c3aed}
+@media(prefers-color-scheme:dark){:root{--bg:#0e1117;--surface:#171b24;--surface2:#222938;--border:#303949;--text:#e8edf5;--muted:#99a4b5}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,sans-serif;padding:24px;max-width:1050px;margin:auto}h1{font-size:1.25rem;margin:0 0 6px}.sub{color:var(--muted);font-size:.88rem;line-height:1.5;margin:0 0 16px}.toolbar,.card,.metric{background:var(--surface);border:1px solid var(--border);border-radius:12px}.toolbar{padding:15px;margin-bottom:14px}.presets{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}button{border:1px solid var(--border);background:var(--surface2);color:var(--text);padding:7px 12px;border-radius:999px;cursor:pointer}.controls{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}.ctrl label{display:flex;justify-content:space-between;gap:8px;color:var(--muted);font-size:.75rem;margin-bottom:5px}.ctrl strong{color:var(--text);white-space:nowrap}.ctrl input{width:100%}.grid{display:grid;grid-template-columns:2fr 1fr;gap:14px}.card{padding:14px}.title{font-size:.73rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:8px}.canvas{display:block;width:100%;height:330px}.metrics{display:grid;gap:10px}.metric{padding:13px}.metric .name{font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.07em}.metric .value{font-size:1.35rem;font-weight:700;margin-top:3px}.metric .small{font-size:.74rem;color:var(--muted);margin-top:3px;line-height:1.4}.eq,.note{margin-top:14px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:13px 15px;color:var(--muted);font-size:.82rem;line-height:1.55}.eq code{color:var(--text)}.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:.75rem;color:var(--muted);margin-top:8px}.legend span{display:flex;align-items:center;gap:6px}.sw{width:18px;height:3px;border-radius:2px}@media(max-width:850px){.controls{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}.metrics{grid-template-columns:repeat(2,1fr)}}@media(max-width:520px){body{padding:14px}.controls,.metrics{grid-template-columns:1fr}.canvas{height:280px}}
+</style>
+</head>
+<body>
+<h1>Path Loss and Shadowing Explorer</h1>
+<p class="sub">Move the receiver and change the environment. The solid curve is the mean log-distance model; the band contains 90% of shadowing outcomes. A fixed shadowing realisation makes the current received power reproducible.</p>
+<div class="toolbar">
+  <div class="presets">
+    <button data-preset="free">Free-space link</button><button data-preset="urban">Urban cellular</button><button data-preset="indoor">Obstructed indoor</button><button id="newShadow">New shadowing sample</button>
+  </div>
+  <div class="controls">
+    <div class="ctrl"><label>Distance <strong id="distanceOut"></strong></label><input id="distance" type="range" min="0" max="1000" value="630"></div>
+    <div class="ctrl"><label>Carrier frequency <strong id="fcOut"></strong></label><input id="fc" type="range" min="0.7" max="28" value="3.5" step="0.1"></div>
+    <div class="ctrl"><label>Path-loss exponent n <strong id="nOut"></strong></label><input id="n" type="range" min="2" max="6" value="3.2" step="0.1"></div>
+    <div class="ctrl"><label>Shadowing σ <strong id="sigmaOut"></strong></label><input id="sigma" type="range" min="0" max="12" value="7" step="0.5"></div>
+    <div class="ctrl"><label>Receiver threshold <strong id="thresholdOut"></strong></label><input id="threshold" type="range" min="-125" max="-70" value="-105" step="1"></div>
+  </div>
+</div>
+<div class="grid">
+  <div class="card">
+    <div class="title">Received power versus distance (Pt = 20 dBm, Gt = Gr = 0 dBi)</div>
+    <canvas id="plot" class="canvas"></canvas>
+    <div class="legend"><span><i class="sw" style="background:var(--blue)"></i>Mean received power</span><span><i class="sw" style="background:rgba(37,99,235,.25);height:10px"></i>Central 90% shadowing band</span><span><i class="sw" style="background:var(--red)"></i>Receiver threshold</span><span><i class="sw" style="background:var(--orange);height:8px;width:8px;border-radius:50%"></i>Current link</span></div>
+  </div>
+  <div class="metrics">
+    <div class="metric"><div class="name">Mean received power</div><div class="value" id="meanPr"></div><div class="small">Log-distance prediction at the selected distance.</div></div>
+    <div class="metric"><div class="name">Current shadowed power</div><div class="value" id="samplePr"></div><div class="small" id="sampleText"></div></div>
+    <div class="metric"><div class="name">Outage probability</div><div class="value" id="outage"></div><div class="small">Probability that received power falls below the threshold.</div></div>
+    <div class="metric"><div class="name">95% fade margin</div><div class="value" id="margin"></div><div class="small">Approx. 1.645σ dB below the mean for 95% coverage at one location.</div></div>
+  </div>
+</div>
+<div class="eq"><code>Pr(d) [dBm] = Pt + Gt + Gr − PL(d0) − 10 n log10(d/d0) + Xσ</code>, with <code>Xσ ~ N(0,σ²)</code> and <code>PL(d0)=20 log10(4πd0/λ)</code>. Here <code>d0=1 m</code>. The sign convention for <code>Xσ</code> is immaterial because the Gaussian distribution is symmetric.</div>
+<div class="note" id="insight"></div>
+<script>
+'use strict';
+const C=299792458, PT=20, D0=1;
+let seed=12345, zSample=0;
+function rng(){seed=(1664525*seed+1013904223)>>>0;return seed/4294967296}
+function randn(){let u=0,v=0;while(!u)u=rng();while(!v)v=rng();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v)}
+function normalCDF(x){const t=1/(1+0.2316419*Math.abs(x));const d=0.3989423*Math.exp(-x*x/2);let p=1-d*t*(0.319381530+t*(-0.356563782+t*(1.781477937+t*(-1.821255978+t*1.330274429))));return x>=0?p:1-p}
+function distanceFromSlider(v){return Math.pow(10,Number(v)/1000*4)}
+function fmtDistance(d){return d<1000?d.toFixed(d<10?1:0)+' m':(d/1000).toFixed(d<10000?1:0)+' km'}
+function meanPr(d,fcGHz,n){const lambda=C/(fcGHz*1e9);const pl0=20*Math.log10(4*Math.PI*D0/lambda);return PT-pl0-10*n*Math.log10(d/D0)}
+function state(){return{d:distanceFromSlider(distance.value),fc:+fc.value,n:+n.value,sigma:+sigma.value,thr:+threshold.value}}
+function resize(cv){const dpr=Math.min(devicePixelRatio||1,3),w=cv.clientWidth||700,h=cv.clientHeight||330;cv.width=Math.round(w*dpr);cv.height=Math.round(h*dpr);const x=cv.getContext('2d');x.setTransform(dpr,0,0,dpr,0,0);return{x,w,h}}
+function draw(){const s=state(),mu=meanPr(s.d,s.fc,s.n),sample=mu+s.sigma*zSample;distanceOut.textContent=fmtDistance(s.d);fcOut.textContent=s.fc.toFixed(1)+' GHz';nOut.textContent=s.n.toFixed(1);sigmaOut.textContent=s.sigma.toFixed(1)+' dB';thresholdOut.textContent=s.thr.toFixed(0)+' dBm';meanPrEl.textContent=mu.toFixed(1)+' dBm';samplePr.textContent=sample.toFixed(1)+' dBm';sampleText.textContent='Shadowing sample Xσ = '+(s.sigma*zSample).toFixed(1)+' dB';const pout=s.sigma===0?(mu<s.thr?1:0):normalCDF((s.thr-mu)/s.sigma);outage.textContent=(100*pout).toFixed(pout<.01?2:1)+'%';margin.textContent=(1.645*s.sigma).toFixed(1)+' dB';insight.innerHTML=(mu-s.thr>1.645*s.sigma?'<strong>Coverage interpretation:</strong> The mean link margin exceeds the 95% fade margin, so this model predicts better than 95% coverage at the selected distance.':'<strong>Coverage interpretation:</strong> The mean link margin is smaller than the 95% fade margin. Increase transmit/link gain, reduce distance, or accept a larger outage probability.')+' Increasing <em>n</em> steepens the distance slope; increasing σ widens uncertainty without changing the mean.';
+ const {x,w,h}=resize(plot),m={l:58,r:18,t:16,b:42};x.clearRect(0,0,w,h);const xmin=1,xmax=1e4;let ymin=-145,ymax=-20;const X=d=>m.l+(Math.log10(d)-Math.log10(xmin))/(Math.log10(xmax)-Math.log10(xmin))*(w-m.l-m.r),Y=p=>m.t+(ymax-p)/(ymax-ymin)*(h-m.t-m.b);x.strokeStyle=getComputedStyle(document.documentElement).getPropertyValue('--border');x.fillStyle=getComputedStyle(document.documentElement).getPropertyValue('--muted');x.font='12px system-ui';x.textAlign='center';for(const d of [1,10,100,1000,10000]){const px=X(d);x.beginPath();x.moveTo(px,m.t);x.lineTo(px,h-m.b);x.stroke();x.fillText(fmtDistance(d),px,h-17)}x.textAlign='right';for(let p=-140;p<=-20;p+=20){const py=Y(p);x.beginPath();x.moveTo(m.l,py);x.lineTo(w-m.r,py);x.stroke();x.fillText(p+'',m.l-8,py+4)}x.save();x.translate(15,h/2);x.rotate(-Math.PI/2);x.textAlign='center';x.fillText('Received power (dBm)',0,0);x.restore();
+ const upper=[],lower=[],line=[];for(let i=0;i<260;i++){const d=Math.pow(10,4*i/259),p=meanPr(d,s.fc,s.n);line.push([X(d),Y(p)]);upper.push([X(d),Y(p+1.645*s.sigma)]);lower.push([X(d),Y(p-1.645*s.sigma)])}x.fillStyle='rgba(37,99,235,.16)';x.beginPath();upper.forEach((q,i)=>i?x.lineTo(...q):x.moveTo(...q));lower.reverse().forEach(q=>x.lineTo(...q));x.closePath();x.fill();x.strokeStyle='#2563eb';x.lineWidth=2;x.beginPath();line.forEach((q,i)=>i?x.lineTo(...q):x.moveTo(...q));x.stroke();x.strokeStyle='#dc2626';x.setLineDash([6,5]);x.beginPath();x.moveTo(m.l,Y(s.thr));x.lineTo(w-m.r,Y(s.thr));x.stroke();x.setLineDash([]);x.fillStyle='#ea580c';x.beginPath();x.arc(X(s.d),Y(sample),5,0,2*Math.PI);x.fill();x.strokeStyle='#ea580c';x.beginPath();x.moveTo(X(s.d),h-m.b);x.lineTo(X(s.d),Y(sample));x.stroke();}
+const meanPrEl=document.getElementById('meanPr');
+['distance','fc','n','sigma','threshold'].forEach(id=>document.getElementById(id).addEventListener('input',draw));newShadow.addEventListener('click',()=>{zSample=randn();draw()});document.querySelectorAll('[data-preset]').forEach(b=>b.onclick=()=>{const p=b.dataset.preset;if(p==='free'){fc.value=2.4;n.value=2;sigma.value=0;distance.value=575;threshold.value=-100}else if(p==='urban'){fc.value=3.5;n.value=3.3;sigma.value=8;distance.value=675;threshold.value=-105}else{fc.value=5.8;n.value=4.5;sigma.value=6;distance.value=430;threshold.value=-95}zSample=randn();draw()});window.addEventListener('resize',draw);zSample=randn();draw();
+</script>
+</body>
+</html>
