@@ -13,30 +13,45 @@
 <h1>Doppler Spread and Coherence-Time Explorer</h1>
 <p class="sub">Change carrier frequency, mobile speed, and symbol rate. The trace is a deterministic sum-of-sinusoids fading realisation sampled once per symbol, so the speed-zero case becomes constant.</p>
 <div class="toolbar">
- <div class="presets"><button data-p="static">Static receiver</button><button data-p="walk">Walking</button><button data-p="car">Urban car</button><button data-p="train">High-speed train</button></div>
+ <div class="presets"><button type="button" data-p="static">Static receiver</button><button type="button" data-p="walk">Walking</button><button type="button" data-p="car">Urban car</button><button type="button" data-p="train">High-speed train</button></div>
  <div class="controls">
-  <div class="ctrl"><label>Carrier frequency <strong id="fcOut"></strong></label><input id="fc" type="range" min="0.7" max="60" value="3.5" step="0.1"></div>
-  <div class="ctrl"><label>Speed <strong id="speedOut"></strong></label><input id="speed" type="range" min="0" max="500" value="60" step="1"></div>
-  <div class="ctrl"><label>Symbol rate Rs <strong id="rsOut"></strong></label><input id="rs" type="range" min="3" max="7" value="5" step="0.02"></div>
+  <div class="ctrl"><label for="fc">Carrier frequency <strong id="fcOut"></strong></label><input id="fc" type="range" min="0.7" max="60" value="3.5" step="0.1"></div>
+  <div class="ctrl"><label for="speed">Speed <strong id="speedOut"></strong></label><input id="speed" type="range" min="0" max="500" value="60" step="1"></div>
+  <div class="ctrl"><label for="rs">Symbol rate Rs <strong id="rsOut"></strong></label><input id="rs" type="range" min="3" max="7" value="5" step="0.02"></div>
  </div>
 </div>
-<div class="card"><div class="title">Small-scale fading sampled at symbol times</div><canvas id="plot"></canvas></div>
+<div class="card"><div class="title">Small-scale fading sampled at symbol times</div><canvas id="plot" role="img" aria-label="Small-scale fading magnitude versus symbol index, with a coherence-time region when visible"></canvas></div>
 <div class="metrics">
  <div class="metric"><div class="name">Wavelength</div><div class="value" id="lambda"></div><div class="small">λ = c/fc</div></div>
  <div class="metric"><div class="name">Maximum Doppler</div><div class="value" id="fm"></div><div class="small">fm = v/λ</div></div>
  <div class="metric"><div class="name">Coherence time</div><div class="value" id="tc"></div><div class="small">Tc ≈ 1/BD</div></div>
  <div class="metric"><div class="name">Symbols per Tc</div><div class="value" id="ncoh"></div><div class="small">Tc/T = RsTc</div></div>
- <div class="metric"><div class="name">Classification</div><div class="value" id="classification"></div><div class="small">Relative to one symbol</div></div>
+ <div class="metric"><div class="name">Classification</div><div class="value" id="classification"></div><div class="small">Fast: Tc/T ≤ 1; slow: Tc/T ≥ 10</div></div>
 </div>
 <div class="note" id="note"></div>
 <script>
 'use strict';
 const C=299792458,ph=[0.1,1.4,2.2,3.8,4.6,5.7,0.9,2.9,4.1,5.2,1.8,3.3],ang=ph.map((_,i)=>2*Math.PI*i/ph.length+.17);
-function rateFromSlider(v){return Math.pow(10,+v)}function fmtRate(r){return r>=1e6?(r/1e6).toFixed(r>=10e6?0:2)+' Msym/s':r>=1e3?(r/1e3).toFixed(1)+' ksym/s':r.toFixed(0)+' sym/s'}function fmtTime(t){if(!isFinite(t))return '∞';if(t>=1)return t.toFixed(2)+' s';if(t>=1e-3)return (t*1e3).toFixed(2)+' ms';return (t*1e6).toFixed(1)+' μs'}
-function state(){return{fc:+fc.value*1e9,v:+speed.value/3.6,rs:rateFromSlider(rs.value)}}function resize(cv){const dpr=Math.min(devicePixelRatio||1,3),w=cv.clientWidth||800,h=cv.clientHeight||330;cv.width=Math.round(w*dpr);cv.height=Math.round(h*dpr);const c=cv.getContext('2d');c.setTransform(dpr,0,0,dpr,0,0);return{c,w,h}}
-function draw(){const s=state(),lam=C/s.fc,fmax=s.v/lam,bd=fmax,coh=bd===0?Infinity:1/bd,T=1/s.rs,Ncoh=coh/T;fcOut.textContent=(s.fc/1e9).toFixed(1)+' GHz';speedOut.textContent=(s.v*3.6).toFixed(0)+' km/h';rsOut.textContent=fmtRate(s.rs);lambda.textContent=(lam*100).toFixed(lam<.02?2:1)+' cm';fm.textContent=fmax.toFixed(fmax<10?2:0)+' Hz';tc.textContent=fmtTime(coh);ncoh.textContent=isFinite(Ncoh)?Ncoh.toFixed(Ncoh<10?1:0):'∞';let cls=Ncoh<=1?'Fast':Ncoh>=10?'Slow':'Transition';classification.textContent=cls;classification.style.color=cls==='Fast'?'var(--red)':cls==='Slow'?'var(--green)':'var(--orange)';note.innerHTML='<strong>Interpretation:</strong> Higher speed or higher carrier frequency increases maximum Doppler and shortens coherence time. With the deck’s one-sided convention, BD ≈ fm and Tc ≈ 1/BD. Some texts call the full support width 2fm; always state the convention. The slow/fast label is relative to the symbol period: Tc/T = '+(isFinite(Ncoh)?Ncoh.toFixed(1):'∞')+'.';
- const {c,w,h}=resize(plot),m={l:55,r:18,t:16,b:42},xmin=0,xmax=220,ymin=-28,ymax=8,X=n=>m.l+n/xmax*(w-m.l-m.r),Y=y=>m.t+(ymax-y)/(ymax-ymin)*(h-m.t-m.b);c.strokeStyle=getComputedStyle(document.documentElement).getPropertyValue('--border');c.fillStyle=getComputedStyle(document.documentElement).getPropertyValue('--muted');c.font='11px system-ui';c.textAlign='center';for(let n=0;n<=200;n+=40){const px=X(n);c.beginPath();c.moveTo(px,m.t);c.lineTo(px,h-m.b);c.stroke();c.fillText(n,px,h-18)}c.textAlign='right';for(let y=-24;y<=8;y+=8){const py=Y(y);c.beginPath();c.moveTo(m.l,py);c.lineTo(w-m.r,py);c.stroke();c.fillText(y,m.l-7,py+4)}c.textAlign='center';c.fillText('Symbol index n',(m.l+w-m.r)/2,h-3);c.save();c.translate(13,h/2);c.rotate(-Math.PI/2);c.fillText('|h[n]| (dB, relative)',0,0);c.restore();
- if(isFinite(Ncoh)&&Ncoh<xmax){c.fillStyle='rgba(124,58,237,.12)';c.fillRect(X(0),m.t,Math.max(1,X(Ncoh)-X(0)),h-m.t-m.b);c.fillStyle='#7c3aed';c.textAlign='left';c.fillText('≈ one coherence time',X(Math.min(Ncoh,xmax))+4,m.t+14)}c.strokeStyle='#2563eb';c.lineWidth=2;c.beginPath();for(let n=0;n<=xmax;n++){const t=n*T;let re=0,im=0;for(let k=0;k<ph.length;k++){const phase=2*Math.PI*fmax*Math.cos(ang[k])*t+ph[k];re+=Math.cos(phase);im+=Math.sin(phase)}const a=Math.sqrt(re*re+im*im)/Math.sqrt(ph.length),db=20*Math.log10(Math.max(1e-3,a));n?c.lineTo(X(n),Y(Math.max(ymin,Math.min(ymax,db)))):c.moveTo(X(n),Y(Math.max(ymin,Math.min(ymax,db))))}c.stroke();}
-['fc','speed','rs'].forEach(id=>document.getElementById(id).addEventListener('input',draw));document.querySelectorAll('[data-p]').forEach(b=>b.onclick=()=>{const p=b.dataset.p;if(p==='static'){fc.value=3.5;speed.value=0;rs.value=5}else if(p==='walk'){fc.value=3.5;speed.value=5;rs.value=4}else if(p==='car'){fc.value=3.5;speed.value=80;rs.value=5}else{fc.value=28;speed.value=300;rs.value=3}draw()});window.addEventListener('resize',draw);draw();
+function rateFromSlider(v){return Math.pow(10,+v)}
+function fmtRate(r){return r>=1e6?(r/1e6).toFixed(r>=10e6?0:2)+' Msym/s':r>=1e3?(r/1e3).toFixed(1)+' ksym/s':r.toFixed(0)+' sym/s'}
+function fmtTime(t){if(!isFinite(t))return '∞';if(t>=1)return t.toFixed(2)+' s';if(t>=1e-3)return (t*1e3).toFixed(2)+' ms';return (t*1e6).toFixed(1)+' μs'}
+function state(){return{fc:+fc.value*1e9,v:+speed.value/3.6,rs:rateFromSlider(rs.value)}}
+function resize(cv){const dpr=Math.min(devicePixelRatio||1,3),w=cv.clientWidth||800,h=cv.clientHeight||330;cv.width=Math.round(w*dpr);cv.height=Math.round(h*dpr);const c=cv.getContext('2d');c.setTransform(dpr,0,0,dpr,0,0);return{c,w,h}}
+function draw(){
+ const s=state(),lam=C/s.fc,fmax=s.v/lam,bd=fmax,coh=bd===0?Infinity:1/bd,T=1/s.rs,Ncoh=coh/T,undersampled=fmax>s.rs/2,ratio=fmax/s.rs;
+ fcOut.textContent=(s.fc/1e9).toFixed(1)+' GHz';speedOut.textContent=(s.v*3.6).toFixed(0)+' km/h';rsOut.textContent=fmtRate(s.rs);lambda.textContent=(lam*100).toFixed(lam<.02?2:1)+' cm';fm.textContent=fmax.toFixed(fmax<10?2:0)+' Hz';tc.textContent=fmtTime(coh);ncoh.textContent=isFinite(Ncoh)?Ncoh.toFixed(Ncoh<10?1:0):'∞';
+ const cls=Ncoh<=1?'Fast':Ncoh>=10?'Slow':'Transition';classification.textContent=cls;classification.style.color=cls==='Fast'?'var(--red)':cls==='Slow'?'var(--green)':'var(--orange)';
+ let warning='';if(undersampled)warning='<br><strong>Sampling warning:</strong> fm exceeds Rs/2, so symbol-rate samples cannot resolve the fastest Doppler components. The points are therefore shown without connecting lines. The maximum-Doppler component advances '+ratio.toFixed(ratio<1?2:1)+' cycles per symbol.';
+ note.innerHTML='<strong>Interpretation:</strong> Higher speed or higher carrier frequency increases maximum Doppler and shortens coherence time. With the deck’s one-sided convention, BD ≈ fm and Tc ≈ 1/BD. Some texts call the full support width 2fm; always state the convention. The displayed fast/slow thresholds are pedagogical guideposts rather than universal boundaries: fast for Tc/T ≤ 1, slow for Tc/T ≥ 10, and transition in between.'+warning;
+ const samples=[],xmax=220;for(let n=0;n<=xmax;n++){const t=n*T;let re=0,im=0;for(let k=0;k<ph.length;k++){const phase=2*Math.PI*fmax*Math.cos(ang[k])*t+ph[k];re+=Math.cos(phase);im+=Math.sin(phase)}const a=Math.sqrt(re*re+im*im)/Math.sqrt(ph.length);samples.push(20*Math.log10(Math.max(1e-8,a)))}
+ let ymin=Math.floor((Math.min(...samples)-3)/5)*5,ymax=Math.ceil((Math.max(...samples)+3)/5)*5;if(ymax-ymin<20){const mid=(ymax+ymin)/2;ymin=Math.floor((mid-10)/5)*5;ymax=Math.ceil((mid+10)/5)*5}
+ const {c,w,h}=resize(plot),m={l:55,r:18,t:16,b:42},X=n=>m.l+n/xmax*(w-m.l-m.r),Y=y=>m.t+(ymax-y)/(ymax-ymin)*(h-m.t-m.b);c.strokeStyle=getComputedStyle(document.documentElement).getPropertyValue('--border');c.fillStyle=getComputedStyle(document.documentElement).getPropertyValue('--muted');c.font='11px system-ui';c.textAlign='center';for(let n=0;n<=200;n+=40){const px=X(n);c.beginPath();c.moveTo(px,m.t);c.lineTo(px,h-m.b);c.stroke();c.fillText(n,px,h-18)}c.textAlign='right';for(let i=0;i<=5;i++){const y=ymin+(ymax-ymin)*i/5,py=Y(y);c.beginPath();c.moveTo(m.l,py);c.lineTo(w-m.r,py);c.stroke();c.fillText(y.toFixed(0),m.l-7,py+4)}c.textAlign='center';c.fillText('Symbol index n',(m.l+w-m.r)/2,h-3);c.save();c.translate(13,h/2);c.rotate(-Math.PI/2);c.fillText('|h[n]| (dB, relative)',0,0);c.restore();
+ c.save();c.beginPath();c.rect(m.l,m.t,w-m.l-m.r,h-m.t-m.b);c.clip();if(isFinite(Ncoh)&&Ncoh<xmax){c.fillStyle='rgba(124,58,237,.12)';c.fillRect(X(0),m.t,Math.max(1,X(Ncoh)-X(0)),h-m.t-m.b)}
+ if(undersampled){c.fillStyle='#2563eb';samples.forEach((db,n)=>{c.beginPath();c.arc(X(n),Y(db),2,0,2*Math.PI);c.fill()})}else{c.strokeStyle='#2563eb';c.lineWidth=2;c.beginPath();samples.forEach((db,n)=>n?c.lineTo(X(n),Y(db)):c.moveTo(X(n),Y(db)));c.stroke()}c.restore();
+ c.fillStyle='#7c3aed';c.textAlign='left';if(isFinite(Ncoh)&&Ncoh<xmax)c.fillText('≈ one coherence time',X(Ncoh)+4,m.t+14);else if(isFinite(Ncoh))c.fillText('Tc extends beyond 220 symbols',m.l+6,m.t+14);else c.fillText('Static channel: Tc = ∞',m.l+6,m.t+14);
+}
+['fc','speed','rs'].forEach(id=>document.getElementById(id).addEventListener('input',draw));
+document.querySelectorAll('[data-p]').forEach(b=>b.onclick=()=>{const p=b.dataset.p;if(p==='static'){fc.value=3.5;speed.value=0;rs.value=5}else if(p==='walk'){fc.value=3.5;speed.value=5;rs.value=4}else if(p==='car'){fc.value=3.5;speed.value=80;rs.value=5}else{fc.value=28;speed.value=300;rs.value=3}draw()});
+window.addEventListener('resize',draw);draw();
 </script>
 </body></html>
