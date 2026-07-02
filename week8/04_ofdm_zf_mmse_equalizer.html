@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<!-- Revised and validated: 2026-07-02 -->
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Interactive comparison of zero-forcing and MMSE OFDM equalisation under frequency-selective fading and noise.">
+<title>OFDM ZF versus MMSE Equalisation</title>
+<style>
+:root{--ink:#19324d;--muted:#60758a;--line:#d8e3ec;--panel:#fff;--bg:#f3f7fa;--accent:#2e6f9e;--accent2:#8b5e9b;--warn:#a85d16;--good:#237a57;--bad:#a33c3c;--shadow:0 8px 24px rgba(28,55,80,.09)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,Segoe UI,Arial,sans-serif;line-height:1.4}header{padding:24px clamp(16px,4vw,42px);background:linear-gradient(135deg,#eaf3f9,#f7f3fa);border-bottom:1px solid var(--line)}h1{margin:0 0 6px;font-size:clamp(1.55rem,3vw,2.25rem)}header p{margin:0;color:var(--muted);max-width:950px}main{max-width:1320px;margin:auto;padding:22px clamp(12px,3vw,30px) 34px}.layout{display:grid;grid-template-columns:minmax(250px,330px) 1fr;gap:18px}.card{background:var(--panel);border:1px solid var(--line);border-radius:15px;box-shadow:var(--shadow);padding:16px}.controls{position:sticky;top:12px;align-self:start}.controls h2,.card h2{font-size:1.02rem;margin:0 0 12px}.field{margin:14px 0}.field label{display:flex;justify-content:space-between;gap:8px;font-weight:650;font-size:.91rem}.field small{display:block;color:var(--muted);margin-top:4px}input[type=range]{width:100%;accent-color:var(--accent)}select,button{font:inherit;border:1px solid #b9cad8;border-radius:9px;background:#fff;color:var(--ink);padding:8px 10px}button{cursor:pointer}button:hover{border-color:var(--accent);background:#f4f9fc}.primary{background:var(--accent);color:#fff;border-color:var(--accent)}.row{display:flex;gap:8px;flex-wrap:wrap}.content{display:grid;gap:18px}.plots2{display:grid;grid-template-columns:1fr 1fr;gap:18px}.plots3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}svg{width:100%;height:auto;display:block}.axis{stroke:#8ca0b3;stroke-width:1}.gridline{stroke:#e5edf3;stroke-width:1}.tick{fill:#617588;font-size:11px}.label{fill:#3e556b;font-size:12px;font-weight:600}.channel{fill:none;stroke:var(--accent);stroke-width:2.6}.zf{fill:none;stroke:var(--bad);stroke-width:2.3}.mmse{fill:none;stroke:var(--good);stroke-width:2.3}.marker{stroke:var(--warn);stroke-width:2;stroke-dasharray:5 4}.cloud{fill:var(--accent);opacity:.34}.cloud.zfPoint{fill:var(--bad);opacity:.30}.cloud.mmsePoint{fill:var(--good);opacity:.32}.cloud.clipped{stroke:var(--warn);stroke-width:1.2;opacity:.78}.ideal{fill:none;stroke:var(--warn);stroke-width:2}.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:.84rem;color:var(--muted);margin-top:7px}.swatch{display:inline-block;width:22px;height:3px;vertical-align:middle;margin-right:6px;background:var(--accent)}.swatch.zf{background:var(--bad)}.swatch.mmse{background:var(--good)}.metrics{display:grid;grid-template-columns:repeat(5,1fr);gap:9px}.metric{background:#f7fafc;border:1px solid var(--line);border-radius:10px;padding:10px}.metric b{display:block;font-size:1.02rem}.metric span{font-size:.75rem;color:var(--muted)}.status{border-radius:11px;padding:11px;margin-top:12px;font-size:.89rem;background:#f7fafc;border:1px solid var(--line)}.equation{font-family:Cambria,Georgia,serif;background:#f7fafc;border-left:4px solid var(--accent);padding:10px 12px;border-radius:8px;margin-top:12px}.note{font-size:.82rem;color:var(--muted);margin:8px 0 0}
+@media(max-width:980px){.layout{grid-template-columns:1fr}.controls{position:static}.plots3{grid-template-columns:1fr 1fr}.plots3 .card:last-child{grid-column:1/-1}}@media(max-width:680px){.plots2,.plots3{grid-template-columns:1fr}.plots3 .card:last-child{grid-column:auto}.metrics{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<header><h1>ZF versus MMSE equalisation in a deep fade</h1><p>Place a spectral notch in the channel and compare the equaliser gains and recovered constellations. ZF exactly inverts H[k], while MMSE limits noise enhancement by shrinking unreliable tones.</p></header>
+<main><div class="layout">
+<section class="card controls">
+<h2>Controls</h2>
+<div class="field"><label for="snr">Reference SNR before channel attenuation <span id="snrOut">20 dB</span></label><input id="snr" type="range" min="0" max="35" step="1" value="20"><small>SNR<sub>ref</sub> = E<sub>X</sub>/σ<sub>V</sub>², where σ<sub>V</sub>² = NN<sub>0</sub> in the deck’s non-unitary DFT convention. The selected-tone SNR also includes |H[k]|².</small></div>
+<div class="field"><label for="depth">Notch depth <span id="depthOut">25 dB</span></label><input id="depth" type="range" min="0" max="50" step="1" value="25"></div>
+<div class="field"><label for="width">Notch width <span id="widthOut">5.0 bins</span></label><input id="width" type="range" min="1" max="12" step="0.5" value="5"></div>
+<div class="field"><label for="center">Notch centre <span id="centerOut">k<sub>c</sub> = 28</span></label><input id="center" type="range" min="2" max="61" step="1" value="28"></div>
+<div class="field"><label for="selected">Observed subcarrier <span id="selectedOut">k = 28</span></label><input id="selected" type="range" min="0" max="63" step="1" value="28"></div>
+<div class="field"><label for="mod">Modulation</label><select id="mod"><option selected>QPSK</option><option>16-QAM</option></select></div>
+<div class="field"><label>Presets</label><div class="row"><button id="deep" class="primary">Deep fade</button><button id="flat">Flat channel H[k] = 1</button><button id="high">High SNR</button><button id="newData">New symbols and noise</button></div></div>
+<div class="equation">W<sub>ZF</sub>[k] = 1/H[k]<br>W<sub>MMSE</sub>[k] = H*[k] / (|H[k]|² + σ<sub>V</sub>²/E<sub>X</sub>)</div>
+<div id="status" aria-live="polite" class="status"></div>
+</section>
+<section class="content">
+<div class="plots2">
+<div class="card"><h2>Channel magnitude |H[k]|</h2><svg id="channelSvg" viewBox="0 0 650 310" role="img" aria-label="Frequency-selective channel magnitude across OFDM subcarriers"></svg></div>
+<div class="card"><h2>Equaliser magnitude |W[k]|</h2><svg id="gainSvg" viewBox="0 0 650 310" role="img" aria-label="ZF and MMSE equaliser magnitude across OFDM subcarriers"></svg><div class="legend"><span><i class="swatch zf"></i>ZF</span><span><i class="swatch mmse"></i>MMSE</span></div></div>
+</div>
+<div class="plots3">
+<div class="card"><h2>Before equalisation: Y[k]</h2><svg id="rawSvg" viewBox="0 0 430 390" role="img" aria-label="Received constellation before equalisation"></svg></div>
+<div class="card"><h2>After ZF</h2><svg id="zfSvg" viewBox="0 0 430 390" role="img" aria-label="Constellation after zero-forcing equalisation"></svg></div>
+<div class="card"><h2>After MMSE</h2><svg id="mmseSvg" viewBox="0 0 430 390" role="img" aria-label="Constellation after MMSE equalisation"></svg></div>
+</div>
+<div class="card"><h2>Selected-tone indicators</h2><div class="metrics" aria-live="polite"><div class="metric"><b id="hMetric">−25.0 dB</b><span>channel magnitude</span></div><div class="metric"><b id="toneSnrMetric">−30.0 dB</b><span>selected-tone SNR</span></div><div class="metric"><b id="zfGainMetric">25.0 dB</b><span>ZF amplitude gain</span></div><div class="metric"><b id="zfMse">0.000</b><span>empirical ZF MSE</span></div><div class="metric"><b id="mmseMse">0.000</b><span>empirical MMSE MSE</span></div></div><p class="note">Constellation clouds use the same transmitted symbols and noise realisations. The ZF and MMSE panels use exactly the same axis limits. Rare outliers beyond the displayed range are clipped to the boundary, outlined in orange, and counted inside the relevant panel.</p></div>
+</section>
+</div></main>
+<script>
+'use strict';
+const NS='http://www.w3.org/2000/svg',$=id=>document.getElementById(id),N=64,M=700;let snrDb=20,depthDb=25,width=5,center=28,selected=28,mod='QPSK',seed=987654321,symbols=[],noise=[];
+function el(tag,a={},t=''){const n=document.createElementNS(NS,tag);Object.entries(a).forEach(([k,v])=>n.setAttribute(k,v));if(t)n.textContent=t;return n}function line(v,x1,y1,x2,y2,c){v.appendChild(el('line',{x1,y1,x2,y2,class:c}))}function text(v,x,y,t,c='tick',an='middle'){v.appendChild(el('text',{x,y,class:c,'text-anchor':an},t))}function add(a,b){return{re:a.re+b.re,im:a.im+b.im}}function mul(a,b){return{re:a.re*b.re-a.im*b.im,im:a.re*b.im+a.im*b.re}}function conj(a){return{re:a.re,im:-a.im}}function scale(a,s){return{re:a.re*s,im:a.im*s}}function abs(a){return Math.hypot(a.re,a.im)}function expj(a){return{re:Math.cos(a),im:Math.sin(a)}}
+function rng(){seed=(1664525*seed+1013904223)>>>0;return seed/4294967296}function gaussian(){const u=Math.max(rng(),1e-12),v=rng(),r=Math.sqrt(-2*Math.log(u));return[r*Math.cos(2*Math.PI*v),r*Math.sin(2*Math.PI*v)]}function constellation(){if(mod==='QPSK'){const q=Math.SQRT1_2;return[{re:q,im:q},{re:q,im:-q},{re:-q,im:q},{re:-q,im:-q}]}const a=1/Math.sqrt(10),out=[];for(const re of[-3,-1,1,3])for(const im of[-3,-1,1,3])out.push({re:re*a,im:im*a});return out}function regenerate(){const pts=constellation();symbols=Array.from({length:M},()=>pts[Math.floor(rng()*pts.length)]);noise=Array.from({length:M},()=>{const z=gaussian();return{re:z[0]/Math.SQRT2,im:z[1]/Math.SQRT2}})}
+function H(k){if(depthDb===0)return{re:1,im:0};const floor=Math.pow(10,-depthDb/20),d=Math.min(Math.abs(k-center),N-Math.abs(k-center)),mag=1-(1-floor)*Math.exp(-.5*(d/width)**2),phase=.42*Math.sin(2*Math.PI*k/N)+.018*k;return scale(expj(phase),mag)}
+function process(){const sigma2=Math.pow(10,-snrDb/10),sigma=Math.sqrt(sigma2),h=H(selected),h2=abs(h)**2,wzf=scale(conj(h),1/Math.max(h2,1e-18)),wmmse=scale(conj(h),1/(h2+sigma2)),raw=[],zf=[],mmse=[];let ez=0,em=0;for(let i=0;i<M;i++){const y=add(mul(h,symbols[i]),scale(noise[i],sigma)),az=mul(wzf,y),am=mul(wmmse,y);raw.push(y);zf.push(az);mmse.push(am);ez+=abs({re:az.re-symbols[i].re,im:az.im-symbols[i].im})**2;em+=abs({re:am.re-symbols[i].re,im:am.im-symbols[i].im})**2}return{sigma2,h,h2,wzf,wmmse,raw,zf,mmse,mseZ:ez/M,mseM:em/M}}
+function axes(v,W,Hh,xMin,xMax,yMin,yMax,xLab,yLab){v.innerHTML='';const L=57,R=18,T=18,B=44,pw=W-L-R,ph=Hh-T-B;for(let q=0;q<=4;q++){const y=T+q*ph/4;line(v,L,y,W-R,y,'gridline');text(v,L-8,y+4,(yMax-(yMax-yMin)*q/4).toFixed(0),'tick','end')}for(let q=0;q<=4;q++){const x=L+q*pw/4;line(v,x,T,x,Hh-B,'gridline');text(v,x,Hh-B+18,(xMin+(xMax-xMin)*q/4).toFixed(0))}line(v,L,Hh-B,W-R,Hh-B,'axis');line(v,L,T,L,Hh-B,'axis');text(v,L+pw/2,Hh-8,xLab,'label');v.appendChild(el('text',{x:15,y:T+ph/2,class:'label','text-anchor':'middle',transform:`rotate(-90 15 ${T+ph/2})`},yLab));return{x:x=>L+(x-xMin)/(xMax-xMin)*pw,y:y=>T+(yMax-y)/(yMax-yMin)*ph,L,R,T,B,pw,ph}}
+function path(data,map){return data.map((p,i)=>(i?'L':'M')+map.x(p.x).toFixed(2)+' '+map.y(p.y).toFixed(2)).join(' ')}
+function renderChannel(){const v=$('channelSvg'),data=Array.from({length:N},(_,k)=>({x:k,y:20*Math.log10(Math.max(abs(H(k)),1e-12))})),dataMin=Math.min(...data.map(p=>p.y)),min=Math.min(-5,dataMin-Math.max(2,.08*Math.abs(dataMin))),m=axes(v,650,310,0,N-1,min,2,'Subcarrier k','Magnitude (dB)');v.appendChild(el('path',{d:path(data,m),class:'channel'}));line(v,m.x(selected),m.y(min),m.x(selected),m.y(2),'marker');text(v,m.x(selected),m.y(2)+13,'selected','tick')}
+function renderGains(res){const sigma2=res.sigma2,z=[],mm=[];for(let k=0;k<N;k++){const h=H(k),h2=abs(h)**2;z.push({x:k,y:20*Math.log10(1/Math.max(abs(h),1e-12))});mm.push({x:k,y:20*Math.log10(abs(h)/(h2+sigma2)+1e-15)})}const lo=Math.min(-30,...mm.map(p=>p.y))-2,hi=Math.max(10,...z.map(p=>p.y))+2,m=axes($('gainSvg'),650,310,0,N-1,lo,hi,'Subcarrier k','Amplitude gain (dB)');$('gainSvg').appendChild(el('path',{d:path(z,m),class:'zf'}));$('gainSvg').appendChild(el('path',{d:path(mm,m),class:'mmse'}));line($('gainSvg'),m.x(selected),m.y(lo),m.x(selected),m.y(hi),'marker')}
+function quantile(a,q){
+  const b=a.slice().sort((x,y)=>x-y);
+  return b[Math.min(b.length-1,Math.floor(q*(b.length-1)))];
+}
+function renderConst(vId,pts,cls,idealPts,sharedLim){
+  const v=$(vId),W=430,Hh=390,L=52,R=18,T=18,B=46;
+  const pw=W-L-R,ph=Hh-T-B,lim=sharedLim;
+  const x=z=>L+(z+lim)/(2*lim)*pw;
+  const y=z=>T+(lim-z)/(2*lim)*ph;
+  v.innerHTML='';
+  for(let q=0;q<=4;q++){
+    const xx=L+q*pw/4,yy=T+q*ph/4;
+    line(v,xx,T,xx,Hh-B,'gridline');
+    line(v,L,yy,W-R,yy,'gridline');
+    text(v,xx,Hh-B+18,(-lim+2*lim*q/4).toFixed(1));
+    text(v,L-8,yy+4,(lim-2*lim*q/4).toFixed(1),'tick','end');
+  }
+  line(v,L,y(0),W-R,y(0),'axis');
+  line(v,x(0),T,x(0),Hh-B,'axis');
+  text(v,L+pw/2,Hh-8,'In-phase','label');
+  v.appendChild(el('text',{x:15,y:T+ph/2,class:'label','text-anchor':'middle',transform:`rotate(-90 15 ${T+ph/2})`},'Quadrature'));
+  let clipped=0;
+  const edge=.985*lim;
+  pts.forEach(p=>{
+    const isClipped=Math.abs(p.re)>lim||Math.abs(p.im)>lim;
+    if(isClipped)clipped++;
+    const pr=Math.max(-edge,Math.min(edge,p.re)),pi=Math.max(-edge,Math.min(edge,p.im));
+    v.appendChild(el('circle',{cx:x(pr),cy:y(pi),r:isClipped?2.8:2.2,class:'cloud '+cls+(isClipped?' clipped':'')}));
+  });
+  idealPts.forEach(p=>{
+    v.appendChild(el('circle',{cx:x(p.re),cy:y(p.im),r:6,class:'ideal'}));
+  });
+  if(clipped>0)text(v,W-R-4,T+14,clipped+' samples clipped to boundary','tick','end');
+  return clipped;
+}
+function render(){const res=process(),baseLim=mod==='QPSK'?1.6:1.5,sharedEqLim=Math.max(baseLim,quantile(res.zf.concat(res.mmse).flatMap(p=>[Math.abs(p.re),Math.abs(p.im)]),.985)*1.08),rawIdeal=constellation().map(p=>mul(res.h,p));$('snrOut').textContent=snrDb+' dB';$('depthOut').textContent=depthDb+' dB';$('widthOut').textContent=width.toFixed(1)+' bins';$('centerOut').innerHTML='k<sub>c</sub> = '+center;$('selectedOut').textContent='k = '+selected;renderChannel();renderGains(res);renderConst('rawSvg',res.raw,'',rawIdeal,Math.max(1.25,quantile(res.raw.flatMap(p=>[Math.abs(p.re),Math.abs(p.im)]),.99)*1.15));renderConst('zfSvg',res.zf,'zfPoint',constellation(),sharedEqLim);renderConst('mmseSvg',res.mmse,'mmsePoint',constellation(),sharedEqLim);const hdb=20*Math.log10(Math.max(abs(res.h),1e-12)),zg=20*Math.log10(abs(res.wzf)),gamma=res.h2/res.sigma2,gammaDb=10*Math.log10(Math.max(gamma,1e-15)),shrink=gamma/(gamma+1),mmseGainDb=20*Math.log10(Math.max(abs(res.wmmse),1e-15));$('hMetric').textContent=hdb.toFixed(1)+' dB';$('toneSnrMetric').textContent=gammaDb.toFixed(1)+' dB';$('zfGainMetric').textContent=zg.toFixed(1)+' dB';$('zfMse').textContent=res.mseZ.toFixed(res.mseZ<.01?4:3);$('mmseMse').textContent=res.mseM.toFixed(res.mseM<.01?4:3);const st=$('status');if(shrink<.2)st.innerHTML='<strong>Very unreliable selected tone:</strong> post-channel SNR is '+gammaDb.toFixed(1)+' dB. ZF strongly amplifies noise, whereas MMSE uses gain '+mmseGainDb.toFixed(1)+' dB and shrinkage '+shrink.toFixed(3)+', accepting bias to reduce variance.';else if(shrink<.8)st.innerHTML='<strong>Regularisation is important:</strong> post-channel SNR is '+gammaDb.toFixed(1)+' dB. MMSE shrinkage is '+shrink.toFixed(3)+', so its gain is deliberately smaller than ZF to limit noise enhancement.';else if(shrink<.97)st.innerHTML='<strong>ZF and MMSE are becoming similar:</strong> post-channel SNR is '+gammaDb.toFixed(1)+' dB and MMSE shrinkage is '+shrink.toFixed(3)+'. Some regularisation remains visible.';else st.innerHTML='<strong>High post-channel SNR:</strong> |H[k]|² dominates σ<sub>V</sub>²/E<sub>X</sub>. MMSE shrinkage is '+shrink.toFixed(3)+', so MMSE closely approaches ZF on this selected tone.'}
+$('snr').oninput=e=>{snrDb=Number(e.target.value);render()};$('depth').oninput=e=>{depthDb=Number(e.target.value);render()};$('width').oninput=e=>{width=Number(e.target.value);render()};$('center').oninput=e=>{center=Number(e.target.value);render()};$('selected').oninput=e=>{selected=Number(e.target.value);render()};$('mod').onchange=e=>{mod=e.target.value;regenerate();render()};$('deep').onclick=()=>{snrDb=20;depthDb=25;width=5;center=28;selected=28;$('snr').value=snrDb;$('depth').value=depthDb;$('width').value=width;$('center').value=center;$('selected').value=selected;render()};$('flat').onclick=()=>{depthDb=0;$('depth').value=0;render()};$('high').onclick=()=>{snrDb=32;$('snr').value=32;render()};$('newData').onclick=()=>{seed=(seed+246813579)>>>0;regenerate();render()};regenerate();render();
+</script>
+</body></html>

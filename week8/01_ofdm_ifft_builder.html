@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<!-- Revised and validated: 2026-07-02 -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OFDM IFFT Builder</title>
+<style>
+:root{--ink:#19324d;--muted:#60758a;--line:#d8e3ec;--panel:#ffffff;--bg:#f3f7fa;--accent:#2e6f9e;--accent2:#8b5e9b;--good:#237a57;--warn:#a85d16;--shadow:0 8px 24px rgba(28,55,80,.09)}
+*{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,Segoe UI,Arial,sans-serif;line-height:1.4}
+header{background:linear-gradient(135deg,#eaf3f9,#f7f3fa);border-bottom:1px solid var(--line);padding:24px clamp(16px,4vw,42px)}
+h1{margin:0 0 6px;font-size:clamp(1.55rem,3vw,2.25rem)} header p{margin:0;color:var(--muted);max-width:900px}
+main{max-width:1280px;margin:0 auto;padding:22px clamp(12px,3vw,30px) 34px}.grid{display:grid;grid-template-columns:minmax(250px,330px) 1fr;gap:18px}.card{background:var(--panel);border:1px solid var(--line);border-radius:15px;box-shadow:var(--shadow);padding:16px}.controls{position:sticky;top:12px;align-self:start}.controls h2,.plot-card h2{font-size:1.02rem;margin:0 0 12px}.field{margin:13px 0}.field label{display:flex;justify-content:space-between;gap:8px;font-weight:650;font-size:.91rem}.field small{display:block;color:var(--muted);margin-top:4px}.row{display:flex;gap:8px;flex-wrap:wrap}button,select{font:inherit;border:1px solid #b9cad8;border-radius:9px;background:#fff;color:var(--ink);padding:8px 10px}button{cursor:pointer}button:hover{border-color:var(--accent);background:#f4f9fc}button.primary{background:var(--accent);color:white;border-color:var(--accent)}button.active{outline:3px solid rgba(46,111,158,.18);border-color:var(--accent)}
+.symbol-buttons{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}.symbol-buttons button{padding:8px 4px}.bins{display:grid;grid-template-columns:repeat(8,minmax(34px,1fr));gap:7px}.bin{min-height:52px;padding:5px 2px;display:flex;flex-direction:column;align-items:center;justify-content:center}.bin .k{font-size:.69rem;color:var(--muted)}.bin .s{font-size:1.12rem;font-weight:750}.bin.selected{border-color:var(--accent);box-shadow:0 0 0 3px rgba(46,111,158,.15)}.bin.off{color:#94a4b2;background:#f7f9fb}
+.content{display:grid;gap:18px}.plot-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.plot-card{min-width:0}.plot-card.wide{grid-column:1/-1}svg{width:100%;height:auto;display:block}.axis{stroke:#8ca0b3;stroke-width:1}.gridline{stroke:#e5edf3;stroke-width:1}.tick{fill:#617588;font-size:11px}.label{fill:#3e556b;font-size:12px;font-weight:600}.real{fill:none;stroke:var(--accent);stroke-width:2.1}.imag{fill:none;stroke:var(--accent2);stroke-width:1.9;stroke-dasharray:7 5}.sample-real{fill:var(--accent)}.sample-imag{fill:var(--accent2)}.stem{stroke:var(--accent);stroke-width:3}.point{fill:var(--accent)}.selected-stem{stroke:var(--warn);stroke-width:4}.selected-point{fill:var(--warn)}.phasecircle{fill:none;stroke:#dbe5ed;stroke-width:1}
+.legend{display:flex;gap:16px;flex-wrap:wrap;color:var(--muted);font-size:.84rem;margin-top:7px}.swatch{display:inline-block;width:22px;height:3px;vertical-align:middle;margin-right:6px;background:var(--accent)}.swatch.imag{background:var(--accent2);height:0;border-top:3px dashed var(--accent2)}
+.status{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:12px}.metric{background:#f7fafc;border:1px solid var(--line);border-radius:10px;padding:10px}.metric b{display:block;font-size:1.05rem}.metric span{font-size:.76rem;color:var(--muted)}.equation{font-family:Cambria,Georgia,serif;background:#f7fafc;border-left:4px solid var(--accent);padding:10px 12px;border-radius:8px;margin-top:12px}.note{font-size:.83rem;color:var(--muted);margin:8px 0 0}.help{background:#eef7f3;border:1px solid #cce6d9;border-radius:11px;padding:11px;font-size:.88rem;margin-top:12px}.help strong{color:var(--good)}
+@media(max-width:900px){.grid{grid-template-columns:1fr}.controls{position:static}.plot-grid{grid-template-columns:1fr}.bins{grid-template-columns:repeat(8,minmax(31px,1fr))}}@media(max-width:520px){.bins{grid-template-columns:repeat(4,1fr)}.status{grid-template-columns:1fr}.symbol-buttons{grid-template-columns:repeat(3,1fr)}}
+</style>
+</head>
+<body>
+<header>
+<h1>Build an OFDM symbol with the IFFT</h1>
+<p>Choose the complex symbol on each subcarrier. The tool adds the individual complex exponentials and verifies that the FFT recovers the original frequency-domain symbols.</p>
+</header>
+<main>
+<div class="grid">
+<section class="card controls">
+<h2>Controls</h2>
+<div class="field"><label for="nSelect">IFFT size <span id="nReadout">N = 16</span></label><select id="nSelect"><option>4</option><option>8</option><option selected>16</option><option>32</option></select><small>The course convention places the factor 1/N in the IFFT.</small></div>
+<div class="field"><label>Presets</label><div class="row"><button id="singleBtn">Single tone</button><button id="allBtn">All active</button><button id="randomBtn" class="primary">Random QPSK</button><button id="zeroBtn">Clear</button></div></div>
+<div class="field"><label>Selected subcarrier <span id="selectedReadout">k = 0</span></label><small>Click a bin below, then choose its symbol.</small></div>
+<div class="field"><div class="symbol-buttons" id="symbolButtons"></div></div>
+<div class="field"><label>Subcarrier bins</label><div class="bins" id="bins"></div></div>
+<div class="equation">x[n] = (1/N) Σ<sub>k=0</sub><sup>N−1</sup> X[k]e<sup>j2πkn/N</sup></div>
+<div class="help"><strong>Try this:</strong> start with one active tone, then add more tones. The time waveform becomes less sinusoidal even though every component remains a simple complex exponential.</div>
+</section>
+<section class="content">
+<div class="card plot-card wide"><h2>Frequency-domain symbols X[k]</h2><svg id="freqSvg" viewBox="0 0 900 265" role="img" aria-label="Magnitude and phase of frequency-domain OFDM symbols"></svg><p class="note">Arrow direction shows phase; arrow length shows magnitude. Normalised QPSK symbols have |X[k]| = 1.</p></div>
+<div class="plot-grid">
+<div class="card plot-card"><h2>Contribution from selected subcarrier</h2><svg id="toneSvg" viewBox="0 0 620 310" role="img" aria-label="Selected OFDM subcarrier contribution in time"></svg><div class="legend"><span><i class="swatch"></i>Real part</span><span><i class="swatch imag"></i>Imaginary part</span></div><p class="note">Markers are the discrete IFFT samples; connecting lines are included only to help the eye follow the sequence.</p></div>
+<div class="card plot-card"><h2>Sum of all active subcarriers</h2><svg id="sumSvg" viewBox="0 0 620 310" role="img" aria-label="Time-domain OFDM waveform"></svg><div class="legend"><span><i class="swatch"></i>Re{x[n]}</span><span><i class="swatch imag"></i>Im{x[n]}</span></div><p class="note">The transmitted baseband block consists of these N discrete complex samples.</p></div>
+</div>
+<div class="card plot-card wide"><h2>IFFT–FFT consistency check</h2><div class="status"><div class="metric"><b id="activeMetric">0</b><span>active subcarriers</span></div><div class="metric"><b id="powerMetric">0</b><span>mean time-domain power</span></div><div class="metric"><b id="errorMetric">0</b><span>maximum FFT recovery error</span></div></div><p id="checkText" class="note"></p></div>
+</section>
+</div>
+</main>
+<script>
+'use strict';
+const NS='http://www.w3.org/2000/svg';
+const states=[
+  {name:'0',short:'0',re:0,im:0},
+  {name:'(+1 + j)/√2',short:'↗',re:Math.SQRT1_2,im:Math.SQRT1_2},
+  {name:'(+1 − j)/√2',short:'↘',re:Math.SQRT1_2,im:-Math.SQRT1_2},
+  {name:'(−1 + j)/√2',short:'↖',re:-Math.SQRT1_2,im:Math.SQRT1_2},
+  {name:'(−1 − j)/√2',short:'↙',re:-Math.SQRT1_2,im:-Math.SQRT1_2}
+];
+let N=16, selected=0, stateIdx=Array(N).fill(0);
+const $=id=>document.getElementById(id);
+function el(tag,attrs={},text=''){const n=document.createElementNS(NS,tag);for(const[k,v]of Object.entries(attrs))n.setAttribute(k,v);if(text)n.textContent=text;return n}
+function cadd(a,b){return {re:a.re+b.re,im:a.im+b.im}}
+function cmul(a,b){return {re:a.re*b.re-a.im*b.im,im:a.re*b.im+a.im*b.re}}
+function cexp(t){return {re:Math.cos(t),im:Math.sin(t)}}
+function symbols(){return stateIdx.map(i=>({re:states[i].re,im:states[i].im}))}
+function ifft(X){return Array.from({length:N},(_,n)=>{let z={re:0,im:0};for(let k=0;k<N;k++)z=cadd(z,cmul(X[k],cexp(2*Math.PI*k*n/N)));return {re:z.re/N,im:z.im/N}})}
+function fft(x){return Array.from({length:N},(_,k)=>{let z={re:0,im:0};for(let n=0;n<N;n++)z=cadd(z,cmul(x[n],cexp(-2*Math.PI*k*n/N)));return z})}
+function addLine(svg,x1,y1,x2,y2,cls){svg.appendChild(el('line',{x1,y1,x2,y2,class:cls}))}
+function addText(svg,x,y,text,cls='tick',anchor='middle'){svg.appendChild(el('text',{x,y,class:cls,'text-anchor':anchor},text))}
+function plotAxes(svg,W,H,pad,yLim,yLabel){svg.innerHTML='';const L=58,R=18,T=18,B=42;const pw=W-L-R,ph=H-T-B;for(let q=0;q<=4;q++){const y=T+q*ph/4;addLine(svg,L,y,W-R,y,'gridline');const val=yLim*(1-2*q/4);addText(svg,L-8,y+4,val.toFixed(yLim<.2?2:1),'tick','end')}const nTicks=Math.min(4,N-1);for(let q=0;q<=nTicks;q++){const idx=Math.round(q*(N-1)/nTicks),x=L+idx/(N-1)*pw;addLine(svg,x,T,x,H-B,'gridline');addText(svg,x,H-B+18,String(idx))}addLine(svg,L,T+ph/2,W-R,T+ph/2,'axis');addLine(svg,L,T,L,H-B,'axis');addText(svg,L+pw/2,H-8,'Sample index n','label');const ty=el('text',{x:16,y:T+ph/2,class:'label','text-anchor':'middle',transform:`rotate(-90 16 ${T+ph/2})`},yLabel);svg.appendChild(ty);return {L,R,T,B,pw,ph,x:n=>L+(N===1?0:n/(N-1))*pw,y:v=>T+(yLim-v)/(2*yLim)*ph}}
+function pathFor(data,part,map){return data.map((z,i)=>(i?'L':'M')+map.x(i).toFixed(2)+' '+map.y(z[part]).toFixed(2)).join(' ')}
+function renderBins(){const box=$('bins');box.innerHTML='';stateIdx.forEach((s,k)=>{const b=document.createElement('button');b.className='bin '+(k===selected?'selected ':'')+(s===0?'off':'');b.innerHTML=`<span class="k">k=${k}</span><span class="s">${states[s].short}</span>`;b.title=`Subcarrier ${k}: ${states[s].name}`;b.onclick=()=>{selected=k;render()};box.appendChild(b)})}
+function renderSymbolButtons(){const box=$('symbolButtons');box.innerHTML='';states.forEach((s,i)=>{const b=document.createElement('button');b.textContent=s.short;b.title=s.name;b.className=stateIdx[selected]===i?'active':'';b.onclick=()=>{stateIdx[selected]=i;render()};box.appendChild(b)})}
+function renderFrequency(X){
+  const svg=$('freqSvg'),W=900,H=265,L=50,R=18,T=20,B=44,pw=W-L-R;
+  const cy=132,labelY=218;
+  svg.innerHTML='';
+  for(let q=0;q<=4;q++){
+    const x=L+q*pw/4;
+    addLine(svg,x,T,x,labelY-15,'gridline');
+  }
+  addLine(svg,L,labelY-15,W-R,labelY-15,'axis');
+  addText(svg,L+pw/2,H-9,'Subcarrier index k','label');
+  const radius=Math.min(24,Math.max(7,pw/N*.34));
+  for(let k=0;k<N;k++){
+    const x=L+(k+.5)*pw/N,z=X[k],mag=Math.hypot(z.re,z.im),ang=Math.atan2(z.im,z.re);
+    svg.appendChild(el('circle',{cx:x,cy,r:radius,class:'phasecircle'}));
+    const xe=x+radius*mag*Math.cos(ang),ye=cy-radius*mag*Math.sin(ang);
+    addLine(svg,x,cy,xe,ye,k===selected?'selected-stem':'stem');
+    svg.appendChild(el('circle',{cx:xe,cy:ye,r:k===selected?4.5:3.5,class:k===selected?'selected-point':'point'}));
+    if(N<=16||k%2===0)addText(svg,x,labelY+17,String(k));
+  }
+  addText(svg,L,28,'Phasor direction: → real, ↑ imaginary','label','start');
+  addText(svg,W-R,28,'Selected k shown in orange','tick','end');
+}
+function addSampleMarkers(svg,data,map){data.forEach((z,n)=>{svg.appendChild(el('circle',{cx:map.x(n),cy:map.y(z.re),r:3.1,class:'sample-real'}));svg.appendChild(el('circle',{cx:map.x(n),cy:map.y(z.im),r:2.8,class:'sample-imag'}))})}
+function renderTimePlots(X,x){const z=X[selected];const tone=Array.from({length:N},(_,n)=>{const q=cmul(z,cexp(2*Math.PI*selected*n/N));return {re:q.re/N,im:q.im/N}});const toneLim=Math.max(.08,1.2/N);let m=plotAxes($('toneSvg'),620,310,0,toneLim,'xₖ[n]');$('toneSvg').appendChild(el('path',{d:pathFor(tone,'re',m),class:'real'}));$('toneSvg').appendChild(el('path',{d:pathFor(tone,'im',m),class:'imag'}));addSampleMarkers($('toneSvg'),tone,m);const max=Math.max(...x.map(q=>Math.max(Math.abs(q.re),Math.abs(q.im))),.08)*1.18;m=plotAxes($('sumSvg'),620,310,0,max,'x[n]');$('sumSvg').appendChild(el('path',{d:pathFor(x,'re',m),class:'real'}));$('sumSvg').appendChild(el('path',{d:pathFor(x,'im',m),class:'imag'}));addSampleMarkers($('sumSvg'),x,m)}
+function renderMetrics(X,x){const Xr=fft(x);const err=Math.max(...X.map((z,k)=>Math.hypot(z.re-Xr[k].re,z.im-Xr[k].im)));const active=X.filter(z=>Math.hypot(z.re,z.im)>1e-12).length;const p=x.reduce((a,z)=>a+z.re*z.re+z.im*z.im,0)/N;$('activeMetric').textContent=active+' / '+N;$('powerMetric').textContent=p.toFixed(5);$('errorMetric').textContent=err.toExponential(2);$('checkText').textContent=err<1e-10?'The FFT recovers every chosen X[k] to numerical precision. Parseval check: mean |x[n]|² = Σ|X[k]|²/N².':'Unexpected numerical mismatch.'}
+function render(){const X=symbols(),x=ifft(X);$('nReadout').textContent='N = '+N;$('selectedReadout').textContent='k = '+selected;renderBins();renderSymbolButtons();renderFrequency(X);renderTimePlots(X,x);renderMetrics(X,x)}
+$('nSelect').onchange=e=>{N=Number(e.target.value);selected=0;stateIdx=Array(N).fill(0);for(let k=0;k<N;k++)stateIdx[k]=1+Math.floor(Math.random()*4);render()};
+$('singleBtn').onclick=()=>{stateIdx=Array(N).fill(0);selected=Math.min(2,N-1);stateIdx[selected]=1;render()};
+$('allBtn').onclick=()=>{stateIdx=Array.from({length:N},(_,k)=>1+(k%4));render()};
+$('randomBtn').onclick=()=>{stateIdx=Array.from({length:N},()=>1+Math.floor(Math.random()*4));render()};
+$('zeroBtn').onclick=()=>{stateIdx=Array(N).fill(0);render()};
+stateIdx=Array.from({length:N},()=>1+Math.floor(Math.random()*4));render();
+</script>
+</body>
+</html>
