@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>OFDM Numerology Trade-off Explorer</title>
+<style>
+:root{--ink:#172033;--muted:#60708b;--panel:#fff;--line:#dce3ee;--accent:#3157c8;--accent2:#d97706;--good:#16835f;--warn:#c2410c;--bg:#f4f7fb}
+*{box-sizing:border-box} body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+main{max-width:1120px;margin:auto;padding:24px} h1{font-size:clamp(1.55rem,3vw,2.25rem);margin:0 0 6px} .subtitle{color:var(--muted);margin:0 0 20px;line-height:1.45}
+.grid{display:grid;grid-template-columns:340px 1fr;gap:18px}.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:0 8px 28px rgba(28,42,70,.06)}
+.controls label{display:block;font-weight:700;margin:13px 0 6px}.row{display:grid;grid-template-columns:1fr 88px;gap:10px;align-items:center}.value{font-variant-numeric:tabular-nums;text-align:right;color:var(--accent);font-weight:800}
+input[type=range]{width:100%;accent-color:var(--accent)} select{width:100%;padding:9px;border:1px solid var(--line);border-radius:9px;background:white;font-size:1rem}
+.metrics{display:grid;grid-template-columns:repeat(3,minmax(120px,1fr));gap:10px;margin-bottom:14px}.metric{padding:12px;border:1px solid var(--line);border-radius:12px;background:#fbfcfe}.metric b{display:block;font-size:1.18rem;margin-top:4px;font-variant-numeric:tabular-nums}.metric span{font-size:.82rem;color:var(--muted)}
+canvas{width:100%;height:280px;display:block;border:1px solid var(--line);border-radius:12px;background:#fff}.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:.86rem;color:var(--muted);margin:9px 0 0}.key::before{content:"";display:inline-block;width:12px;height:8px;border-radius:3px;margin-right:6px;background:var(--key)}
+.status{margin-top:14px;padding:12px 14px;border-radius:12px;background:#eef7f3;border:1px solid #b8dfd0;line-height:1.4}.status.warn{background:#fff4ed;border-color:#fdc9aa}.equation{margin-top:12px;padding:11px 12px;border-radius:10px;background:#f7f9fc;font-family:Cambria,Georgia,serif;line-height:1.5}.note{font-size:.86rem;color:var(--muted);line-height:1.45;margin-top:14px}
+@media(max-width:820px){.grid{grid-template-columns:1fr}.metrics{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<main>
+<h1>OFDM Numerology Trade-off Explorer</h1>
+<p class="subtitle">Change bandwidth, FFT size, delay spread, and Doppler. Observe how subcarrier spacing helps one constraint while hurting another.</p>
+<div class="grid">
+<section class="card controls" aria-label="Controls">
+  <label for="bandwidth">Occupied bandwidth, B</label>
+  <div class="row"><input id="bandwidth" type="range" min="0.5" max="20" step="0.5" value="5"><output class="value" id="bandwidthOut"></output></div>
+  <label for="fftSize">FFT/IFFT size, N</label>
+  <select id="fftSize"><option>64</option><option selected>128</option><option>256</option><option>512</option><option>1024</option></select>
+  <label for="delay">Maximum delay spread, τmax</label>
+  <div class="row"><input id="delay" type="range" min="0.2" max="20" step="0.2" value="5"><output class="value" id="delayOut"></output></div>
+  <label for="doppler">Doppler spread, BD</label>
+  <div class="row"><input id="doppler" type="range" min="0" max="2000" step="25" value="150"><output class="value" id="dopplerOut"></output></div>
+  <div class="equation">Δf = B/N &nbsp;&nbsp; | &nbsp;&nbsp; Ts = 1/Δf<br>ηCP = Ts/(Ts + TCP)</div>
+  <p class="note">The CP is automatically chosen as the smallest whole number of samples not shorter than τmax. Practical systems normally include an additional margin.</p>
+</section>
+<section class="card">
+  <div class="metrics">
+    <div class="metric"><span>Subcarrier spacing</span><b id="df"></b></div>
+    <div class="metric"><span>Useful symbol time</span><b id="ts"></b></div>
+    <div class="metric"><span>CP length</span><b id="cp"></b></div>
+    <div class="metric"><span>CP efficiency</span><b id="eff"></b></div>
+    <div class="metric"><span>Doppler ratio BD/Δf</span><b id="ratio"></b></div>
+    <div class="metric"><span>CP samples Lc</span><b id="lc"></b></div>
+  </div>
+  <canvas id="plot" width="900" height="360" role="img" aria-label="OFDM symbol and subcarrier-spacing visualization"></canvas>
+  <div class="legend"><span class="key" style="--key:#3157c8">Useful symbol</span><span class="key" style="--key:#d97706">Cyclic prefix</span><span class="key" style="--key:#16835f">Subcarrier spacing</span><span class="key" style="--key:#c2410c">Doppler spread</span></div>
+  <div id="status" class="status"></div>
+</section>
+</div>
+</main>
+<script>
+'use strict';
+const $=id=>document.getElementById(id); const canvas=$('plot'),ctx=canvas.getContext('2d');
+const controls=['bandwidth','fftSize','delay','doppler']; controls.forEach(id=>$(id).addEventListener('input',update));
+function fmt(v,d=2){return Number(v).toFixed(d).replace(/\.00$/,'')}
+function resize(){const r=canvas.getBoundingClientRect(),dpr=window.devicePixelRatio||1;canvas.width=Math.round(r.width*dpr);canvas.height=Math.round(r.height*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);draw(last)}
+let last=null; window.addEventListener('resize',resize);
+function update(){
+ const Bmhz=+$('bandwidth').value,N=+$('fftSize').value,tauUs=+$('delay').value,BD=+$('doppler').value;
+ const B=Bmhz*1e6, T=1/B, df=B/N, Ts=1/df, Lc=Math.ceil((tauUs*1e-6)/T), Tcp=Lc*T, eta=Ts/(Ts+Tcp), ratio=BD/df;
+ $('bandwidthOut').textContent=fmt(Bmhz,1)+' MHz'; $('delayOut').textContent=fmt(tauUs,1)+' μs'; $('dopplerOut').textContent=BD+' Hz';
+ $('df').textContent=fmt(df/1e3,2)+' kHz'; $('ts').textContent=fmt(Ts*1e6,2)+' μs'; $('cp').textContent=fmt(Tcp*1e6,2)+' μs'; $('eff').textContent=fmt(100*eta,1)+'%'; $('ratio').textContent=fmt(ratio,3); $('lc').textContent=Lc;
+ let msg, warn=false;
+ if(ratio<=0.01) msg='Doppler is much smaller than the subcarrier spacing: tones are likely to remain approximately orthogonal over one symbol.';
+ else if(ratio<=0.1) msg='The Doppler ratio is moderate. Inter-carrier interference may become noticeable, depending on the channel and receiver.';
+ else {msg='Doppler is no longer small relative to Δf. A larger subcarrier spacing would improve time variation tolerance.';warn=true}
+ msg+=' CP overhead is '+fmt(100*(1-eta),1)+'%.'; const s=$('status');s.textContent=msg;s.className='status'+(warn?' warn':'');
+ last={Bmhz,N,tauUs,BD,df,Ts,Tcp,eta,ratio}; draw(last);
+}
+function draw(p){if(!p)return; const w=canvas.clientWidth,h=canvas.clientHeight;ctx.clearRect(0,0,w,h);ctx.font='14px system-ui';ctx.fillStyle='#172033';
+ ctx.fillText('One OFDM symbol in time',24,28); const x=38,y=58,bw=w-76,bh=52,total=p.Ts+p.Tcp,cpW=bw*p.Tcp/total,tsW=bw-cpW;
+ ctx.fillStyle='#d97706';ctx.fillRect(x,y,cpW,bh);ctx.fillStyle='#3157c8';ctx.fillRect(x+cpW,y,tsW,bh);ctx.strokeStyle='#72809a';ctx.strokeRect(x,y,bw,bh);
+ ctx.fillStyle='white';ctx.textAlign='center';if(cpW>48)ctx.fillText('CP',x+cpW/2,y+31);ctx.fillText('Useful part',x+cpW+tsW/2,y+31);ctx.textAlign='left';ctx.fillStyle='#60708b';ctx.fillText(fmt(p.Tcp*1e6,1)+' μs',x,y+74);ctx.textAlign='right';ctx.fillText(fmt(p.Ts*1e6,1)+' μs',x+bw,y+74);ctx.textAlign='left';
+ const sy=178;ctx.fillStyle='#172033';ctx.fillText('Frequency view: Δf compared with Doppler spread',24,sy-20); const left=50,right=w-34,axisW=right-left;ctx.strokeStyle='#9aa7bb';ctx.beginPath();ctx.moveTo(left,sy+68);ctx.lineTo(right,sy+68);ctx.stroke();
+ const scale=Math.max(p.df*4,p.BD*6,1); const toneXs=[];for(let i=-3;i<=3;i++){const f=i*p.df;const xx=left+axisW*(f/scale+.5);toneXs.push(xx);ctx.strokeStyle='#16835f';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(xx,sy+68);ctx.lineTo(xx,sy+18);ctx.stroke();}
+ const center=toneXs[3],dopW=Math.max(2,axisW*(p.BD/scale));ctx.fillStyle='rgba(194,65,12,.22)';ctx.fillRect(center-dopW/2,sy+2,dopW,66);ctx.strokeStyle='#c2410c';ctx.lineWidth=2;ctx.strokeRect(center-dopW/2,sy+2,dopW,66);
+ ctx.fillStyle='#60708b';ctx.textAlign='center';ctx.fillText('Δf = '+fmt(p.df/1e3,2)+' kHz',(toneXs[3]+toneXs[4])/2,sy+92);ctx.fillText('Doppler spread BD',center,sy-5);ctx.textAlign='left';ctx.lineWidth=1;
+}
+update(); requestAnimationFrame(resize);
+</script>
+</body>
+</html>
