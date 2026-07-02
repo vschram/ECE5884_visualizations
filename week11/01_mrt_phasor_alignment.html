@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MRT phasor alignment</title>
+<style>
+:root{--ink:#17202a;--muted:#5f6b76;--line:#d9dee3;--panel:#f6f7f8;--accent:#234a73;--good:#2f6f4e;--warn:#9a5a18}
+*{box-sizing:border-box} body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--ink);background:#fff}
+main{max-width:1100px;margin:0 auto;padding:22px} h1{font-size:1.45rem;margin:0 0 6px} p{line-height:1.45}.intro{color:var(--muted);margin:0 0 18px}.layout{display:grid;grid-template-columns:minmax(300px,0.9fr) minmax(420px,1.3fr);gap:18px}.panel{border:1px solid var(--line);border-radius:10px;padding:16px;background:#fff}.controls{background:var(--panel)}.row{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:10px;align-items:center;margin:11px 0}.row strong{font-size:.95rem}.slider-wrap label{display:block;font-size:.76rem;color:var(--muted);margin-bottom:3px}input[type=range]{width:100%}.value{font-variant-numeric:tabular-nums;font-size:.85rem}.buttons{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}button{border:1px solid #aab3bb;background:#fff;border-radius:7px;padding:8px 11px;cursor:pointer;color:var(--ink)}button.primary{background:var(--accent);color:#fff;border-color:var(--accent)}canvas{display:block;width:100%;height:auto;border:1px solid var(--line);border-radius:8px;background:#fff}.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}.metric{border:1px solid var(--line);border-radius:8px;padding:10px}.metric span{display:block;color:var(--muted);font-size:.76rem}.metric b{display:block;margin-top:3px;font-size:1.08rem;font-variant-numeric:tabular-nums}.formula{margin-top:14px;padding:12px;border-left:4px solid var(--accent);background:var(--panel);font-family:Cambria,Georgia,serif}.note{font-size:.85rem;color:var(--muted);margin-top:10px}.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:.82rem;color:var(--muted);margin-top:8px}.swatch{display:inline-block;width:12px;height:3px;vertical-align:middle;margin-right:5px}.s1{background:#315d8a}.s2{background:#8a5a31}.s3{background:#66727d}.ss{background:#2f6f4e;height:4px}@media(max-width:850px){.layout{grid-template-columns:1fr}canvas{height:360px}}@media(max-width:520px){.row{grid-template-columns:1fr}.metrics{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<main>
+<h1>MRT phasor alignment</h1>
+<p class="intro">Adjust the channel magnitudes and deliberately add transmit phase errors. Maximum-ratio transmission makes all received contributions point in the same direction.</p>
+<div class="layout">
+<section class="panel controls" aria-label="MRT controls">
+<h2 style="font-size:1.05rem;margin-top:0">Channel and beamforming controls</h2>
+<div id="rows"></div>
+<div class="buttons">
+<button class="primary" id="mrtBtn">Set perfect MRT</button>
+<button id="randomBtn">Random magnitudes</button>
+<button id="errorBtn">Add phase errors</button>
+</div>
+<div class="formula" id="formula"></div>
+<p class="note">The weights remain unit norm. Only the phase error changes, so the SNR loss is caused by imperfect coherent addition rather than extra transmit power.</p>
+</section>
+<section class="panel">
+<canvas id="plot" width="760" height="420" aria-label="Received phasor contributions"></canvas>
+<div class="legend">
+<span><i class="swatch s1"></i>Antenna 1</span><span><i class="swatch s2"></i>Antenna 2</span><span><i class="swatch s3"></i>Antenna 3</span><span><i class="swatch ss"></i>Vector sum</span>
+</div>
+<div class="metrics">
+<div class="metric"><span>|hᵀf|²</span><b id="gain">–</b></div>
+<div class="metric"><span>MRT optimum ‖h‖²</span><b id="optimum">–</b></div>
+<div class="metric"><span>Fraction of optimum</span><b id="efficiency">–</b></div>
+</div>
+</section>
+</div>
+</main>
+<script>
+'use strict';
+const antennas=[
+ {mag:1.00,phase:35,error:0},
+ {mag:0.80,phase:-75,error:0},
+ {mag:0.55,phase:140,error:0}
+];
+const colors=['#315d8a','#8a5a31','#66727d'];
+const rows=document.getElementById('rows');
+const canvas=document.getElementById('plot');
+const ctx=canvas.getContext('2d');
+const d2r=d=>d*Math.PI/180;
+const fmt=x=>Number(x).toFixed(3);
+function createControls(){
+ rows.innerHTML='';
+ antennas.forEach((a,i)=>{
+  const row=document.createElement('div'); row.className='row';
+  row.innerHTML=`<strong>Antenna ${i+1}</strong>
+   <div class="slider-wrap"><label>Channel magnitude |h${i+1}|: <span class="value" id="magv${i}"></span></label><input id="mag${i}" type="range" min="0.2" max="1.5" step="0.01" value="${a.mag}"></div>
+   <div class="slider-wrap"><label>Phase error δ${i+1}: <span class="value" id="errv${i}"></span></label><input id="err${i}" type="range" min="-180" max="180" step="1" value="${a.error}"></div>`;
+  rows.appendChild(row);
+  row.querySelector(`#mag${i}`).addEventListener('input',e=>{a.mag=+e.target.value;update()});
+  row.querySelector(`#err${i}`).addEventListener('input',e=>{a.error=+e.target.value;update()});
+ });
+}
+function arrow(x0,y0,x1,y1,color,width,label){
+ const ang=Math.atan2(y1-y0,x1-x0); ctx.strokeStyle=color;ctx.fillStyle=color;ctx.lineWidth=width;ctx.beginPath();ctx.moveTo(x0,y0);ctx.lineTo(x1,y1);ctx.stroke();
+ const ah=9+width;ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x1-ah*Math.cos(ang-.42),y1-ah*Math.sin(ang-.42));ctx.lineTo(x1-ah*Math.cos(ang+.42),y1-ah*Math.sin(ang+.42));ctx.closePath();ctx.fill();
+ if(label){ctx.font='13px system-ui';ctx.fillText(label,x1+7*Math.cos(ang),y1+7*Math.sin(ang));}
+}
+function drawGrid(cx,cy,r){
+ ctx.clearRect(0,0,canvas.width,canvas.height);ctx.strokeStyle='#e4e7ea';ctx.lineWidth=1;
+ [0.25,0.5,0.75,1].forEach(q=>{ctx.beginPath();ctx.arc(cx,cy,r*q,0,Math.PI*2);ctx.stroke()});
+ ctx.beginPath();ctx.moveTo(cx-r-15,cy);ctx.lineTo(cx+r+15,cy);ctx.moveTo(cx,cy-r-15);ctx.lineTo(cx,cy+r+15);ctx.stroke();
+ ctx.fillStyle='#5f6b76';ctx.font='13px system-ui';ctx.fillText('Re',cx+r+18,cy+4);ctx.fillText('Im',cx+5,cy-r-18);
+}
+function update(){
+ antennas.forEach((a,i)=>{document.getElementById(`magv${i}`).textContent=a.mag.toFixed(2);document.getElementById(`errv${i}`).textContent=`${a.error.toFixed(0)}°`;document.getElementById(`mag${i}`).value=a.mag;document.getElementById(`err${i}`).value=a.error;});
+ const norm=Math.sqrt(antennas.reduce((s,a)=>s+a.mag*a.mag,0));
+ const contrib=antennas.map(a=>({amp:a.mag*a.mag/norm,ang:d2r(a.error)}));
+ const sum=contrib.reduce((z,c)=>({re:z.re+c.amp*Math.cos(c.ang),im:z.im+c.amp*Math.sin(c.ang)}),{re:0,im:0});
+ const gain=sum.re*sum.re+sum.im*sum.im, optimum=norm*norm, efficiency=gain/optimum;
+ document.getElementById('gain').textContent=fmt(gain);
+ document.getElementById('optimum').textContent=fmt(optimum);
+ document.getElementById('efficiency').textContent=`${(100*efficiency).toFixed(1)}%`;
+ document.getElementById('formula').innerHTML=`f<sub>m</sub> = (|h<sub>m</sub>|/‖h‖)e<sup>−j∠h<sub>m</sub></sup>e<sup>jδ<sub>m</sub></sup>. &nbsp; At MRT, every δ<sub>m</sub>=0 and h<sub>m</sub>f<sub>m</sub>=|h<sub>m</sub>|²/‖h‖ is real and positive.`;
+ const cx=canvas.width/2,cy=canvas.height/2,r=Math.min(canvas.width,canvas.height)*0.37;drawGrid(cx,cy,r);
+ const maxAmp=Math.max(norm,...contrib.map(c=>c.amp));const scale=r/(maxAmp*1.15);
+ contrib.forEach((c,i)=>arrow(cx,cy,cx+scale*c.amp*Math.cos(c.ang),cy-scale*c.amp*Math.sin(c.ang),colors[i],3,''));
+ arrow(cx,cy,cx+scale*sum.re,cy-scale*sum.im,'#2f6f4e',5,'sum');
+ ctx.fillStyle='#17202a';ctx.font='bold 14px system-ui';ctx.fillText('Received contributions hₘfₘ',18,24);
+ document.body.dataset.ready='true';window.__visualState={gain,optimum,efficiency,norm};
+}
+document.getElementById('mrtBtn').addEventListener('click',()=>{antennas.forEach(a=>a.error=0);update()});
+document.getElementById('randomBtn').addEventListener('click',()=>{antennas.forEach(a=>{a.mag=0.3+Math.random()*1.1;a.error=0});update()});
+document.getElementById('errorBtn').addEventListener('click',()=>{antennas.forEach(a=>a.error=-120+Math.random()*240);update()});
+createControls();update();
+</script>
+</body>
+</html>
