@@ -1,43 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Alamouti Detection Lab</title>
 <style>
-:root{--ink:#17213a;--muted:#5e6983;--blue:#3157d5;--cyan:#19a7ce;--purple:#7651c8;--green:#15976c;--orange:#e57b25;--red:#d94c5c;--line:#dce3ef}
-*{box-sizing:border-box}body{margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;background:radial-gradient(circle at 0 0,#e9f8ff,transparent 30%),linear-gradient(135deg,#f0f4ff,#fbfcff 55%,#f1ecff);color:var(--ink)}
-.shell{max-width:1280px;margin:auto;padding:24px}.hero{background:linear-gradient(120deg,#173d76,#3157d5 52%,#7651c8);color:#fff;border-radius:22px;padding:24px 28px;box-shadow:0 18px 45px rgba(43,70,148,.22)}h1{margin:0 0 8px;font-size:clamp(28px,4vw,46px)}.hero p{margin:0;color:#eaf0ff;line-height:1.5;max-width:930px}
-.top{display:grid;grid-template-columns:340px 1fr;gap:18px;margin-top:18px}.card{background:rgba(255,255,255,.97);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:0 10px 28px rgba(35,55,95,.08)}label{display:block;font-weight:800;margin:12px 0 6px}.row{display:flex;gap:10px;align-items:center}input[type=range]{flex:1}.value{min-width:72px;text-align:right;font-weight:900;color:var(--blue)}select{width:100%;padding:10px 12px;border-radius:11px;border:1px solid #cfd8e8;background:white;font-weight:700;color:var(--ink)}button{border:0;border-radius:12px;padding:11px 14px;background:var(--blue);color:#fff;font-weight:800;cursor:pointer;box-shadow:0 7px 16px rgba(49,87,213,.22)}button.secondary{background:var(--purple)}
-.timeline{display:grid;grid-template-columns:110px repeat(2,1fr);gap:8px;align-items:stretch}.cell{border:1px solid var(--line);border-radius:12px;padding:12px;text-align:center;background:#f8faff}.head{font-weight:900;background:#edf2ff}.time{font-weight:900;display:flex;align-items:center;justify-content:center;background:#f4f6fb}.symbol{font-size:22px;font-weight:900;color:var(--blue)}
-.flow{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:10px;align-items:center;margin-top:16px}.step{border:1px solid var(--line);border-radius:15px;padding:14px;background:#fafbfe;min-height:128px}.step h3{margin:0 0 10px;font-size:16px}.arrow{font-size:26px;color:var(--muted);font-weight:900}.complex{font-family:Consolas,monospace;font-size:14px;line-height:1.55}.good{color:var(--green);font-weight:900}.bad{color:var(--red);font-weight:900}
-.bottom{display:grid;grid-template-columns:1fr 360px;gap:18px;margin-top:18px}.canvas{height:370px}canvas{display:block;width:100%;height:100%}.matrix{font-family:Cambria Math,Times New Roman,serif;background:#f1edff;border-left:5px solid var(--purple);border-radius:14px;padding:14px;line-height:1.65}.metrics{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:12px}.metric{border:1px solid var(--line);border-radius:13px;background:#fafbfe;padding:11px}.metric span{display:block;color:var(--muted);font-size:13px}.metric strong{display:block;font-size:22px;margin-top:4px}.take{margin-top:14px;background:#eaf8f3;border:1px solid #c8eadc;border-radius:14px;padding:15px;font-weight:700;line-height:1.5}.small{font-size:13px;color:var(--muted);line-height:1.5}
+:root{--ink:#1d2433;--muted:#626b7a;--blue:#3157d5;--purple:#6d56aa;--green:#187a5b;--red:#c94747;--line:#d9dee8;--panel:#fff;--bg:#f5f6f8}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+.shell{max-width:1280px;margin:auto;padding:24px}
+.hero{background:transparent;border:0;border-radius:0;padding:0 2px 4px}
+h1{margin:0 0 8px;font-size:clamp(25px,3vw,34px);font-weight:650;color:#202124}
+.hero p{margin:0;color:var(--muted);line-height:1.5;max-width:970px}h2,h3{color:#202124;font-weight:650}
+.top{display:grid;grid-template-columns:340px 1fr;gap:18px;margin-top:18px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px;min-width:0}
+label{display:block;font-weight:700;margin:12px 0 6px}
+.row{display:flex;gap:10px;align-items:center}
+input[type=range]{flex:1;min-width:0}
+.value{min-width:72px;text-align:right;font-weight:750;color:var(--ink);font-variant-numeric:tabular-nums}
+select{width:100%;padding:10px 12px;border-radius:8px;border:1px solid #cfd5df;background:white;font-weight:650;color:var(--ink)}
+button{border:1px solid #2448b8;border-radius:8px;padding:10px 13px;background:var(--blue);color:#fff;font-weight:700;cursor:pointer}
+button.secondary{background:#626b7a;border-color:#515967}
+button:hover{filter:brightness(.94)}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid rgba(49,87,213,.25);outline-offset:2px}
+.timeline{display:grid;grid-template-columns:110px repeat(2,minmax(0,1fr));gap:8px;align-items:stretch}
+.cell{border:1px solid var(--line);border-radius:9px;padding:12px;text-align:center;background:#fafbfc;min-width:0}
+.head{font-weight:800;background:#f0f2f5}.time{font-weight:800;display:flex;align-items:center;justify-content:center;background:#f5f6f8}.symbol{font-size:22px;font-weight:800;color:var(--ink)}
+.flow{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:10px;align-items:center;margin-top:16px}.step{border:1px solid var(--line);border-radius:10px;padding:14px;background:#fafbfc;min-height:128px;min-width:0}.step h3{margin:0 0 10px;font-size:16px}.arrow{font-size:26px;color:var(--muted);font-weight:800}.complex{font-family:Consolas,monospace;font-size:14px;line-height:1.55;overflow-wrap:anywhere}.good{color:var(--green);font-weight:800}.bad{color:var(--red);font-weight:800}
+.bottom{display:grid;grid-template-columns:1fr 360px;gap:18px;margin-top:18px}.canvas{height:370px}canvas{display:block;width:100%;height:100%}.matrix,.take{border:1px solid var(--line);border-radius:10px;padding:14px;line-height:1.6;background:#f8f9fb}.matrix{font-family:Cambria Math,Times New Roman,serif}.metrics{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:12px}.metric{border:1px solid var(--line);border-radius:10px;background:#fafbfc;padding:11px}.metric span{display:block;color:var(--muted);font-size:13px}.metric strong{display:block;font-size:21px;margin-top:4px}.take{margin-top:14px;font-weight:700}.small{font-size:13px;color:var(--muted);line-height:1.5}
 @media(max-width:980px){.top,.bottom{grid-template-columns:1fr}.flow{grid-template-columns:1fr}.arrow{transform:rotate(90deg);text-align:center}.canvas{height:340px}}
+@media(max-width:480px){body{overflow-x:hidden}.shell{padding:10px}.hero,.card{padding:14px}.timeline{grid-template-columns:70px repeat(2,minmax(0,1fr));gap:5px}.cell{padding:8px 4px}.symbol{font-size:16px}.row{gap:6px}.value{min-width:58px;font-size:13px}.metrics{grid-template-columns:1fr}.canvas{height:300px}.complex{font-size:12px}button{max-width:100%}}
 </style>
 </head>
 <body>
 <div class="shell">
-<section class="hero"><h1>Alamouti Encoding and Linear Detection</h1><p>Choose two QPSK symbols and a two-antenna channel. The orthogonal code makes the matched-filter outputs decouple into two ordinary scalar detections.</p></section>
+<section class="hero"><h1>Alamouti encoding and linear detection</h1><p>Choose two QPSK symbols and a two-antenna channel. The orthogonal code makes the matched-filter outputs decouple into two scalar symbol detections.</p></section>
 <div class="top">
 <aside class="card">
 <h2 style="margin-top:0">Inputs</h2>
 <label for="s0">Symbol s[0]</label><select id="s0"><option value="0">(+1 + j)/√2</option><option value="1">(−1 + j)/√2</option><option value="2">(−1 − j)/√2</option><option value="3">(+1 − j)/√2</option></select>
 <label for="s1">Symbol s[1]</label><select id="s1"><option value="0">(+1 + j)/√2</option><option value="1" selected>(−1 + j)/√2</option><option value="2">(−1 − j)/√2</option><option value="3">(+1 − j)/√2</option></select>
-<label for="a1">|h₁|</label><div class="row"><input id="a1" type="range" min="0.1" max="2.5" step="0.05" value="1"><span class="value" id="a1v">1.00</span></div>
-<label for="p1">∠h₁</label><div class="row"><input id="p1" type="range" min="-180" max="180" step="5" value="25"><span class="value" id="p1v">25°</span></div>
-<label for="a2">|h₂|</label><div class="row"><input id="a2" type="range" min="0.1" max="2.5" step="0.05" value="0.8"><span class="value" id="a2v">0.80</span></div>
-<label for="p2">∠h₂</label><div class="row"><input id="p2" type="range" min="-180" max="180" step="5" value="-70"><span class="value" id="p2v">−70°</span></div>
+<label for="a1">|h₁|</label><div class="row"><input id="a1" type="range" min="0.01" max="2.5" step="0.01" value="1"><span class="value" id="a1v">1.00</span></div>
+<label for="p1">∠h₁</label><div class="row"><input id="p1" type="range" min="-180" max="180" step="1" value="25"><span class="value" id="p1v">25°</span></div>
+<label for="a2">|h₂|</label><div class="row"><input id="a2" type="range" min="0.01" max="2.5" step="0.01" value="0.8"><span class="value" id="a2v">0.80</span></div>
+<label for="p2">∠h₂</label><div class="row"><input id="p2" type="range" min="-180" max="180" step="1" value="-70"><span class="value" id="p2v">−70°</span></div>
 <label for="snr">Reference GEₓ/N₀</label><div class="row"><input id="snr" type="range" min="0" max="25" step="1" value="12"><span class="value" id="snrv">12 dB</span></div>
 <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:16px"><button id="noise">Draw new noise</button><button id="random" class="secondary">Random channel</button></div>
-<p class="small">The channel is constant over both time slots and known at the receiver. Noise samples are independent CN(0,N₀).</p>
+<p class="small">The channel is constant over both time slots and known at the receiver. The numerical samples use G = Eₓ = 1. Noise is CN(0,N₀). Moving the SNR slider rescales the same unit-noise draw; only “Draw new noise” changes its direction.</p>
 </aside>
 <main class="card">
 <h2 style="margin-top:0">1. Encode across antennas and time</h2>
 <div class="timeline">
 <div class="cell head"></div><div class="cell head">TX antenna 1</div><div class="cell head">TX antenna 2</div>
-<div class="cell time">time 0</div><div class="cell"><div class="symbol" id="t00">s₀/√2</div></div><div class="cell"><div class="symbol" id="t01">s₁/√2</div></div>
-<div class="cell time">time 1</div><div class="cell"><div class="symbol" id="t10">−s₁*/√2</div></div><div class="cell"><div class="symbol" id="t11">s₀*/√2</div></div>
+<div class="cell time">time 0</div><div class="cell"><div class="symbol">s₀/√2</div></div><div class="cell"><div class="symbol">s₁/√2</div></div>
+<div class="cell time">time 1</div><div class="cell"><div class="symbol">−s₁*/√2</div></div><div class="cell"><div class="symbol">s₀*/√2</div></div>
 </div>
-<h2>2. Receive and apply Hᴴ</h2>
+<h2>2. Receive and apply the matched filter H₀ᴴ</h2>
 <div class="flow">
 <div class="step"><h3>Received vector</h3><div class="complex" id="received"></div></div><div class="arrow">→</div>
 <div class="step"><h3>Matched-filter outputs</h3><div class="complex" id="matched"></div></div><div class="arrow">→</div>
@@ -46,29 +64,37 @@
 </main>
 </div>
 <div class="bottom">
-<section class="card"><h2 style="margin-top:0">Detected symbols on the QPSK plane</h2><div class="canvas"><canvas id="constellation"></canvas></div></section>
+<section class="card"><h2 style="margin-top:0">Detected symbols on the QPSK plane</h2><div class="canvas"><canvas id="constellation" aria-label="QPSK constellation with transmitted and detected symbols"></canvas></div></section>
 <aside class="card">
 <h2 style="margin-top:0">Why the symbols separate</h2>
 <div class="matrix" id="matrix"></div>
 <div class="metrics">
 <div class="metric"><span>Alamouti SNR</span><strong id="alamoutiSnr">—</strong></div>
-<div class="metric"><span>MRT SNR</span><strong id="mrtSnr">—</strong></div>
-<div class="metric"><span>Gap</span><strong>3.01 dB</strong></div>
+<div class="metric"><span>MRT SNR (perfect CSIT)</span><strong id="mrtSnr">—</strong></div>
+<div class="metric"><span>MRT − Alamouti</span><strong>3.01 dB</strong></div>
 <div class="metric"><span>Detection</span><strong id="status">—</strong></div>
 </div>
-<div class="take">The conjugation and sign change make the two channel columns orthogonal. After Hᴴ, interference between s[0] and s[1] cancels exactly; only scaled symbols plus noise remain.</div>
+<div class="take">The conjugation and sign change make the columns of the unscaled channel matrix H₀ orthogonal. After applying H₀ᴴ, interference between s[0] and s[1] cancels exactly. The MRT comparison assumes perfect transmitter channel knowledge and the same total transmit energy.</div>
 </aside>
 </div>
 </div>
 <script>
-const $=id=>document.getElementById(id),rt=Math.SQRT1_2;const qpsk=[{re:rt,im:rt,name:'(+1 + j)/√2'},{re:-rt,im:rt,name:'(−1 + j)/√2'},{re:-rt,im:-rt,name:'(−1 − j)/√2'},{re:rt,im:-rt,name:'(+1 − j)/√2'}];let noiseSeed={v0:{re:0,im:0},v1:{re:0,im:0}};
+const $=id=>document.getElementById(id),rt=Math.SQRT1_2;
+const qpsk=[{re:rt,im:rt,name:'(+1 + j)/√2'},{re:-rt,im:rt,name:'(−1 + j)/√2'},{re:-rt,im:-rt,name:'(−1 − j)/√2'},{re:rt,im:-rt,name:'(+1 − j)/√2'}];
+let unitNoise={v0:{re:0,im:0},v1:{re:0,im:0}};
 function C(re,im){return{re,im}}function add(a,b){return C(a.re+b.re,a.im+b.im)}function sub(a,b){return C(a.re-b.re,a.im-b.im)}function mul(a,b){return C(a.re*b.re-a.im*b.im,a.re*b.im+a.im*b.re)}function scale(a,s){return C(a.re*s,a.im*s)}function conj(a){return C(a.re,-a.im)}function mag2(a){return a.re*a.re+a.im*a.im}function polar(r,d){const t=d*Math.PI/180;return C(r*Math.cos(t),r*Math.sin(t))}
-function gaussian(){let u=0,v=0;while(u===0)u=Math.random();while(v===0)v=Math.random();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v)}function cnNoise(N0){const s=Math.sqrt(N0/2);return C(s*gaussian(),s*gaussian())}function fmt(z){const r=Math.abs(z.re)<5e-4?0:z.re,i=Math.abs(z.im)<5e-4?0:z.im;return `${r.toFixed(3)} ${i<0?'−':'+'} j${Math.abs(i).toFixed(3)}`}
+function gaussian(){let u=0,v=0;while(u===0)u=Math.random();while(v===0)v=Math.random();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v)}
+function cnUnit(){return C(gaussian()/Math.sqrt(2),gaussian()/Math.sqrt(2))}
+function fmt(z){const re=Math.abs(z.re)<5e-4?0:z.re,im=Math.abs(z.im)<5e-4?0:z.im;return `${re.toFixed(3)} ${im<0?'−':'+'} j${Math.abs(im).toFixed(3)}`}
 function nearest(z){let best=0,d=Infinity;qpsk.forEach((q,i)=>{const dd=mag2(sub(z,q));if(dd<d){d=dd;best=i}});return best}
-function drawNoise(){const N0=1/Math.pow(10,+$('snr').value/10);noiseSeed={v0:cnNoise(N0),v1:cnNoise(N0)};render()}
-function randomChannel(){function h(){return C(gaussian()/Math.sqrt(2),gaussian()/Math.sqrt(2))}const h1=h(),h2=h();function set(a,p,z){a.value=Math.max(.1,Math.min(2.5,Math.sqrt(mag2(z)))).toFixed(2);p.value=Math.round(Math.atan2(z.im,z.re)*180/Math.PI/5)*5}set($('a1'),$('p1'),h1);set($('a2'),$('p2'),h2);drawNoise()}
-function drawConstellation(s0,s1,z0,z1,d0,d1){const c=$('constellation'),ctx=c.getContext('2d'),dpr=devicePixelRatio||1,r=c.getBoundingClientRect();c.width=Math.round(r.width*dpr);c.height=Math.round(r.height*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);const W=r.width,H=r.height,m=35,cx=W/2,cy=H/2,scale=Math.min(W,H)*.30;ctx.clearRect(0,0,W,H);ctx.strokeStyle='#dce3ef';ctx.lineWidth=1;for(let k=-1.5;k<=1.5;k+=.5){ctx.beginPath();ctx.moveTo(cx+k*scale,m);ctx.lineTo(cx+k*scale,H-m);ctx.stroke();ctx.beginPath();ctx.moveTo(m,cy-k*scale);ctx.lineTo(W-m,cy-k*scale);ctx.stroke()}ctx.strokeStyle='#8b96ad';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(m,cy);ctx.lineTo(W-m,cy);ctx.moveTo(cx,m);ctx.lineTo(cx,H-m);ctx.stroke();ctx.fillStyle='#17213a';ctx.font='bold 13px Segoe UI,Arial';ctx.fillText('Re',W-45,cy-8);ctx.fillText('Im',cx+8,35);qpsk.forEach(q=>{ctx.fillStyle='#aeb7ca';ctx.beginPath();ctx.arc(cx+q.re*scale,cy-q.im*scale,7,0,2*Math.PI);ctx.fill()});function point(z,color,label,shape){ctx.fillStyle=color;ctx.strokeStyle=color;ctx.lineWidth=3;const x=cx+z.re*scale,y=cy-z.im*scale;if(shape==='x'){ctx.beginPath();ctx.moveTo(x-7,y-7);ctx.lineTo(x+7,y+7);ctx.moveTo(x+7,y-7);ctx.lineTo(x-7,y+7);ctx.stroke()}else{ctx.beginPath();ctx.arc(x,y,8,0,2*Math.PI);ctx.fill()}ctx.font='bold 14px Segoe UI,Arial';ctx.fillText(label,x+10,y-10)}point(s0,'#3157d5','s₀','dot');point(s1,'#7651c8','s₁','dot');point(z0,d0==+$('s0').value?'#15976c':'#d94c5c','z₀','x');point(z1,d1==+$('s1').value?'#15976c':'#d94c5c','z₁','x')}
-function render(){const s0=qpsk[+$('s0').value],s1=qpsk[+$('s1').value],h1=polar(+$('a1').value,+$('p1').value),h2=polar(+$('a2').value,+$('p2').value),rho=Math.pow(10,+$('snr').value/10),N0=1/rho,k=Math.SQRT1_2,alpha=mag2(h1)+mag2(h2);$('a1v').textContent=(+$('a1').value).toFixed(2);$('p1v').textContent=(+$('p1').value)+'°';$('a2v').textContent=(+$('a2').value).toFixed(2);$('p2v').textContent=(+$('p2').value)+'°';$('snrv').textContent=$('snr').value+' dB';const y0=add(scale(add(mul(h1,s0),mul(h2,s1)),k),noiseSeed.v0);const y1=add(scale(add(scale(mul(h1,conj(s1)),-1),mul(h2,conj(s0))),k),noiseSeed.v1);const yt1=conj(y1);const r0=add(mul(conj(h1),y0),mul(h2,yt1));const r1=sub(mul(conj(h2),y0),mul(h1,yt1));const denom=k*alpha,z0=scale(r0,1/denom),z1=scale(r1,1/denom),d0=nearest(z0),d1=nearest(z1);$('received').innerHTML=`y[0] = ${fmt(y0)}<br>y*[1] = ${fmt(yt1)}`;$('matched').innerHTML=`r₀ = h₁*y[0] + h₂y*[1]<br>&nbsp;&nbsp;= ${fmt(r0)}<br>r₁ = h₂*y[0] − h₁y*[1]<br>&nbsp;&nbsp;= ${fmt(r1)}`;$('estimates').innerHTML=`z₀ = ${fmt(z0)} → <span class="${d0==+$('s0').value?'good':'bad'}">${qpsk[d0].name}</span><br>z₁ = ${fmt(z1)} → <span class="${d1==+$('s1').value?'good':'bad'}">${qpsk[d1].name}</span>`;const off1=add(mul(conj(h1),h2),mul(h2,scale(conj(h1),-1))),off2=add(mul(conj(h2),h1),mul(scale(h1,-1),conj(h2)));$('matrix').innerHTML=`HᴴH = <strong>${alpha.toFixed(3)} I</strong><br>diagonal entries: ${alpha.toFixed(3)}<br>off-diagonal magnitudes: ${Math.sqrt(mag2(off1)).toExponential(1)}, ${Math.sqrt(mag2(off2)).toExponential(1)}<br><br>r<sub>k</sub> = √(G/2) α s[k] + n′<sub>k</sub>`;const ga=alpha*rho/2,gm=alpha*rho;$('alamoutiSnr').textContent=(10*Math.log10(ga)).toFixed(1)+' dB';$('mrtSnr').textContent=(10*Math.log10(gm)).toFixed(1)+' dB';$('status').textContent=(d0==+$('s0').value&&d1==+$('s1').value)?'Both correct':'Error present';$('status').className=(d0==+$('s0').value&&d1==+$('s1').value)?'good':'bad';drawConstellation(s0,s1,z0,z1,d0,d1)}
-['s0','s1','a1','p1','a2','p2','snr'].forEach(id=>$(id).oninput=id==='snr'?drawNoise:render);$('noise').onclick=drawNoise;$('random').onclick=randomChannel;window.onresize=render;drawNoise();
+function drawNoise(){unitNoise={v0:cnUnit(),v1:cnUnit()};render()}
+function randomChannel(){function h(){return C(gaussian()/Math.sqrt(2),gaussian()/Math.sqrt(2))}const h1=h(),h2=h();function set(a,p,z){const r=Math.max(.01,Math.sqrt(mag2(z)));if(r>+a.max)a.max=(Math.ceil(r*10)/10).toFixed(1);a.value=r.toFixed(2);p.value=Math.round(Math.atan2(z.im,z.re)*180/Math.PI)}set($('a1'),$('p1'),h1);set($('a2'),$('p2'),h2);render()}
+function drawConstellation(s0,s1,z0,z1,d0,d1){const c=$('constellation'),ctx=c.getContext('2d'),dpr=devicePixelRatio||1,r=c.getBoundingClientRect();c.width=Math.round(r.width*dpr);c.height=Math.round(r.height*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);const W=r.width,H=r.height,m=42,cx=W/2,cy=H/2,maxAbs=Math.max(1,Math.abs(z0.re),Math.abs(z0.im),Math.abs(z1.re),Math.abs(z1.im)),limit=Math.max(1.5,Math.ceil(maxAbs*1.25*2)/2),plotScale=Math.min((W-2*m)/(2*limit),(H-2*m)/(2*limit)),rawStep=limit/4,step=rawStep<=.5?.5:rawStep<=1?1:rawStep<=2?2:rawStep<=5?5:10*Math.ceil(rawStep/10);ctx.clearRect(0,0,W,H);ctx.strokeStyle='#d9dee8';ctx.lineWidth=1;for(let k=-Math.floor(limit/step)*step;k<=limit+1e-9;k+=step){ctx.beginPath();ctx.moveTo(cx+k*plotScale,m);ctx.lineTo(cx+k*plotScale,H-m);ctx.stroke();ctx.beginPath();ctx.moveTo(m,cy-k*plotScale);ctx.lineTo(W-m,cy-k*plotScale);ctx.stroke()}ctx.strokeStyle='#8992a2';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(m,cy);ctx.lineTo(W-m,cy);ctx.moveTo(cx,m);ctx.lineTo(cx,H-m);ctx.stroke();ctx.fillStyle='#1d2433';ctx.font='bold 13px Segoe UI,Arial';ctx.fillText('Re',W-45,cy-8);ctx.fillText('Im',cx+8,32);ctx.font='12px Segoe UI,Arial';ctx.fillStyle='#626b7a';ctx.fillText(`auto scale: ±${limit.toFixed(1)}`,m,22);qpsk.forEach(q=>{ctx.fillStyle='#aeb6c4';ctx.beginPath();ctx.arc(cx+q.re*plotScale,cy-q.im*plotScale,7,0,2*Math.PI);ctx.fill()});function point(z,color,label,shape,dx,dy){ctx.fillStyle=color;ctx.strokeStyle=color;ctx.lineWidth=3;const x=cx+z.re*plotScale,y=cy-z.im*plotScale;if(shape==='x'){ctx.beginPath();ctx.moveTo(x-7,y-7);ctx.lineTo(x+7,y+7);ctx.moveTo(x+7,y-7);ctx.lineTo(x-7,y+7);ctx.stroke()}else{ctx.beginPath();ctx.arc(x,y,8,0,2*Math.PI);ctx.fill()}ctx.font='bold 14px Segoe UI,Arial';ctx.fillText(label,x+dx,y+dy)}const sameSymbol=+$('s0').value===+$('s1').value,closeEst=mag2(sub(z0,z1))<Math.pow(.16*limit,2);point(s0,'#3157d5','s₀','dot',10,-10);point(s1,'#6d56aa','s₁','dot',10,sameSymbol?20:-10);point(z0,d0==+$('s0').value?'#187a5b':'#c94747','z₀','x',10,-10);point(z1,d1==+$('s1').value?'#187a5b':'#c94747','z₁','x',10,closeEst?20:-10)}
+function render(){const s0=qpsk[+$('s0').value],s1=qpsk[+$('s1').value],h1=polar(+$('a1').value,+$('p1').value),h2=polar(+$('a2').value,+$('p2').value),rho=Math.pow(10,+$('snr').value/10),N0=1/rho,k=Math.SQRT1_2,alpha=mag2(h1)+mag2(h2),n0=scale(unitNoise.v0,Math.sqrt(N0)),n1=scale(unitNoise.v1,Math.sqrt(N0));$('a1v').textContent=(+$('a1').value).toFixed(2);$('p1v').textContent=(+$('p1').value)+'°';$('a2v').textContent=(+$('a2').value).toFixed(2);$('p2v').textContent=(+$('p2').value)+'°';$('snrv').textContent=$('snr').value+' dB';const y0=add(scale(add(mul(h1,s0),mul(h2,s1)),k),n0);const y1=add(scale(add(scale(mul(h1,conj(s1)),-1),mul(h2,conj(s0))),k),n1);const y1c=conj(y1);const r0=add(mul(conj(h1),y0),mul(h2,y1c));const r1=sub(mul(conj(h2),y0),mul(h1,y1c));const denom=k*alpha,z0=scale(r0,1/denom),z1=scale(r1,1/denom),d0=nearest(z0),d1=nearest(z1);$('received').innerHTML=`y[0] = ${fmt(y0)}<br>y*[1] = ${fmt(y1c)}`;$('matched').innerHTML=`r₀ = h₁* y[0] + h₂ y*[1]<br>&nbsp;&nbsp;= ${fmt(r0)}<br>r₁ = h₂* y[0] − h₁ y*[1]<br>&nbsp;&nbsp;= ${fmt(r1)}`;$('estimates').innerHTML=`z₀ = ${fmt(z0)} → <span class="${d0==+$('s0').value?'good':'bad'}">${qpsk[d0].name}</span><br>z₁ = ${fmt(z1)} → <span class="${d1==+$('s1').value?'good':'bad'}">${qpsk[d1].name}</span>`;const off1=add(mul(conj(h1),h2),mul(h2,scale(conj(h1),-1))),off2=add(mul(conj(h2),h1),mul(scale(h1,-1),conj(h2)));$('matrix').innerHTML=`H₀ᴴH₀ = <strong>${alpha.toFixed(3)} I</strong><br>α = |h₁|² + |h₂|² = ${alpha.toFixed(3)}<br>off-diagonal magnitudes: ${Math.sqrt(mag2(off1)).toExponential(1)}, ${Math.sqrt(mag2(off2)).toExponential(1)}<br><br>r<sub>k</sub> = √(G/2) α s[k] + n′<sub>k</sub><br>n′<sub>k</sub> ~ CN(0, αN₀)`;const ga=alpha*rho/2,gm=alpha*rho;$('alamoutiSnr').textContent=(10*Math.log10(ga)).toFixed(1)+' dB';$('mrtSnr').textContent=(10*Math.log10(gm)).toFixed(1)+' dB';const correct=d0==+$('s0').value&&d1==+$('s1').value;$('status').textContent=correct?'Both correct':'Error present';$('status').className=correct?'good':'bad';drawConstellation(s0,s1,z0,z1,d0,d1)}
+['s0','s1','a1','p1','a2','p2','snr'].forEach(id=>$(id).oninput=render);
+$('noise').onclick=drawNoise;$('random').onclick=randomChannel;
+window.addEventListener('resize',render);
+drawNoise();
 </script>
-</body></html>
+</body>
+</html>

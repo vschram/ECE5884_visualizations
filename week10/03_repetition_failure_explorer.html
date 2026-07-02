@@ -1,52 +1,87 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Why Spatial Repetition Fails</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Blind Spatial Repetition and Diversity</title>
 <style>
-:root{--ink:#18213b;--muted:#5d6881;--blue:#3157d5;--red:#d94c5c;--orange:#e57b25;--green:#16956a;--line:#dce3ef}
-*{box-sizing:border-box}body{margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;background:linear-gradient(135deg,#fff6ef,#f5f7ff 58%,#effaf6);color:var(--ink)}
-.shell{max-width:1220px;margin:auto;padding:24px}.hero{background:linear-gradient(120deg,#7a2f2e,#d65347 55%,#e88932);color:white;border-radius:22px;padding:24px 28px;box-shadow:0 18px 44px rgba(147,58,46,.2)}h1{margin:0 0 8px;font-size:clamp(28px,4vw,46px)}.hero p{margin:0;max-width:900px;color:#fff0ec;line-height:1.5}
-.layout{display:grid;grid-template-columns:330px 1fr;gap:18px;margin-top:18px}.card{background:rgba(255,255,255,.97);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:0 10px 28px rgba(35,55,95,.08)}label{font-weight:800;display:block;margin:13px 0 6px}.row{display:flex;align-items:center;gap:10px}input[type=range]{flex:1}.value{min-width:70px;text-align:right;font-weight:900;color:#b13f38}button{border:0;border-radius:12px;padding:11px 14px;background:#d65347;color:white;font-weight:800;cursor:pointer;box-shadow:0 7px 16px rgba(214,83,71,.22)}
-.canvas-wrap{height:410px}canvas{display:block;width:100%;height:100%}.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}.metric{border:1px solid var(--line);border-radius:14px;background:#fafbfe;padding:12px}.metric span{font-size:13px;color:var(--muted)}.metric strong{display:block;font-size:23px;margin-top:4px}.formula{background:#fff0e8;border-left:5px solid var(--orange);border-radius:13px;padding:14px;margin-top:14px;line-height:1.55}.proof{background:#eef2ff;border:1px solid #d4ddff;border-radius:14px;padding:14px;margin-top:14px;line-height:1.5}.take{background:#eaf8f3;border:1px solid #c7eadc;border-radius:14px;padding:15px;margin-top:14px;font-weight:700;line-height:1.5}.small{color:var(--muted);font-size:13px;line-height:1.5}
+:root{--ink:#1d2433;--muted:#626b7a;--blue:#3157d5;--orange:#d97822;--red:#c94747;--green:#187a5b;--line:#d9dee8;--panel:#fff;--bg:#f5f6f8}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+.shell{max-width:1220px;margin:auto;padding:24px}
+.hero{background:transparent;border:0;border-radius:0;padding:0 2px 4px}
+h1{margin:0 0 8px;font-size:clamp(25px,3vw,34px);font-weight:650;color:#202124}
+.hero p{margin:0;max-width:940px;color:var(--muted);line-height:1.5}h2,h3{color:#202124;font-weight:650}
+.layout{display:grid;grid-template-columns:330px 1fr;gap:18px;margin-top:18px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px;min-width:0}
+label{font-weight:700;display:block;margin:13px 0 6px}
+.row{display:flex;align-items:center;gap:10px}
+input[type=range]{flex:1;min-width:0}
+.value{min-width:70px;text-align:right;font-weight:750;color:var(--ink);font-variant-numeric:tabular-nums}
+button{border:1px solid #2448b8;border-radius:8px;padding:10px 13px;background:var(--blue);color:white;font-weight:700;cursor:pointer}
+button.secondary{background:#626b7a;border-color:#515967}
+button:hover{filter:brightness(.94)}
+button:focus-visible,input:focus-visible{outline:3px solid rgba(49,87,213,.25);outline-offset:2px}
+.canvas-wrap{height:410px}
+canvas{display:block;width:100%;height:100%}
+.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
+.metric{border:1px solid var(--line);border-radius:10px;background:#fafbfc;padding:12px}
+.metric span{font-size:13px;color:var(--muted)}
+.metric strong{display:block;font-size:22px;margin-top:4px}
+.formula,.proof,.take{border:1px solid var(--line);border-radius:10px;padding:14px;margin-top:14px;line-height:1.55;background:#f8f9fb}
+.take{font-weight:700}
+.small{color:var(--muted);font-size:13px;line-height:1.5}
 @media(max-width:900px){.layout{grid-template-columns:1fr}.canvas-wrap{height:360px}.metrics{grid-template-columns:1fr}}
+@media(max-width:480px){.shell{padding:10px}.hero,.card{padding:14px}.canvas-wrap{height:310px}}
 </style>
 </head>
 <body>
 <div class="shell">
-<section class="hero"><h1>Why Sending the Same Symbol Twice Gives No Diversity</h1><p>With equal power split, the two transmitted copies combine into one effective complex channel. Their phases may reinforce or cancel.</p></section>
+<section class="hero">
+  <h1>Blind spatial repetition: one effective channel</h1>
+  <p>When the same symbol is sent simultaneously from two antennas with equal total power and no transmitter channel knowledge, the copies form one effective complex channel. Their phases can reinforce or cancel.</p>
+</section>
 <div class="layout">
 <aside class="card">
 <h2 style="margin-top:0">Set the two channels</h2>
-<label for="a1">|h₁|</label><div class="row"><input id="a1" type="range" min="0" max="2.5" step="0.05" value="1"><span class="value" id="a1v">1.00</span></div>
-<label for="p1">∠h₁</label><div class="row"><input id="p1" type="range" min="-180" max="180" step="5" value="0"><span class="value" id="p1v">0°</span></div>
-<label for="a2">|h₂|</label><div class="row"><input id="a2" type="range" min="0" max="2.5" step="0.05" value="1"><span class="value" id="a2v">1.00</span></div>
-<label for="p2">∠h₂</label><div class="row"><input id="p2" type="range" min="-180" max="180" step="5" value="180"><span class="value" id="p2v">180°</span></div>
-<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:16px"><button id="random">Random Rayleigh fade</button><button id="align" style="background:#3157d5">Align phases</button></div>
-<div class="formula"><strong>Equal-power repetition</strong><br>h<sub>eff</sub> = (h₁ + h₂)/√2<br>γ<sub>rep</sub> = (GE<sub>x</sub>/N₀)|h<sub>eff</sub>|²</div>
-<p class="small">The √2 normalization keeps the total transmit energy per symbol equal to E<sub>x</sub>.</p>
+<label for="a1">|h₁|</label><div class="row"><input id="a1" type="range" min="0" max="4" step="0.01" value="1"><span class="value" id="a1v">1.00</span></div>
+<label for="p1">∠h₁</label><div class="row"><input id="p1" type="range" min="-180" max="180" step="0.1" value="0"><span class="value" id="p1v">0°</span></div>
+<label for="a2">|h₂|</label><div class="row"><input id="a2" type="range" min="0" max="4" step="0.01" value="1"><span class="value" id="a2v">1.00</span></div>
+<label for="p2">∠h₂</label><div class="row"><input id="p2" type="range" min="-180" max="180" step="0.1" value="180"><span class="value" id="p2v">180°</span></div>
+<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:16px"><button id="random">Random Rayleigh fade</button><button id="align" class="secondary">Show coherent alignment</button></div>
+<div class="formula"><strong>Simultaneous equal-power spatial repetition</strong><br>h<sub>eff</sub> = (h₁ + h₂)/√2<br>γ<sub>rep</sub> = (GE<sub>x</sub>/N₀)|h<sub>eff</sub>|²</div>
+<p class="small">The √2 normalisation keeps the total transmitted symbol energy equal to E<sub>x</sub>. The random button draws independent CN(0,1) channels and quantises their displayed magnitude and phase to the slider resolution.</p>
 </aside>
 <main class="card">
-<h2 style="margin-top:0">Phasor addition in the channel</h2>
-<div class="canvas-wrap"><canvas id="phasor"></canvas></div>
+<h2 style="margin-top:0">Phasor addition</h2>
+<div class="canvas-wrap"><canvas id="phasor" aria-label="Phasor diagram for two channel coefficients and their effective channel"></canvas></div>
 <div class="metrics">
 <div class="metric"><span>Repetition power |h₁+h₂|²/2</span><strong id="repPower">—</strong></div>
-<div class="metric"><span>Power sum |h₁|²+|h₂|²</span><strong id="sumPower">—</strong></div>
-<div class="metric"><span>Repetition / power sum</span><strong id="ratio">—</strong></div>
+<div class="metric"><span>MRT power benchmark |h₁|²+|h₂|² (perfect CSIT)</span><strong id="sumPower">—</strong></div>
+<div class="metric"><span>Repetition / MRT benchmark</span><strong id="ratio">—</strong></div>
 </div>
-<div class="proof"><strong>Distribution argument:</strong> if h₁,h₂ are independent CN(0,1), then (h₁+h₂)/√2 is also CN(0,1). Therefore |h<sub>eff</sub>|² is exponential—exactly the same fading-power distribution as SISO. The diversity order remains 1.</div>
+<div class="proof"><strong>Distribution argument:</strong> if h₁ and h₂ are independent CN(0,1), then (h₁+h₂)/√2 is also CN(0,1). Thus |h<sub>eff</sub>|² is exponential, as in SISO, and the diversity order remains 1.</div>
 <div class="take" id="take"></div>
 </main>
 </div>
 </div>
 <script>
-const $=id=>document.getElementById(id);function C(re,im){return{re,im}}function add(a,b){return C(a.re+b.re,a.im+b.im)}function mag2(a){return a.re*a.re+a.im*a.im}function fromPolar(r,d){const t=d*Math.PI/180;return C(r*Math.cos(t),r*Math.sin(t))}
+const $=id=>document.getElementById(id);
+function C(re,im){return{re,im}}
+function add(a,b){return C(a.re+b.re,a.im+b.im)}
+function mag2(a){return a.re*a.re+a.im*a.im}
+function fromPolar(r,d){const t=d*Math.PI/180;return C(r*Math.cos(t),r*Math.sin(t))}
 function gaussian(){let u=0,v=0;while(u===0)u=Math.random();while(v===0)v=Math.random();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v)}
 function rayleighChannel(){return C(gaussian()/Math.sqrt(2),gaussian()/Math.sqrt(2))}
-function setChannel(prefix,h){const r=Math.sqrt(mag2(h)),p=Math.atan2(h.im,h.re)*180/Math.PI;$(prefix==='h1'?'a1':'a2').value=Math.min(2.5,r).toFixed(2);$(prefix==='h1'?'p1':'p2').value=Math.round(p/5)*5}
-function arrow(ctx,x0,y0,x1,y1,color,width,label){ctx.strokeStyle=color;ctx.fillStyle=color;ctx.lineWidth=width;ctx.beginPath();ctx.moveTo(x0,y0);ctx.lineTo(x1,y1);ctx.stroke();const a=Math.atan2(y1-y0,x1-x0),s=10;ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x1-s*Math.cos(a-.45),y1-s*Math.sin(a-.45));ctx.lineTo(x1-s*Math.cos(a+.45),y1-s*Math.sin(a+.45));ctx.closePath();ctx.fill();ctx.font='bold 14px Segoe UI,Arial';ctx.fillText(label,x1+8,y1-8)}
-function draw(h1,h2){const c=$('phasor'),ctx=c.getContext('2d'),dpr=devicePixelRatio||1,r=c.getBoundingClientRect();c.width=Math.round(r.width*dpr);c.height=Math.round(r.height*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);const W=r.width,H=r.height,cx=W/2,cy=H/2,scale=Math.min(W,H)*.19;ctx.clearRect(0,0,W,H);ctx.strokeStyle='#dce3ef';ctx.lineWidth=1;for(let q=.5;q<=2.5;q+=.5){ctx.beginPath();ctx.arc(cx,cy,q*scale,0,2*Math.PI);ctx.stroke()}ctx.beginPath();ctx.moveTo(25,cy);ctx.lineTo(W-25,cy);ctx.moveTo(cx,25);ctx.lineTo(cx,H-25);ctx.stroke();ctx.fillStyle='#5d6881';ctx.font='12px Segoe UI,Arial';ctx.fillText('Re',W-38,cy-8);ctx.fillText('Im',cx+8,34);const s=add(h1,h2),eff=C(s.re/Math.sqrt(2),s.im/Math.sqrt(2));arrow(ctx,cx,cy,cx+h1.re*scale,cy-h1.im*scale,'#3157d5',4,'h₁');arrow(ctx,cx,cy,cx+h2.re*scale,cy-h2.im*scale,'#e57b25',4,'h₂');arrow(ctx,cx,cy,cx+eff.re*scale,cy-eff.im*scale,'#d94c5c',6,'h_eff');ctx.setLineDash([6,5]);ctx.strokeStyle='#9aa4ba';ctx.beginPath();ctx.moveTo(cx+h1.re*scale,cy-h1.im*scale);ctx.lineTo(cx+s.re*scale,cy-s.im*scale);ctx.stroke();ctx.setLineDash([])}
-function render(){const a1=+$('a1').value,p1=+$('p1').value,a2=+$('a2').value,p2=+$('p2').value,h1=fromPolar(a1,p1),h2=fromPolar(a2,p2),s=add(h1,h2),rep=mag2(s)/2,sum=mag2(h1)+mag2(h2),ratio=sum>1e-12?rep/sum:0;$('a1v').textContent=a1.toFixed(2);$('p1v').textContent=p1+'°';$('a2v').textContent=a2.toFixed(2);$('p2v').textContent=p2+'°';$('repPower').textContent=rep.toFixed(3);$('sumPower').textContent=sum.toFixed(3);$('ratio').textContent=(100*ratio).toFixed(1)+'%';const delta=Math.abs((((p2-p1)+540)%360)-180);let msg;if(rep<.03*sum&&sum>.05)msg='The channels nearly cancel. Two transmit antennas have created a deep fade rather than protecting against it.';else if(delta<20)msg='The channels happen to align, so repetition gives a strong instantaneous gain—but this requires favourable phases, not diversity.';else msg='The receiver sees only the single effective channel h_eff. Changing the phase difference can strengthen or weaken it.';$('take').textContent=msg;draw(h1,h2)}
-['a1','p1','a2','p2'].forEach(id=>$(id).oninput=render);$('align').onclick=()=>{$('p2').value=$('p1').value;render()};$('random').onclick=()=>{const h1=rayleighChannel(),h2=rayleighChannel();setChannel('h1',h1);setChannel('h2',h2);render()};window.onresize=render;render();
+function setChannel(prefix,h){const r=Math.sqrt(mag2(h)),p=Math.atan2(h.im,h.re)*180/Math.PI,a=$(prefix==='h1'?'a1':'a2'),ph=$(prefix==='h1'?'p1':'p2');if(r>+a.max)a.max=(Math.ceil(r*10)/10).toFixed(1);a.value=r.toFixed(2);ph.value=(Math.round(p*10)/10).toFixed(1)}
+function arrow(ctx,x0,y0,x1,y1,color,width,label,dx=8,dy=-8,dashed=false){ctx.save();ctx.strokeStyle=color;ctx.fillStyle=color;ctx.lineWidth=width;ctx.setLineDash(dashed?[7,5]:[]);const len=Math.hypot(x1-x0,y1-y0);if(len<2){ctx.setLineDash([]);ctx.beginPath();ctx.arc(x0,y0,Math.max(3,width),0,2*Math.PI);ctx.fill();ctx.font='bold 14px Segoe UI,Arial';ctx.fillText(label,x0+dx,y0+dy);ctx.restore();return}ctx.beginPath();ctx.moveTo(x0,y0);ctx.lineTo(x1,y1);ctx.stroke();ctx.setLineDash([]);const a=Math.atan2(y1-y0,x1-x0),sz=10;ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x1-sz*Math.cos(a-.45),y1-sz*Math.sin(a-.45));ctx.lineTo(x1-sz*Math.cos(a+.45),y1-sz*Math.sin(a+.45));ctx.closePath();ctx.fill();ctx.font='bold 14px Segoe UI,Arial';ctx.fillText(label,x1+dx,y1+dy);ctx.restore()}
+function draw(h1,h2){const c=$('phasor'),ctx=c.getContext('2d'),dpr=devicePixelRatio||1,r=c.getBoundingClientRect();c.width=Math.round(r.width*dpr);c.height=Math.round(r.height*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);const W=r.width,H=r.height,cx=W/2,cy=H/2,s=add(h1,h2),eff=C(s.re/Math.sqrt(2),s.im/Math.sqrt(2)),largest=Math.max(1,Math.sqrt(mag2(h1)),Math.sqrt(mag2(h2)),Math.sqrt(mag2(s)),Math.sqrt(mag2(eff))),radius=Math.ceil(largest*2)/2,scale=Math.min(W,H)*.39/radius;ctx.clearRect(0,0,W,H);ctx.strokeStyle='#d9dee8';ctx.lineWidth=1;for(let q=radius/5;q<=radius+1e-9;q+=radius/5){ctx.beginPath();ctx.arc(cx,cy,q*scale,0,2*Math.PI);ctx.stroke()}ctx.beginPath();ctx.moveTo(20,cy);ctx.lineTo(W-20,cy);ctx.moveTo(cx,20);ctx.lineTo(cx,H-20);ctx.stroke();ctx.fillStyle='#626b7a';ctx.font='12px Segoe UI,Arial';ctx.fillText('Re',W-38,cy-8);ctx.fillText('Im',cx+8,30);ctx.fillText(`radius ${radius.toFixed(1)}`,24,30);const h1x=cx+h1.re*scale,h1y=cy-h1.im*scale,h2x=cx+h2.re*scale,h2y=cy-h2.im*scale,sx=cx+s.re*scale,sy=cy-s.im*scale,ex=cx+eff.re*scale,ey=cy-eff.im*scale;ctx.save();ctx.setLineDash([5,5]);ctx.strokeStyle='#9aa4b5';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(h1x,h1y);ctx.lineTo(sx,sy);ctx.moveTo(h2x,h2y);ctx.lineTo(sx,sy);ctx.stroke();ctx.restore();arrow(ctx,cx,cy,h1x,h1y,'#3157d5',4,'h₁',8,-10);arrow(ctx,cx,cy,h2x,h2y,'#d97822',4,'h₂',8,18);arrow(ctx,cx,cy,sx,sy,'#747d8d',2,'h₁+h₂',8,34,true);arrow(ctx,cx,cy,ex,ey,'#c94747',6,'h_eff',8,-24)}
+function render(){const a1=+$('a1').value,p1=+$('p1').value,a2=+$('a2').value,p2=+$('p2').value,h1=fromPolar(a1,p1),h2=fromPolar(a2,p2),s=add(h1,h2),rep=mag2(s)/2,sum=mag2(h1)+mag2(h2),ratio=sum>1e-12?rep/sum:0;$('a1v').textContent=a1.toFixed(2);$('p1v').textContent=p1+'°';$('a2v').textContent=a2.toFixed(2);$('p2v').textContent=p2+'°';$('repPower').textContent=rep.toFixed(3);$('sumPower').textContent=sum.toFixed(3);$('ratio').textContent=(100*ratio).toFixed(1)+'%';const delta=Math.abs((((p2-p1)+540)%360)-180);let msg;if(sum<=1e-10)msg='Both channels are zero, so the effective channel is also zero.';else if(rep<.03*sum)msg='The channels nearly cancel. Two transmit antennas have created a deep fade rather than protection against fading.';else if(delta<20)msg='The effective contributions align and provide a strong instantaneous gain. Deliberately enforcing this at the transmitter requires channel-phase knowledge and is coherent beamforming, not blind repetition diversity.';else msg='The receiver sees one effective channel h_eff. Changing the phase difference can strengthen or weaken that single channel.';$('take').textContent=msg;draw(h1,h2)}
+['a1','p1','a2','p2'].forEach(id=>$(id).oninput=render);
+$('align').onclick=()=>{$('p2').value=$('p1').value;render()};
+$('random').onclick=()=>{setChannel('h1',rayleighChannel());setChannel('h2',rayleighChannel());render()};
+window.addEventListener('resize',render);
+render();
 </script>
-</body></html>
+</body>
+</html>
