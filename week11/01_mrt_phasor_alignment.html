@@ -1,101 +1,27 @@
 <!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>MRT phasor alignment</title>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>MRT phasor alignment</title>
 <style>
-:root{--ink:#17202a;--muted:#5f6b76;--line:#d9dee3;--panel:#f6f7f8;--accent:#234a73;--good:#2f6f4e;--warn:#9a5a18}
-*{box-sizing:border-box} body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--ink);background:#fff}
-main{max-width:1100px;margin:0 auto;padding:22px} h1{font-size:1.45rem;margin:0 0 6px} p{line-height:1.45}.intro{color:var(--muted);margin:0 0 18px}.layout{display:grid;grid-template-columns:minmax(300px,0.9fr) minmax(420px,1.3fr);gap:18px}.panel{border:1px solid var(--line);border-radius:10px;padding:16px;background:#fff}.controls{background:var(--panel)}.row{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:10px;align-items:center;margin:11px 0}.row strong{font-size:.95rem}.slider-wrap label{display:block;font-size:.76rem;color:var(--muted);margin-bottom:3px}input[type=range]{width:100%}.value{font-variant-numeric:tabular-nums;font-size:.85rem}.buttons{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}button{border:1px solid #aab3bb;background:#fff;border-radius:7px;padding:8px 11px;cursor:pointer;color:var(--ink)}button.primary{background:var(--accent);color:#fff;border-color:var(--accent)}canvas{display:block;width:100%;height:auto;border:1px solid var(--line);border-radius:8px;background:#fff}.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}.metric{border:1px solid var(--line);border-radius:8px;padding:10px}.metric span{display:block;color:var(--muted);font-size:.76rem}.metric b{display:block;margin-top:3px;font-size:1.08rem;font-variant-numeric:tabular-nums}.formula{margin-top:14px;padding:12px;border-left:4px solid var(--accent);background:var(--panel);font-family:Cambria,Georgia,serif}.note{font-size:.85rem;color:var(--muted);margin-top:10px}.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:.82rem;color:var(--muted);margin-top:8px}.swatch{display:inline-block;width:12px;height:3px;vertical-align:middle;margin-right:5px}.s1{background:#315d8a}.s2{background:#8a5a31}.s3{background:#66727d}.ss{background:#2f6f4e;height:4px}@media(max-width:850px){.layout{grid-template-columns:1fr}canvas{height:360px}}@media(max-width:520px){.row{grid-template-columns:1fr}.metrics{grid-template-columns:1fr}}
-</style>
-</head>
-<body>
-<main>
-<h1>MRT phasor alignment</h1>
-<p class="intro">Adjust the channel magnitudes and deliberately add transmit phase errors. Maximum-ratio transmission makes all received contributions point in the same direction.</p>
-<div class="layout">
-<section class="panel controls" aria-label="MRT controls">
-<h2 style="font-size:1.05rem;margin-top:0">Channel and beamforming controls</h2>
-<div id="rows"></div>
-<div class="buttons">
-<button class="primary" id="mrtBtn">Set perfect MRT</button>
-<button id="randomBtn">Random magnitudes</button>
-<button id="errorBtn">Add phase errors</button>
-</div>
-<div class="formula" id="formula"></div>
-<p class="note">The weights remain unit norm. Only the phase error changes, so the SNR loss is caused by imperfect coherent addition rather than extra transmit power.</p>
-</section>
-<section class="panel">
-<canvas id="plot" width="760" height="420" aria-label="Received phasor contributions"></canvas>
-<div class="legend">
-<span><i class="swatch s1"></i>Antenna 1</span><span><i class="swatch s2"></i>Antenna 2</span><span><i class="swatch s3"></i>Antenna 3</span><span><i class="swatch ss"></i>Vector sum</span>
-</div>
-<div class="metrics">
-<div class="metric"><span>|hᵀf|²</span><b id="gain">–</b></div>
-<div class="metric"><span>MRT optimum ‖h‖²</span><b id="optimum">–</b></div>
-<div class="metric"><span>Fraction of optimum</span><b id="efficiency">–</b></div>
-</div>
-</section>
-</div>
+:root{--ink:#17202a;--muted:#5f6b76;--line:#d9dee3;--panel:#f6f7f8;--accent:#234a73;--good:#2f6f4e}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--ink);background:#fff}main{max-width:1100px;margin:auto;padding:22px}h1{font-size:1.45rem;margin:0 0 6px}.intro{color:var(--muted);line-height:1.45;margin:0 0 18px}.layout{display:grid;grid-template-columns:minmax(300px,.9fr) minmax(420px,1.3fr);gap:18px}.panel{min-width:0;border:1px solid var(--line);border-radius:10px;padding:16px}.controls{background:var(--panel)}.row{display:grid;grid-template-columns:1.1fr 1fr 1fr;gap:10px;align-items:center;margin:11px 0}.row strong{font-size:.95rem}.slider-wrap label{display:block;font-size:.76rem;color:var(--muted);margin-bottom:3px}input[type=range]{width:100%}.value{font-variant-numeric:tabular-nums}.buttons{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}button{border:1px solid #aab3bb;background:#fff;border-radius:7px;padding:8px 10px;cursor:pointer}button.primary{background:var(--accent);color:#fff;border-color:var(--accent)}.formula{margin-top:14px;padding:11px;background:#fff;border-left:4px solid var(--accent);font-family:Cambria,Georgia,serif;line-height:1.5}.smallnote,.insight{font-size:.84rem;color:var(--muted);line-height:1.45}.insight{margin:11px 0 0}.scrollhint{display:none;margin:6px 0 0;color:var(--muted);font-size:.76rem}.canvas-scroll{width:100%;max-width:100%;overflow-x:auto}canvas{display:block;width:100%;height:auto;border:1px solid var(--line);border-radius:8px}.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:.8rem;color:var(--muted);margin-top:8px}.sw{display:inline-block;width:12px;height:3px;vertical-align:middle;margin-right:4px}.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:12px}.metric{border:1px solid var(--line);border-radius:8px;padding:9px}.metric span{display:block;color:var(--muted);font-size:.73rem}.metric b{font-variant-numeric:tabular-nums;font-size:1.04rem}@media(max-width:850px){.layout{grid-template-columns:1fr}}@media(max-width:600px){.scrollhint{display:block}.canvas-scroll canvas{width:720px;max-width:none}}@media(max-width:520px){.row,.metrics{grid-template-columns:1fr}}
+</style></head><body><main>
+<h1>MRT phasor alignment</h1><p class="intro">Adjust channel magnitudes and residual transmit-phase offsets. MRT co-phases the received contributions so that they add coherently.</p>
+<div class="layout"><section class="panel controls"><h2 style="font-size:1.05rem;margin-top:0">Channel and beamforming controls</h2><div id="rows"></div>
+<div class="buttons"><button class="primary" id="mrtBtn">Set perfect MRT</button><button id="commonBtn">Common +60° rotation</button><button id="errorBtn">Example relative errors</button><button id="randomBtn">Random magnitudes</button></div>
+<div class="formula" id="formula"></div><p class="smallnote">The beamformer always has unit norm. Only differences between the offsets affect coherent gain; a common phase rotation changes received phase but not SNR.</p></section>
+<section class="panel"><div class="canvas-scroll"><canvas id="plot" width="760" height="440" aria-label="Individual MRT phasors and head-to-tail addition"></canvas></div><p class="scrollhint">Scroll horizontally inside the figure to see the head-to-tail addition panel.</p>
+<div class="legend"><span><i class="sw" style="background:#315d8a"></i>Antenna 1</span><span><i class="sw" style="background:#8a5a31"></i>Antenna 2</span><span><i class="sw" style="background:#66727d"></i>Antenna 3</span><span><i class="sw" style="height:4px;background:#2f6f4e"></i>Vector sum</span></div>
+<div class="metrics"><div class="metric"><span>|hᵀf|²</span><b id="gain"></b></div><div class="metric"><span>MRT optimum ‖h‖²</span><b id="optimum"></b></div><div class="metric"><span>Fraction of optimum</span><b id="efficiency"></b></div></div><p class="insight" id="insight"></p></section></div>
 </main>
 <script>
 'use strict';
-const antennas=[
- {mag:1.00,phase:35,error:0},
- {mag:0.80,phase:-75,error:0},
- {mag:0.55,phase:140,error:0}
-];
-const colors=['#315d8a','#8a5a31','#66727d'];
-const rows=document.getElementById('rows');
-const canvas=document.getElementById('plot');
-const ctx=canvas.getContext('2d');
-const d2r=d=>d*Math.PI/180;
-const fmt=x=>Number(x).toFixed(3);
-function createControls(){
- rows.innerHTML='';
- antennas.forEach((a,i)=>{
-  const row=document.createElement('div'); row.className='row';
-  row.innerHTML=`<strong>Antenna ${i+1}</strong>
-   <div class="slider-wrap"><label>Channel magnitude |h${i+1}|: <span class="value" id="magv${i}"></span></label><input id="mag${i}" type="range" min="0.2" max="1.5" step="0.01" value="${a.mag}"></div>
-   <div class="slider-wrap"><label>Phase error δ${i+1}: <span class="value" id="errv${i}"></span></label><input id="err${i}" type="range" min="-180" max="180" step="1" value="${a.error}"></div>`;
-  rows.appendChild(row);
-  row.querySelector(`#mag${i}`).addEventListener('input',e=>{a.mag=+e.target.value;update()});
-  row.querySelector(`#err${i}`).addEventListener('input',e=>{a.error=+e.target.value;update()});
- });
-}
-function arrow(x0,y0,x1,y1,color,width,label){
- const ang=Math.atan2(y1-y0,x1-x0); ctx.strokeStyle=color;ctx.fillStyle=color;ctx.lineWidth=width;ctx.beginPath();ctx.moveTo(x0,y0);ctx.lineTo(x1,y1);ctx.stroke();
- const ah=9+width;ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x1-ah*Math.cos(ang-.42),y1-ah*Math.sin(ang-.42));ctx.lineTo(x1-ah*Math.cos(ang+.42),y1-ah*Math.sin(ang+.42));ctx.closePath();ctx.fill();
- if(label){ctx.font='13px system-ui';ctx.fillText(label,x1+7*Math.cos(ang),y1+7*Math.sin(ang));}
-}
-function drawGrid(cx,cy,r){
- ctx.clearRect(0,0,canvas.width,canvas.height);ctx.strokeStyle='#e4e7ea';ctx.lineWidth=1;
- [0.25,0.5,0.75,1].forEach(q=>{ctx.beginPath();ctx.arc(cx,cy,r*q,0,Math.PI*2);ctx.stroke()});
- ctx.beginPath();ctx.moveTo(cx-r-15,cy);ctx.lineTo(cx+r+15,cy);ctx.moveTo(cx,cy-r-15);ctx.lineTo(cx,cy+r+15);ctx.stroke();
- ctx.fillStyle='#5f6b76';ctx.font='13px system-ui';ctx.fillText('Re',cx+r+18,cy+4);ctx.fillText('Im',cx+5,cy-r-18);
-}
-function update(){
- antennas.forEach((a,i)=>{document.getElementById(`magv${i}`).textContent=a.mag.toFixed(2);document.getElementById(`errv${i}`).textContent=`${a.error.toFixed(0)}°`;document.getElementById(`mag${i}`).value=a.mag;document.getElementById(`err${i}`).value=a.error;});
- const norm=Math.sqrt(antennas.reduce((s,a)=>s+a.mag*a.mag,0));
- const contrib=antennas.map(a=>({amp:a.mag*a.mag/norm,ang:d2r(a.error)}));
- const sum=contrib.reduce((z,c)=>({re:z.re+c.amp*Math.cos(c.ang),im:z.im+c.amp*Math.sin(c.ang)}),{re:0,im:0});
- const gain=sum.re*sum.re+sum.im*sum.im, optimum=norm*norm, efficiency=gain/optimum;
- document.getElementById('gain').textContent=fmt(gain);
- document.getElementById('optimum').textContent=fmt(optimum);
- document.getElementById('efficiency').textContent=`${(100*efficiency).toFixed(1)}%`;
- document.getElementById('formula').innerHTML=`f<sub>m</sub> = (|h<sub>m</sub>|/‖h‖)e<sup>−j∠h<sub>m</sub></sup>e<sup>jδ<sub>m</sub></sup>. &nbsp; At MRT, every δ<sub>m</sub>=0 and h<sub>m</sub>f<sub>m</sub>=|h<sub>m</sub>|²/‖h‖ is real and positive.`;
- const cx=canvas.width/2,cy=canvas.height/2,r=Math.min(canvas.width,canvas.height)*0.37;drawGrid(cx,cy,r);
- const maxAmp=Math.max(norm,...contrib.map(c=>c.amp));const scale=r/(maxAmp*1.15);
- contrib.forEach((c,i)=>arrow(cx,cy,cx+scale*c.amp*Math.cos(c.ang),cy-scale*c.amp*Math.sin(c.ang),colors[i],3,''));
- arrow(cx,cy,cx+scale*sum.re,cy-scale*sum.im,'#2f6f4e',5,'sum');
- ctx.fillStyle='#17202a';ctx.font='bold 14px system-ui';ctx.fillText('Received contributions hₘfₘ',18,24);
- document.body.dataset.ready='true';window.__visualState={gain,optimum,efficiency,norm};
-}
-document.getElementById('mrtBtn').addEventListener('click',()=>{antennas.forEach(a=>a.error=0);update()});
-document.getElementById('randomBtn').addEventListener('click',()=>{antennas.forEach(a=>{a.mag=0.3+Math.random()*1.1;a.error=0});update()});
-document.getElementById('errorBtn').addEventListener('click',()=>{antennas.forEach(a=>a.error=-120+Math.random()*240);update()});
-createControls();update();
-</script>
-</body>
-</html>
+const antennas=[{mag:1,error:0},{mag:.8,error:0},{mag:.55,error:0}],colors=['#315d8a','#8a5a31','#66727d'];
+const rows=document.getElementById('rows'),canvas=document.getElementById('plot'),ctx=canvas.getContext('2d');
+const d2r=d=>d*Math.PI/180,wrap=d=>((d+180)%360+360)%360-180;
+function controls(){antennas.forEach((a,i)=>{const r=document.createElement('div');r.className='row';r.innerHTML=`<strong>Antenna ${i+1}</strong><div class="slider-wrap"><label>|h${i+1}|: <span class="value" id="mv${i}"></span></label><input id="m${i}" type="range" min="0.2" max="1.5" step="0.01" value="${a.mag}"></div><div class="slider-wrap"><label>Residual offset δ${i+1}: <span class="value" id="ev${i}"></span></label><input id="e${i}" type="range" min="-180" max="180" step="1" value="${a.error}"></div>`;rows.appendChild(r);r.querySelector(`#m${i}`).oninput=e=>{a.mag=+e.target.value;update()};r.querySelector(`#e${i}`).oninput=e=>{a.error=+e.target.value;update()}})}
+function arrow(x0,y0,x1,y1,c,w,label,dy=0,dashed=false){ctx.save();const a=Math.atan2(y1-y0,x1-x0);ctx.strokeStyle=c;ctx.fillStyle=c;ctx.lineWidth=w;if(dashed)ctx.setLineDash([7,5]);ctx.beginPath();ctx.moveTo(x0,y0);ctx.lineTo(x1,y1);ctx.stroke();ctx.setLineDash([]);const h=8+w;ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x1-h*Math.cos(a-.42),y1-h*Math.sin(a-.42));ctx.lineTo(x1-h*Math.cos(a+.42),y1-h*Math.sin(a+.42));ctx.closePath();ctx.fill();if(label){ctx.font='12px system-ui';ctx.fillText(label,x1+7*Math.cos(a),y1+7*Math.sin(a)+dy)}ctx.restore()}
+function axes(x,y,rx,ry){ctx.strokeStyle='#e4e7ea';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(x-rx,y);ctx.lineTo(x+rx,y);ctx.moveTo(x,y-ry);ctx.lineTo(x,y+ry);ctx.stroke()}
+function draw(cs,sum,norm){ctx.clearRect(0,0,canvas.width,canvas.height);ctx.strokeStyle='#d9dee3';ctx.beginPath();ctx.moveTo(380,42);ctx.lineTo(380,420);ctx.stroke();ctx.fillStyle='#17202a';ctx.font='bold 14px system-ui';ctx.textAlign='center';ctx.fillText('Individual contributions hₘfₘ',190,26);ctx.fillText('Head-to-tail addition',570,26);ctx.textAlign='left';const mx=Math.max(...cs.map(c=>c.amp)),sc=92/mx,ys=[120,225,330],ox=145;cs.forEach((c,i)=>{axes(ox,ys[i],88,36);ctx.fillStyle='#5f6b76';ctx.font='12px system-ui';ctx.fillText(`Antenna ${i+1}`,24,ys[i]+4);arrow(ox,ys[i],ox+sc*c.amp*Math.cos(c.ang),ys[i]-sc*c.amp*Math.sin(c.ang),colors[i],4,`|h${i+1}|²/‖h‖`,i===1?14:-7)});const x0=560,y0=235,s=128/norm;axes(x0,y0,155,155);arrow(x0,y0,x0+s*sum.re,y0-s*sum.im,'#2f6f4e',3,'sum',-24,true);let x=x0,y=y0;cs.forEach((c,i)=>{const nx=x+s*c.amp*Math.cos(c.ang),ny=y-s*c.amp*Math.sin(c.ang);arrow(x,y,nx,ny,colors[i],4,`c${i+1}`,i%2?-7:14);x=nx;y=ny});ctx.fillStyle='#5f6b76';ctx.font='12px system-ui';ctx.fillText('Re',704,y0+4);ctx.fillText('Im',x0+5,73)}
+function update(){antennas.forEach((a,i)=>{document.getElementById(`mv${i}`).textContent=a.mag.toFixed(2);document.getElementById(`ev${i}`).textContent=`${a.error.toFixed(0)}°`;document.getElementById(`m${i}`).value=a.mag;document.getElementById(`e${i}`).value=a.error});const norm=Math.sqrt(antennas.reduce((s,a)=>s+a.mag*a.mag,0)),cs=antennas.map(a=>({amp:a.mag*a.mag/norm,ang:d2r(a.error)})),sum=cs.reduce((z,c)=>({re:z.re+c.amp*Math.cos(c.ang),im:z.im+c.amp*Math.sin(c.ang)}),{re:0,im:0}),gain=sum.re**2+sum.im**2,opt=norm**2,eff=gain/opt;gainEl.textContent=gain.toFixed(3);optimum.textContent=opt.toFixed(3);efficiency.textContent=`${(100*eff).toFixed(1)}%`;formula.innerHTML=`f<sub>m</sub>=(|h<sub>m</sub>|/‖h‖)e<sup>−j∠h<sub>m</sub></sup>e<sup>jδ<sub>m</sub></sup>, &nbsp; h<sub>m</sub>f<sub>m</sub>=(|h<sub>m</sub>|²/‖h‖)e<sup>jδ<sub>m</sub></sup>.<br>Perfect MRT requires equal δ<sub>m</sub>; choosing all δ<sub>m</sub>=0 makes every contribution real and positive.`;const spread=Math.max(...antennas.map(a=>Math.abs(wrap(a.error-antennas[0].error)))),common=wrap(antennas[0].error);insight.textContent=spread<1.5?(Math.abs(common)<1.5?'Perfect MRT: all contributions are co-phased and the head-to-tail length reaches ‖h‖.':`All offsets share the same ${common.toFixed(0)}° rotation. The output rotates, but gain and SNR remain optimal.`):`Relative phase differences reduce coherent gain by ${(100*(1-eff)).toFixed(1)}%.`;draw(cs,sum,norm);document.body.dataset.ready='true';window.__visualState={gain,optimum:opt,efficiency:eff,norm,relativePhaseSpreadDeg:spread}}
+const gainEl=document.getElementById('gain'),optimum=document.getElementById('optimum'),efficiency=document.getElementById('efficiency'),formula=document.getElementById('formula'),insight=document.getElementById('insight');
+document.getElementById('mrtBtn').onclick=()=>{antennas.forEach(a=>a.error=0);update()};document.getElementById('commonBtn').onclick=()=>{antennas.forEach(a=>a.error=60);update()};document.getElementById('errorBtn').onclick=()=>{[-70,15,110].forEach((v,i)=>antennas[i].error=v);update()};document.getElementById('randomBtn').onclick=()=>{antennas.forEach(a=>{a.mag=.3+Math.random()*1.1;a.error=0});update()};controls();update();
+</script></body></html>
