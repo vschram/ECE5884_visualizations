@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Diversity Order Explorer</title>
+<style>
+:root{--ink:#17213a;--muted:#5e6983;--blue:#3157d5;--purple:#7b4fd3;--green:#15976c;--orange:#e57b25;--bg:#f4f7fc;--line:#dce3ef}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;background:radial-gradient(circle at 90% 0,#ede7ff,transparent 32%),linear-gradient(135deg,#eef3ff,#fbfcff);color:var(--ink)}
+.shell{max-width:1220px;margin:auto;padding:24px}.hero{background:linear-gradient(120deg,#34206f,#6b46c1 55%,#3157d5);color:#fff;border-radius:22px;padding:24px 28px;box-shadow:0 18px 45px rgba(67,44,139,.22)}h1{margin:0 0 8px;font-size:clamp(28px,4vw,46px)}.hero p{margin:0;color:#eee9ff;max-width:880px;line-height:1.5}
+.layout{display:grid;grid-template-columns:310px 1fr;gap:18px;margin-top:18px}.card{background:rgba(255,255,255,.97);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:0 10px 28px rgba(35,55,95,.08)}label{display:block;font-weight:800;margin:14px 0 6px}.row{display:flex;gap:10px;align-items:center}input[type=range]{flex:1}.value{min-width:66px;text-align:right;font-weight:900;color:var(--purple)}
+.segment{display:flex;background:#edf0f7;border-radius:12px;padding:4px;gap:4px}.segment button{flex:1;border:0;border-radius:9px;padding:9px;background:transparent;color:var(--muted);font-weight:800;cursor:pointer}.segment button.active{background:#fff;color:var(--purple);box-shadow:0 4px 12px rgba(30,45,80,.12)}
+.chart{height:455px}canvas{width:100%;height:100%;display:block}.legend{display:flex;flex-wrap:wrap;gap:12px;margin-top:10px}.legend span{display:flex;align-items:center;gap:6px;font-size:14px}.sw{width:16px;height:4px;border-radius:8px}
+.order-box{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:16px}.order{border:1px solid var(--line);background:#f8f9fd;border-radius:14px;padding:12px;text-align:center}.order strong{display:block;font-size:25px;color:var(--purple)}.formula{margin-top:15px;border-radius:14px;padding:14px;background:#f1edff;border-left:5px solid var(--purple);line-height:1.55}.take{margin-top:16px;background:#eaf8f3;border:1px solid #c8eadc;border-radius:14px;padding:15px;font-weight:700;line-height:1.5}.small{font-size:13px;color:var(--muted);line-height:1.5}
+@media(max-width:880px){.layout{grid-template-columns:1fr}.chart{height:380px}}
+</style>
+</head>
+<body>
+<div class="shell">
+<section class="hero"><h1>See Diversity Order as a Slope</h1><p>On a log-probability plot, each independent branch makes the high-SNR curve fall more steeply. The slope is the diversity order.</p></section>
+<div class="layout">
+<aside class="card">
+<h2 style="margin-top:0">Explore</h2>
+<label>Combining method</label>
+<div class="segment"><button id="scBtn">SC</button><button id="mrcBtn" class="active">MRC</button></div>
+<label for="threshold">Outage threshold, γ₀</label><div class="row"><input id="threshold" type="range" min="-5" max="15" step="1" value="5"><span class="value" id="thresholdVal">5 dB</span></div>
+<label for="highlight">Highlight order M</label><div class="row"><input id="highlight" type="range" min="1" max="4" step="1" value="2"><span class="value" id="highlightVal">2</span></div>
+<div class="order-box">
+<div class="order"><span>Independent branches</span><strong id="branches">2</strong></div>
+<div class="order"><span>Diversity order</span><strong id="order">2</strong></div>
+</div>
+<div class="formula" id="formula"></div>
+<p class="small">Assumptions: independent, identically distributed Rayleigh branches and equal average branch SNR. Correlation can reduce the effective gain and may reduce the asymptotic order in rank-deficient cases.</p>
+</aside>
+<main class="card">
+<h2 style="margin-top:0">Outage probability versus average branch SNR</h2>
+<div class="chart"><canvas id="chart"></canvas></div>
+<div class="legend" id="legend"></div>
+<div class="take" id="take"></div>
+</main>
+</div>
+</div>
+<script>
+const $=id=>document.getElementById(id);let scheme='MRC';const colors=['#15976c','#3157d5','#7b4fd3','#e57b25'];
+function db2lin(x){return Math.pow(10,x/10)}function fact(n){let r=1;for(let i=2;i<=n;i++)r*=i;return r}
+function scOut(M,gbar,g0){return Math.pow(1-Math.exp(-g0/gbar),M)}
+function mrcOut(M,gbar,g0){const x=g0/gbar;if(x<1){let term=Math.pow(x,M)/fact(M),sum=term;for(let k=M+1;k<M+160;k++){term*=x/k;sum+=term;if(term<Math.max(sum,1e-300)*1e-15)break}return Math.exp(-x)*sum}let s=0;for(let k=0;k<M;k++)s+=Math.pow(x,k)/fact(k);return Math.max(1-Math.exp(-x)*s,0)}
+function sup(n){const m={'-':'⁻','0':'⁰','1':'¹','2':'²','3':'³','4':'⁴','5':'⁵','6':'⁶','7':'⁷','8':'⁸','9':'⁹'};return String(n).split('').map(c=>m[c]).join('')}
+function draw(){const c=$('chart'),ctx=c.getContext('2d'),dpr=devicePixelRatio||1,r=c.getBoundingClientRect();c.width=Math.round(r.width*dpr);c.height=Math.round(r.height*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);const W=r.width,H=r.height,m={l:70,r:22,t:24,b:54},pw=W-m.l-m.r,ph=H-m.t-m.b,xmin=-5,xmax=30,ymin=-8,ymax=0,X=x=>m.l+(x-xmin)/(xmax-xmin)*pw,Y=y=>m.t+(ymax-y)/(ymax-ymin)*ph;ctx.clearRect(0,0,W,H);ctx.font='12px Segoe UI,Arial';ctx.strokeStyle='#dce3ef';ctx.fillStyle='#5e6983';for(let x=-5;x<=30;x+=5){ctx.beginPath();ctx.moveTo(X(x),m.t);ctx.lineTo(X(x),m.t+ph);ctx.stroke();ctx.textAlign='center';ctx.fillText(x,X(x),H-25)}for(let y=0;y>=-8;y--){ctx.beginPath();ctx.moveTo(m.l,Y(y));ctx.lineTo(m.l+pw,Y(y));ctx.stroke();ctx.textAlign='right';ctx.fillText(y===0?'1':'10'+sup(y),m.l-9,Y(y)+4)}ctx.fillStyle='#17213a';ctx.textAlign='center';ctx.font='13px Segoe UI,Arial';ctx.fillText('Average branch SNR γ̄ (dB)',m.l+pw/2,H-4);ctx.save();ctx.translate(17,m.t+ph/2);ctx.rotate(-Math.PI/2);ctx.fillText('Outage probability',0,0);ctx.restore();const g0=db2lin(+$('threshold').value),highlight=+$('highlight').value;for(let M=1;M<=4;M++){ctx.strokeStyle=colors[M-1];ctx.lineWidth=M===highlight?4:2;ctx.globalAlpha=M===highlight?1:.48;ctx.beginPath();for(let i=0;i<=280;i++){const xd=xmin+(xmax-xmin)*i/280,g=db2lin(xd),p=(scheme==='MRC'?mrcOut:scOut)(M,g,g0),yy=Math.log10(Math.max(p,1e-8));if(i===0)ctx.moveTo(X(xd),Y(yy));else ctx.lineTo(X(xd),Y(yy))}ctx.stroke()}ctx.globalAlpha=1;const x1=23,x2=28;const fn=scheme==='MRC'?mrcOut:scOut;const y1=Math.log10(Math.max(fn(highlight,db2lin(x1),g0),1e-8)),y2=Math.log10(Math.max(fn(highlight,db2lin(x2),g0),1e-8));ctx.strokeStyle='#17213a';ctx.lineWidth=2;ctx.setLineDash([6,4]);ctx.beginPath();ctx.moveTo(X(x1),Y(y1));ctx.lineTo(X(x2),Y(y2));ctx.stroke();ctx.setLineDash([]);ctx.fillStyle='#17213a';ctx.textAlign='right';ctx.font='bold 13px Segoe UI,Arial';ctx.fillText(`high-SNR slope ≈ −${highlight}`,X(x2)-4,Y(y2)-9)}
+function render(){const M=+$('highlight').value;$('thresholdVal').textContent=$('threshold').value+' dB';$('highlightVal').textContent=M;$('branches').textContent=M;$('order').textContent=M;$('scBtn').classList.toggle('active',scheme==='SC');$('mrcBtn').classList.toggle('active',scheme==='MRC');$('formula').innerHTML=scheme==='SC'?`<strong>Selection combining</strong><br>P<sub>out</sub> = [1 − exp(−γ₀/γ̄)]<sup>M</sup><br>At high SNR: P<sub>out</sub> ≈ (γ₀/γ̄)<sup>M</sup>`:`<strong>Maximal-ratio combining</strong><br>P<sub>out</sub> = F<sub>Gamma(M,γ̄)</sub>(γ₀)<br>At high SNR: P<sub>out</sub> ≈ (γ₀/γ̄)<sup>M</sup>/M!`;$('legend').innerHTML=[1,2,3,4].map((m,i)=>`<span><i class="sw" style="background:${colors[i]}"></i>M = ${m}</span>`).join('');$('take').innerHTML=`With <strong>${M}</strong> independent branches, increasing γ̄ by 10 dB reduces the high-SNR outage by approximately <strong>10<sup>${M}</sup></strong>. That is the meaning of diversity order ${M}.`;draw()}
+$('scBtn').onclick=()=>{scheme='SC';render()};$('mrcBtn').onclick=()=>{scheme='MRC';render()};$('threshold').oninput=render;$('highlight').oninput=render;window.onresize=draw;render();
+</script>
+</body></html>

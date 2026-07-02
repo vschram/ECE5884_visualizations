@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SC vs MRC Explorer</title>
+<style>
+:root{--ink:#17213a;--muted:#5e6983;--blue:#3157d5;--cyan:#19a7ce;--green:#1a9b6b;--orange:#e57b25;--red:#d94c5c;--panel:#ffffff;--bg:#f3f6fb;--line:#dce3ef}
+*{box-sizing:border-box} body{margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;background:linear-gradient(135deg,#eef3ff,#f8fbff 55%,#eef9f7);color:var(--ink)}
+.shell{max-width:1220px;margin:auto;padding:24px}.hero{background:linear-gradient(120deg,#1c2a69,#3157d5);color:#fff;border-radius:22px;padding:24px 28px;box-shadow:0 18px 45px rgba(34,56,132,.22)}
+.hero h1{margin:0 0 8px;font-size:clamp(28px,4vw,46px)}.hero p{margin:0;max-width:850px;line-height:1.5;color:#e9edff}
+.grid{display:grid;grid-template-columns:340px 1fr;gap:18px;margin-top:18px}.card{background:rgba(255,255,255,.96);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:0 10px 28px rgba(35,55,95,.08)}
+.controls label{display:block;font-weight:700;margin:14px 0 6px}.row{display:flex;align-items:center;gap:10px}.row input[type=range]{flex:1}.value{min-width:66px;text-align:right;font-variant-numeric:tabular-nums;font-weight:800;color:var(--blue)}
+button{border:0;border-radius:12px;padding:11px 14px;background:var(--blue);color:#fff;font-weight:800;cursor:pointer;box-shadow:0 7px 16px rgba(49,87,213,.22)}button:hover{filter:brightness(1.06)}
+.metric-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px}.metric{background:#f7f9fd;border:1px solid var(--line);border-radius:14px;padding:12px}.metric .k{font-size:13px;color:var(--muted)}.metric .v{font-size:22px;font-weight:900;margin-top:4px}
+.branch-list{display:grid;gap:9px;margin-top:12px}.branch{display:grid;grid-template-columns:42px 1fr 65px;gap:8px;align-items:center}.bar{height:13px;background:#e7ebf4;border-radius:999px;overflow:hidden}.bar>span{display:block;height:100%;background:linear-gradient(90deg,var(--cyan),var(--blue));border-radius:inherit}.branch.selected .bar>span{background:linear-gradient(90deg,var(--orange),var(--red))}.small{font-size:13px;color:var(--muted);line-height:1.45}
+.chart-wrap{position:relative;height:420px}canvas{width:100%;height:100%;display:block}.legend{display:flex;flex-wrap:wrap;gap:14px;margin:8px 0 0}.legend span{display:inline-flex;align-items:center;gap:7px;font-size:14px}.dot{width:14px;height:4px;border-radius:4px;display:inline-block}.formula{background:#edf2ff;border-left:5px solid var(--blue);border-radius:12px;padding:13px 15px;margin-top:14px;line-height:1.55}.takeaway{margin-top:18px;background:#eaf8f3;border:1px solid #c7eadc;border-radius:16px;padding:16px;font-weight:700;line-height:1.5}
+@media(max-width:900px){.grid{grid-template-columns:1fr}.chart-wrap{height:360px}.metric-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="shell">
+  <section class="hero">
+    <h1>Selection Combining vs Maximal-Ratio Combining</h1>
+    <p>Generate independent Rayleigh-fading branches. Selection combining keeps only the strongest branch; maximal-ratio combining co-phases and adds every branch.</p>
+  </section>
+
+  <div class="grid">
+    <aside class="card controls">
+      <h2 style="margin-top:0">Controls</h2>
+      <label for="nr">Receive branches, N<sub>r</sub></label>
+      <div class="row"><input id="nr" type="range" min="1" max="6" step="1" value="3"><span class="value" id="nrVal">3</span></div>
+
+      <label for="avg">Average branch SNR, γ̄</label>
+      <div class="row"><input id="avg" type="range" min="-5" max="25" step="1" value="10"><span class="value" id="avgVal">10 dB</span></div>
+
+      <label for="th">Outage threshold, γ₀</label>
+      <div class="row"><input id="th" type="range" min="-5" max="20" step="1" value="5"><span class="value" id="thVal">5 dB</span></div>
+
+      <div style="margin-top:18px"><button id="newFade">Generate a new fade</button></div>
+
+      <h3>Current fading snapshot</h3>
+      <div class="branch-list" id="branches"></div>
+
+      <div class="metric-grid">
+        <div class="metric"><div class="k">SC output</div><div class="v" id="scNow">—</div></div>
+        <div class="metric"><div class="k">MRC output</div><div class="v" id="mrcNow">—</div></div>
+        <div class="metric"><div class="k">MRC gain over SC</div><div class="v" id="gainNow">—</div></div>
+      </div>
+      <p class="small">Each branch power |h<sub>i</sub>|² is exponentially distributed with mean 1. The displayed branch SNRs equal γ̄|h<sub>i</sub>|².</p>
+    </aside>
+
+    <main class="card">
+      <h2 style="margin-top:0">Theoretical outage probability</h2>
+      <div class="chart-wrap"><canvas id="chart"></canvas></div>
+      <div class="legend">
+        <span><i class="dot" style="background:#e57b25"></i>Selection combining</span>
+        <span><i class="dot" style="background:#3157d5"></i>Maximal-ratio combining</span>
+        <span><i class="dot" style="background:#1a9b6b"></i>Current γ̄</span>
+      </div>
+      <div class="formula">
+        <strong>SC:</strong> P<sub>out</sub> = [1 − exp(−γ₀/γ̄)]<sup>N<sub>r</sub></sup><br>
+        <strong>MRC:</strong> P<sub>out</sub> = 1 − exp(−x) Σ<sub>k=0</sub><sup>N<sub>r</sub>−1</sup> x<sup>k</sup>/k!, &nbsp;x = γ₀/γ̄
+      </div>
+      <div class="takeaway" id="takeaway">MRC is never worse than SC for the same branch realization because it adds all non-negative branch SNRs.</div>
+    </main>
+  </div>
+</div>
+<script>
+const $=id=>document.getElementById(id); const state={powers:[]};
+function db2lin(x){return Math.pow(10,x/10)} function lin2db(x){return 10*Math.log10(Math.max(x,1e-14))}
+function randExp(){return -Math.log(Math.max(1-Math.random(),1e-12))}
+function factorial(n){let f=1;for(let i=2;i<=n;i++)f*=i;return f}
+function scOut(n,gbar,g0){return Math.pow(1-Math.exp(-g0/gbar),n)}
+function mrcOut(n,gbar,g0){const x=g0/gbar;if(x<1){let term=Math.pow(x,n)/factorial(n),sum=term;for(let k=n+1;k<n+160;k++){term*=x/k;sum+=term;if(term<Math.max(sum,1e-300)*1e-15)break}return Math.exp(-x)*sum}let sum=0;for(let k=0;k<n;k++)sum+=Math.pow(x,k)/factorial(k);return Math.max(1-Math.exp(-x)*sum,0)}
+function regenerate(){const n=+$('nr').value;state.powers=Array.from({length:n},randExp);render()}
+function syncLabels(){$('nrVal').textContent=$('nr').value;$('avgVal').textContent=$('avg').value+' dB';$('thVal').textContent=$('th').value+' dB'}
+function renderBranches(){const gbar=db2lin(+$('avg').value),snrs=state.powers.map(p=>gbar*p),mx=Math.max(...snrs),idx=snrs.indexOf(mx),scale=Math.max(mx,1e-9);$('branches').innerHTML=snrs.map((g,i)=>`<div class="branch ${i===idx?'selected':''}"><strong>γ${i+1}</strong><div class="bar"><span style="width:${100*g/scale}%"></span></div><span>${lin2db(g).toFixed(1)} dB</span></div>`).join('');const sc=mx,mrc=snrs.reduce((a,b)=>a+b,0);$('scNow').textContent=lin2db(sc).toFixed(1)+' dB';$('mrcNow').textContent=lin2db(mrc).toFixed(1)+' dB';$('gainNow').textContent=(lin2db(mrc)-lin2db(sc)).toFixed(1)+' dB';}
+function drawChart(){const c=$('chart'),ctx=c.getContext('2d'),dpr=window.devicePixelRatio||1,rect=c.getBoundingClientRect();c.width=Math.round(rect.width*dpr);c.height=Math.round(rect.height*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);const W=rect.width,H=rect.height,m={l:68,r:20,t:24,b:52},pw=W-m.l-m.r,ph=H-m.t-m.b;ctx.clearRect(0,0,W,H);const xmin=-5,xmax=25,ymin=-6,ymax=0;const X=x=>m.l+(x-xmin)/(xmax-xmin)*pw,Y=ly=>m.t+(ymax-ly)/(ymax-ymin)*ph;ctx.font='12px Segoe UI, Arial';ctx.strokeStyle='#dce3ef';ctx.fillStyle='#5e6983';ctx.lineWidth=1;for(let x=-5;x<=25;x+=5){ctx.beginPath();ctx.moveTo(X(x),m.t);ctx.lineTo(X(x),m.t+ph);ctx.stroke();ctx.textAlign='center';ctx.fillText(x+'',X(x),H-24)}for(let p=0;p>=-6;p--){ctx.beginPath();ctx.moveTo(m.l,Y(p));ctx.lineTo(m.l+pw,Y(p));ctx.stroke();ctx.textAlign='right';ctx.fillText(p===0?'1':'10'+superscript(p),m.l-9,Y(p)+4)}ctx.fillStyle='#17213a';ctx.textAlign='center';ctx.font='13px Segoe UI, Arial';ctx.fillText('Average branch SNR γ̄ (dB)',m.l+pw/2,H-4);ctx.save();ctx.translate(17,m.t+ph/2);ctx.rotate(-Math.PI/2);ctx.fillText('Outage probability',0,0);ctx.restore();const n=+$('nr').value,g0=db2lin(+$('th').value);function curve(fn,color){ctx.strokeStyle=color;ctx.lineWidth=3;ctx.beginPath();for(let i=0;i<=240;i++){const xd=xmin+(xmax-xmin)*i/240,p=Math.max(fn(n,db2lin(xd),g0),1e-6),yy=Math.log10(p);if(i===0)ctx.moveTo(X(xd),Y(yy));else ctx.lineTo(X(xd),Y(yy))}ctx.stroke()}curve(scOut,'#e57b25');curve(mrcOut,'#3157d5');const cur=+$('avg').value;ctx.strokeStyle='#1a9b6b';ctx.setLineDash([7,5]);ctx.beginPath();ctx.moveTo(X(cur),m.t);ctx.lineTo(X(cur),m.t+ph);ctx.stroke();ctx.setLineDash([]);const psc=scOut(n,db2lin(cur),g0),pmrc=mrcOut(n,db2lin(cur),g0);ctx.fillStyle='#e57b25';ctx.beginPath();ctx.arc(X(cur),Y(Math.log10(Math.max(psc,1e-6))),5,0,2*Math.PI);ctx.fill();ctx.fillStyle='#3157d5';ctx.beginPath();ctx.arc(X(cur),Y(Math.log10(Math.max(pmrc,1e-6))),5,0,2*Math.PI);ctx.fill();$('takeaway').innerHTML=`At γ̄ = <strong>${cur} dB</strong> and γ₀ = <strong>${$('th').value} dB</strong>, the theoretical outage is <strong>${fmt(psc)}</strong> for SC and <strong>${fmt(pmrc)}</strong> for MRC. Both obtain diversity order ${n}, but MRC has the stronger coding/array gain.`}
+function fmt(p){return p<1e-3?p.toExponential(2):(100*p).toFixed(2)+'%'}function superscript(n){const map={'-':'⁻','0':'⁰','1':'¹','2':'²','3':'³','4':'⁴','5':'⁵','6':'⁶','7':'⁷','8':'⁸','9':'⁹'};return String(n).split('').map(c=>map[c]).join('')}
+function render(){syncLabels();if(state.powers.length!==+$('nr').value)regenerate();else{renderBranches();drawChart()}}
+['nr','avg','th'].forEach(id=>$(id).addEventListener('input',render));$('newFade').addEventListener('click',regenerate);window.addEventListener('resize',drawChart);regenerate();
+</script>
+</body>
+</html>
