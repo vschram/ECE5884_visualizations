@@ -231,7 +231,7 @@
       </div>
       <div>
         <h3>Why the channel is called AWGN</h3>
-        <p><b>Additive:</b> the received point <i>y</i> equals the transmitted point <i>x</i> plus a noise vector <i>n</i>. <b>Gaussian:</b> the I and Q noise components are drawn from a zero-mean normal distribution, so each cloud has a symmetric, bell-shaped density. <b>White:</b> successive noise samples are independent and have equal power in both quadrature components.</p>
+        <p><b>Additive:</b> the received point <i>y</i> equals the transmitted point <i>x</i> plus a noise vector <i>n</i>. <b>Gaussian:</b> the I and Q noise components are drawn from a zero-mean normal distribution, so each cloud has a symmetric, bell-shaped density. <b>White:</b> successive noise samples are uncorrelated, so the noise power spectral density is flat across the band. (The equal noise power in the I and Q components is a separate property — circular symmetry of the complex Gaussian model.)</p>
       </div>
       <div>
         <h3>Try this</h3>
@@ -433,7 +433,6 @@ function draw() {
 function animate() {
   if (!running) return;
   frame++;
-  const current = Number(controls.snr.value);
   const next = -5 + 20 * (1 + Math.sin(frame/35));
   controls.snr.value = Math.round(next);
   draw();

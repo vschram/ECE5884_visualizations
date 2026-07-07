@@ -218,7 +218,7 @@ function draw(){
   const sigPowMw = dbmToMw(st.rxDbm);
   const noisePowMw = dbmToMw(st.noiseDbm);
   const snrLin = sigPowMw / noisePowMw;
-  const sigma = Math.sqrt(1 / Math.max(snrLin, 1e-12)); // normalise signal amplitude to unit peak scale
+  const sigma = Math.sqrt(0.5 / Math.max(snrLin, 1e-12)); // unit-amplitude sine has power 0.5, so sigma^2 = 0.5/SNR
   const clean = new Float32Array(st.nSamps);
   const chan = new Float32Array(st.nSamps);
   const noise = new Float32Array(st.nSamps);
@@ -351,7 +351,7 @@ function updateStats(st, sigma, delayS){
   document.getElementById('mode-hint').textContent = st.useMultipath ? 'AWGN + simple multipath' : 'AWGN only';
   const tauNorm = (delayS / st.nSamps).toFixed(3);
   const mp = st.useMultipath ? ` The orange dashed trace shows y<sub>mp</sub>(t) = 0.86·x(t) + 0.38·x(t−τ), with τ = ${tauNorm} T (≈ 1/10th of one signal period) — a deterministic channel distortion, not random noise.` : '';
-  const sigmaEq = `σ² = P<sub>n</sub> / P<sub>s</sub> = SNR<sup>−1</sup> (linear) = 10<sup>−${st.snrDb.toFixed(1)}/10</sup> → σ = ${sigma.toFixed(3)} (normalised to unit signal amplitude)`;
+  const sigmaEq = `σ² = P<sub>n</sub> = P<sub>s</sub>/SNR = 0.5·10<sup>−${st.snrDb.toFixed(1)}/10</sup> → σ = ${sigma.toFixed(3)} (the unit-amplitude sine has signal power P<sub>s</sub> = 0.5)`;
   document.getElementById('insight').innerHTML = `<strong>Noise floor:</strong> P<sub>n</sub> = −174 dBm/Hz + 10log₁₀(B) = ${st.noiseDbm.toFixed(1)} dBm for B = ${formatBw(st.bwHz)}. Wider bandwidth admits more thermal noise power, raising the noise floor and reducing SNR for the same received signal level.${mp}<br><br><strong>Link to σ:</strong> ${sigmaEq}. The noise standard deviation σ on each sample is set by the SNR; wider bandwidth → higher noise floor → larger σ → more spread in the histogram.<br><br><strong>Current model:</strong> y(t) = ${st.useMultipath ? '0.86·x(t)+0.38·x(t−τ)' : 'x(t)'} + n(t), &nbsp; n(t) ~ N(0, σ²).`;
 }
 let resizeTimer=null;
