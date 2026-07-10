@@ -3,39 +3,66 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AWGN, Noise Floor & SNR — Week 1 Explorer</title>
+<title>AWGN, Noise Floor, and SNR</title>
 <style>
   :root {
-    --bg:#f8f7f4; --surface:#ffffff; --surface2:#f0ede8;
-    --border:rgba(0,0,0,.09); --text:#1a1a1a; --muted:#7a7570;
-    --signal:#1a6ef5; --noise:#e85d24; --received:#0e9f6e; --gauss:#7c3aed;
-    --multipath:#f59e0b; --warn:#dc2626;
-  }
-  @media (prefers-color-scheme:dark) {
-    :root { --bg:#111318; --surface:#1c1f2a; --surface2:#22263a;
-      --border:rgba(255,255,255,.08); --text:#e8eaf0; --muted:#8892a4; }
+    --bg: #f7f8fb;
+    --card: #ffffff;
+    --ink: #172033;
+    --muted: #5c667a;
+    --line: #d9deea;
+    --accent: #2f6fdd;
+    --accent-dark: #1d4fa3;
+    --bad: #b42318;
+    --good: #067647;
+    --warn: #b54708;
+    --signal: var(--accent);
+    --noise: var(--bad);
+    --received: var(--good);
+    --gauss: var(--accent-dark);
+    --multipath: var(--warn);
   }
   * { box-sizing:border-box; margin:0; padding:0; }
-  body { background:var(--bg); color:var(--text); font-family:system-ui,-apple-system,sans-serif;
-    padding:1.5rem; max-width:980px; margin:0 auto; }
-  h2 { font-size:1.1rem; font-weight:650; margin-bottom:.25rem; }
-  .sub { font-size:.84rem; color:var(--muted); margin:.3rem 0 1.1rem; line-height:1.5; }
-  .toolbar { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:1rem; margin-bottom:1rem; }
+  body {
+    background:var(--bg); color:var(--ink);
+    font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+    max-width:980px; margin:0 auto;
+  }
+  header {
+    padding:22px 28px 12px;
+    border-bottom:1px solid var(--line);
+    background:#fff;
+  }
+  h1 { margin:0 0 6px; font-size:26px; }
+  .subtitle { color:var(--muted); font-size:15px; line-height:1.5; max-width:1050px; }
+  main { padding:18px 28px 28px; }
+  .toolbar {
+    background:var(--card); border:1px solid var(--line); border-radius:14px;
+    padding:1rem; margin-bottom:1rem;
+    box-shadow:0 1px 8px rgba(20,32,60,.05);
+  }
   .presets { display:flex; gap:.45rem; flex-wrap:wrap; margin-bottom:1rem; }
-  button { border:1px solid var(--border); background:var(--surface2); color:var(--text); border-radius:999px;
-    padding:.45rem .75rem; font-size:.78rem; cursor:pointer; }
-  button:hover { filter:brightness(.98); }
+  button {
+    border:1px solid #cddcff; background:#eef3ff; color:var(--accent-dark);
+    border-radius:999px; padding:.45rem .75rem; font-size:.78rem; cursor:pointer;
+    font-weight:650;
+  }
+  button:hover { background:#e4ecff; }
   .controls { display:grid; grid-template-columns:repeat(4,1fr); gap:1rem; }
   @media (max-width:820px) { .controls { grid-template-columns:repeat(2,1fr); } }
   @media (max-width:520px) { .controls { grid-template-columns:1fr; } }
   .ctrl label { display:flex; justify-content:space-between; font-size:.76rem; color:var(--muted);
     letter-spacing:.04em; margin-bottom:.35rem; gap:.8rem; }
-  .ctrl label strong { color:var(--text); font-size:.86rem; white-space:nowrap; }
+  .ctrl label strong { color:var(--accent); font-size:.86rem; white-space:nowrap; font-variant-numeric:tabular-nums; }
   input[type="range"] { width:100%; cursor:pointer; }
   .checkrow { display:flex; align-items:center; gap:.5rem; margin-top:.65rem; color:var(--muted); font-size:.8rem; }
   input[type="checkbox"] { transform:translateY(1px); }
   .canvases { display:flex; flex-direction:column; gap:.85rem; }
-  .chart-wrap { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:.85rem 1rem .65rem; }
+  .chart-wrap {
+    background:var(--card); border:1px solid var(--line); border-radius:14px;
+    padding:.85rem 1rem .65rem; box-shadow:0 1px 8px rgba(20,32,60,.05);
+  }
+  .chart-wrap canvas { background:#fff; border:1px solid var(--line); border-radius:10px; }
   .chart-title { font-size:.72rem; letter-spacing:.08em; text-transform:uppercase; color:var(--muted);
     margin-bottom:.5rem; display:flex; justify-content:space-between; align-items:center; gap:1rem; }
   canvas { display:block; width:100%; }
@@ -46,32 +73,41 @@
   .dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
   .stats-row { display:grid; grid-template-columns:repeat(4,1fr); gap:.8rem; margin-top:.8rem; }
   @media (max-width:720px) { .stats-row { grid-template-columns:repeat(2,1fr); } }
-  .stat { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:.75rem .8rem; text-align:center; }
+  .stat { background:#f8faff; border:1px solid #e3e8f4; border-radius:10px; padding:.75rem .8rem; text-align:center; }
   .stat-label { font-size:.66rem; color:var(--muted); text-transform:uppercase; letter-spacing:.07em; display:block; margin-bottom:.22rem; }
   .stat-val { font-size:1.12rem; font-weight:650; }
   .blue { color:var(--signal); } .red { color:var(--noise); } .green { color:var(--received); } .purple { color:var(--gauss); }
-  .gauge { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:.9rem 1rem; margin-top:.8rem; }
+  .gauge {
+    background:var(--card); border:1px solid var(--line); border-radius:14px;
+    padding:.9rem 1rem; margin-top:.8rem; box-shadow:0 1px 8px rgba(20,32,60,.05);
+  }
   .gauge-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:.55rem; font-size:.8rem; color:var(--muted); }
-  .gauge-bar { height:12px; border-radius:999px; background:linear-gradient(90deg,#dc2626 0%,#f97316 28%,#22c55e 62%,#1a6ef5 100%); position:relative; }
-  .needle { position:absolute; top:-5px; width:2px; height:22px; background:var(--text); border-radius:2px; }
+  .gauge-bar { height:12px; border-radius:999px; background:linear-gradient(90deg,#b42318 0%,#b54708 28%,#067647 62%,#2f6fdd 100%); position:relative; }
+  .needle { position:absolute; top:-5px; width:2px; height:22px; background:var(--ink); border-radius:2px; }
   .gauge-labels { display:flex; justify-content:space-between; font-size:.68rem; color:var(--muted); margin-top:.45rem; }
   .note-grid { display:grid; grid-template-columns:1fr 1fr; gap:.8rem; margin-top:.8rem; }
   @media (max-width:700px) { .note-grid { grid-template-columns:1fr; } }
-  .insight-box { background:var(--surface); border:1px solid var(--border); border-left:3px solid var(--gauss);
-    border-radius:10px; padding:.9rem 1.05rem; font-size:.83rem; color:var(--muted); line-height:1.55; }
-  .insight-box strong { color:var(--text); }
+  .insight-box {
+    background:var(--card); border:1px solid var(--line); border-left:3px solid var(--accent);
+    border-radius:10px; padding:.9rem 1.05rem; font-size:.83rem; color:var(--muted); line-height:1.55;
+    box-shadow:0 1px 8px rgba(20,32,60,.05);
+  }
+  .insight-box strong { color:var(--ink); }
   .mini-table { width:100%; border-collapse:collapse; margin-top:.35rem; font-size:.78rem; }
-  .mini-table td { border-bottom:1px solid var(--border); padding:.28rem .2rem; color:var(--muted); }
+  .mini-table td { border-bottom:1px solid var(--line); padding:.28rem .2rem; color:var(--muted); }
   .mini-table tr:last-child td { border-bottom:none; }
-  .mini-table td:first-child { color:var(--text); font-weight:550; }
+  .mini-table td:first-child { color:var(--ink); font-weight:550; }
 </style>
 </head>
 <body>
-<h2>AWGN, Noise Floor &amp; SNR Explorer</h2>
-<p class="sub">
-  Week 1 focus: additive white Gaussian noise, noise floor, received signal power, SNR, and the distinction between noise and simple multipath distortion.
-</p>
+<header>
+  <h1>AWGN, Noise Floor, and SNR</h1>
+  <div class="subtitle">
+    Adjust received power and bandwidth to see how the thermal noise floor sets SNR, how additive Gaussian noise corrupts the received waveform, and how that random distortion differs from simple multipath fading.
+  </div>
+</header>
 
+<main>
 <div class="toolbar">
   <div class="presets">
     <button data-snr="25">Excellent channel</button>
@@ -123,7 +159,7 @@
   <span><span class="dot" style="background:var(--signal)"></span> Transmitted signal x(t)</span>
   <span id="legend-multipath" style="display:none"><span class="dot" style="background:var(--multipath)"></span> After simple multipath: 0.86·x(t) + 0.38·x(t−τ)</span>
   <span><span class="dot" style="background:var(--received)"></span> Received y(t)</span>
-  <span><span class="dot" style="background:rgba(232,93,36,.55);border-radius:2px"></span> Noise samples n(t)</span>
+  <span><span class="dot" style="background:rgba(180,35,24,.55);border-radius:2px"></span> Noise samples n(t)</span>
   <span><span class="dot" style="background:var(--gauss);border-radius:2px"></span> Gaussian PDF  N(0, σ²)</span>
 </div>
 
@@ -150,7 +186,7 @@ dB form: SNR(dB) = P<sub>r</sub>(dBm) − P<sub>n</sub>(dBm)
 <div class="note-grid">
   <div class="insight-box" id="insight">Move the sliders to begin.</div>
   <div class="insight-box">
-    <strong>Week 1 interpretation</strong>
+    <strong>Key terms</strong>
     <table class="mini-table">
       <tr><td>AWGN</td><td>Additive noise: y(t)=x(t)+n(t)</td></tr>
       <tr><td>White</td><td>Idealised flat noise power over bandwidth</td></tr>
@@ -159,8 +195,19 @@ dB form: SNR(dB) = P<sub>r</sub>(dBm) − P<sub>n</sub>(dBm)
     </table>
   </div>
 </div>
+</main>
 
 <script>
+const COLORS = {
+  grid: '#e8ecf4',
+  axis: '#667085',
+  axisTick: '#98a2b3',
+  signal: '#2f6fdd',
+  received: '#067647',
+  multipath: '#b54708',
+  noiseBar: 'rgba(180,35,24,.28)',
+  gauss: '#1d4fa3'
+};
 const MAX_CANVAS_PX = 4096;
 const K_BOLTZ_DBM_HZ = -174; // thermal noise density at room temperature
 const waveCv = document.getElementById('wave-canvas');
@@ -266,23 +313,23 @@ function drawWave(clean, chan, noise, recv, st, sigma, delayS){
   ctx.clearRect(0,0,w,h);
 
   // horizontal grid lines and y-axis labels
-  ctx.strokeStyle='rgba(128,128,128,.22)'; ctx.lineWidth=.7;
+  ctx.strokeStyle=COLORS.grid; ctx.lineWidth=.7;
   for(const v of [-1,0,1]){ const y=yScale(v); ctx.beginPath(); ctx.moveTo(padL,y); ctx.lineTo(padL+plotW,y); ctx.stroke(); }
-  ctx.fillStyle='rgba(128,128,128,.8)'; ctx.font='10px system-ui,sans-serif'; ctx.textAlign='right';
+  ctx.fillStyle=COLORS.axis; ctx.font='10px system-ui,sans-serif'; ctx.textAlign='right';
   for(const v of [-1,0,1]) ctx.fillText(v.toString(), padL-5, yScale(v)+3);
 
   // x-axis ticks and labels (normalised time)
-  ctx.fillStyle='rgba(128,128,128,.8)'; ctx.textAlign='center'; ctx.font='10px system-ui,sans-serif';
+  ctx.fillStyle=COLORS.axis; ctx.textAlign='center'; ctx.font='10px system-ui,sans-serif';
   const xTicks = [0, 0.25, 0.5, 0.75, 1.0];
   const axisY = padT + plotH;
-  ctx.strokeStyle='rgba(128,128,128,.4)'; ctx.lineWidth=.7;
+  ctx.strokeStyle=COLORS.axisTick; ctx.lineWidth=.7;
   for(const t of xTicks){
     const x = padL + t*plotW;
     ctx.beginPath(); ctx.moveTo(x, axisY); ctx.lineTo(x, axisY+4); ctx.stroke();
     ctx.fillText(t.toFixed(2), x, axisY+13);
   }
   // x-axis label
-  ctx.fillStyle='rgba(128,128,128,.75)'; ctx.font='10px system-ui,sans-serif'; ctx.textAlign='center';
+  ctx.fillStyle=COLORS.axis; ctx.font='10px system-ui,sans-serif'; ctx.textAlign='center';
   ctx.fillText('Normalised time  t/T', padL+plotW/2, h-4);
 
   function line(arr,color,alpha,lw,dash=[]){
@@ -291,16 +338,16 @@ function drawWave(clean, chan, noise, recv, st, sigma, delayS){
     ctx.stroke(); ctx.globalAlpha=1; ctx.setLineDash([]);
   }
   if(st.useMultipath){
-    line(chan,'#f59e0b',.95,1.6,[5,4]);
+    line(chan,COLORS.multipath,.95,1.6,[5,4]);
     // annotate multipath trace with its equation
     ctx.save();
     const tauNorm = (delayS / st.nSamps).toFixed(3);
-    ctx.font='10px system-ui,sans-serif'; ctx.fillStyle='#f59e0b'; ctx.globalAlpha=0.9; ctx.textAlign='left';
+    ctx.font='10px system-ui,sans-serif'; ctx.fillStyle=COLORS.multipath; ctx.globalAlpha=0.9; ctx.textAlign='left';
     ctx.fillText(`0.86·x(t) + 0.38·x(t−τ),  τ = ${tauNorm} T`, padL+plotW*0.35, padT+10);
     ctx.restore();
   }
-  line(recv,'#0e9f6e',.9,1.5);
-  line(clean,'#1a6ef5',1,2.1);
+  line(recv,COLORS.received,.9,1.5);
+  line(clean,COLORS.signal,1,2.1);
 }
 function drawHist(noise, sigma){
   const {w,h} = resizeCanvas(histCv); const ctx = histCv.getContext('2d');
@@ -313,12 +360,12 @@ function drawHist(noise, sigma){
   const bw=plotW/bins;
   for(let i=0;i<bins;i++){
     const bh=counts[i]/maxC*plotH;
-    ctx.fillStyle='rgba(232,93,36,.34)'; ctx.fillRect(padL+i*bw, padT+plotH-bh, Math.max(1,bw-1), bh);
+    ctx.fillStyle=COLORS.noiseBar; ctx.fillRect(padL+i*bw, padT+plotH-bh, Math.max(1,bw-1), bh);
   }
   // PDF scaled to match bar normalisation: peak of Gaussian is 1/sqrt(2π)/σ,
   // and bars are normalised so maxC maps to plotH. Scale PDF peak to plotH.
   const pdfPeak = 1 / (Math.sqrt(2*Math.PI) * (sigma || 1e-6));
-  ctx.beginPath(); ctx.strokeStyle='#7c3aed'; ctx.lineWidth=2;
+  ctx.beginPath(); ctx.strokeStyle=COLORS.gauss; ctx.lineWidth=2;
   for(let px=0;px<=plotW;px++){
     const v=(px/plotW)*2*range-range;
     const pdf=(1/(Math.sqrt(2*Math.PI)*(sigma||1e-6)))*Math.exp(-v*v/(2*(sigma*sigma||1e-9)));
@@ -327,10 +374,10 @@ function drawHist(noise, sigma){
   }
   ctx.stroke();
   // mean and +/- sigma markers
-  function marker(v,label){ const x=padL+(v+range)/(2*range)*plotW; ctx.strokeStyle='rgba(128,128,128,.45)'; ctx.setLineDash([3,3]); ctx.beginPath(); ctx.moveTo(x,padT); ctx.lineTo(x,padT+plotH); ctx.stroke(); ctx.setLineDash([]); ctx.fillStyle='rgba(128,128,128,.85)'; ctx.font='10px system-ui,sans-serif'; ctx.textAlign='center'; ctx.fillText(label,x,h-6); }
+  function marker(v,label){ const x=padL+(v+range)/(2*range)*plotW; ctx.strokeStyle=COLORS.axisTick; ctx.setLineDash([3,3]); ctx.beginPath(); ctx.moveTo(x,padT); ctx.lineTo(x,padT+plotH); ctx.stroke(); ctx.setLineDash([]); ctx.fillStyle=COLORS.axis; ctx.font='10px system-ui,sans-serif'; ctx.textAlign='center'; ctx.fillText(label,x,h-6); }
   marker(0,'0'); marker(sigma,'+σ'); marker(-sigma,'−σ');
   // x-axis label
-  ctx.fillStyle='rgba(128,128,128,.7)'; ctx.font='10px system-ui,sans-serif'; ctx.textAlign='right';
+  ctx.fillStyle=COLORS.axis; ctx.font='10px system-ui,sans-serif'; ctx.textAlign='right';
   ctx.fillText('Noise amplitude (normalised units)', padL+plotW, h-6);
 }
 function updateStats(st, sigma, delayS){
@@ -350,7 +397,7 @@ function updateStats(st, sigma, delayS){
   document.getElementById('legend-multipath').style.display = st.useMultipath ? '' : 'none';
   document.getElementById('mode-hint').textContent = st.useMultipath ? 'AWGN + simple multipath' : 'AWGN only';
   const tauNorm = (delayS / st.nSamps).toFixed(3);
-  const mp = st.useMultipath ? ` The orange dashed trace shows y<sub>mp</sub>(t) = 0.86·x(t) + 0.38·x(t−τ), with τ = ${tauNorm} T (≈ 1/10th of one signal period) — a deterministic channel distortion, not random noise.` : '';
+  const mp = st.useMultipath ? ` The dashed multipath trace shows y<sub>mp</sub>(t) = 0.86·x(t) + 0.38·x(t−τ), with τ = ${tauNorm} T (≈ 1/10th of one signal period) — a deterministic channel distortion, not random noise.` : '';
   const sigmaEq = `σ² = P<sub>n</sub> = P<sub>s</sub>/SNR = 0.5·10<sup>−${st.snrDb.toFixed(1)}/10</sup> → σ = ${sigma.toFixed(3)} (the unit-amplitude sine has signal power P<sub>s</sub> = 0.5)`;
   document.getElementById('insight').innerHTML = `<strong>Noise floor:</strong> P<sub>n</sub> = −174 dBm/Hz + 10log₁₀(B) = ${st.noiseDbm.toFixed(1)} dBm for B = ${formatBw(st.bwHz)}. Wider bandwidth admits more thermal noise power, raising the noise floor and reducing SNR for the same received signal level.${mp}<br><br><strong>Link to σ:</strong> ${sigmaEq}. The noise standard deviation σ on each sample is set by the SNR; wider bandwidth → higher noise floor → larger σ → more spread in the histogram.<br><br><strong>Current model:</strong> y(t) = ${st.useMultipath ? '0.86·x(t)+0.38·x(t−τ)' : 'x(t)'} + n(t), &nbsp; n(t) ~ N(0, σ²).`;
 }
