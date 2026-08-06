@@ -1,0 +1,601 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Interactive Fresnel Zone Explorer</title>
+<style>
+  :root{
+    color-scheme: light dark;
+    --bg:#f7f8fb;
+    --panel:#ffffff;
+    --text:#172033;
+    --muted:#5f6b7a;
+    --border:#d9dee8;
+    --accent:#2563eb;
+    --accent-soft:#dbeafe;
+    --good:#16803a;
+    --bad:#c0362c;
+    --warn:#a16207;
+    --zone1:rgba(37,99,235,.18);
+    --zone2:rgba(124,58,237,.12);
+    --zone3:rgba(13,148,136,.10);
+    --zone4:rgba(245,158,11,.10);
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#0f1522;
+      --panel:#151d2c;
+      --text:#eef3fb;
+      --muted:#a7b1c2;
+      --border:#334155;
+      --accent:#60a5fa;
+      --accent-soft:#172f52;
+      --good:#4ade80;
+      --bad:#fb7185;
+      --warn:#fbbf24;
+      --zone1:rgba(96,165,250,.19);
+      --zone2:rgba(167,139,250,.14);
+      --zone3:rgba(45,212,191,.12);
+      --zone4:rgba(251,191,36,.11);
+    }
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  }
+  main{max-width:1180px;margin:0 auto;padding:22px}
+  h1{font-size:clamp(1.55rem,3vw,2.2rem);margin:0 0 6px}
+  h2{font-size:1.1rem;margin:0 0 12px}
+  p{line-height:1.55}
+  .lead{margin:0 0 18px;color:var(--muted)}
+  .layout{display:grid;grid-template-columns:minmax(0,2fr) minmax(310px,1fr);align-items:start;gap:16px}
+  .panel{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:16px;
+  }
+  aside.panel{position:sticky;top:16px;height:fit-content}
+  .visual-panel{overflow:hidden}
+  .controls{display:grid;gap:14px}
+  .control label{display:flex;justify-content:space-between;gap:12px;font-weight:650}
+  .control small{display:block;color:var(--muted);margin-top:4px;line-height:1.4}
+  input[type="range"]{width:100%;margin-top:8px;accent-color:var(--accent)}
+  select{
+    width:100%;margin-top:8px;padding:9px 10px;border:1px solid var(--border);
+    border-radius:10px;background:var(--panel);color:var(--text)
+  }
+  .buttons{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  button{
+    border:1px solid var(--border);background:var(--panel);color:var(--text);
+    border-radius:10px;padding:9px 10px;font-weight:650;cursor:pointer
+  }
+  button:hover{border-color:var(--accent)}
+  button:focus-visible{outline:3px solid var(--accent-soft);outline-offset:2px}
+  .metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:14px 0 4px}
+  .metric{border:1px solid var(--border);border-radius:12px;padding:10px}
+  .metric .label{font-size:.82rem;color:var(--muted)}
+  .metric .value{font-size:1.18rem;font-weight:750;margin-top:3px}
+  .metric .detail{font-size:.76rem;color:var(--muted);margin-top:3px;line-height:1.35}
+  .status{display:flex;align-items:center;gap:8px;font-weight:750}
+  .dot{width:10px;height:10px;border-radius:50%;background:var(--warn)}
+  .status.good .dot{background:var(--good)}
+  .status.bad .dot{background:var(--bad)}
+  .status.good{color:var(--good)}
+  .status.bad{color:var(--bad)}
+  .svg-wrap{margin-top:8px}
+  svg{display:block;width:100%;height:auto}
+  .legend{display:flex;flex-wrap:wrap;gap:12px;font-size:.84rem;color:var(--muted);margin-top:8px}
+  .legend span{display:flex;align-items:center;gap:6px}
+  .swatch{width:18px;height:8px;border-radius:999px;border:1px solid var(--border)}
+  .equations{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:16px}
+  .equation{border-left:4px solid var(--accent);padding:10px 12px;background:var(--accent-soft);border-radius:8px}
+  .equation code{font-size:1rem;color:inherit}
+  .equation small{color:var(--muted);line-height:1.4}
+  .learning-flow{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:16px}
+  .flow-step{border:1px solid var(--border);border-radius:12px;padding:12px}
+  .flow-step strong{display:block;margin-bottom:5px}
+  .flow-step p{font-size:.9rem;color:var(--muted);margin:0}
+  .boundary-wrap{margin-top:16px;overflow-x:auto;border:1px solid var(--border);border-radius:12px}
+  table{width:100%;border-collapse:collapse;min-width:620px}
+  th,td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--border);font-size:.9rem}
+  th{background:var(--accent-soft);font-weight:750}
+  tr:last-child td{border-bottom:0}
+  .explain{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:16px}
+  .explain article{border:1px solid var(--border);border-radius:12px;padding:13px}
+  .explain h3{font-size:1rem;margin:0 0 7px}
+  .explain p{font-size:.93rem;margin:0;color:var(--muted)}
+  .callout{margin-top:14px;border:1px solid var(--border);border-radius:12px;padding:12px;line-height:1.5}
+  .callout strong{color:var(--accent)}
+  .note{font-size:.83rem;color:var(--muted);margin-top:10px}
+  @media (max-width:900px){
+    .layout{grid-template-columns:1fr}
+    aside.panel{position:static}
+    .metrics{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .equations,.explain,.learning-flow{grid-template-columns:1fr}
+  }
+  @media (max-width:520px){
+    main{padding:12px}
+    .buttons{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+<main>
+  <h1>Interactive Fresnel Zone Explorer</h1>
+  <p class="lead">
+    Explore how frequency and link geometry determine the Fresnel-zone radius. Move the blue secondary path
+    and observe how its extra distance changes the phase, producing constructive or destructive interference.
+    The blue path is a teaching model; it is not automatically a real reflected path.
+  </p>
+
+  <section class="layout">
+    <div class="panel visual-panel">
+      <div class="status" id="status" aria-live="polite"><span class="dot"></span><span id="statusText">Calculating…</span></div>
+
+      <div class="metrics" aria-live="polite">
+        <div class="metric"><div class="label">Wavelength λ</div><div class="value" id="lambdaVal">–</div></div>
+        <div class="metric"><div class="label">First-zone radius r₁ (exact)</div><div class="value" id="r1Val">–</div></div>
+        <div class="metric"><div class="label">Path difference Δ</div><div class="value" id="deltaVal">–</div></div>
+        <div class="metric"><div class="label">Relative power P/P₁</div><div class="value" id="powerVal">–</div><div class="detail" id="powerDetail">Direct path alone = 1</div></div>
+      </div>
+
+      <div class="svg-wrap">
+        <svg id="scene" viewBox="0 0 900 470" role="img" aria-labelledby="sceneTitle sceneDesc">
+          <title id="sceneTitle">Fresnel-zone geometry and interference</title>
+          <desc id="sceneDesc">A cross-section through four Fresnel zones, with a direct path and an adjustable secondary path.</desc>
+          <g id="zones"></g>
+          <line id="directPath" x1="70" y1="235" x2="830" y2="235" stroke="var(--text)" stroke-width="2" stroke-dasharray="7 6"/>
+          <polyline id="detourPath" points="" fill="none" stroke="var(--accent)" stroke-width="3"/>
+          <line id="radiusLine" x1="450" y1="235" x2="450" y2="150" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 4"/>
+          <circle cx="70" cy="235" r="14" fill="var(--accent)"/>
+          <circle cx="830" cy="235" r="14" fill="var(--accent)"/>
+          <text x="70" y="270" text-anchor="middle" fill="var(--text)" font-size="15" font-weight="700">Tx</text>
+          <text x="830" y="270" text-anchor="middle" fill="var(--text)" font-size="15" font-weight="700">Rx</text>
+          <circle id="testPoint" cx="450" cy="150" r="8" fill="var(--bad)" stroke="var(--panel)" stroke-width="3"/>
+          <text id="testLabel" x="462" y="140" fill="var(--text)" font-size="14" font-weight="700">secondary path</text>
+          <text id="scaleNote" x="450" y="445" text-anchor="middle" fill="var(--muted)" font-size="13">Vertical scale is enlarged automatically for clarity.</text>
+          <text id="d1Label" x="250" y="222" text-anchor="middle" fill="var(--muted)" font-size="13">d₁</text>
+          <text id="d2Label" x="650" y="222" text-anchor="middle" fill="var(--muted)" font-size="13">d₂</text>
+        </svg>
+      </div>
+
+      <div class="legend" aria-label="Legend">
+        <span><i class="swatch" style="background:var(--zone1)"></i>Zone 1: 0 ≤ Δ &lt; λ/2</span>
+        <span><i class="swatch" style="background:var(--zone2)"></i>Zone 2: λ/2 ≤ Δ &lt; λ</span>
+        <span><i class="swatch" style="background:var(--zone3)"></i>Zone 3: λ ≤ Δ &lt; 3λ/2</span>
+        <span><i class="swatch" style="background:var(--zone4)"></i>Zone 4: 3λ/2 ≤ Δ &lt; 2λ</span>
+        <span><i class="swatch" style="background:var(--accent)"></i>Secondary path</span>
+      </div>
+
+      <div class="callout" id="interpretation">Adjust the controls to explore the geometry.</div>
+    </div>
+
+    <aside class="panel">
+      <h2>Controls</h2>
+      <div class="controls">
+        <div class="control">
+          <label for="frequency">Carrier frequency <span id="frequencyOut">2.40 GHz</span></label>
+          <input id="frequency" type="range" min="0.3" max="10" step="0.1" value="2.4">
+          <small>Higher frequency gives a shorter wavelength and smaller Fresnel zones. The numerical radius shows the physical change.</small>
+        </div>
+
+        <div class="control">
+          <label for="distance">Tx–Rx distance <span id="distanceOut">1000 m</span></label>
+          <input id="distance" type="range" min="50" max="3000" step="10" value="1000">
+        </div>
+
+        <div class="control">
+          <label for="position">Point position <span id="positionOut">50%</span></label>
+          <input id="position" type="range" min="5" max="95" step="1" value="50">
+          <small>The first Fresnel zone is widest near the midpoint and narrows toward either endpoint.</small>
+        </div>
+
+        <div class="control">
+          <label for="offset">Radial offset <span id="offsetOut">1.00 r₁</span></label>
+          <input id="offset" type="range" min="0" max="2.25" step="any" value="1">
+          <small>The offset is measured in local first-zone radii. At 1.00 r₁, the point lies on the first Fresnel boundary and Δ=λ/2.</small>
+        </div>
+
+        <div class="control">
+          <label for="amplitude">Secondary-path amplitude <span id="amplitudeOut">1.00</span></label>
+          <input id="amplitude" type="range" min="0" max="1" step="0.01" value="1">
+          <small>This is the received field-amplitude ratio α. Complete cancellation requires equal amplitudes and a 180° phase difference.</small>
+        </div>
+
+        <div class="control">
+          <label for="phaseShift">Simplified additional phase shift</label>
+          <select id="phaseShift">
+            <option value="0">0° — no additional phase shift</option>
+            <option value="3.141592653589793">180° — phase reversal</option>
+          </select>
+          <small>A reflection can add phase. The two choices show how a 180° reversal swaps constructive and destructive cases.</small>
+        </div>
+
+        <div>
+          <h2>Useful presets</h2>
+          <div class="buttons">
+            <button type="button" data-delta="0">Δ = 0</button>
+            <button type="button" data-delta="0.5">Δ = λ/2</button>
+            <button type="button" data-delta="1">Δ = λ</button>
+            <button type="button" data-delta="1.5">Δ = 3λ/2</button>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </section>
+
+  <section class="equations" aria-label="Core equations">
+    <div class="equation">
+      <strong>Wavelength</strong><br>
+      <code>λ = c / f</code>
+    </div>
+    <div class="equation">
+      <strong>Fresnel boundaries</strong><br>
+      <code>Δ = nλ/2</code><br>
+      <small>Each boundary adds another half-wavelength of path length.</small>
+    </div>
+    <div class="equation">
+      <strong>Fresnel-zone radius</strong><br>
+      <code>rₙ ≈ √(nλd₁d₂/(d₁+d₂))</code>
+    </div>
+    <div class="equation">
+      <strong>Phase and relative power</strong><br>
+      <code>φ = φ₀ − 2πΔ/λ</code><br>
+      <code>P/P₁ = 1+α²+2αcosφ</code>
+    </div>
+  </section>
+
+  <details class="callout">
+    <summary><strong>Optional: exact boundary equation</strong></summary>
+    <p>
+      The visualisation uses the exact geometric condition
+      <code>√(d₁²+rₙ²)+√(d₂²+rₙ²)−(d₁+d₂)=nλ/2</code>.
+      The familiar radius formula above follows from the small-angle approximation. It is accurate when the zone radius is much smaller than d₁ and d₂; the visualisation itself uses the exact geometry.
+    </p>
+  </details>
+
+  <section class="learning-flow" aria-label="From geometry to received power">
+    <div class="flow-step">
+      <strong>1. Geometry</strong>
+      <p>The detour through the selected point creates an excess path Δ.</p>
+    </div>
+    <div class="flow-step">
+      <strong>2. Phase</strong>
+      <p>The extra distance produces a phase difference of 2πΔ/λ. An additional phase φ₀ may also be present.</p>
+    </div>
+    <div class="flow-step">
+      <strong>3. Superposition</strong>
+      <p>The two fields add. In-phase fields reinforce; out-of-phase fields partly or completely cancel.</p>
+    </div>
+  </section>
+
+  <div class="boundary-wrap">
+    <table aria-label="Main interference conditions when the additional phase is zero">
+      <thead><tr><th>Excess path Δ</th><th>Phase modulo 360°</th><th>Result for φ₀=0</th></tr></thead>
+      <tbody>
+        <tr><td>0</td><td>0°</td><td>Constructive interference (maximum reinforcement)</td></tr>
+        <tr><td>λ/2</td><td>180°</td><td>Destructive interference (maximum opposition)</td></tr>
+        <tr><td>λ</td><td>0°</td><td>Constructive interference (maximum reinforcement)</td></tr>
+        <tr><td>3λ/2</td><td>180°</td><td>Destructive interference (maximum opposition)</td></tr>
+        <tr><td>2λ</td><td>0°</td><td>Constructive interference (maximum reinforcement)</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note">A full 360° phase cycle returns the fields to the same alignment. Between the listed values, the interference changes gradually. For φ₀=0, at Δ=λ/4 the fields are 90° apart and the interference cross term is zero.</p>
+
+  <section class="explain">
+    <article>
+      <h3>Why the radius changes</h3>
+      <p>
+        A point away from the line of sight creates a longer Tx–point–Rx path. The nth boundary occurs when this
+        extra distance is nλ/2. The radius is largest near the midpoint, increases with wavelength, and therefore
+        becomes smaller at higher carrier frequencies.
+      </p>
+    </article>
+    <article>
+      <h3>Constructive and destructive interference</h3>
+      <p>
+        When Δ=mλ, the fields arrive in phase and reinforce each other. When Δ=(m+1/2)λ, they arrive 180° apart
+        and oppose each other. Destructive interference gives complete cancellation only when the two field amplitudes are equal.
+      </p>
+    </article>
+    <article>
+      <h3>What the Fresnel zones mean</h3>
+      <p>
+        Within each zone, the propagation phase changes continuously by 180°. Contributions from neighbouring zones
+        therefore tend to oppose one another and partly cancel. An obstacle can disturb this balance and often reduce the received field.
+      </p>
+    </article>
+    <article>
+      <h3>Practical clearance</h3>
+      <p>
+        A common line-of-sight design guideline is to maintain obstacle clearance of at least about 0.6r₁.
+        This is a practical clearance rule, not a separate Fresnel boundary.
+      </p>
+    </article>
+  </section>
+
+  <div class="callout">
+    <strong>Suggested student exploration:</strong>
+    Compare Δ=0 with Δ=λ/2. Then select the 180° additional phase shift and observe that the constructive and destructive cases swap.
+    Finally, reduce α at Δ=λ/2 to see why unequal amplitudes do not cancel completely.
+  </div>
+
+  <p class="note">
+    The diagram uses exact geometric boundaries, but the vertical dimension is enlarged automatically for visibility.
+    The interference calculation is a simplified narrowband two-field model: the fields are assumed coherent and compatibly polarised.
+    Real links may also include diffraction, several reflected paths, path loss, and frequency-selective effects.
+  </p>
+</main>
+
+<script>
+(() => {
+  const c = 299792458;
+  const $ = id => document.getElementById(id);
+
+  const frequency = $('frequency');
+  const distance = $('distance');
+  const position = $('position');
+  const offset = $('offset');
+  const amplitude = $('amplitude');
+  const phaseShift = $('phaseShift');
+
+  const zonesGroup = $('zones');
+  const detourPath = $('detourPath');
+  const radiusLine = $('radiusLine');
+  const testPoint = $('testPoint');
+  const testLabel = $('testLabel');
+  const status = $('status');
+  const statusText = $('statusText');
+
+  const xLeft = 70, xRight = 830, yMid = 235;
+  const plotWidth = xRight - xLeft;
+  const maxVerticalPx = 175;
+
+  function fmtLength(x){
+    if (x >= 1000) return (x/1000).toFixed(2) + ' km';
+    if (x >= 1) return x.toFixed(x < 10 ? 2 : 1) + ' m';
+    if (x >= 0.01) return (x*100).toFixed(1) + ' cm';
+    return (x*1000).toFixed(1) + ' mm';
+  }
+
+  function exactDelta(d1, d2, h){
+    // Rationalised form avoids subtracting nearly equal large path lengths.
+    if (h === 0) return 0;
+    const leg1 = h*h / (Math.hypot(d1, h) + d1);
+    const leg2 = h*h / (Math.hypot(d2, h) + d2);
+    return leg1 + leg2;
+  }
+
+  function heightForDelta(d1, d2, delta){
+    if (delta <= 0) return 0;
+    const D = d1 + d2;
+    const a = (D + delta) / 2;
+    const centre = D / 2;
+    const b2 = Math.max(0, (a - centre) * (a + centre));
+    const rel = d1 - centre;
+    return Math.sqrt(Math.max(0, b2 * (1 - (rel*rel)/(a*a))));
+  }
+
+  function buildZonePath(n, lambda, D, yScale){
+    // Exact ellipse: the sum of the distances to Tx and Rx is D+nλ/2.
+    // The horizontal axis uses the link-distance scale; the vertical axis is enlarged separately.
+    const top = [];
+    const bottom = [];
+    const samples = 200;
+    const boundaryDelta = n * lambda / 2;
+    const a = (D + boundaryDelta) / 2;
+    const cFocus = D / 2;
+    const b = Math.sqrt(Math.max(0, (a - cFocus) * (a + cFocus)));
+    const xMin = cFocus - a;
+    const xMax = cFocus + a;
+
+    for (let i = 0; i <= samples; i++){
+      const x = xMin + (xMax - xMin) * i / samples;
+      const normalised = (x - cFocus) / a;
+      const r = b * Math.sqrt(Math.max(0, 1 - normalised*normalised));
+      const sx = xLeft + plotWidth * x / D;
+      const sy = yMid - r * yScale;
+      top.push(`${sx.toFixed(2)},${sy.toFixed(2)}`);
+    }
+    for (let i = samples; i >= 0; i--){
+      const x = xMin + (xMax - xMin) * i / samples;
+      const normalised = (x - cFocus) / a;
+      const r = b * Math.sqrt(Math.max(0, 1 - normalised*normalised));
+      const sx = xLeft + plotWidth * x / D;
+      const sy = yMid + r * yScale;
+      bottom.push(`${sx.toFixed(2)},${sy.toFixed(2)}`);
+    }
+    return `M ${top.join(' L ')} L ${bottom.join(' L ')} Z`;
+  }
+
+  function renderZones(lambda, D, yScale){
+    zonesGroup.innerHTML = '';
+    const fills = ['var(--zone1)','var(--zone2)','var(--zone3)','var(--zone4)'];
+
+    // Draw non-overlapping shells so each legend colour represents one actual Fresnel zone.
+    for (let n = 4; n >= 1; n--){
+      const shell = document.createElementNS('http://www.w3.org/2000/svg','path');
+      const outer = buildZonePath(n, lambda, D, yScale);
+      const inner = n > 1 ? buildZonePath(n - 1, lambda, D, yScale) : '';
+      shell.setAttribute('d', `${outer} ${inner}`);
+      shell.setAttribute('fill', fills[n-1]);
+      shell.setAttribute('fill-rule', 'evenodd');
+      shell.setAttribute('stroke', 'none');
+      zonesGroup.appendChild(shell);
+    }
+
+    // Draw every constant-path boundary once, above the zone fills.
+    for (let n = 1; n <= 4; n++){
+      const boundary = document.createElementNS('http://www.w3.org/2000/svg','path');
+      boundary.setAttribute('d', buildZonePath(n, lambda, D, yScale));
+      boundary.setAttribute('fill', 'none');
+      boundary.setAttribute('stroke', n === 1 ? 'var(--accent)' : 'var(--border)');
+      boundary.setAttribute('stroke-width', n === 1 ? '2' : '1');
+      zonesGroup.appendChild(boundary);
+    }
+  }
+
+  function formatBoundaryDelta(n){
+    const labels = {1:'λ/2', 2:'λ', 3:'3λ/2', 4:'2λ'};
+    return labels[n] || `${n}λ/2`;
+  }
+
+  function update(){
+    const fGHz = Number(frequency.value);
+    const D = Number(distance.value);
+    const frac = Number(position.value) / 100;
+    const d1 = D * frac;
+    const d2 = D - d1;
+    const lambda = c / (fGHz * 1e9);
+    const r1 = heightForDelta(d1, d2, lambda / 2);
+    const r4 = heightForDelta(d1, d2, 2 * lambda);
+    const maxOffset = r4 / r1;
+    offset.max = maxOffset.toFixed(8);
+    if (Number(offset.value) > maxOffset) offset.value = maxOffset.toFixed(8);
+    const h = Number(offset.value) * r1;
+    const alpha = Number(amplitude.value);
+    const extraPhase = Number(phaseShift.value);
+
+    const delta = exactDelta(d1, d2, h);
+    // With the e^{jωt} convention, additional propagation distance causes phase lag.
+    const propagationPhase = -2 * Math.PI * delta / lambda;
+    const totalPhase = extraPhase + propagationPhase;
+    const phaseModuloDegRaw = ((totalPhase * 180 / Math.PI) % 360 + 360) % 360;
+    const phaseModuloDeg = phaseModuloDegRaw < 0.05 || phaseModuloDegRaw > 359.95 ? 0 : phaseModuloDegRaw;
+
+    const fieldRe = 1 + alpha * Math.cos(totalPhase);
+    const fieldIm = alpha * Math.sin(totalPhase);
+    const powerRaw = fieldRe*fieldRe + fieldIm*fieldIm;
+    const power = powerRaw < 1e-12 ? 0 : powerRaw;
+
+    const zoneCoordinate = 2 * delta / lambda;
+    const clearance = h / r1;
+
+    const cosine = Math.cos(totalPhase);
+    let label, cls;
+    if (alpha === 0){
+      label = 'No secondary field: no two-path interference';
+      cls = '';
+    } else if (cosine > 0.9995){
+      label = 'Maximum constructive interference: the fields are in phase';
+      cls = 'good';
+    } else if (cosine < -0.9995){
+      label = 'Maximum destructive interference: the fields are 180° apart';
+      cls = 'bad';
+    } else if (Math.abs(cosine) < 0.05){
+      label = 'The fields are approximately 90° apart';
+      cls = '';
+    } else if (cosine > 0){
+      label = 'Constructive interference: the fields partly reinforce';
+      cls = 'good';
+    } else {
+      label = 'Destructive interference: the fields partly cancel';
+      cls = 'bad';
+    }
+
+    status.className = 'status ' + cls;
+    statusText.textContent = label;
+
+    $('frequencyOut').textContent = fGHz.toFixed(2) + ' GHz';
+    $('distanceOut').textContent = D.toFixed(0) + ' m';
+    $('positionOut').textContent = Math.round(frac*100) + '%';
+    $('offsetOut').textContent = Number(offset.value).toFixed(2) + ' r₁';
+    $('amplitudeOut').textContent = alpha.toFixed(2);
+
+    $('lambdaVal').textContent = fmtLength(lambda);
+    $('r1Val').textContent = fmtLength(r1);
+    $('deltaVal').textContent = (delta/lambda).toFixed(3) + ' λ';
+    $('powerVal').textContent = power.toFixed(2) + '×';
+    $('powerDetail').textContent = 'Direct path alone = 1';
+
+    const maxR4 = heightForDelta(D/2, D/2, 4 * lambda / 2);
+    const yScale = maxVerticalPx / maxR4;
+    renderZones(lambda, D, yScale);
+
+    const sx = xLeft + plotWidth * frac;
+    const sy = yMid - h * yScale;
+    detourPath.setAttribute('points', `${xLeft},${yMid} ${sx},${sy} ${xRight},${yMid}`);
+    radiusLine.setAttribute('x1', sx);
+    radiusLine.setAttribute('x2', sx);
+    radiusLine.setAttribute('y1', yMid);
+    radiusLine.setAttribute('y2', sy);
+    testPoint.setAttribute('cx', sx);
+    testPoint.setAttribute('cy', sy);
+    testLabel.setAttribute('x', Math.min(820, sx + 12));
+    testLabel.setAttribute('y', Math.max(24, sy - 10));
+    $('d1Label').setAttribute('x', (xLeft + sx)/2);
+    $('d2Label').setAttribute('x', (sx + xRight)/2);
+
+    const nearestBoundary = Math.round(zoneCoordinate);
+    const onLineOfSight = Math.abs(zoneCoordinate) < 0.015;
+    const onBoundary = nearestBoundary > 0 && Math.abs(zoneCoordinate - nearestBoundary) < 0.015;
+    const zoneNumber = Math.min(4, Math.floor(zoneCoordinate) + 1);
+    const zoneDescription = onLineOfSight
+      ? `on the line of sight, where Δ = 0`
+      : onBoundary
+      ? `on boundary ${nearestBoundary}, where Δ = ${formatBoundaryDelta(nearestBoundary)}`
+      : `in Fresnel zone ${zoneNumber}, between boundaries ${zoneNumber - 1} and ${zoneNumber}`;
+
+    let phaseExplanation;
+    if (alpha === 0) {
+      phaseExplanation = 'The secondary amplitude is zero, so phase does not affect the power.';
+    } else if (cosine > 0.9995) {
+      phaseExplanation = 'The fields are in phase, giving maximum constructive interference.';
+    } else if (cosine < -0.9995) {
+      phaseExplanation = 'The fields are 180° apart, giving maximum destructive interference.';
+    } else if (Math.abs(cosine) < 0.05) {
+      phaseExplanation = 'The fields are approximately 90° apart, so the interference cross term is near zero.';
+    } else if (cosine > 0) {
+      phaseExplanation = 'The interference is constructive, so the fields partly reinforce.';
+    } else {
+      phaseExplanation = 'The interference is destructive, so the fields partly cancel.';
+    }
+
+    $('interpretation').innerHTML =
+      `The blue point is <strong>${fmtLength(h)}</strong> from the line of sight, or ` +
+      `<strong>${clearance.toFixed(2)}r₁</strong>, and lies ${zoneDescription}. ` +
+      `The secondary path is <strong>${(delta/lambda).toFixed(3)}λ</strong> longer, giving a relative phase of ` +
+      `<strong>${phaseModuloDeg.toFixed(1)}°</strong> modulo 360°. ${phaseExplanation}`;
+
+    const hueStatus = alpha === 0
+      ? 'var(--muted)'
+      : Math.abs(cosine) < 0.05
+      ? 'var(--warn)'
+      : cosine > 0
+      ? 'var(--good)'
+      : 'var(--bad)';
+    testPoint.setAttribute('fill', hueStatus);
+  }
+
+  [frequency, distance, position, offset, amplitude, phaseShift].forEach(el => {
+    el.addEventListener('input', update);
+    el.addEventListener('change', update);
+  });
+
+  document.querySelectorAll('button[data-delta]').forEach(button => {
+    button.addEventListener('click', () => {
+      const targetLambda = Number(button.dataset.delta);
+      const fGHz = Number(frequency.value);
+      const D = Number(distance.value);
+      const frac = Number(position.value) / 100;
+      const d1 = D * frac;
+      const d2 = D - d1;
+      const lambda = c / (fGHz * 1e9);
+      const r1 = heightForDelta(d1, d2, lambda / 2);
+      const h = heightForDelta(d1, d2, targetLambda * lambda);
+      offset.value = Math.min(Number(offset.max), h / r1);
+      update();
+    });
+  });
+
+  update();
+})();
+</script>
+</body>
+</html>
