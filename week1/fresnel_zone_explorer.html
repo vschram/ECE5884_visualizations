@@ -170,7 +170,14 @@
         <span><i class="swatch" style="background:var(--zone3)"></i>Zone 3: λ ≤ Δ &lt; 3λ/2</span>
         <span><i class="swatch" style="background:var(--zone4)"></i>Zone 4: 3λ/2 ≤ Δ &lt; 2λ</span>
         <span><i class="swatch" style="background:var(--accent)"></i>Secondary path</span>
+        <span><i class="swatch" style="background:transparent;border-color:var(--warn)"></i>Δ = λ/4 interference crossover</span>
       </div>
+
+      <p class="note">
+        <strong>Zone number describes geometry, not one interference type.</strong>
+        Inside Zone 1, interference is constructive for Δ &lt; λ/4, has zero cross-term at the dashed
+        Δ = λ/4 contour, and is destructive for λ/4 &lt; Δ &lt; λ/2 (when the additional phase shift is 0°).
+      </p>
 
       <div class="callout" id="interpretation">Adjust the controls to explore the geometry.</div>
     </div>
@@ -288,6 +295,7 @@
       <thead><tr><th>Excess path Δ</th><th>Phase modulo 360°</th><th>Result for φ₀=0</th></tr></thead>
       <tbody>
         <tr><td>0</td><td>0°</td><td>Constructive interference (maximum reinforcement)</td></tr>
+        <tr><td>λ/4</td><td>90°</td><td>Zero interference cross-term (constructive/destructive crossover)</td></tr>
         <tr><td>λ/2</td><td>180°</td><td>Destructive interference (maximum opposition)</td></tr>
         <tr><td>λ</td><td>0°</td><td>Constructive interference (maximum reinforcement)</td></tr>
         <tr><td>3λ/2</td><td>180°</td><td>Destructive interference (maximum opposition)</td></tr>
@@ -450,6 +458,17 @@
       boundary.setAttribute('stroke-width', n === 1 ? '2' : '1');
       zonesGroup.appendChild(boundary);
     }
+
+    // The sign of the interference cross-term changes at Δ=λ/4 for zero additional phase.
+    // This lies halfway through Zone 1; Fresnel-zone boundaries themselves are spaced by λ/2.
+    const crossover = document.createElementNS('http://www.w3.org/2000/svg','path');
+    crossover.setAttribute('d', buildZonePath(0.5, lambda, D, yScale));
+    crossover.setAttribute('fill', 'none');
+    crossover.setAttribute('stroke', 'var(--warn)');
+    crossover.setAttribute('stroke-width', '2');
+    crossover.setAttribute('stroke-dasharray', '7 5');
+    crossover.setAttribute('data-boundary', 'lambda-quarter');
+    zonesGroup.appendChild(crossover);
   }
 
   function formatBoundaryDelta(n){
