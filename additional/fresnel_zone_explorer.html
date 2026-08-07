@@ -190,15 +190,24 @@
         </div>
 
         <div class="control">
+          <label for="offsetMode">Offset mode</label>
+          <select id="offsetMode">
+            <option value="physical" selected>Physical &mdash; metres</option>
+            <option value="normalized">Normalized &mdash; first-zone radii (r&#8321;)</option>
+          </select>
+          <small id="modeHelp">The point stays at a fixed physical height, so changing link distance changes its Fresnel clearance and interference.</small>
+        </div>
+
+        <div class="control">
           <label for="position">Point position <span id="positionOut">50%</span></label>
           <input id="position" type="range" min="5" max="95" step="1" value="50">
           <small>The first Fresnel zone is widest near the midpoint and narrows toward either endpoint.</small>
         </div>
 
         <div class="control">
-          <label for="offset">Radial offset <span id="offsetOut">1.00 r₁</span></label>
-          <input id="offset" type="range" min="0" max="2.25" step="any" value="1">
-          <small>The offset is measured in local first-zone radii. At 1.00 r₁, the point lies on the first Fresnel boundary and Δ=λ/2.</small>
+          <label for="offset">Radial offset <span id="offsetOut">5.00 m</span></label>
+          <input id="offset" type="range" min="0" max="12" step="any" value="5">
+          <small id="offsetHelp">The offset is a physical height above the line of sight. Its maximum follows the fourth Fresnel boundary.</small>
         </div>
 
         <div class="control">
@@ -341,9 +350,11 @@
   const frequency = $('frequency');
   const distance = $('distance');
   const position = $('position');
+  const offsetMode = $('offsetMode');
   const offset = $('offset');
   const amplitude = $('amplitude');
   const phaseShift = $('phaseShift');
+  let activeOffsetMode = offsetMode.value;
 
   const zonesGroup = $('zones');
   const detourPath = $('detourPath');
@@ -455,10 +466,11 @@
     const lambda = c / (fGHz * 1e9);
     const r1 = heightForDelta(d1, d2, lambda / 2);
     const r4 = heightForDelta(d1, d2, 2 * lambda);
-    const maxOffset = r4 / r1;
+    const physicalMode = offsetMode.value === 'physical';
+    const maxOffset = physicalMode ? r4 : r4 / r1;
     offset.max = maxOffset.toFixed(8);
     if (Number(offset.value) > maxOffset) offset.value = maxOffset.toFixed(8);
-    const h = Number(offset.value) * r1;
+    const h = physicalMode ? Number(offset.value) : Number(offset.value) * r1;
     const alpha = Number(amplitude.value);
     const extraPhase = Number(phaseShift.value);
 
@@ -505,7 +517,15 @@
     $('frequencyOut').textContent = fGHz.toFixed(2) + ' GHz';
     $('distanceOut').textContent = D.toFixed(0) + ' m';
     $('positionOut').textContent = Math.round(frac*100) + '%';
-    $('offsetOut').textContent = Number(offset.value).toFixed(2) + ' r₁';
+    $('offsetOut').textContent = physicalMode
+      ? fmtLength(h)
+      : Number(offset.value).toFixed(2) + ' r₁';
+    $('modeHelp').textContent = physicalMode
+      ? 'The point stays at a fixed physical height, so changing link distance changes its Fresnel clearance and interference.'
+      : 'The point tracks the local Fresnel radius, isolating zone geometry from the physical link scale.';
+    $('offsetHelp').textContent = physicalMode
+      ? 'The offset is a physical height above the line of sight. Its maximum follows the fourth Fresnel boundary.'
+      : 'The offset is measured in local first-zone radii. At 1.00 r₁, the point lies on the first Fresnel boundary and Δ=λ/2.';
     $('amplitudeOut').textContent = alpha.toFixed(2);
 
     $('lambdaVal').textContent = fmtLength(lambda);
@@ -578,6 +598,25 @@
     el.addEventListener('change', update);
   });
 
+  offsetMode.addEventListener('change', () => {
+    const fGHz = Number(frequency.value);
+    const D = Number(distance.value);
+    const frac = Number(position.value) / 100;
+    const lambda = c / (fGHz * 1e9);
+    const r1 = heightForDelta(D * frac, D * (1 - frac), lambda / 2);
+    const r4 = heightForDelta(D * frac, D * (1 - frac), 2 * lambda);
+    const physicalHeight = activeOffsetMode === 'physical'
+      ? Number(offset.value)
+      : Number(offset.value) * r1;
+
+    offset.max = (offsetMode.value === 'physical' ? r4 : r4 / r1).toFixed(8);
+    offset.value = offsetMode.value === 'physical'
+      ? physicalHeight
+      : physicalHeight / r1;
+    activeOffsetMode = offsetMode.value;
+    update();
+  });
+
   document.querySelectorAll('button[data-delta]').forEach(button => {
     button.addEventListener('click', () => {
       const targetLambda = Number(button.dataset.delta);
@@ -589,7 +628,7 @@
       const lambda = c / (fGHz * 1e9);
       const r1 = heightForDelta(d1, d2, lambda / 2);
       const h = heightForDelta(d1, d2, targetLambda * lambda);
-      offset.value = Math.min(Number(offset.max), h / r1);
+      offset.value = offsetMode.value === 'physical' ? h : h / r1;
       update();
     });
   });
