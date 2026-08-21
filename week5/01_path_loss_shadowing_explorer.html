@@ -15,7 +15,7 @@
 <p class="sub">Move the receiver and change the environment. The solid curve is the mean log-distance model; the band contains the central 90% of shadowing outcomes. A fixed shadowing realisation makes the current received power reproducible.</p>
 <div class="toolbar">
   <div class="presets">
-    <button type="button" data-preset="free">Free-space link</button><button type="button" data-preset="urban">Urban cellular</button><button type="button" data-preset="indoor">Obstructed indoor</button><button type="button" id="newShadow">New shadowing sample</button>
+    <button type="button" data-preset="free">Free-space link</button><button type="button" data-preset="urban">Urban cellular</button><button type="button" data-preset="indoor">Obstructed indoor</button><button type="button" id="newShadow">New shadowing sample</button><button type="button" id="axisMode" aria-pressed="true" title="Switch between a fixed teaching scale and automatic scaling">Y-axis: Fixed (−240 to 0 dBm)</button>
   </div>
   <div class="controls">
     <div class="ctrl"><label for="distance">Distance <strong id="distanceOut"></strong></label><input id="distance" type="range" min="0" max="1000" value="630" aria-describedby="distanceOut"></div>
@@ -43,7 +43,7 @@
 <script>
 'use strict';
 const C=299792458, PT=20, D0=1;
-let seed=12345, zSample=0.5;
+let seed=12345, zSample=0.5, fixedYAxis=true;
 function rng(){seed=(1664525*seed+1013904223)>>>0;return seed/4294967296}
 function randn(){let u=0,v=0;while(!u)u=rng();while(!v)v=rng();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v)}
 function normalCDF(x){const t=1/(1+0.2316419*Math.abs(x));const d=0.3989423*Math.exp(-x*x/2);let p=1-d*t*(0.319381530+t*(-0.356563782+t*(1.781477937+t*(-1.821255978+t*1.330274429))));return x>=0?p:1-p}
@@ -57,10 +57,14 @@ function draw(){
  const s=state(),mu=meanPower(s.d,s.fc,s.n),shadowContribution=-s.sigma*zSample,sample=mu+shadowContribution;
  distanceOut.textContent=fmtDistance(s.d);fcOut.textContent=s.fc.toFixed(1)+' GHz';nOut.textContent=s.n.toFixed(1);sigmaOut.textContent=s.sigma.toFixed(1)+' dB';thresholdOut.textContent=s.thr.toFixed(0)+' dBm';meanPrEl.textContent=mu.toFixed(1)+' dBm';samplePr.textContent=sample.toFixed(1)+' dBm';sampleText.textContent='Shadowing contribution = '+shadowContribution.toFixed(1)+' dB';
  const pout=s.sigma===0?(mu<s.thr?1:0):normalCDF((s.thr-mu)/s.sigma);outage.textContent=(100*pout).toFixed(pout<.01?2:1)+'%';margin.textContent=(1.645*s.sigma).toFixed(1)+' dB';
- insight.innerHTML=(mu-s.thr>=1.645*s.sigma?'<strong>Coverage interpretation:</strong> The mean link margin meets or exceeds the 95% fade margin, so the model predicts at least 95% location coverage at the selected distance.':'<strong>Coverage interpretation:</strong> The mean link margin is below the 95% fade margin. Increase link budget, reduce distance, or accept a larger outage probability.')+' Increasing <em>n</em> steepens the distance slope; increasing σ widens uncertainty without changing the mean.';
+ const linkMargin=mu-s.thr,coverage=100*(1-pout),position=linkMargin>=0?'above':'below';
+ const coverageMeaning=pout<=.05
+  ?'The 95% fade-margin requirement is met, so this model predicts at least 95% location coverage.'
+  :'The 95% fade-margin requirement is not met. More link margin is needed to reach 95% location coverage.';
+ insight.innerHTML='<strong>What this means:</strong> The average received power falls as the transmitter–receiver distance increases. The path-loss exponent <em>n</em> controls how steeply it falls, while shadowing σ describes location-to-location variation around that average.<br><br><strong>For these settings:</strong> The mean received power is <strong>'+Math.abs(linkMargin).toFixed(1)+' dB '+position+' the receiver threshold</strong>, giving a predicted location coverage of <strong>'+coverage.toFixed(coverage>99||coverage<1?2:1)+'%</strong>. '+coverageMeaning+'<br><br><strong>Design takeaway:</strong> For 95% coverage in this lognormal model, the mean power should exceed the threshold by at least 1.645σ = '+(1.645*s.sigma).toFixed(1)+' dB. Increasing σ widens the uncertainty band but does not change the mean path-loss curve.';
  const {x,w,h}=resize(plot),m={l:58,r:18,t:16,b:42},xmin=1,xmax=1e4,ds=[],means=[];
  for(let i=0;i<260;i++){const d=Math.pow(10,4*i/259);ds.push(d);means.push(meanPower(d,s.fc,s.n))}
- const [ymin,ymax]=niceBounds([...means.map(p=>p+1.645*s.sigma),...means.map(p=>p-1.645*s.sigma),s.thr,sample]);
+ const autoBounds=niceBounds([...means.map(p=>p+1.645*s.sigma),...means.map(p=>p-1.645*s.sigma),s.thr,sample]),ymin=fixedYAxis?-240:autoBounds[0],ymax=fixedYAxis?0:autoBounds[1];
  const X=d=>m.l+(Math.log10(d)-Math.log10(xmin))/(Math.log10(xmax)-Math.log10(xmin))*(w-m.l-m.r),Y=p=>m.t+(ymax-p)/(ymax-ymin)*(h-m.t-m.b);
  x.clearRect(0,0,w,h);x.strokeStyle=getComputedStyle(document.documentElement).getPropertyValue('--border');x.fillStyle=getComputedStyle(document.documentElement).getPropertyValue('--muted');x.font='12px system-ui';x.textAlign='center';
  for(const d of [1,10,100,1000,10000]){const px=X(d);x.beginPath();x.moveTo(px,m.t);x.lineTo(px,h-m.b);x.stroke();x.fillText(fmtDistance(d),px,h-17)}
@@ -72,6 +76,7 @@ function draw(){
 const meanPrEl=document.getElementById('meanPr');
 ['distance','fc','n','sigma','threshold'].forEach(id=>document.getElementById(id).addEventListener('input',draw));
 newShadow.addEventListener('click',()=>{zSample=randn();draw()});
+axisMode.addEventListener('click',()=>{fixedYAxis=!fixedYAxis;axisMode.textContent=fixedYAxis?'Y-axis: Fixed (−240 to 0 dBm)':'Y-axis: Auto';axisMode.setAttribute('aria-pressed',String(fixedYAxis));draw()});
 document.querySelectorAll('[data-preset]').forEach(b=>b.onclick=()=>{const p=b.dataset.preset;if(p==='free'){fc.value=2.4;n.value=2;sigma.value=0;distance.value=575;threshold.value=-100}else if(p==='urban'){fc.value=3.5;n.value=3.3;sigma.value=8;distance.value=675;threshold.value=-105}else{fc.value=5.8;n.value=4.5;sigma.value=6;distance.value=430;threshold.value=-95}zSample=0.5;draw()});
 window.addEventListener('resize',draw);draw();
 </script>
