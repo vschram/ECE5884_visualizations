@@ -69,8 +69,8 @@
   <div class="note" id="contextNote"></div>
   <div class="card component-card"><div class="title" id="componentStemTitle">Sample-by-sample one-tap channel · real component · AWGN omitted</div><canvas id="componentStem" role="img" aria-label="Aligned stem plots of the real components of transmitted symbols, individual channel-tap contributions, and their summed output"></canvas></div>
   <div class="card correlator-card"><div class="title" id="coarseChannelTitle">Sliding correlator · synchronization plus a coarse channel estimate</div><div class="correlator-formula">R[m] = Σ<sub>n=0</sub><sup>Nₜ−1</sup> y[m+n]t*[n] &nbsp;·&nbsp; R[m] ≈ Σ<sub>ℓ=0</sub><sup>L</sup> h[ℓ]R<sub>tt</sub>[m−ℓ]</div><canvas id="coarseChannel" role="img" aria-label="Normalized sliding-correlation magnitude showing the preamble timing peak and coarse estimates of the selected channel taps"></canvas><div class="legend"><span><i class="sw blue"></i>|R[m]| / Nₜ</span><span><i class="sw orange"></i>Tap arrival samples</span></div><p class="correlator-caption" id="coarseChannelNote" aria-live="polite"></p></div>
-  <dialog class="gain-dialog" id="noiseGainDialog" aria-labelledby="noiseGainDialogTitle"><h3 id="noiseGainDialogTitle">One-tap noise calculation</h3><div class="formula" id="noiseGainCalc"></div><p class="message">Dividing by ĥ restores the desired symbol scale, but it applies the same gain to AWGN. The equalizer cannot recover SNR lost in the channel fade.</p><button type="button" id="closeNoiseGain">Close</button></dialog>
-<dialog class="gain-dialog" id="eqGainDialog" aria-labelledby="eqGainDialogTitle"><h3 id="eqGainDialogTitle">Equalizer noise-gain calculation</h3><div class="formula" id="eqGainCalc"></div><p class="message">The equalizer is a filter, so white noise passes through it filtered too. For white v[n] the output noise power is scaled by the energy of the tap vector, ‖f‖², whatever the taps do to the signal. Dividing by the main cursor c[n<sub>d</sub>] to restore the symbol scale divides the signal and the noise alike, so the output noise power relative to the restored symbol is ‖f‖² / |c[n<sub>d</sub>]|². Above 1 the equalizer enhances noise; below 1 it attenuates, which a channel with gain above unity allows.</p><button type="button" id="closeEqGain">Close</button></dialog>
+  
+
 </section>
 
 <section class="panel" id="estimation" role="tabpanel" aria-labelledby="tab-estimation" hidden>
@@ -111,6 +111,9 @@
   <div class="formula">f<sub>MMSE</sub> = (ĤᴴĤ + N₀/E<sub>x</sub> I)⁻¹Ĥᴴe<sub>n<sub>d</sub></sub> &nbsp;·&nbsp; filtering O(L<sub>f</sub>) per symbol; dense design ≈ O(L<sub>f</sub>³)</div>
 </section>
 </main>
+
+<dialog class="gain-dialog" id="noiseGainDialog" aria-labelledby="noiseGainDialogTitle"><h3 id="noiseGainDialogTitle">One-tap noise calculation</h3><div class="formula" id="noiseGainCalc"></div><p class="message">Dividing by ĥ restores the desired symbol scale, but it applies the same gain to AWGN. The equalizer cannot recover SNR lost in the channel fade.</p><button type="button" id="closeNoiseGain">Close</button></dialog>
+<dialog class="gain-dialog" id="eqGainDialog" aria-labelledby="eqGainDialogTitle"><h3 id="eqGainDialogTitle">Equalizer noise-gain calculation</h3><div class="formula" id="eqGainCalc"></div><p class="message">The equalizer is a filter, so white noise passes through it filtered too. For white v[n] the output noise power is scaled by the energy of the tap vector, ‖f‖², whatever the taps do to the signal. Dividing by the main cursor c[n<sub>d</sub>] to restore the symbol scale divides the signal and the noise alike, so the output noise power relative to the restored symbol is ‖f‖² / |c[n<sub>d</sub>]|². Above 1 the equalizer enhances noise; below 1 it attenuates, which a channel with gain above unity allows.</p><button type="button" id="closeEqGain">Close</button></dialog>
 
 <script>
 'use strict';
