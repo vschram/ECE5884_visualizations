@@ -45,7 +45,7 @@
     <div class="ctrl"><label for="motN">FFT block size N <strong id="motNOut">256</strong></label><input id="motN" type="range" min="4" max="12" value="8" step="1"></div>
   </div><div class="summary-row"><div class="toolbar-metrics">
     <div class="metric"><div class="name">Channel memory L</div><div class="value" id="motMemory">—</div><div class="small">L = ⌈R<sub>s</sub>τ<sub>max</sub>⌉ symbols</div></div>
-    <div class="metric"><div class="name">TDE dense design</div><div class="value" id="motTdeCost">—</div><div class="small">≈ (L<sub>f</sub>+1)³ operations</div></div>
+    <div class="metric"><div class="name">TDE dense design</div><div class="value" id="motTdeCost">—</div><div class="small">≈ L<sub>f</sub>³ operations</div></div>
     <div class="metric"><div class="name">FDE per block</div><div class="value" id="motFdeCost">—</div><div class="small">≈ N log₂N + N multiplies</div></div>
     <div class="metric"><div class="name">Per-symbol multiplies</div><div class="value" id="motPerSym">—</div><div class="small">TDE versus FDE</div></div>
   </div><div class="note" id="motNote" aria-live="polite"></div></div></div></div>
@@ -55,37 +55,37 @@
   <p class="flow-caption">Top row: the Week 6 time-domain chain. Bottom row: the block frequency-domain path this week replaces it with.</p>
 
   <div class="plots">
-    <div class="card"><div class="title">Channel memory and design cost versus symbol rate</div><canvas id="motMemoryPlot" role="img" aria-label="Channel memory, time-domain equalizer design cost and block FFT cost against symbol rate on logarithmic axes"></canvas><div class="legend"><span><i class="sw blue"></i>Channel memory L</span><span><i class="sw orange"></i>TDE design (L<sub>f</sub>+1)³</span><span><i class="sw purple"></i>FDE per block N log₂N</span><span><i class="sw green"></i>Your R<sub>s</sub></span></div><ul class="bullets" id="motMemoryNote"></ul></div>
-    <div class="card"><div class="title">Multiplies per useful symbol</div><canvas id="motComplexity" role="img" aria-label="Per-symbol multiply count for time-domain and frequency-domain equalization against symbol rate"></canvas><div class="legend"><span><i class="sw orange"></i>TDE: L<sub>f</sub>+1</span><span><i class="sw purple"></i>FDE: log₂N + 1</span><span><i class="sw green"></i>Your R<sub>s</sub></span><span><i class="sw" style="background:var(--red)"></i>Crossover</span></div><ul class="bullets" id="motComplexityNote"></ul></div>
+    <div class="card"><div class="title">Channel memory and design cost versus symbol rate</div><canvas id="motMemoryPlot" role="img" aria-label="Channel memory, time-domain equalizer design cost and block FFT cost against symbol rate on logarithmic axes"></canvas><div class="legend"><span><i class="sw blue"></i>Channel memory L</span><span><i class="sw orange"></i>TDE design L<sub>f</sub>³</span><span><i class="sw purple"></i>FDE per block N log₂N</span><span><i class="sw green"></i>Your R<sub>s</sub></span></div><ul class="bullets" id="motMemoryNote"></ul></div>
+    <div class="card"><div class="title">Multiplies per useful symbol</div><canvas id="motComplexity" role="img" aria-label="Per-symbol multiply count for time-domain and frequency-domain equalization against symbol rate"></canvas><div class="legend"><span><i class="sw orange"></i>TDE: L<sub>f</sub></span><span><i class="sw purple"></i>FDE: log₂N + 1</span><span><i class="sw green"></i>Your R<sub>s</sub></span><span><i class="sw" style="background:var(--red)"></i>Crossover</span></div><ul class="bullets" id="motComplexityNote"></ul></div>
     <div class="card"><div class="title" id="motTapsTitle">Sampled channel impulse response</div><canvas id="motTaps" role="img" aria-label="Magnitude of the sampled channel taps for the current symbol rate and delay spread"></canvas><div class="legend"><span><i class="sw blue"></i>|h[ℓ]|</span></div><ul class="bullets" id="motTapsNote"></ul></div>
   </div>
 </section>
 
 <!-- ============================ 2 · TDE BRIDGE ============================ -->
 <section class="panel" id="tde" role="tabpanel" aria-labelledby="tab-tde" hidden>
-  <div class="panel-head"><div><div class="eyebrow">Bridge · LMMSE time-domain equalization</div><h2>One matrix inverse buys a delayed impulse, and its cost is cubic in the filter length</h2></div><div class="message">Stacking L<sub>f</sub>+1 received samples gives y<sub>n</sub> = Hx<sub>n</sub> + v<sub>n</sub>. The LMMSE equalizer f = (HᴴH + N₀/E<sub>x</sub>·I)⁻¹Hᴴe<sub>nd</sub> drives the cascade Hf toward a unit impulse at the decision delay n<sub>d</sub>. This is the regularized inverse that reappears per tone next.</div></div>
+  <div class="panel-head"><div><div class="eyebrow">Bridge · LMMSE time-domain equalization</div><h2>One matrix inverse buys a delayed impulse, and its cost is cubic in the filter length</h2></div><div class="message">Stacking L<sub>f</sub> received samples gives y<sub>n</sub> = Hx<sub>n</sub> + v<sub>n</sub>. The LMMSE equalizer f = (HᴴH + N₀/E<sub>x</sub>·I)⁻¹Hᴴe<sub>nd</sub> drives the cascade Hf toward a unit impulse at the decision delay n<sub>d</sub>. This is the regularized inverse that reappears per tone next.</div></div>
   <div class="sticky-bar"><div class="toolbar">
     <div class="mode-buttons mode-row"><button type="button" data-tde-model="worked" aria-pressed="true">Worked example h = [0.5, j0.5, 0.4]</button><button type="button" data-tde-model="notch" aria-pressed="false">Deep-null h = [1, −0.9]</button><button type="button" data-tde-model="long" aria-pressed="false">Longer 6-tap channel</button></div>
     <div class="control-grid">
-    <div class="ctrl"><label for="tdeLf"><span>Equalizer order L<sub>f</sub></span> <strong id="tdeLfOut">3</strong></label><input id="tdeLf" type="range" min="1" max="12" value="3" step="1"></div>
+    <div class="ctrl"><label for="tdeLf"><span>Equalizer length L<sub>f</sub></span> <strong id="tdeLfOut">4 taps</strong></label><input id="tdeLf" type="range" min="2" max="13" value="4" step="1"></div>
     <div class="ctrl"><label for="tdeDelay"><span>Decision delay n<sub>d</sub></span> <strong id="tdeDelayOut">2</strong></label><input id="tdeDelay" type="range" min="0" max="5" value="2" step="1"></div>
     <div class="ctrl"><label for="tdeSnr"><span>E<sub>x</sub>/N₀</span> <strong id="tdeSnrOut">10 dB</strong></label><input id="tdeSnr" type="range" min="-5" max="30" value="10" step="1"></div>
     <div class="ctrl"><label for="tdeReg">Regularization <strong id="tdeRegOut">LMMSE</strong></label><select id="tdeReg"><option value="lmmse" selected>LMMSE: λ = N₀/Eₓ</option><option value="ls">LS / approximate ZF: λ = 0</option></select></div>
     </div>
     <div class="summary-row"><div class="toolbar-metrics">
-      <div class="metric"><div class="name">Matrix H</div><div class="value" id="tdeShape">—</div><div class="small">(L<sub>f</sub>+L+1) × (L<sub>f</sub>+1) convmtx</div></div>
+      <div class="metric"><div class="name">Matrix H</div><div class="value" id="tdeShape">—</div><div class="small">(L<sub>f</sub>+L) × L<sub>f</sub> convmtx</div></div>
       <div class="metric"><div class="name">Cascade error</div><div class="value" id="tdeResid">—</div><div class="small">‖Hf − e<sub>nd</sub>‖² against the target</div></div>
       <div class="metric"><div class="name">Noise gain</div><div class="value" id="tdeNoiseGain">—</div><div class="small">‖f‖² multiplies AWGN power</div></div>
-      <div class="metric"><div class="name">Dense design cost</div><div class="value" id="tdeCost">—</div><div class="small">≈ (L<sub>f</sub>+1)³ operations</div></div>
+      <div class="metric"><div class="name">Dense design cost</div><div class="value" id="tdeCost">—</div><div class="small">≈ L<sub>f</sub>³ operations</div></div>
     </div><div class="formula"><div>f<sub>nd</sub> = (HᴴH + N₀/E<sub>x</sub> I)⁻¹ Hᴴe<sub>nd</sub></div><div>x̂[n−n<sub>d</sub>] = Σ<sub>k</sub> f<sub>nd</sub>[k] y[n−k]</div><div id="tdeLambda">λ = N₀/E<sub>x</sub> = 0.100</div></div></div>
   </div></div>
 
   <div class="plots">
     <div class="card"><div class="title">LMMSE equalizer tap magnitudes</div><canvas id="tdeTaps" role="img" aria-label="Magnitude of the LMMSE equalizer taps"></canvas><div class="legend"><span><i class="sw orange"></i>|f<sub>nd</sub>[k]|</span></div><ul class="bullets" id="tdeTapsNote"></ul></div>
     <div class="card"><div class="title">Effective channel Hf against the target impulse</div><canvas id="tdeCascade" role="img" aria-label="Magnitude of the effective channel after equalization compared with a delayed unit impulse"></canvas><div class="legend"><span><i class="sw blue"></i>Main cursor c[n<sub>d</sub>]</span><span><i class="sw orange"></i>Residual ISI</span><span><i class="sw green"></i>Target δ[m−n<sub>d</sub>]</span></div><ul class="bullets" id="tdeCascadeNote"></ul></div>
-    <div class="card"><div class="title">Cascade error across decision delays</div><canvas id="tdeDelayCost" role="img" aria-label="Cascade error against decision delay for the selected and a longer equalizer"></canvas><div class="legend"><span><i class="sw blue"></i>Selected L<sub>f</sub></span><span><i class="sw" style="background:var(--cyan)"></i>Dashed — L<sub>f</sub> = 12</span><span><i class="sw" style="background:var(--red)"></i>Best delay</span><span><i class="sw green"></i>Your delay</span></div><ul class="bullets" id="tdeDelayNote"></ul></div>
+    <div class="card"><div class="title">Cascade error across decision delays</div><canvas id="tdeDelayCost" role="img" aria-label="Cascade error against decision delay for the selected and a longer equalizer"></canvas><div class="legend"><span><i class="sw blue"></i>Selected L<sub>f</sub></span><span><i class="sw" style="background:var(--cyan)"></i>Dashed — L<sub>f</sub> = 13</span><span><i class="sw" style="background:var(--red)"></i>Best delay</span><span><i class="sw green"></i>Your delay</span></div><ul class="bullets" id="tdeDelayNote"></ul></div>
     <div class="card"><div class="title">Constellation before and after time-domain equalization</div><canvas id="tdeConst" role="img" aria-label="QPSK constellation at the channel output and after the LMMSE time-domain equalizer"></canvas><div class="legend"><span><i class="sw orange"></i>Channel output y[n]</span><span><i class="sw blue"></i>Equalized x̂[n−n<sub>d</sub>]</span><span><i class="sw" style="background:var(--red)"></i>Ideal QPSK</span></div><ul class="bullets" id="tdeConstNote"></ul></div>
-    <div class="card"><div class="title">Cost and residual error versus equalizer length</div><canvas id="tdeCostLen" role="img" aria-label="Dense design cost and best-delay cascade error against equalizer order"></canvas><div class="legend"><span><i class="sw orange"></i>Design cost (L<sub>f</sub>+1)³</span><span><i class="sw blue"></i>Best-delay cascade error</span><span><i class="sw green"></i>Your L<sub>f</sub></span></div><ul class="bullets" id="tdeCostNote"></ul></div>
+    <div class="card"><div class="title">Cost and residual error versus equalizer length</div><canvas id="tdeCostLen" role="img" aria-label="Dense design cost and best-delay cascade error against equalizer length"></canvas><div class="legend"><span><i class="sw orange"></i>Design cost L<sub>f</sub>³</span><span><i class="sw blue"></i>Best-delay cascade error</span><span><i class="sw green"></i>Your L<sub>f</sub></span></div><ul class="bullets" id="tdeCostNote"></ul></div>
   </div>
 
   <div class="card" style="margin-top:14px"><div class="title" id="tdeMatrixTitle">Convolution matrix from the channel taps</div><div class="matrix-wrap" id="tdeMatrix"></div><ul class="bullets" id="tdeMatrixNote"></ul></div>
@@ -265,7 +265,7 @@ function motParams(){const tau=+$('motTau').value,rsExp=+$('motRs').value,Rs=Mat
 function drawMotivation(){
   const p=motParams();
   $('motTauOut').textContent=p.tau+' µs';$('motRsOut').textContent=fmtRate(p.Rs);$('motNOut').textContent=p.N;$('motAlphaOut').textContent=p.alpha.toFixed(2)+'×';
-  const tdeDesign=Math.pow(p.Lf+1,3),fdeBlock=p.N*Math.log2(p.N)+p.N,tdePer=p.Lf+1,fdePer=Math.log2(p.N)+1;
+  const tdeDesign=Math.pow(p.Lf,3),fdeBlock=p.N*Math.log2(p.N)+p.N,tdePer=p.Lf,fdePer=Math.log2(p.N)+1;
   $('motMemory').textContent=fmtCount(p.L)+' symbols';
   $('motTdeCost').textContent=fmtCount(tdeDesign);
   $('motFdeCost').textContent=fmtCount(fdeBlock);
@@ -273,9 +273,9 @@ function drawMotivation(){
   $('motFlowEstimate').textContent=fmtCount(p.L+1)+' complex taps';
   $('motFlowFft').textContent=p.N+'-point FFT';
   $('motFlowTone').textContent=p.N+' complex multiplies';
-  const heavy=p.Lf+1>32;
+  const heavy=p.Lf>32;
   $('motFlowEqStep').dataset.state=heavy?'warning':'ready';
-  $('motFlowEqualize').textContent=(heavy?'too long: ':'feasible: ')+fmtCount(p.Lf+1)+' taps';
+  $('motFlowEqualize').textContent=(heavy?'too long: ':'feasible: ')+fmtCount(p.Lf)+' taps';
   $('motFlowRf').textContent='τ_max = '+p.tau+' µs';
   $('motHeading').textContent=heavy?'At this symbol rate the time-domain equalizer no longer fits':'Channel memory grows with symbol rate; time-domain equalizer cost grows with it';
 
@@ -284,7 +284,7 @@ function drawMotivation(){
   let z=axes($('motMemoryPlot'),xmin,xmax,ymin,ymax,'Symbol rate Rₛ (sym/s)','Count (log scale)',{xticks:4,yticks:5,yfmt:decade,xfmt:decade});
   const Lof=x=>Math.max(1,Math.pow(10,x)*p.tau*1e-6),clip=v=>Math.min(ymax,Math.max(ymin,v)),curve=f=>{const q=[];for(let x=xmin;x<=xmax+1e-9;x+=0.05){const v=Math.log10(f(x));if(v>=ymin&&v<=ymax)q.push([x,v])}return q};
   line(z,curve(Lof),css('--blue'),2.4);
-  line(z,curve(x=>Math.pow(Math.max(1,p.alpha*Lof(x))+1,3)),css('--orange'),2.4);
+  line(z,curve(x=>Math.pow(Math.max(1,p.alpha*Lof(x)),3)),css('--orange'),2.4);
   line(z,[[xmin,Math.log10(fdeBlock)],[xmax,Math.log10(fdeBlock)]],css('--purple'),2.4,[7,5]);
   z.c.save();z.c.strokeStyle=css('--muted');z.c.lineWidth=1;z.c.setLineDash([4,4]);z.c.beginPath();z.c.moveTo(z.X(p.rsExp),z.Y(ymin));z.c.lineTo(z.X(p.rsExp),z.Y(ymax));z.c.stroke();z.c.restore();
   dot(z,p.rsExp,clip(Math.log10(p.L)),css('--green'),6);dot(z,p.rsExp,clip(Math.log10(tdeDesign)),css('--green'),6);
@@ -300,15 +300,15 @@ function drawMotivation(){
   const y2max=5;
   z=axes($('motComplexity'),xmin,xmax,0,y2max,'Symbol rate Rₛ (sym/s)','Multiplies per useful symbol',{xticks:4,yticks:5,yfmt:decade,xfmt:decade});
   const tdeCurve=[],fdeLog=Math.log10(fdePer);
-  for(let x=xmin;x<=xmax+1e-9;x+=0.05){const v=Math.log10(Math.max(1,p.alpha*Lof(x))+1);if(v<=y2max)tdeCurve.push([x,v])}
+  for(let x=xmin;x<=xmax+1e-9;x+=0.05){const v=Math.log10(Math.max(1,p.alpha*Lof(x)));if(v<=y2max)tdeCurve.push([x,v])}
   line(z,tdeCurve,css('--orange'),2.4);
   line(z,[[xmin,fdeLog],[xmax,fdeLog]],css('--purple'),2.4,[7,5]);
-  const crossRs=(fdePer-1)/(p.alpha*p.tau*1e-6),crossX=Math.log10(Math.max(1,crossRs));
+  const crossRs=fdePer/(p.alpha*p.tau*1e-6),crossX=Math.log10(Math.max(1,crossRs));
   if(crossX>xmin&&crossX<xmax){z.c.save();z.c.strokeStyle=css('--red');z.c.lineWidth=2;z.c.beginPath();z.c.moveTo(z.X(crossX),z.Y(0));z.c.lineTo(z.X(crossX),z.Y(y2max));z.c.stroke();z.c.restore();plotLabel(z,z.X(crossX),z.Y(y2max)+6,'FDE cheaper above '+fmtRate(Math.pow(10,crossX)),css('--red'),'top')}
   dot(z,p.rsExp,Math.min(y2max,Math.log10(tdePer)),css('--green'),6);
   plotLabel(z,z.X(p.rsExp),z.Y(Math.min(y2max,Math.log10(tdePer)))-9,fmtCount(tdePer)+' vs '+fdePer.toFixed(0),css('--green'));
   bullets($('motComplexityNote'),[
-    'Filtering costs L'+'_f + 1 = '+fmtCount(tdePer)+' multiplies per symbol; the two FFTs plus the per-tone multiply cost about log₂N + 1 = '+fdePer.toFixed(0)+' per useful symbol.',
+    'Filtering costs L'+'_f = '+fmtCount(tdePer)+' multiplies per symbol; the two FFTs plus the per-tone multiply cost about log₂N + 1 = '+fdePer.toFixed(0)+' per useful symbol.',
     'The FDE line is flat in R'+'ₛ. That is the whole argument for block processing: the transform cost is set by N, and the channel only has to fit inside the cyclic prefix.',
     'This counts multiplies only. FDE also pays the CP overhead in bandwidth and a block of latency, which the next tab prices.'
   ]);
@@ -323,7 +323,7 @@ function drawMotivation(){
     'Every one of those taps is an unknown the receiver must estimate before it can equalize — the Week 6 problem, now at this scale.',
     'Sampling faster does not change the physics; it only spreads the same energy over more taps.'
   ]);
-  const feasible=p.Lf+1<=32;
+  const feasible=p.Lf<=32;
   $('motNote').innerHTML='<strong>'+(feasible?'Time-domain equalization is still reasonable here.':'This is where the frequency domain takes over.')+'</strong> With τ<sub>max</sub> = '+p.tau+' µs at '+fmtRate(p.Rs)+', the channel memory is L = '+fmtCount(p.L)+' and a practical equalizer needs L<sub>f</sub> ≈ '+fmtCount(p.Lf)+' taps: '+fmtCount(tdePer)+' multiplies per symbol and about '+fmtCount(tdeDesign)+' operations to design. A block of N = '+p.N+' costs '+fmtCount(fdeBlock)+' multiplies once, or '+fdePer.toFixed(0)+' per useful symbol, and pays '+(100/(1+p.N/Math.max(p.L,1))).toFixed(1)+'% overhead if the prefix is set to L<sub>c</sub> = L.';
 }
 ['motTau','motRs','motAlpha','motN'].forEach(id=>$(id).addEventListener('input',drawMotivation));
@@ -339,7 +339,7 @@ const tdeChannels={
 };
 document.querySelectorAll('[data-tde-model]').forEach(b=>b.addEventListener('click',()=>{tdeModel=b.dataset.tdeModel;drawTde()}));
 function convmtx(h,n){const rows=h.length+n-1;return Array.from({length:rows},(_,i)=>Array.from({length:n},(_,j)=>(i-j>=0&&i-j<h.length)?h[i-j]:C()))}
-function tdeSolve(h,Lf,nd,lambda){const n=Lf+1,H=convmtx(h,n),rows=H.length,
+function tdeSolve(h,Lf,nd,lambda){const n=Lf,H=convmtx(h,n),rows=H.length,
   A=Array.from({length:n},(_,i)=>Array.from({length:n},(_,j)=>{let s=C();for(let r=0;r<rows;r++)s=add(s,mul(conj(H[r][i]),H[r][j]));return i===j?add(s,C(lambda,0)):s})),
   b=Array.from({length:n},(_,i)=>conj(H[nd][i])),
   f=solveComplex(A,b),
@@ -351,20 +351,20 @@ function fmtC(v){const re=v.re,im=v.im;if(Math.abs(re)<5e-3&&Math.abs(im)<5e-3)r
 function drawTde(){
   document.querySelectorAll('[data-tde-model]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.tdeModel===tdeModel));
   const h=tdeChannels[tdeModel](),L=h.length-1,Lf=+$('tdeLf').value,snrDb=+$('tdeSnr').value,mode=$('tdeReg').value,
-    N0=Math.pow(10,-snrDb/10),lambda=mode==='ls'?0:N0,rows=Lf+L+1;
+    N0=Math.pow(10,-snrDb/10),lambda=mode==='ls'?0:N0,rows=Lf+L;
   $('tdeDelay').max=rows-1;let nd=Math.min(+$('tdeDelay').value,rows-1);$('tdeDelay').value=nd;
-  $('tdeLfOut').textContent=Lf+' ('+(Lf+1)+' taps)';$('tdeDelayOut').textContent=nd;$('tdeSnrOut').textContent=snrDb+' dB';
+  $('tdeLfOut').textContent=Lf+' taps';$('tdeDelayOut').textContent=nd;$('tdeSnrOut').textContent=snrDb+' dB';
   $('tdeRegOut').textContent=mode==='ls'?'LS':'LMMSE';
   $('tdeLambda').innerHTML=mode==='ls'?'λ = 0 (unregularized least squares)':'λ = N₀/E<sub>x</sub> = '+N0.toFixed(4);
-  const r=tdeSolve(h,Lf,nd,lambda),cost=Math.pow(Lf+1,3);
-  $('tdeShape').textContent=rows+' × '+(Lf+1);
+  const r=tdeSolve(h,Lf,nd,lambda),cost=Math.pow(Lf,3);
+  $('tdeShape').textContent=rows+' × '+Lf;
   $('tdeResid').textContent=r.resid.toFixed(4);
   $('tdeNoiseGain').textContent=r.ng.toFixed(3);
   $('tdeCost').textContent=fmtCount(cost);
 
   /* --- taps (deck: lmmse_equalizer_taps_example, left panel) --- */
   const mags=r.f.map(v=>Math.sqrt(abs2(v))),top=Math.max(...mags,1e-6);
-  let z=axes($('tdeTaps'),-0.5,Lf+0.5,0,top*1.25,'Tap index k','|f[k]|',{xticks:Math.min(6,Lf+1),yticks:4});
+  let z=axes($('tdeTaps'),-0.5,Lf-0.5,0,top*1.25,'Tap index k','|f[k]|',{xticks:Math.min(6,Lf),yticks:4});
   r.f.forEach((v,k)=>stem(z,k,mags[k],css('--orange'),Lf<=6?fmtC(v):null));
   bullets($('tdeTapsNote'),[
     'f = ['+r.f.slice(0,6).map(fmtC).join(', ')+(r.f.length>6?', …':'')+']',
@@ -387,7 +387,7 @@ function drawTde(){
   ]);
 
   /* --- delay sweep --- */
-  const costs=[],refLf=12,refRows=refLf+L+1,refCosts=[];
+  const costs=[],refLf=13,refRows=refLf+L,refCosts=[];
   for(let d=0;d<rows;d++)costs.push(tdeSolve(h,Lf,d,lambda).resid);
   for(let d=0;d<refRows;d++)refCosts.push(tdeSolve(h,refLf,d,lambda).resid);
   const allD=costs.concat(refCosts),hiD=Math.ceil(Math.log10(Math.max(...allD,1e-9))),loD=Math.floor(Math.log10(Math.max(Math.min(...allD),1e-9))),spanD=Math.min(6,Math.max(2,hiD-loD));
@@ -413,9 +413,9 @@ function drawTde(){
   const zn=zEq.map(v=>divc(v,gain));
   const zc=axes($('tdeConst'),-2,2,-2,2,'In-phase','Quadrature');
   const cloud=(pts,color,alpha,start)=>{zc.c.save();zc.c.globalAlpha=alpha;zc.c.fillStyle=color;for(let n=start;n<Ns;n++){const v=pts[n];zc.c.beginPath();zc.c.arc(zc.X(Math.max(-2,Math.min(2,v.re))),zc.Y(Math.max(-2,Math.min(2,v.im))),2.6,0,Math.PI*2);zc.c.fill()}zc.c.restore()};
-  cloud(y,css('--orange'),.30,L+Lf+1);cloud(zn,css('--blue'),.5,L+Lf+1);
+  cloud(y,css('--orange'),.30,L+Lf);cloud(zn,css('--blue'),.5,L+Lf);
   zc.c.save();zc.c.strokeStyle=css('--red');zc.c.lineWidth=2;qpsk.forEach(pt=>{const px=zc.X(pt.re),py=zc.Y(pt.im);zc.c.beginPath();zc.c.moveTo(px-6,py-6);zc.c.lineTo(px+6,py+6);zc.c.moveTo(px-6,py+6);zc.c.lineTo(px+6,py-6);zc.c.stroke()});zc.c.restore();
-  let err=0,cnt=0;for(let n=L+Lf+1;n<Ns;n++){const ref=x[n-nd];if(ref){err+=abs2(sub(zn[n],ref));cnt++}}
+  let err=0,cnt=0;for(let n=L+Lf;n<Ns;n++){const ref=x[n-nd];if(ref){err+=abs2(sub(zn[n],ref));cnt++}}
   bullets($('tdeConstNote'),[
     'QPSK through the channel at '+snrDb+' dB, equalized and normalized by the main cursor c[n_d] = '+gm.toFixed(3)+'.',
     'Error vector magnitude '+(100*Math.sqrt(err/Math.max(cnt,1))).toFixed(1)+'%. The remaining spread is residual ISI plus AWGN scaled by ‖f‖²/|c[n_d]|² = '+(r.ng/Math.max(gm*gm,1e-12)).toFixed(2)+'.',
@@ -424,31 +424,31 @@ function drawTde(){
 
   /* --- cost and residual versus length --- */
   const Ls=[],designs=[],resids=[];
-  for(let q=1;q<=12;q++){let bestR=Infinity;const rw=q+L+1;for(let d=0;d<rw;d++)bestR=Math.min(bestR,tdeSolve(h,q,d,lambda).resid);Ls.push(q);designs.push(Math.pow(q+1,3));resids.push(bestR)}
+  for(let q=2;q<=13;q++){let bestR=Infinity;const rw=q+L;for(let d=0;d<rw;d++)bestR=Math.min(bestR,tdeSolve(h,q,d,lambda).resid);Ls.push(q);designs.push(Math.pow(q,3));resids.push(bestR)}
   const allC=designs.concat(resids),hiC=Math.ceil(Math.log10(Math.max(...allC))),loC=Math.floor(Math.log10(Math.max(Math.min(...allC),1e-9))),spanC=Math.min(8,Math.max(3,hiC-loC));
-  z=axes($('tdeCostLen'),1,12,hiC-spanC,hiC,'Equalizer order L_f','Operations / cascade error',{xticks:Math.min(6,11),yticks:spanC,yfmt:decade});
+  z=axes($('tdeCostLen'),2,13,hiC-spanC,hiC,'Equalizer length L_f (taps)','Operations / cascade error',{xticks:Math.min(6,11),yticks:spanC,yfmt:decade});
   const clipC=v=>Math.min(hiC,Math.max(hiC-spanC,Math.log10(Math.max(v,1e-12))));
   line(z,Ls.map((q,i)=>[q,clipC(designs[i])]),css('--orange'),2.4);
   line(z,Ls.map((q,i)=>[q,clipC(resids[i])]),css('--blue'),2.4);
-  dot(z,Lf,clipC(cost),css('--green'),6);dot(z,Lf,clipC(resids[Lf-1]),css('--green'),6);
+  dot(z,Lf,clipC(cost),css('--green'),6);dot(z,Lf,clipC(resids[Lf-2]),css('--green'),6);
   plotLabel(z,z.X(Lf),z.Y(clipC(cost))-9,'L_f = '+Lf,css('--green'));
   bullets($('tdeCostNote'),[
     'Doubling L_f multiplies the dense design cost by about eight while the residual error falls far more slowly — the curves diverge.',
-    'At L_f = '+Lf+' the design costs about '+fmtCount(cost)+' operations for a best-delay error of '+resids[Lf-1].toFixed(4)+'.',
+    'At L_f = '+Lf+' the design costs about '+fmtCount(cost)+' operations for a best-delay error of '+resids[Lf-2].toFixed(4)+'.',
     'Toeplitz structure reduces the exponent, but the cost still tracks the channel length. Block FFT processing breaks that link entirely.'
   ]);
 
   /* --- convolution matrix --- */
-  const maxR=10,maxC=8,showR=Math.min(rows,maxR),showC=Math.min(Lf+1,maxC);
-  let html='<table class="matrix"><tr><th></th>'+Array.from({length:showC},(_,j)=>'<th>col '+j+'</th>').join('')+(showC<Lf+1?'<th>…</th>':'')+'</tr>';
-  for(let i=0;i<showR;i++){html+='<tr><th>row '+i+'</th>'+Array.from({length:showC},(_,j)=>'<td'+(i===nd?' class="active"':'')+'>'+fmtC(r.H[i][j])+'</td>').join('')+(showC<Lf+1?'<td>…</td>':'')+'</tr>'}
-  if(showR<rows)html+='<tr><th>…</th>'+Array.from({length:showC+(showC<Lf+1?1:0)},()=>'<td>…</td>').join('')+'</tr>';
+  const maxR=10,maxC=8,showR=Math.min(rows,maxR),showC=Math.min(Lf,maxC);
+  let html='<table class="matrix"><tr><th></th>'+Array.from({length:showC},(_,j)=>'<th>col '+j+'</th>').join('')+(showC<Lf?'<th>…</th>':'')+'</tr>';
+  for(let i=0;i<showR;i++){html+='<tr><th>row '+i+'</th>'+Array.from({length:showC},(_,j)=>'<td'+(i===nd?' class="active"':'')+'>'+fmtC(r.H[i][j])+'</td>').join('')+(showC<Lf?'<td>…</td>':'')+'</tr>'}
+  if(showR<rows)html+='<tr><th>…</th>'+Array.from({length:showC+(showC<Lf?1:0)},()=>'<td>…</td>').join('')+'</tr>';
   html+='</table>';$('tdeMatrix').innerHTML=html;
-  $('tdeMatrixTitle').textContent='Convolution matrix from the channel taps · '+rows+' × '+(Lf+1)+(showR<rows||showC<Lf+1?' (truncated for display)':'');
+  $('tdeMatrixTitle').textContent='Convolution matrix from the channel taps · '+rows+' × '+Lf+(showR<rows||showC<Lf?' (truncated for display)':'');
   bullets($('tdeMatrixNote'),[
     'Each column is the channel h shifted down by one: column j holds h[0]…h['+L+'] starting at row j. That banded Toeplitz shape is linear convolution written as a matrix.',
     'The highlighted row '+nd+' is the one e<sub>nd</sub> selects, so Hᴴe<sub>nd</sub> is simply the conjugate of that row — no matrix–vector product is actually needed for the right-hand side.',
-    'The matrix has '+rows+' rows and '+(Lf+1)+' columns, so it is tall: the equalizer has fewer degrees of freedom than cascade positions to control, which is exactly why some residual ISI always remains.'
+    'The matrix has '+rows+' rows and '+Lf+' columns, so it is tall: the equalizer has fewer degrees of freedom than cascade positions to control, which is exactly why some residual ISI always remains.'
   ]);
 }
 ['tdeLf','tdeDelay','tdeSnr','tdeReg'].forEach(id=>$(id).addEventListener('input',drawTde));
