@@ -39,7 +39,7 @@ const explanations={sc:[
 ['No transmitter IFFT is required','The SC-FDE transmitter sends the QAM time sequence directly (then adds the CP). A transmitter DFT may appear in DFT-spread OFDM implementations, but it is not needed for basic SC-FDE.'],
 ['The channel acts on the time waveform','With L<sub>c</sub> = L = 2, the display models the useful block after CP removal as a circular convolution. The received samples are no longer the original QAM points.'],
 ['FFT creates frequency-domain mixtures','Each <b>S[k]</b> is the DFT of the whole time-domain QAM block. It is not an independently mapped per-subcarrier QAM symbol.'],
-['Equalise each subcarrier','One complex gain removes H[k] from every transformed component. The result is Ŝ[k], still a transformed block rather than detection-ready QAM symbols.'],
+['Equalise each frequency bin','One complex gain removes H[k] from every transformed component. The result is Ŝ[k], still a transformed block rather than detection-ready QAM symbols.'],
 ['IFFT is essential','The receiver IFFT reconstructs the time-domain QAM sequence ŝ[n]. Only now are the original symbol positions restored.'],
 ['Detect in time','Decisions are made on ŝ[n] in the underlying single-carrier constellation.'] ],
 ofdm:[

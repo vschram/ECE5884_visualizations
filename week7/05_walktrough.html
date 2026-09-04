@@ -51,7 +51,7 @@
   </div><div class="note" id="motNote" aria-live="polite"></div></div></div></div>
 
   <div class="flow" aria-label="Post-synchronization receiver chain" aria-live="polite"><div class="flow-step" data-state="ready"><strong>RF / ADC</strong><span id="motFlowRf">multipath + AWGN</span></div><div class="arrow">→</div><div class="flow-step" data-state="ready"><strong>Synchronize</strong><span>timing + CFO corrected (Week 5)</span></div><div class="arrow">→</div><div class="flow-step" data-state="required"><strong>Estimate h</strong><span id="motFlowEstimate">—</span></div><div class="arrow">→</div><div class="flow-step" id="motFlowEqStep" data-state="required"><strong>Equalize (TDE)</strong><span id="motFlowEqualize">—</span></div><div class="arrow">→</div><div class="flow-step" data-state="ready"><strong>Detect</strong><span>per-symbol decisions</span></div></div>
-  <div class="flow" aria-label="Alternative frequency-domain equalization path"><div class="flow-step" data-state="ready"><strong>Frame sync</strong><span>find block start</span></div><div class="arrow">→</div><div class="flow-step" data-state="ready"><strong>Remove CP</strong><span>drop L<sub>c</sub> samples</span></div><div class="arrow">→</div><div class="flow-step" data-state="ready"><strong>FFT</strong><span id="motFlowFft">N-point</span></div><div class="arrow">→</div><div class="flow-step" data-state="ready"><strong>Per-subcarrier EQ</strong><span id="motFlowTone">N complex multiplies</span></div><div class="arrow">→</div><div class="flow-step" data-state="ready"><strong>IFFT → detect</strong><span>SC-FDE closes with an IFFT</span></div></div>
+  <div class="flow" aria-label="Alternative frequency-domain equalization path"><div class="flow-step" data-state="ready"><strong>Frame sync</strong><span>find block start</span></div><div class="arrow">→</div><div class="flow-step" data-state="ready"><strong>Remove CP</strong><span>drop L<sub>c</sub> samples</span></div><div class="arrow">→</div><div class="flow-step" data-state="ready"><strong>FFT</strong><span id="motFlowFft">N-point</span></div><div class="arrow">→</div><div class="flow-step" data-state="ready"><strong>Per-bin EQ</strong><span id="motFlowTone">N complex multiplies</span></div><div class="arrow">→</div><div class="flow-step" data-state="ready"><strong>IFFT → detect</strong><span>SC-FDE closes with an IFFT</span></div></div>
   <p class="flow-caption">Top row: the Week 6 time-domain chain. Bottom row: the block frequency-domain path this week replaces it with.</p>
 
   <div class="plots">
@@ -63,7 +63,7 @@
 
 <!-- ============================ 2 · TDE BRIDGE ============================ -->
 <section class="panel" id="tde" role="tabpanel" aria-labelledby="tab-tde" hidden>
-  <div class="panel-head"><div><div class="eyebrow">Bridge · LMMSE time-domain equalization</div><h2>One matrix inverse buys a delayed impulse, and its cost is cubic in the filter length</h2></div><div class="message">Stacking L<sub>f</sub> received samples gives y<sub>n</sub> = Hx<sub>n</sub> + v<sub>n</sub>. The LMMSE equalizer f = (HᴴH + N₀/E<sub>x</sub>·I)⁻¹Hᴴe<sub>nd</sub> drives the cascade Hf toward a unit impulse at the decision delay n<sub>d</sub>. This is the regularized inverse that reappears per subcarrier next.</div></div>
+  <div class="panel-head"><div><div class="eyebrow">Bridge · LMMSE time-domain equalization</div><h2>One matrix inverse buys a delayed impulse, and its cost is cubic in the filter length</h2></div><div class="message">Stacking L<sub>f</sub> received samples gives y<sub>n</sub> = Hx<sub>n</sub> + v<sub>n</sub>. The LMMSE equalizer f = (HᴴH + N₀/E<sub>x</sub>·I)⁻¹Hᴴe<sub>nd</sub> drives the cascade Hf toward a unit impulse at the decision delay n<sub>d</sub>. This is the regularized inverse that reappears per bin next.</div></div>
   <div class="sticky-bar"><div class="toolbar">
     <div class="mode-buttons mode-row"><button type="button" data-tde-model="worked" aria-pressed="true">Worked example h = [0.5, j0.5, 0.4]</button><button type="button" data-tde-model="notch" aria-pressed="false">Deep-null h = [1, −0.9]</button><button type="button" data-tde-model="long" aria-pressed="false">Longer 6-tap channel</button></div>
     <div class="control-grid">
@@ -116,15 +116,15 @@
   <div class="plots" style="margin-top:14px">
     <div class="card"><div class="title">Linear received stream versus circular model · AWGN omitted</div><canvas id="cpLinCirc" role="img" aria-label="Real part of the received stream around one block compared with the circular convolution of the channel and data block"></canvas><div class="legend"><span><i class="sw blue"></i>Re{received y}</span><span><i class="sw orange"></i>Re{h ⊛ x}</span><span><i class="sw" style="background:var(--red)"></i>Discarded CP window</span></div><ul class="bullets" id="cpLinCircNote"></ul></div>
     <div class="card"><div class="title">DFT check: Y[k] against H[k]X[k]</div><canvas id="cpProduct" role="img" aria-label="Magnitude of the received block spectrum compared with the product of the channel and data spectra"></canvas><div class="legend"><span><i class="sw blue"></i>|Y[k]|</span><span><i class="sw orange"></i>|H[k]X[k]|</span></div><ul class="bullets" id="cpProductNote"></ul></div>
-    <div class="card"><div class="title">Per-subcarrier model error |Y[k] − H[k]X[k]|²</div><canvas id="cpToneErr" role="img" aria-label="Normalized per-subcarrier error between the received spectrum and the per-subcarrier model"></canvas><div class="legend"><span><i class="sw blue"></i>Normalized subcarrier error</span><span><i class="sw green"></i>Numerical floor</span></div><ul class="bullets" id="cpToneErrNote"></ul></div>
+    <div class="card"><div class="title">Per-bin model error |Y[k] − H[k]X[k]|²</div><canvas id="cpToneErr" role="img" aria-label="Normalized per-bin error between the received spectrum and the per-bin model"></canvas><div class="legend"><span><i class="sw blue"></i>Normalized bin error</span><span><i class="sw green"></i>Numerical floor</span></div><ul class="bullets" id="cpToneErrNote"></ul></div>
     <div class="card"><div class="title">CP overhead versus block size</div><canvas id="cpOverhead" role="img" aria-label="Cyclic prefix overhead fraction against block size for several prefix lengths"></canvas><div class="legend"><span><i class="sw blue"></i>Your L<sub>c</sub></span><span><i class="sw" style="background:var(--cyan)"></i>L<sub>c</sub> = 4</span><span><i class="sw purple"></i>L<sub>c</sub> = 16</span><span><i class="sw green"></i>You are here</span></div><ul class="bullets" id="cpOverheadNote"></ul></div>
-    <div class="card"><div class="title">Equalized block: what a short CP costs</div><canvas id="cpConst" role="img" aria-label="QPSK constellation after per-subcarrier equalization and inverse FFT for the current cyclic prefix length"></canvas><div class="legend"><span><i class="sw orange"></i>Before equalization</span><span><i class="sw blue"></i>After per-subcarrier MMSE + IFFT</span><span><i class="sw" style="background:var(--red)"></i>Ideal QPSK</span></div><ul class="bullets" id="cpConstNote"></ul></div>
+    <div class="card"><div class="title">Equalized block: what a short CP costs</div><canvas id="cpConst" role="img" aria-label="QPSK constellation after per-bin equalization and inverse FFT for the current cyclic prefix length"></canvas><div class="legend"><span><i class="sw orange"></i>Before equalization</span><span><i class="sw blue"></i>After per-bin MMSE + IFFT</span><span><i class="sw" style="background:var(--red)"></i>Ideal QPSK</span></div><ul class="bullets" id="cpConstNote"></ul></div>
   </div>
 </section>
 
 <!-- ============================ 4 · SC-FDE ============================ -->
 <section class="panel" id="scfde" role="tabpanel" aria-labelledby="tab-scfde" hidden>
-  <div class="panel-head"><div><div class="eyebrow">SC-FDE transceiver</div><h2>After the FFT every subcarrier is a scalar channel: one complex multiply equalizes it</h2></div><div class="message">Y[k] = H[k]X[k] + V[k]. Zero forcing divides by H[k] and amplifies noise wherever |H[k]| is small; MMSE weights by H*[k]/(|H[k]|² + N₀/E<sub>x</sub>) and bounds that gain. SC-FDE always returns to the time domain with an IFFT before detection, because X[k] is the DFT of a whole single-carrier block, not an independent per-subcarrier symbol.</div></div>
+  <div class="panel-head"><div><div class="eyebrow">SC-FDE transceiver</div><h2>After the FFT every frequency bin is a scalar channel: one complex multiply equalizes it</h2></div><div class="message">Y[k] = H[k]X[k] + V[k]. Zero forcing divides by H[k] and amplifies noise wherever |H[k]| is small; MMSE weights by H*[k]/(|H[k]|² + N₀/E<sub>x</sub>) and bounds that gain. SC-FDE always returns to the time domain with an IFFT before detection, because X[k] is the DFT of a whole single-carrier block, not an independent per-subcarrier symbol.</div></div>
   <div class="sticky-bar"><div class="toolbar">
     <div class="mode-buttons mode-row"><button type="button" data-sc-eq="mmse" aria-pressed="true">MMSE equalizer</button><button type="button" data-sc-eq="zf" aria-pressed="false">Zero-forcing equalizer</button></div>
     <div class="control-grid">
@@ -132,27 +132,27 @@
     <div class="ctrl"><label for="scNotch">Echo magnitude a <strong id="scNotchOut">0.90</strong></label><input id="scNotch" type="range" min="0.1" max="0.99" value="0.9" step="0.01"></div>
     <div class="ctrl"><label for="scN">Block size N <strong id="scNOut">64</strong></label><input id="scN" type="range" min="4" max="8" value="6" step="1"></div>
     <div class="ctrl"><label for="scNullPos">Null position k₀ <strong id="scNullPosOut">0.30 N</strong></label><input id="scNullPos" type="range" min="0.05" max="0.5" value="0.3" step="0.01"></div>
-    <div class="ctrl"><label for="scTone">Selected subcarrier k <strong id="scToneOut">16</strong></label><input id="scTone" type="range" min="0" max="63" value="16" step="1"></div>
+    <div class="ctrl"><label for="scTone">Selected frequency bin k <strong id="scToneOut">16</strong></label><input id="scTone" type="range" min="0" max="63" value="16" step="1"></div>
     <div class="ctrl"><label for="scMod">Probe constellation</label><select id="scMod"><option value="qpsk" selected>QPSK</option><option value="qam16">16-QAM</option></select></div>
     </div>
     <div class="summary-row"><div class="toolbar-metrics">
-      <div class="metric"><div class="name">Weakest subcarrier</div><div class="value" id="scMinH">—</div><div class="small">min<sub>k</sub> |H[k]|</div></div>
+      <div class="metric"><div class="name">Weakest bin</div><div class="value" id="scMinH">—</div><div class="small">min<sub>k</sub> |H[k]|</div></div>
       <div class="metric"><div class="name">Worst ZF gain</div><div class="value" id="scZfGain">—</div><div class="small">max 1/|H[k]|</div><button type="button" id="scZfHelp">Show calculation</button></div>
       <div class="metric"><div class="name">Worst MMSE gain</div><div class="value" id="scMmseGain">—</div><div class="small">bounded by 1/(2√λ)</div><button type="button" id="scMmseHelp">Show calculation</button></div>
-      <div class="metric"><div class="name">Block error power</div><div class="value" id="scMse">—</div><div class="small">averaged over subcarriers</div></div>
+      <div class="metric"><div class="name">Block error power</div><div class="value" id="scMse">—</div><div class="small">averaged over bins</div></div>
     </div><div class="formula"><div>G<sub>ZF</sub>[k] = 1 / Ĥ[k]</div><div>G<sub>MMSE</sub>[k] = Ĥ*[k] / (|Ĥ[k]|² + N₀/E<sub>x</sub>)</div><div id="scLambda">λ = N₀/E<sub>x</sub> = 0.0316</div></div></div>
   </div></div>
 
   <div class="flow" aria-label="SC-FDE transmitter chain"><div class="flow-step" data-state="ready"><strong>Map symbols</strong><span>x[n] = √E<sub>x</sub> s[n]</span></div><div class="arrow">→</div><div class="flow-step" data-state="ready"><strong>Block of N</strong><span>serial, high rate</span></div><div class="arrow">→</div><div class="flow-step" data-state="ready"><strong>Add CP</strong><span id="scTxCp">L<sub>c</sub> ≥ L</span></div><div class="arrow">→</div><div class="flow-step" data-state="ready"><strong>Pulse shape / RF</strong><span>Week 3–4 chain</span></div><div class="arrow">→</div><div class="flow-step" data-state="warning"><strong>Channel</strong><span id="scTxChan">linear multipath</span></div></div>
-  <div class="flow" aria-label="SC-FDE receiver chain"><div class="flow-step" data-state="ready"><strong>Frame sync</strong><span>locate block start</span></div><div class="arrow">→</div><div class="flow-step" data-state="ready"><strong>Remove CP</strong><span>keep N samples</span></div><div class="arrow">→</div><div class="flow-step" data-state="ready"><strong>FFT</strong><span id="scRxFft">N-point</span></div><div class="arrow">→</div><div class="flow-step" data-state="required"><strong>Per-subcarrier G[k]</strong><span id="scRxEq">—</span></div><div class="arrow">→</div><div class="flow-step" data-state="required"><strong>IFFT → detect</strong><span>always required in SC-FDE</span></div></div>
+  <div class="flow" aria-label="SC-FDE receiver chain"><div class="flow-step" data-state="ready"><strong>Frame sync</strong><span>locate block start</span></div><div class="arrow">→</div><div class="flow-step" data-state="ready"><strong>Remove CP</strong><span>keep N samples</span></div><div class="arrow">→</div><div class="flow-step" data-state="ready"><strong>FFT</strong><span id="scRxFft">N-point</span></div><div class="arrow">→</div><div class="flow-step" data-state="required"><strong>Per-bin G[k]</strong><span id="scRxEq">—</span></div><div class="arrow">→</div><div class="flow-step" data-state="required"><strong>IFFT → detect</strong><span>always required in SC-FDE</span></div></div>
   <p class="flow-caption">The transmitter has no transform: SC-FDE is a single-carrier signal, and only the receiver works block-wise in frequency.</p>
 
   <div class="plots">
-    <div class="card"><div class="title">Channel magnitude |H[k]| with a spectral null</div><canvas id="scChannel" role="img" aria-label="Channel frequency response magnitude across subcarrier index with a deep null marked"></canvas><div class="legend"><span><i class="sw blue"></i>|H[k]|</span><span><i class="sw" style="background:var(--red)"></i>Weakest subcarrier</span></div><ul class="bullets" id="scChannelNote"></ul></div>
-    <div class="card"><div class="title">Equalizer gain: ZF versus MMSE</div><canvas id="scGain" role="img" aria-label="Zero-forcing and MMSE equalizer gain magnitudes across subcarrier index"></canvas><div class="legend"><span><i class="sw orange"></i>|G<sub>ZF</sub>| = 1/|H|</span><span><i class="sw purple"></i>|G<sub>MMSE</sub>|</span><span><i class="sw" style="background:var(--cyan)"></i>Bound 1/(2√λ)</span></div><ul class="bullets" id="scGainNote"></ul></div>
-    <div class="card"><div class="title">Normalized per-subcarrier error power</div><canvas id="scNoise" role="img" aria-label="Normalized mean-square error per subcarrier for zero-forcing and MMSE equalization"></canvas><div class="legend"><span><i class="sw orange"></i>ZF: λ/|H|²</span><span><i class="sw purple"></i>MMSE: λ/(|H|²+λ)</span><span><i class="sw green"></i>Reference: λ</span></div><ul class="bullets" id="scNoiseNote"></ul></div>
-    <div class="card"><div class="title">Subcarrier k: the constellation faded by H[k]</div><canvas id="scToneConst" role="img" aria-label="Constellation on the selected subcarrier, faded by the channel and after per-subcarrier equalization, against ideal reference circles"></canvas><div class="legend"><span><i class="sw" style="background:var(--red)"></i>Ideal (circles)</span><span><i class="sw orange"></i>Faded by H[k]</span><span><i class="sw blue"></i>After G[k]</span></div><ul class="bullets" id="scToneConstNote"></ul></div>
-    <div class="card"><div class="title">Time-domain constellation before and after block FDE</div><canvas id="scConst" role="img" aria-label="QPSK constellation of the received block before equalization and after per-subcarrier equalization and inverse FFT"></canvas><div class="legend"><span><i class="sw orange"></i>Received y[n]</span><span><i class="sw blue"></i>After IFFT</span><span><i class="sw" style="background:var(--red)"></i>Ideal QPSK</span></div><ul class="bullets" id="scConstNote"></ul></div>
+    <div class="card"><div class="title">Channel magnitude |H[k]| with a spectral null</div><canvas id="scChannel" role="img" aria-label="Channel frequency response magnitude across frequency bin index with a deep null marked"></canvas><div class="legend"><span><i class="sw blue"></i>|H[k]|</span><span><i class="sw" style="background:var(--red)"></i>Weakest bin</span></div><ul class="bullets" id="scChannelNote"></ul></div>
+    <div class="card"><div class="title">Equalizer gain: ZF versus MMSE</div><canvas id="scGain" role="img" aria-label="Zero-forcing and MMSE equalizer gain magnitudes across frequency bin index"></canvas><div class="legend"><span><i class="sw orange"></i>|G<sub>ZF</sub>| = 1/|H|</span><span><i class="sw purple"></i>|G<sub>MMSE</sub>|</span><span><i class="sw" style="background:var(--cyan)"></i>Bound 1/(2√λ)</span></div><ul class="bullets" id="scGainNote"></ul></div>
+    <div class="card"><div class="title">Normalized per-bin error power</div><canvas id="scNoise" role="img" aria-label="Normalized mean-square error per bin for zero-forcing and MMSE equalization"></canvas><div class="legend"><span><i class="sw orange"></i>ZF: λ/|H|²</span><span><i class="sw purple"></i>MMSE: λ/(|H|²+λ)</span><span><i class="sw green"></i>Reference: λ</span></div><ul class="bullets" id="scNoiseNote"></ul></div>
+    <div class="card"><div class="title">Frequency bin k: the constellation faded by H[k]</div><canvas id="scToneConst" role="img" aria-label="Constellation on the selected frequency bin, faded by the channel and after per-bin equalization, against ideal reference circles"></canvas><div class="legend"><span><i class="sw" style="background:var(--red)"></i>Ideal (circles)</span><span><i class="sw orange"></i>Faded by H[k]</span><span><i class="sw blue"></i>After G[k]</span></div><ul class="bullets" id="scToneConstNote"></ul></div>
+    <div class="card"><div class="title">Time-domain constellation before and after block FDE</div><canvas id="scConst" role="img" aria-label="QPSK constellation of the received block before equalization and after per-bin equalization and inverse FFT"></canvas><div class="legend"><span><i class="sw orange"></i>Received y[n]</span><span><i class="sw blue"></i>After IFFT</span><span><i class="sw" style="background:var(--red)"></i>Ideal QPSK</span></div><ul class="bullets" id="scConstNote"></ul></div>
     <div class="card"><div class="title">Block error power versus SNR</div><canvas id="scEvmCurve" role="img" aria-label="Average normalized block error power against signal-to-noise ratio for zero-forcing and MMSE equalization"></canvas><div class="legend"><span><i class="sw orange"></i>ZF</span><span><i class="sw purple"></i>MMSE</span><span><i class="sw green"></i>Your SNR</span></div><ul class="bullets" id="scEvmNote"></ul></div>
   </div>
 </section>
@@ -207,8 +207,8 @@
 </section>
 </main>
 
-<dialog class="gain-dialog" id="scZfDialog" aria-labelledby="scZfDialogTitle"><h3 id="scZfDialogTitle">Worst zero-forcing gain</h3><div class="formula" id="scZfCalc"></div><p class="message">Zero forcing asks for 1/H[k] on every subcarrier, so its largest gain sits exactly where the channel is weakest. That gain multiplies the noise on that subcarrier by the same factor, and its square multiplies the noise power. Nothing downstream can recover the SNR lost in the fade.</p><button type="button" id="scZfClose">Close</button></dialog>
-<dialog class="gain-dialog" id="scMmseDialog" aria-labelledby="scMmseDialogTitle"><h3 id="scMmseDialogTitle">Worst MMSE gain</h3><div class="formula" id="scMmseCalc"></div><p class="message">The MMSE weight |H|/(|H|²+λ) is maximized at |H| = √λ, where it equals 1/(2√λ). Whatever the channel does, the λ in the denominator takes over once |H|² falls below it, so the gain is bounded by the noise level rather than by the depth of the null. The price is that weak subcarriers are left partially unequalized.</p><button type="button" id="scMmseClose">Close</button></dialog>
+<dialog class="gain-dialog" id="scZfDialog" aria-labelledby="scZfDialogTitle"><h3 id="scZfDialogTitle">Worst zero-forcing gain</h3><div class="formula" id="scZfCalc"></div><p class="message">Zero forcing asks for 1/H[k] in every bin, so its largest gain sits exactly where the channel is weakest. That gain multiplies the noise in that bin by the same factor, and its square multiplies the noise power. Nothing downstream can recover the SNR lost in the fade.</p><button type="button" id="scZfClose">Close</button></dialog>
+<dialog class="gain-dialog" id="scMmseDialog" aria-labelledby="scMmseDialogTitle"><h3 id="scMmseDialogTitle">Worst MMSE gain</h3><div class="formula" id="scMmseCalc"></div><p class="message">The MMSE weight |H|/(|H|²+λ) is maximized at |H| = √λ, where it equals 1/(2√λ). Whatever the channel does, the λ in the denominator takes over once |H|² falls below it, so the gain is bounded by the noise level rather than by the depth of the null. The price is that weak bins are left partially unequalized.</p><button type="button" id="scMmseClose">Close</button></dialog>
 <dialog class="gain-dialog" id="ofDenomDialog" aria-labelledby="ofDenomDialogTitle"><h3 id="ofDenomDialogTitle">Why SC-FDE uses N₀/E<sub>x</sub> and OFDM uses NN₀/E<sub>X</sub></h3><div class="formula" id="ofDenomCalc"></div><p class="message">Both denominators are the same thing — the inverse per-subcarrier SNR — written for different symbol mappings. In SC-FDE, X[k] is the DFT of a block of time-domain symbols of energy E<sub>x</sub>, so its energy picks up the same factor N that the noise does and the N cancels. In OFDM, X<sub>k</sub> <em>is</em> the transmitted symbol on subcarrier k with energy E<sub>X</sub>, while the noise still gains N from the non-unitary DFT, so the factor survives. With a unitary DFT it disappears from both.</p><button type="button" id="ofDenomClose">Close</button></dialog>
 
 <script>
@@ -314,7 +314,7 @@ function drawMotivation(){
   dot(z,p.rsExp,Math.min(y2max,Math.log10(tdePer)),css('--green'),6);
   plotLabel(z,z.X(p.rsExp),z.Y(Math.min(y2max,Math.log10(tdePer)))-9,fmtCount(tdePer)+' vs '+fdePer.toFixed(0),css('--green'));
   bullets($('motComplexityNote'),[
-    'Filtering costs L'+'_f = '+fmtCount(tdePer)+' multiplies per symbol; the two FFTs plus the per-subcarrier multiply cost about log₂N + 1 = '+fdePer.toFixed(0)+' per useful symbol.',
+    'Filtering costs L'+'_f = '+fmtCount(tdePer)+' multiplies per symbol; the two FFTs plus the per-bin multiply cost about log₂N + 1 = '+fdePer.toFixed(0)+' per useful symbol.',
     'The FDE line is flat in R'+'ₛ. That is the whole argument for block processing: the transform cost is set by N, and the channel only has to fit inside the cyclic prefix.',
     'This counts multiplies only. FDE also pays the CP overhead in bandwidth and a block of latency, which the next tab prices.'
   ]);
@@ -493,7 +493,7 @@ function drawCp(){
   $('cpFlowDropStep').dataset.state=ok?'ready':'warning';
   $('cpFlowDrop').textContent=ok?'spread contained':'spread leaks in';
   $('cpFlowFftStep').dataset.state=ok?'ready':'warning';
-  $('cpFlowFft').textContent=ok?'Y[k] = H[k]X[k] + V[k]':'per-subcarrier model broken';
+  $('cpFlowFft').textContent=ok?'Y[k] = H[k]X[k] + V[k]':'per-bin model broken';
 
   /* --- figure: cyclic prefix assembly --- */
   drawCpAssembly(p);
@@ -522,28 +522,28 @@ function drawCp(){
     HX=H.map((v,k)=>mul(v,X[k])),
     ym=Y.map(v=>Math.sqrt(abs2(v))),hxm=HX.map(v=>Math.sqrt(abs2(v))),
     ptop=Math.max(...ym,...hxm,1e-6)*1.18;
-  z=axes($('cpProduct'),0,p.N-1,0,ptop,'Subcarrier index k','Magnitude',{xticks:Math.min(8,p.N-1),yticks:4});
+  z=axes($('cpProduct'),0,p.N-1,0,ptop,'Frequency bin k','Magnitude',{xticks:Math.min(8,p.N-1),yticks:4});
   line(z,ym.map((v,k)=>[k,v]),css('--blue'),2.4);
   line(z,hxm.map((v,k)=>[k,v]),css('--orange'),2.2,[5,4]);
   bullets($('cpProductNote'),[
     ok?'The two spectra lie on top of each other. Circular convolution in time really is multiplication bin by bin in frequency.'
-      :'The blue spectrum departs from the orange product on every subcarrier, because the time-domain block is no longer a circular convolution at all.',
-    'This is the whole payoff: one complex multiply per subcarrier replaces a convolution whose length is set by the channel.',
+      :'The blue spectrum departs from the orange product in every bin, because the time-domain block is no longer a circular convolution at all.',
+    'This is the whole payoff: one complex multiply per bin replaces a convolution whose length is set by the channel.',
     'Convention check: X[k] = Σ x[n]e^(−j2πkn/N) with the 1/N on the inverse, under which y = h ⊛ x ⟺ Y[k] = H[k]X[k].'
   ]);
 
-  /* --- per-subcarrier error --- */
+  /* --- per-bin error --- */
   const meanP=HX.reduce((a,v)=>a+abs2(v),0)/p.N,
     errs=Y.map((v,k)=>abs2(sub(v,HX[k]))/Math.max(meanP,1e-15)),
     hiE=Math.ceil(Math.log10(Math.max(...errs,1e-16))),loE=Math.max(-16,hiE-8);
-  z=axes($('cpToneErr'),0,p.N-1,loE,Math.max(hiE,loE+2),'Subcarrier index k','Normalized |Y[k] − H[k]X[k]|²',{xticks:Math.min(8,p.N-1),yticks:Math.min(8,Math.max(2,Math.max(hiE,loE+2)-loE)),yfmt:decade});
+  z=axes($('cpToneErr'),0,p.N-1,loE,Math.max(hiE,loE+2),'Frequency bin k','Normalized |Y[k] − H[k]X[k]|²',{xticks:Math.min(8,p.N-1),yticks:Math.min(8,Math.max(2,Math.max(hiE,loE+2)-loE)),yfmt:decade});
   const clipE=v=>Math.min(Math.max(hiE,loE+2),Math.max(loE,Math.log10(Math.max(v,1e-18))));
   line(z,errs.map((v,k)=>[k,clipE(v)]),css('--blue'),2.2);
   errs.forEach((v,k)=>{if(p.N<=64)dot(z,k,clipE(v),css('--blue'),2.6)});
   if(ok)plotLabel(z,z.m.l,z.Y(loE+0.5),'floor is double-precision round-off, not a modelling error',css('--green'));
   bullets($('cpToneErrNote'),[
-    ok?'With L_c = '+p.Lc+' ≥ L = '+p.L+' the error is zero to the last bit of double precision — it is plotted on the axis floor because a logarithm of zero has nowhere else to go. The per-subcarrier model is exact, not an approximation.'
-      :'With L_c = '+p.Lc+' < L = '+p.L+' the error is of order '+expo(rel)+' of the signal power, and it is spread over every subcarrier — no per-subcarrier equalizer can remove it.',
+    ok?'With L_c = '+p.Lc+' ≥ L = '+p.L+' the error is zero to the last bit of double precision — it is plotted on the axis floor because a logarithm of zero has nowhere else to go. The per-bin model is exact, not an approximation.'
+      :'With L_c = '+p.Lc+' < L = '+p.L+' the error is of order '+expo(rel)+' of the signal power, and it is spread over every bin — no per-bin equalizer can remove it.',
     'AWGN is switched off for this panel, so everything you see is model mismatch.',
     'The exactness does not require |H[k]| to be flat across k. Flatness is a separate question that only arises when interpolating Ĥ[k] between pilots.'
   ]);
@@ -572,14 +572,14 @@ function drawCp(){
   zc.c.save();zc.c.strokeStyle=css('--red');zc.c.lineWidth=2;qpsk.forEach(pt=>{const px=zc.X(pt.re),py=zc.Y(pt.im);zc.c.beginPath();zc.c.moveTo(px-6,py-6);zc.c.lineTo(px+6,py+6);zc.c.moveTo(px-6,py+6);zc.c.lineTo(px+6,py-6);zc.c.stroke()});zc.c.restore();
   const evm=Math.sqrt(xh.reduce((a,v,n)=>a+abs2(sub(v,sn.x1[n])),0)/p.N);
   bullets($('cpConstNote'),[
-    'One block of '+p.N+' QPSK symbols at '+p.snr+' dB, equalized per subcarrier with MMSE and brought back with an IFFT. Error vector magnitude '+(100*evm).toFixed(1)+'%.',
+    'One block of '+p.N+' QPSK symbols at '+p.snr+' dB, equalized per bin with MMSE and brought back with an IFFT. Error vector magnitude '+(100*evm).toFixed(1)+'%.',
     ok?'The clusters are limited by AWGN alone; the CP has removed the interference completely.'
       :'The clusters stay smeared however high you push the SNR: with L_c < L the residual is interference, and interference does not shrink with noise.',
     'Try raising the SNR with a short prefix — the spread barely moves. That is the signature of an error floor.'
   ]);
-  $('cpNote').innerHTML='<strong>'+(ok?'The per-subcarrier model holds exactly.':'The per-subcarrier model is broken.')+'</strong> '+(ok
+  $('cpNote').innerHTML='<strong>'+(ok?'The per-bin model holds exactly.':'The per-bin model is broken.')+'</strong> '+(ok
     ?'With L_c = '+p.Lc+' ≥ L = '+p.L+', the last '+p.Lc+' symbols copied to the front absorb the entire channel spread. The receiver discards those '+p.Lc+' samples and the remaining N = '+p.N+' obey y = h ⊛ x + v exactly, at a cost of '+(100*over).toFixed(1)+'% of the block.'
-    :'With L_c = '+p.Lc+' < L = '+p.L+', the tail of the previous block reaches '+(p.L-p.Lc)+' samples into the useful window. That is inter-block interference: it survives the FFT, contaminates every subcarrier, and sets an error floor no equalizer can lower.');
+    :'With L_c = '+p.Lc+' < L = '+p.L+', the tail of the previous block reaches '+(p.L-p.Lc)+' samples into the useful window. That is inter-block interference: it survives the FFT, contaminates every bin, and sets an error floor no equalizer can lower.');
 }
 function panelCanvas(cv){const z=resizeCanvas(cv);z.c.clearRect(0,0,z.w,z.h);z.c.font='11px system-ui';return z}
 function labelledBlock(z,x,y,w,h,fill,stroke,label,sub){z.c.save();z.c.globalAlpha=.18;z.c.fillStyle=fill;z.c.fillRect(x,y,w,h);z.c.restore();z.c.strokeStyle=stroke;z.c.lineWidth=1.6;z.c.strokeRect(x,y,w,h);if(label&&w>26){z.c.fillStyle=stroke;z.c.textAlign='center';z.c.textBaseline='middle';z.c.fillText(label,x+w/2,y+h/2-(sub?6:0));if(sub){z.c.fillStyle=css('--muted');z.c.font='10px system-ui';z.c.fillText(sub,x+w/2,y+h/2+8);z.c.font='11px system-ui'}}}
@@ -639,14 +639,14 @@ function drawCpAbsorb(p,s){
    4 · SC-FDE
    ================================================================== */
 /* ==================================================================
-   Shared: what one subcarrier does to the constellation riding on it
+   Shared: what one frequency bin does to the constellation riding on it
    ================================================================== */
 const qam16=(()=>{const p=[];for(const a of[-3,-1,1,3])for(const b of[-3,-1,1,3])p.push(scale(C(a,b),1/Math.sqrt(10)));return p})();
 function constSet(name){return name==='qam16'?qam16:qpsk}
 function degOf(z){return Math.atan2(z.im,z.re)*180/Math.PI}
 function fmtDeg(d){return(d<0?'−':'')+Math.abs(d).toFixed(1)+'°'}
 /* Draws the ideal points as reference circles with the faded cloud underneath them,
-   so the rotation and scaling the channel applies on subcarrier k is read off directly. */
+   so the rotation and scaling the channel applies in bin k is read off directly. */
 function drawToneConst(cvId,o){
   const pts=constSet(o.mod),r=rng(o.seed),sd=Math.sqrt(o.lambda/2),COUNT=480,faded=[],eq=[];
   let acc=0;
@@ -709,12 +709,12 @@ function drawScTone(){
     mod=$('scMod').value,name=scEq==='zf'?'ZF':'MMSE',
     st=drawToneConst('scToneConst',{H:Hk,G,lambda:p.lambda,mod,seed:5101+k,k});
   bullets($('scToneConstNote'),[
-    'On subcarrier k = '+k+' the channel is |H[k]| = '+st.hMag.toFixed(3)+' at ∠H[k] = '+fmtDeg(st.hDeg)+'. The dashed orange circles show where that puts each ideal point: the whole constellation is rotated and rescaled before the equalizer sees it.',
-    'Drag k across the block and the pattern turns subcarrier by subcarrier — ∠H[k] is what moves fastest, and undoing it is the entire job of the one complex multiply G[k].',
+    'In frequency bin k = '+k+' the channel is |H[k]| = '+st.hMag.toFixed(3)+' at ∠H[k] = '+fmtDeg(st.hDeg)+'. The dashed orange circles show where that puts each ideal point: the whole constellation is rotated and rescaled before the equalizer sees it.',
+    'Drag k across the block and the pattern turns bin by bin — ∠H[k] is what moves fastest, and undoing it is the entire job of the one complex multiply G[k].',
     'After '+name+' the residual gain is G[k]H[k] = '+st.ghMag.toFixed(3)+' ∠'+fmtDeg(st.ghDeg)+', so the rotation is removed exactly'+(scEq==='mmse'?' and only the deliberate MMSE shrinkage toward the origin is left.':'; what survives is the noise the inverse gain brought with it.')+' Measured EVM '+(100*st.evm).toFixed(1)+'%.',
     mod==='qam16'?'16-QAM makes the scaling as legible as the rotation: the amplitude rings collapse toward the origin as |H[k]| falls, and the inner ring is the first to be swallowed by the noise.'
       :'Switch the probe to 16-QAM to see |H[k]| as clearly as ∠H[k]: QPSK has a single amplitude ring, so it shows the rotation but hides the scaling.',
-    'In SC-FDE the true X[k] is the DFT of a whole single-carrier block, not a per-subcarrier symbol, so this is a probe: it shows what subcarrier k does to any symbol riding on it. On the OFDM tab the same picture is literal.'
+    'In SC-FDE the true X[k] is the DFT of a whole single-carrier block, not a per-subcarrier symbol, so this is a probe: it shows what bin k does to any symbol riding on it. On the OFDM tab the same picture is literal.'
   ]);
 }
 function drawScfde(){
@@ -737,53 +737,53 @@ function drawScfde(){
   $('scRxFft').textContent=p.N+'-point';
   $('scTxCp').innerHTML='L<sub>c</sub> ≥ L = 1';
   $('scTxChan').textContent='2-tap, null at k = '+p.k0;
-  $('scZfCalc').innerHTML='min<sub>k</sub> |H[k]| = '+minH.toFixed(4)+' at k = '+kMin+'<br>worst gain = 1/'+minH.toFixed(4)+' = '+zfWorst.toFixed(1)+'×<br>noise power multiplier = '+(zfWorst*zfWorst).toFixed(1)+'×<br>subcarrier error = λ/|H|² = '+expo(p.lambda/Math.max(minH*minH,1e-18));
-  $('scMmseCalc').innerHTML='λ = N₀/E<sub>x</sub> = '+p.lambda.toFixed(4)+'<br>max<sub>|H|</sub> |H|/(|H|²+λ) = 1/(2√λ) = '+bound.toFixed(1)+'×<br>achieved on this channel: '+mmseWorst.toFixed(1)+'×<br>worst subcarrier error = λ/(|H|²+λ) = '+(p.lambda/(minH*minH+p.lambda)).toFixed(3);
+  $('scZfCalc').innerHTML='min<sub>k</sub> |H[k]| = '+minH.toFixed(4)+' at k = '+kMin+'<br>worst gain = 1/'+minH.toFixed(4)+' = '+zfWorst.toFixed(1)+'×<br>noise power multiplier = '+(zfWorst*zfWorst).toFixed(1)+'×<br>bin error = λ/|H|² = '+expo(p.lambda/Math.max(minH*minH,1e-18));
+  $('scMmseCalc').innerHTML='λ = N₀/E<sub>x</sub> = '+p.lambda.toFixed(4)+'<br>max<sub>|H|</sub> |H|/(|H|²+λ) = 1/(2√λ) = '+bound.toFixed(1)+'×<br>achieved on this channel: '+mmseWorst.toFixed(1)+'×<br>worst bin error = λ/(|H|²+λ) = '+(p.lambda/(minH*minH+p.lambda)).toFixed(3);
 
   /* --- |H[k]| (deck: channel_frequency_response_null) --- */
   const hiH=Math.ceil(Math.log10(Math.max(...mag))),loH=Math.max(hiH-4,Math.floor(Math.log10(Math.max(minH,1e-4))));
   const spanH=Math.max(2,hiH-loH);
-  let z=axes($('scChannel'),0,p.N-1,hiH-spanH,hiH,'Subcarrier index k','|H[k]|',{xticks:Math.min(8,p.N-1),yticks:spanH,yfmt:decade});
+  let z=axes($('scChannel'),0,p.N-1,hiH-spanH,hiH,'Frequency bin k','|H[k]|',{xticks:Math.min(8,p.N-1),yticks:spanH,yfmt:decade});
   const clipH=v=>Math.min(hiH,Math.max(hiH-spanH,Math.log10(Math.max(v,1e-9))));
   z.c.save();z.c.globalAlpha=.13;z.c.fillStyle=css('--red');z.c.fillRect(z.X(kMin)-5,z.m.t,10,z.h-z.m.b-z.m.t);z.c.restore();
   line(z,mag.map((v,k)=>[k,clipH(v)]),css('--blue'),2.4);
   dot(z,kMin,clipH(minH),css('--red'),5.5);
   plotLabel(z,z.X(kMin),z.Y(clipH(minH))+14,'|H| = '+minH.toFixed(3)+' → 1/|H| = '+zfWorst.toFixed(1)+'×',css('--red'),'top');
   bullets($('scChannelNote'),[
-    'A two-tap channel h = [1, −a·e^(j2πk₀/N)] normalized to unit energy puts its null on subcarrier k₀ = '+p.k0+'. Raising a deepens it: at a = '+p.a.toFixed(2)+' the weakest subcarrier is '+minH.toFixed(4)+'.',
+    'A two-tap channel h = [1, −a·e^(j2πk₀/N)] normalized to unit energy puts its null in bin k₀ = '+p.k0+'. Raising a deepens it: at a = '+p.a.toFixed(2)+' the weakest bin is '+minH.toFixed(4)+'.',
     'The channel is only '+(2)+' taps long, but its frequency response varies enormously across the block. Depth of variation is what matters for equalization, not the number of taps.',
-    'The exact per-subcarrier model holds on every subcarrier including this one — the CP guarantees that. What the null costs is SNR on that subcarrier, and no linear equalizer can give it back.'
+    'The exact per-bin model holds in every bin including this one — the CP guarantees that. What the null costs is SNR in that bin, and no linear equalizer can give it back.'
   ]);
 
   /* --- ZF versus MMSE gain (deck: zf_vs_mmse_freq_equalizer) --- */
   const zfG=mag.map(m=>1/Math.max(m,1e-9)),allG=zfG.concat(mmseG,[bound]),
     hiG=Math.ceil(Math.log10(Math.max(...allG))),loG=Math.floor(Math.log10(Math.max(Math.min(...allG),1e-4))),spanG=Math.min(6,Math.max(2,hiG-loG));
-  z=axes($('scGain'),0,p.N-1,hiG-spanG,hiG,'Subcarrier index k','Equalizer gain |G[k]|',{xticks:Math.min(8,p.N-1),yticks:spanG,yfmt:decade});
+  z=axes($('scGain'),0,p.N-1,hiG-spanG,hiG,'Frequency bin k','Equalizer gain |G[k]|',{xticks:Math.min(8,p.N-1),yticks:spanG,yfmt:decade});
   const clipG=v=>Math.min(hiG,Math.max(hiG-spanG,Math.log10(Math.max(v,1e-9))));
   line(z,[[0,clipG(bound)],[p.N-1,clipG(bound)]],css('--cyan'),1.8,[6,4]);
   line(z,zfG.map((v,k)=>[k,clipG(v)]),css('--orange'),scEq==='zf'?3:1.8);
   line(z,mmseG.map((v,k)=>[k,clipG(v)]),css('--purple'),scEq==='mmse'?3:1.8);
   plotLabel(z,z.X(p.N*0.02),z.Y(clipG(bound))-7,'1/(2√λ) = '+bound.toFixed(1)+'×',css('--cyan'));
   bullets($('scGainNote'),[
-    'Zero forcing peaks at '+zfWorst.toFixed(1)+'× on subcarrier '+kMin+'; MMSE peaks at '+mmseWorst.toFixed(1)+'×, against a hard ceiling of 1/(2√λ) = '+bound.toFixed(1)+'× set purely by the noise level.',
+    'Zero forcing peaks at '+zfWorst.toFixed(1)+'× in bin '+kMin+'; MMSE peaks at '+mmseWorst.toFixed(1)+'×, against a hard ceiling of 1/(2√λ) = '+bound.toFixed(1)+'× set purely by the noise level.',
     'Away from the null the two are almost identical: MMSE only differs where |H[k]|² is comparable to λ = '+p.lambda.toFixed(4)+'.',
     'Lower the SNR and watch the cyan ceiling drop. MMSE becomes progressively more conservative as noise grows, which is the regularization doing its job.'
   ]);
 
-  /* --- per-subcarrier error --- */
+  /* --- per-bin error --- */
   const allE=errZf.concat(errMm),hiEr=Math.ceil(Math.log10(Math.max(...allE))),loEr=Math.floor(Math.log10(Math.max(Math.min(...allE),1e-8))),spanE=Math.min(7,Math.max(2,hiEr-loEr));
-  z=axes($('scNoise'),0,p.N-1,hiEr-spanE,hiEr,'Subcarrier index k','Normalized error power',{xticks:Math.min(8,p.N-1),yticks:spanE,yfmt:decade});
+  z=axes($('scNoise'),0,p.N-1,hiEr-spanE,hiEr,'Frequency bin k','Normalized error power',{xticks:Math.min(8,p.N-1),yticks:spanE,yfmt:decade});
   const clipEr=v=>Math.min(hiEr,Math.max(hiEr-spanE,Math.log10(Math.max(v,1e-12))));
   line(z,[[0,clipEr(p.lambda)],[p.N-1,clipEr(p.lambda)]],css('--green'),1.6,[4,4]);
   line(z,errZf.map((v,k)=>[k,clipEr(v)]),css('--orange'),scEq==='zf'?3:1.8);
   line(z,errMm.map((v,k)=>[k,clipEr(v)]),css('--purple'),scEq==='mmse'?3:1.8);
   bullets($('scNoiseNote'),[
-    'ZF error on subcarrier k is λ/|H[k]|², which is unbounded as |H| → 0. MMSE error is λ/(|H[k]|²+λ), which saturates at 1 — the estimator gives up on that subcarrier rather than amplify it.',
+    'ZF error in bin k is λ/|H[k]|², which is unbounded as |H| → 0. MMSE error is λ/(|H[k]|²+λ), which saturates at 1 — the estimator gives up in that bin rather than amplify it.',
     'Averaged over the block: ZF '+expo(meanZf)+', MMSE '+expo(meanMm)+', a factor '+(meanZf/Math.max(meanMm,1e-15)).toFixed(1)+' apart at this notch depth.',
-    'In SC-FDE these per-subcarrier errors are spread across all N time symbols by the IFFT, so one bad subcarrier raises the noise floor everywhere rather than killing one symbol.'
+    'In SC-FDE these per-bin errors are spread across all N time symbols by the IFFT, so one bad bin raises the noise floor everywhere rather than killing one symbol.'
   ]);
 
-  /* --- selected-subcarrier constellation --- */
+  /* --- selected-bin constellation --- */
   drawScTone();
 
   /* --- constellation (deck: scfde_constellation_before_after) --- */
@@ -803,9 +803,9 @@ function drawScfde(){
   zc.c.save();zc.c.strokeStyle=css('--red');zc.c.lineWidth=2;qpsk.forEach(pt=>{const px=zc.X(pt.re),py=zc.Y(pt.im);zc.c.beginPath();zc.c.moveTo(px-6,py-6);zc.c.lineTo(px+6,py+6);zc.c.moveTo(px-6,py+6);zc.c.lineTo(px+6,py-6);zc.c.stroke()});zc.c.restore();
   bullets($('scConstNote'),[
     'Measured error vector magnitude '+(100*Math.sqrt(acc/cnt)).toFixed(1)+'% over '+cnt+' symbols with the '+(scEq==='zf'?'ZF':'MMSE')+' equalizer.',
-    'The orange cloud is the received block: a single-carrier QPSK signal smeared by the channel. The blue cloud is after per-subcarrier equalization and the IFFT.',
+    'The orange cloud is the received block: a single-carrier QPSK signal smeared by the channel. The blue cloud is after per-bin equalization and the IFFT.',
     scEq==='mmse'?'MMSE output is slightly shrunk toward the origin. That bias is deliberate — detection accounts for the residual gain rather than undoing it.'
-      :'Zero forcing puts every cluster on its ideal point but inherits the noise from subcarrier '+kMin+', which the IFFT spreads over the whole block.'
+      :'Zero forcing puts every cluster on its ideal point but inherits the noise from bin '+kMin+', which the IFFT spreads over the whole block.'
   ]);
 
   /* --- error versus SNR --- */
@@ -824,7 +824,7 @@ function drawScfde(){
   bullets($('scEvmNote'),[
     'Both curves fall one decade per 10 dB, but ZF sits a constant factor above MMSE — that offset is the price of inverting the null.',
     'At '+p.snr+' dB the gap is '+(meanZf/Math.max(meanMm,1e-15)).toFixed(1)+'×; at 0 dB it is '+(zfCurve[5]/Math.max(mmCurve[5],1e-15)).toFixed(1)+'×. Regularization matters most where noise is worst.',
-    'These are closed-form averages of λ/|H|² and λ/(|H|²+λ) over the '+p.N+' subcarriers, so no Monte Carlo scatter is involved.'
+    'These are closed-form averages of λ/|H|² and λ/(|H|²+λ) over the '+p.N+' bins, so no Monte Carlo scatter is involved.'
   ]);
 }
 ['scSnr','scNotch','scN','scNullPos'].forEach(id=>$(id).addEventListener('input',drawScfde));
