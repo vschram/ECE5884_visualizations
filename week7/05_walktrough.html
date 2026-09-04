@@ -16,9 +16,9 @@
 .mode-row{margin-bottom:10px}.mode-row button{padding:6px 10px}
 .flow-caption{color:var(--muted);font-size:.72rem;margin:-6px 0 14px}
 #cpAssembly,#cpAbsorb{height:300px}#ofGrid{height:290px}#ofCompare{height:300px}
-#motMemoryPlot,#motComplexity,#motTaps,#tdeTaps,#tdeCascade,#tdeDelayCost,#tdeConst,#tdeCostLen,#cpLinCirc,#cpProduct,#cpToneErr,#cpOverhead,#cpConst,#scChannel,#scGain,#scNoise,#scConst,#scEvmCurve,#ofChannelPilots,#ofSnrTones,#ofPilotSweep,#ofPapr,#ofEvm{height:265px}
+#motMemoryPlot,#motComplexity,#motTaps,#tdeTaps,#tdeCascade,#tdeDelayCost,#tdeConst,#tdeCostLen,#cpLinCirc,#cpProduct,#cpToneErr,#cpOverhead,#cpConst,#scChannel,#scGain,#scNoise,#scConst,#scToneConst,#scEvmCurve,#ofChannelPilots,#ofToneConst,#ofSnrTones,#ofPilotSweep,#ofPapr,#ofEvm{height:265px}
 @media(max-width:900px){.toolbar-split{grid-template-columns:1fr}.toolbar-metrics{grid-auto-flow:row;grid-template-columns:repeat(3,minmax(0,1fr))}.metric-rail{grid-template-columns:repeat(3,minmax(0,1fr))}.metric-rail .formula,.metric-rail .note{grid-column:1/-1}.tabs{grid-template-columns:repeat(3,1fr)}.plots{grid-template-columns:1fr 1fr}.plots:not(.two) .card:last-child{grid-column:1/-1}.model-grid{grid-template-columns:1fr}.checklist{grid-template-columns:1fr 1fr}.control-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.summary-row{grid-template-columns:1fr}.summary-row .toolbar-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:620px){.metric-rail,.toolbar-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}body{padding:14px}.tabs{grid-template-columns:1fr 1fr}.panel-head{display:block}.plots,.two{grid-template-columns:1fr}.plots .card:last-child{grid-column:auto}.flow{display:grid;grid-template-columns:1fr 1fr}.arrow{display:none}.metrics,.checklist{grid-template-columns:1fr 1fr}canvas,.plots.two canvas{height:245px}#motMemoryPlot,#motComplexity,#motTaps,#tdeTaps,#tdeCascade,#tdeDelayCost,#tdeConst,#tdeCostLen,#cpLinCirc,#cpProduct,#cpToneErr,#cpOverhead,#cpConst,#scChannel,#scGain,#scNoise,#scConst,#scEvmCurve,#ofChannelPilots,#ofSnrTones,#ofPilotSweep,#ofPapr,#ofEvm{height:262px}}
+@media(max-width:620px){.metric-rail,.toolbar-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}body{padding:14px}.tabs{grid-template-columns:1fr 1fr}.panel-head{display:block}.plots,.two{grid-template-columns:1fr}.plots .card:last-child{grid-column:auto}.flow{display:grid;grid-template-columns:1fr 1fr}.arrow{display:none}.metrics,.checklist{grid-template-columns:1fr 1fr}canvas,.plots.two canvas{height:245px}#motMemoryPlot,#motComplexity,#motTaps,#tdeTaps,#tdeCascade,#tdeDelayCost,#tdeConst,#tdeCostLen,#cpLinCirc,#cpProduct,#cpToneErr,#cpOverhead,#cpConst,#scChannel,#scGain,#scNoise,#scConst,#scToneConst,#scEvmCurve,#ofChannelPilots,#ofToneConst,#ofSnrTones,#ofPilotSweep,#ofPapr,#ofEvm{height:262px}}
 @media(max-width:390px){.tabs,.metrics,.checklist,.flow,.control-grid{grid-template-columns:1fr}.ctrl{min-width:100%}.ctrl label{flex-wrap:wrap}}
 </style>
 </head>
@@ -132,6 +132,8 @@
     <div class="ctrl"><label for="scNotch">Echo magnitude a <strong id="scNotchOut">0.90</strong></label><input id="scNotch" type="range" min="0.1" max="0.99" value="0.9" step="0.01"></div>
     <div class="ctrl"><label for="scN">Block size N <strong id="scNOut">64</strong></label><input id="scN" type="range" min="4" max="8" value="6" step="1"></div>
     <div class="ctrl"><label for="scNullPos">Null position k₀ <strong id="scNullPosOut">0.30 N</strong></label><input id="scNullPos" type="range" min="0.05" max="0.5" value="0.3" step="0.01"></div>
+    <div class="ctrl"><label for="scTone">Selected tone k <strong id="scToneOut">16</strong></label><input id="scTone" type="range" min="0" max="63" value="16" step="1"></div>
+    <div class="ctrl"><label for="scMod">Probe constellation</label><select id="scMod"><option value="qpsk" selected>QPSK</option><option value="qam16">16-QAM</option></select></div>
     </div>
     <div class="summary-row"><div class="toolbar-metrics">
       <div class="metric"><div class="name">Weakest tone</div><div class="value" id="scMinH">—</div><div class="small">min<sub>k</sub> |H[k]|</div></div>
@@ -149,6 +151,7 @@
     <div class="card"><div class="title">Channel magnitude |H[k]| with a spectral null</div><canvas id="scChannel" role="img" aria-label="Channel frequency response magnitude across subcarrier index with a deep null marked"></canvas><div class="legend"><span><i class="sw blue"></i>|H[k]|</span><span><i class="sw" style="background:var(--red)"></i>Weakest tone</span></div><ul class="bullets" id="scChannelNote"></ul></div>
     <div class="card"><div class="title">Equalizer gain: ZF versus MMSE</div><canvas id="scGain" role="img" aria-label="Zero-forcing and MMSE equalizer gain magnitudes across subcarrier index"></canvas><div class="legend"><span><i class="sw orange"></i>|G<sub>ZF</sub>| = 1/|H|</span><span><i class="sw purple"></i>|G<sub>MMSE</sub>|</span><span><i class="sw" style="background:var(--cyan)"></i>Bound 1/(2√λ)</span></div><ul class="bullets" id="scGainNote"></ul></div>
     <div class="card"><div class="title">Normalized per-tone error power</div><canvas id="scNoise" role="img" aria-label="Normalized mean-square error per subcarrier for zero-forcing and MMSE equalization"></canvas><div class="legend"><span><i class="sw orange"></i>ZF: λ/|H|²</span><span><i class="sw purple"></i>MMSE: λ/(|H|²+λ)</span><span><i class="sw green"></i>Reference: λ</span></div><ul class="bullets" id="scNoiseNote"></ul></div>
+    <div class="card"><div class="title">Tone k: the constellation faded by H[k]</div><canvas id="scToneConst" role="img" aria-label="Constellation on the selected subcarrier, faded by the channel and after per-tone equalization, against ideal reference circles"></canvas><div class="legend"><span><i class="sw" style="background:var(--red)"></i>Ideal (circles)</span><span><i class="sw orange"></i>Faded by H[k]</span><span><i class="sw blue"></i>After G[k]</span></div><ul class="bullets" id="scToneConstNote"></ul></div>
     <div class="card"><div class="title">Time-domain constellation before and after block FDE</div><canvas id="scConst" role="img" aria-label="QPSK constellation of the received block before equalization and after per-tone equalization and inverse FFT"></canvas><div class="legend"><span><i class="sw orange"></i>Received y[n]</span><span><i class="sw blue"></i>After IFFT</span><span><i class="sw" style="background:var(--red)"></i>Ideal QPSK</span></div><ul class="bullets" id="scConstNote"></ul></div>
     <div class="card"><div class="title">Block error power versus SNR</div><canvas id="scEvmCurve" role="img" aria-label="Average normalized block error power against signal-to-noise ratio for zero-forcing and MMSE equalization"></canvas><div class="legend"><span><i class="sw orange"></i>ZF</span><span><i class="sw purple"></i>MMSE</span><span><i class="sw green"></i>Your SNR</span></div><ul class="bullets" id="scEvmNote"></ul></div>
   </div>
@@ -164,6 +167,8 @@
     <div class="ctrl"><label for="ofL">Channel memory L <strong id="ofLOut">5</strong></label><input id="ofL" type="range" min="1" max="20" value="5" step="1"></div>
     <div class="ctrl"><label for="ofP">Pilot spacing P <strong id="ofPOut">4 tones</strong></label><input id="ofP" type="range" min="1" max="24" value="4" step="1"></div>
     <div class="ctrl"><label for="ofSnr">Average tone SNR <strong id="ofSnrOut">15 dB</strong></label><input id="ofSnr" type="range" min="-5" max="30" value="15" step="1"></div>
+    <div class="ctrl"><label for="ofTone">Selected tone k <strong id="ofToneOut">16</strong></label><input id="ofTone" type="range" min="0" max="63" value="16" step="1"></div>
+    <div class="ctrl"><label for="ofMod">Subcarrier constellation</label><select id="ofMod"><option value="qpsk" selected>QPSK</option><option value="qam16">16-QAM</option></select></div>
     </div>
     <div class="summary-row"><div class="toolbar-metrics">
       <div class="metric"><div class="name">Flatness ratio</div><div class="value" id="ofFlat">—</div><div class="small">Δf / B<sub>coh</sub>, B<sub>coh</sub> ≈ 1/(5τ<sub>rms</sub>)</div></div>
@@ -185,6 +190,7 @@
   <div class="plots" style="margin-top:14px">
     <div class="card"><div class="title">|H[k]| across subcarriers with comb pilots</div><canvas id="ofChannelPilots" role="img" aria-label="Channel magnitude across subcarriers with pilot tones and the interpolated channel estimate"></canvas><div class="legend"><span><i class="sw blue"></i>True |H[k]|</span><span><i class="sw orange"></i>Pilot tones</span><span><i class="sw purple"></i>Interpolated |Ĥ[k]|</span></div><ul class="bullets" id="ofChannelNote"></ul></div>
     <div class="card"><div class="title">Per-tone SNR |H<sub>k</sub>|²E<sub>X</sub>/(NN₀)</div><canvas id="ofSnrTones" role="img" aria-label="Per subcarrier signal-to-noise ratio in decibels with deep fades highlighted"></canvas><div class="legend"><span><i class="sw blue"></i>Per-tone SNR</span><span><i class="sw green"></i>Average</span><span><i class="sw" style="background:var(--red)"></i>Below 0 dB</span></div><ul class="bullets" id="ofSnrNote"></ul></div>
+    <div class="card"><div class="title">Tone k: the constellation faded by H<sub>k</sub></div><canvas id="ofToneConst" role="img" aria-label="Constellation carried by the selected subcarrier, faded by the channel and after per-tone equalization, against ideal reference circles"></canvas><div class="legend"><span><i class="sw" style="background:var(--red)"></i>Ideal (circles)</span><span><i class="sw orange"></i>Faded by H<sub>k</sub></span><span><i class="sw blue"></i>After G<sub>k</sub></span></div><ul class="bullets" id="ofToneConstNote"></ul></div>
     <div class="card"><div class="title">Estimation NMSE versus pilot spacing</div><canvas id="ofPilotSweep" role="img" aria-label="Channel estimation normalized mean square error against comb pilot spacing with the sampling limit marked"></canvas><div class="legend"><span><i class="sw blue"></i>NMSE(P)</span><span><i class="sw" style="background:var(--red)"></i>Sampling limit P = N/(L+1)</span><span><i class="sw green"></i>Your P</span></div><ul class="bullets" id="ofPilotNote"></ul></div>
     <div class="card"><div class="title">PAPR: OFDM versus single carrier</div><canvas id="ofPapr" role="img" aria-label="Complementary cumulative distribution of peak to average power ratio for OFDM and single-carrier blocks"></canvas><div class="legend"><span><i class="sw purple"></i>OFDM (IFFT of QPSK tones)</span><span><i class="sw blue"></i>SC-FDE (QPSK in time)</span></div><ul class="bullets" id="ofPaprNote"></ul></div>
     <div class="card"><div class="title">Symbol error power versus SNR</div><canvas id="ofEvm" role="img" aria-label="Normalized symbol error power against signal to noise ratio for zero forcing and MMSE with estimated and perfect channel knowledge"></canvas><div class="legend"><span><i class="sw orange"></i>ZF</span><span><i class="sw purple"></i>MMSE</span><span><i class="sw" style="background:var(--cyan)"></i>Dashed — perfect Ĥ</span><span><i class="sw green"></i>Your SNR</span></div><ul class="bullets" id="ofEvmNote"></ul></div>
@@ -632,9 +638,83 @@ function drawCpAbsorb(p,s){
 /* ==================================================================
    4 · SC-FDE
    ================================================================== */
+/* ==================================================================
+   Shared: what one subcarrier does to the constellation riding on it
+   ================================================================== */
+const qam16=(()=>{const p=[];for(const a of[-3,-1,1,3])for(const b of[-3,-1,1,3])p.push(scale(C(a,b),1/Math.sqrt(10)));return p})();
+function constSet(name){return name==='qam16'?qam16:qpsk}
+function degOf(z){return Math.atan2(z.im,z.re)*180/Math.PI}
+function fmtDeg(d){return(d<0?'−':'')+Math.abs(d).toFixed(1)+'°'}
+/* Draws the ideal points as reference circles with the faded cloud underneath them,
+   so the rotation and scaling the channel applies on tone k is read off directly. */
+function drawToneConst(cvId,o){
+  const pts=constSet(o.mod),r=rng(o.seed),sd=Math.sqrt(o.lambda/2),COUNT=480,faded=[],eq=[];
+  let acc=0;
+  for(let i=0;i<COUNT;i++){
+    const sym=pts[Math.min(pts.length-1,Math.floor(r()*pts.length))],
+      y=add(mul(o.H,sym),C(gauss(r)*sd,gauss(r)*sd)),x=mul(o.G,y);
+    faded.push(y);eq.push(x);acc+=abs2(sub(x,sym))}
+  let peak=0;
+  for(const v of faded)peak=Math.max(peak,Math.abs(v.re),Math.abs(v.im));
+  for(const v of eq)peak=Math.max(peak,Math.abs(v.re),Math.abs(v.im));
+  const lim=Math.min(4,Math.max(1.8,peak*1.06)),
+    z=axes($(cvId),-lim,lim,-lim,lim,'In-phase','Quadrature',{xticks:4,yticks:4});
+  z.c.save();z.c.strokeStyle=css('--text');z.c.globalAlpha=.35;z.c.lineWidth=1.2;z.c.beginPath();
+  z.c.moveTo(z.m.l,z.Y(0));z.c.lineTo(z.w-z.m.r,z.Y(0));z.c.moveTo(z.X(0),z.m.t);z.c.lineTo(z.X(0),z.h-z.m.b);z.c.stroke();z.c.restore();
+  let outside=0;
+  const cloud=(arr,color,alpha,rad)=>{z.c.save();z.c.globalAlpha=alpha;z.c.fillStyle=color;
+    for(const v of arr){if(Math.abs(v.re)>lim||Math.abs(v.im)>lim){outside++;continue}
+      z.c.beginPath();z.c.arc(z.X(v.re),z.Y(v.im),rad,0,Math.PI*2);z.c.fill()}z.c.restore()};
+  cloud(faded,css('--orange'),.30,2.7);
+  cloud(eq,css('--blue'),.50,2.4);
+  /* where the channel puts each ideal point */
+  z.c.save();z.c.strokeStyle=css('--orange');z.c.lineWidth=1.6;z.c.setLineDash([3,3]);
+  for(const sym of pts){const v=mul(o.H,sym);if(Math.abs(v.re)>lim||Math.abs(v.im)>lim)continue;
+    z.c.beginPath();z.c.arc(z.X(v.re),z.Y(v.im),4.5,0,Math.PI*2);z.c.stroke()}z.c.restore();
+  /* rotation and scaling read off one outer point */
+  const ref=pts.reduce((best,v)=>(v.re>0&&v.im>0&&abs2(v)>abs2(best))?v:best,C(1e-9,1e-9)),
+    fad=mul(o.H,ref),a0=Math.atan2(ref.im,ref.re),a1=Math.atan2(fad.im,fad.re),
+    rad0=Math.sqrt(abs2(ref)),rad1=Math.sqrt(abs2(fad));
+  if(rad1<lim*1.4){
+    z.c.save();z.c.lineWidth=1.3;z.c.setLineDash([4,4]);
+    z.c.strokeStyle=css('--muted');z.c.beginPath();z.c.moveTo(z.X(0),z.Y(0));z.c.lineTo(z.X(ref.re),z.Y(ref.im));z.c.stroke();
+    z.c.strokeStyle=css('--orange');z.c.beginPath();z.c.moveTo(z.X(0),z.Y(0));z.c.lineTo(z.X(Math.max(-lim,Math.min(lim,fad.re))),z.Y(Math.max(-lim,Math.min(lim,fad.im))));z.c.stroke();
+    z.c.setLineDash([]);
+    const ar=Math.min(rad0,rad1)*0.58,px=t=>z.X(ar*Math.cos(t)),py=t=>z.Y(ar*Math.sin(t));
+    z.c.strokeStyle=css('--orange');z.c.lineWidth=1.6;z.c.beginPath();
+    const steps=24;for(let i=0;i<=steps;i++){const t=a0+(a1-a0)*i/steps;i?z.c.lineTo(px(t),py(t)):z.c.moveTo(px(t),py(t))}z.c.stroke();z.c.restore();
+    const tm=(a0+a1)/2;
+    plotLabel(z,px(tm),py(tm),'∠H = '+fmtDeg(degOf(o.H)),css('--orange'));
+  }
+  /* ideal reference circles last, so the faded cloud sits under them */
+  z.c.save();z.c.strokeStyle=css('--red');z.c.lineWidth=2;
+  for(const sym of pts){z.c.beginPath();z.c.arc(z.X(sym.re),z.Y(sym.im),o.mod==='qam16'?5:6.5,0,Math.PI*2);z.c.stroke()}z.c.restore();
+  if(outside)plotLabel(z,z.w-z.m.r-6,z.m.t+13,outside+' point'+(outside===1?'':'s')+' outside the axes',css('--red'),'top');
+  const gh=mul(o.G,o.H);
+  return{evm:Math.sqrt(acc/COUNT),outside,gh,ghMag:Math.sqrt(abs2(gh)),ghDeg:degOf(gh),
+    hMag:Math.sqrt(abs2(o.H)),hDeg:degOf(o.H),pts:pts.length}}
+
 let scEq='mmse';
 document.querySelectorAll('[data-sc-eq]').forEach(b=>b.addEventListener('click',()=>{scEq=b.dataset.scEq;drawScfde()}));
 function scParams(){const N=Math.pow(2,+$('scN').value),a=+$('scNotch').value,snr=+$('scSnr').value,frac=+$('scNullPos').value,k0=Math.max(1,Math.round(frac*N));return{N,a,snr,frac,k0,lambda:Math.pow(10,-snr/10)}}
+function drawScTone(){
+  const p=scParams(),h=notchChannel(p.a,p.k0,p.N),H=dftOf(h,p.N),el=$('scTone');
+  el.max=p.N-1;
+  const k=Math.min(Math.max(0,+el.value),p.N-1);
+  if(+el.value!==k)el.value=k;
+  $('scToneOut').textContent=k+(k===p.k0?' (null)':'');
+  const Hk=H[k],G=scEq==='zf'?divc(C(1,0),Hk):scale(conj(Hk),1/(abs2(Hk)+p.lambda)),
+    mod=$('scMod').value,name=scEq==='zf'?'ZF':'MMSE',
+    st=drawToneConst('scToneConst',{H:Hk,G,lambda:p.lambda,mod,seed:5101+k,k});
+  bullets($('scToneConstNote'),[
+    'On tone k = '+k+' the channel is |H[k]| = '+st.hMag.toFixed(3)+' at ∠H[k] = '+fmtDeg(st.hDeg)+'. The dashed orange circles show where that puts each ideal point: the whole constellation is rotated and rescaled before the equalizer sees it.',
+    'Drag k across the block and the pattern turns tone by tone — ∠H[k] is what moves fastest, and undoing it is the entire job of the one complex multiply G[k].',
+    'After '+name+' the residual gain is G[k]H[k] = '+st.ghMag.toFixed(3)+' ∠'+fmtDeg(st.ghDeg)+', so the rotation is removed exactly'+(scEq==='mmse'?' and only the deliberate MMSE shrinkage toward the origin is left.':'; what survives is the noise the inverse gain brought with it.')+' Measured EVM '+(100*st.evm).toFixed(1)+'%.',
+    mod==='qam16'?'16-QAM makes the scaling as legible as the rotation: the amplitude rings collapse toward the origin as |H[k]| falls, and the inner ring is the first to be swallowed by the noise.'
+      :'Switch the probe to 16-QAM to see |H[k]| as clearly as ∠H[k]: QPSK has a single amplitude ring, so it shows the rotation but hides the scaling.',
+    'In SC-FDE the true X[k] is the DFT of a whole single-carrier block, not a per-tone symbol, so this is a probe: it shows what tone k does to any symbol riding on it. On the OFDM tab the same picture is literal.'
+  ]);
+}
 function drawScfde(){
   document.querySelectorAll('[data-sc-eq]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.scEq===scEq));
   const p=scParams(),h=notchChannel(p.a,p.k0,p.N),H=dftOf(h,p.N),mag=H.map(v=>Math.sqrt(abs2(v)));
@@ -701,6 +781,9 @@ function drawScfde(){
     'In SC-FDE these per-tone errors are spread across all N time symbols by the IFFT, so one bad tone raises the noise floor everywhere rather than killing one symbol.'
   ]);
 
+  /* --- selected-tone constellation --- */
+  drawScTone();
+
   /* --- constellation (deck: scfde_constellation_before_after) --- */
   const rr=rng(6207),blocks=Math.max(1,Math.ceil(600/p.N)),recv=[],eq=[],lamSc=p.lambda;
   let acc=0,cnt=0;
@@ -743,6 +826,7 @@ function drawScfde(){
   ]);
 }
 ['scSnr','scNotch','scN','scNullPos'].forEach(id=>$(id).addEventListener('input',drawScfde));
+['scTone','scMod'].forEach(id=>$(id).addEventListener('input',drawScTone));
 $('scZfHelp').addEventListener('click',()=>$('scZfDialog').showModal());
 $('scZfClose').addEventListener('click',()=>$('scZfDialog').close());
 $('scMmseHelp').addEventListener('click',()=>$('scMmseDialog').showModal());
@@ -765,6 +849,29 @@ function combEstimate(H,P,N,lambda,r){
     for(let k=a;k<Math.min(b,N);k++){const t=(k-a)/(b-a);est[k]=add(scale(va,1-t),scale(vb,t))}}
   est[N-1]=est[N-1]||val[val.length-1];
   return{est,pilots:idx.filter(k=>k<N),pilotVals:val}}
+function drawOfTone(){
+  const p=ofParams(),h=pdpChannel(p.L,4407),H=dftOf(h,p.N),
+    ce=combEstimate(H,p.P,p.N,p.lambda,rng(8801)),Hh=ofPerfect?H:ce.est,el=$('ofTone');
+  el.max=p.N-1;
+  const k=Math.min(Math.max(0,+el.value),p.N-1);
+  if(+el.value!==k)el.value=k;
+  const isPilot=k%p.P===0;
+  $('ofToneOut').textContent=k+(isPilot?' (pilot)':'');
+  const Hk=H[k],He=Hh[k],G=ofEq==='zf'?divc(C(1,0),He):scale(conj(He),1/(abs2(He)+p.lambda)),
+    mod=$('ofMod').value,name=ofEq==='zf'?'ZF':'MMSE',
+    st=drawToneConst('ofToneConst',{H:Hk,G,lambda:p.lambda,mod,seed:7301+k,k}),
+    estErr=Math.sqrt(abs2(sub(He,Hk)));
+  bullets($('ofToneConstNote'),[
+    'Subcarrier k = '+k+' carries its own '+(mod==='qam16'?'16-QAM':'QPSK')+' symbol Xₖ, and the channel hands it |Hₖ| = '+st.hMag.toFixed(3)+' at ∠Hₖ = '+fmtDeg(st.hDeg)+'. The dashed orange circles are the ideal points after that rotation and scaling.',
+    'Drag k across the block: every subcarrier sits at a different point of the same H(f), so the constellation turns and breathes tone by tone. That is the picture per-tone equalization exists to undo.',
+    ofPerfect?'With Ĥₖ assumed perfect the residual gain is GₖHₖ = '+st.ghMag.toFixed(3)+' ∠'+fmtDeg(st.ghDeg)+' — rotation fully removed'+(ofEq==='mmse'?', with the MMSE shrinkage left in on purpose.':'.')
+      :'Ĥₖ comes from comb pilots every P = '+p.P+' tones, and here it is off by '+estErr.toFixed(3)+'. The residual gain is GₖHₖ = '+st.ghMag.toFixed(3)+' ∠'+fmtDeg(st.ghDeg)+', so a residual twist survives equalization — visible as the blue cloud sitting off the red circles.',
+    isPilot?'Tone '+k+' is itself a pilot, so its estimate is the cleanest in the block: pilot noise only, no interpolation error. Step one tone either side to see interpolation take over.'
+      :'Tone '+k+' lies between pilots, so Ĥₖ is interpolated. Widen P and watch the blue cloud drift off the circles as the interpolation starts to alias.',
+    mod==='qam16'?'16-QAM is where a faded tone hurts: its rings are '+(2/Math.sqrt(10)).toFixed(2)+' apart against QPSK’s '+(2/Math.sqrt(2)).toFixed(2)+', so the same |Hₖ| and the same noise now push the inner ring into its neighbours’ decision regions. Measured EVM '+(100*st.evm).toFixed(1)+'%.'
+      :'Measured EVM '+(100*st.evm).toFixed(1)+'% with the '+name+' equalizer. Switch to 16-QAM to see why deep tones need coding across subcarriers: the same fade QPSK shrugs off closes the 16-QAM rings.'
+  ]);
+}
 function drawOfdm(){
   document.querySelectorAll('[data-of-eq]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.ofEq===ofEq));
   $('ofPerfect').setAttribute('aria-pressed',ofPerfect);
@@ -821,6 +928,9 @@ function drawOfdm(){
       :'No tone falls below 0 dB at this setting, but the weakest still sits '+(avg-Math.min(...snrK)).toFixed(1)+' dB below average.',
     'This is why practical OFDM codes across subcarriers: coding turns a few dead tones into a manageable average, which per-tone equalization alone cannot do.'
   ]);
+
+  /* --- selected-tone constellation --- */
+  drawOfTone();
 
   /* --- NMSE versus pilot spacing --- */
   const Ps=[],nm=[];
@@ -952,6 +1062,7 @@ function drawOfCompare(p){
   ]);
 }
 ['ofN','ofL','ofP','ofSnr'].forEach(id=>$(id).addEventListener('input',drawOfdm));
+['ofTone','ofMod'].forEach(id=>$(id).addEventListener('input',drawOfTone));
 $('ofDenomHelp').addEventListener('click',()=>$('ofDenomDialog').showModal());
 $('ofDenomClose').addEventListener('click',()=>$('ofDenomDialog').close());
 
