@@ -62,7 +62,7 @@ function update(){
  $('bandwidthOut').textContent=fmt(Bmhz,1)+' MHz'; $('delayOut').textContent=fmt(tauUs,1)+' μs'; $('dopplerOut').textContent=BD+' Hz';
  $('df').textContent=fmt(df/1e3,2)+' kHz'; $('ts').textContent=fmt(Ts*1e6,2)+' μs'; $('cp').textContent=fmt(Tcp*1e6,2)+' μs'; $('eff').textContent=fmt(100*eta,1)+'%'; $('ratio').textContent=fmt(ratio,3); $('lc').textContent=Lc;
  let msg, warn=false;
- if(ratio<=0.01) msg='Doppler is much smaller than the subcarrier spacing: tones are likely to remain approximately orthogonal over one symbol.';
+ if(ratio<=0.01) msg='Doppler is much smaller than the subcarrier spacing: subcarriers are likely to remain approximately orthogonal over one symbol.';
  else if(ratio<=0.1) msg='The Doppler ratio is moderate. Inter-carrier interference may become noticeable, depending on the channel and receiver.';
  else {msg='Doppler is no longer small relative to Δf. A larger subcarrier spacing would improve time variation tolerance.';warn=true}
  msg+=' CP overhead is '+fmt(100*(1-eta),1)+'%.'; const s=$('status');s.textContent=msg;s.className='status'+(warn?' warn':'');

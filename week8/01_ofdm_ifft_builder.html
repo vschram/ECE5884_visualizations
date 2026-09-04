@@ -28,12 +28,12 @@ main{max-width:1280px;margin:0 auto;padding:22px clamp(12px,3vw,30px) 34px}.grid
 <section class="card controls">
 <h2>Controls</h2>
 <div class="field"><label for="nSelect">IFFT size <span id="nReadout">N = 16</span></label><select id="nSelect"><option>4</option><option>8</option><option selected>16</option><option>32</option></select><small>The course convention places the factor 1/N in the IFFT.</small></div>
-<div class="field"><label>Presets</label><div class="row"><button id="singleBtn">Single tone</button><button id="allBtn">All active</button><button id="randomBtn" class="primary">Random QPSK</button><button id="zeroBtn">Clear</button></div></div>
+<div class="field"><label>Presets</label><div class="row"><button id="singleBtn">Single subcarrier</button><button id="allBtn">All active</button><button id="randomBtn" class="primary">Random QPSK</button><button id="zeroBtn">Clear</button></div></div>
 <div class="field"><label>Selected subcarrier <span id="selectedReadout">k = 0</span></label><small>Click a bin below, then choose its symbol.</small></div>
 <div class="field"><div class="symbol-buttons" id="symbolButtons"></div></div>
 <div class="field"><label>Subcarrier bins</label><div class="bins" id="bins"></div></div>
 <div class="equation">x[n] = (1/N) Σ<sub>k=0</sub><sup>N−1</sup> X[k]e<sup>j2πkn/N</sup></div>
-<div class="help"><strong>Try this:</strong> start with one active tone, then add more tones. The time waveform becomes less sinusoidal even though every component remains a simple complex exponential.</div>
+<div class="help"><strong>Try this:</strong> start with one active subcarrier, then add more subcarriers. The time waveform becomes less sinusoidal even though every component remains a simple complex exponential.</div>
 </section>
 <section class="content">
 <div class="card plot-card wide"><h2>Frequency-domain symbols X[k]</h2><svg id="freqSvg" viewBox="0 0 900 265" role="img" aria-label="Magnitude and phase of frequency-domain OFDM symbols"></svg><p class="note">Arrow direction shows phase; arrow length shows magnitude. Normalised QPSK symbols have |X[k]| = 1.</p></div>
