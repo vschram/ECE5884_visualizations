@@ -65,9 +65,10 @@ channel from pilots.</p>
 <section class="panel" id="ifft" role="tabpanel" aria-labelledby="tab-ifft" hidden>
   <div class="panel-head"><div><div class="eyebrow">IFFT synthesis</div><h2>The IFFT is a bank of complex sinusoids, and each subcarrier is one of them scaled by its symbol</h2></div><div class="message">x[n] = (1/N) &sum;<sub>k</sub> X<sub>k</sub> e<sup>j2&pi;kn/N</sup>. Subcarrier k contributes exactly one sinusoid that completes k whole cycles across the block. Adding them is what produces the OFDM waveform &mdash; and what makes its peaks grow.</div></div>
   <div class="sticky-bar"><div class="toolbar">
+    <div class="mode-buttons mode-row"><button type="button" id="ifAll">All active</button><button type="button" id="ifRandom">Random set</button><button type="button" id="ifSingle">Highlighted only</button><button type="button" id="ifClear">Clear</button></div>
     <div class="control-grid">
     <div class="ctrl"><label for="ifN"><span>Subcarriers N</span> <strong id="ifNOut">16</strong></label><input id="ifN" type="range" min="3" max="6" value="4" step="1"></div>
-    <div class="ctrl"><label for="ifAct"><span>Active subcarriers</span> <strong id="ifActOut">16</strong></label><input id="ifAct" type="range" min="1" max="16" value="16" step="1"></div>
+    <div class="ctrl"><label for="ifAct"><span>Activate the first M</span> <strong id="ifActOut">15 on</strong></label><input id="ifAct" type="range" min="1" max="16" value="16" step="1"></div>
     <div class="ctrl"><label for="ifK"><span>Highlighted subcarrier k</span> <strong id="ifKOut">3</strong></label><input id="ifK" type="range" min="0" max="15" value="3" step="1"></div>
     <div class="ctrl"><label for="ifMod">Constellation</label><select id="ifMod"><option value="qpsk" selected>QPSK</option><option value="qam16">16-QAM</option></select></div>
     </div>
@@ -82,7 +83,7 @@ channel from pilots.</p>
   <div class="plots">
     <div class="card"><div class="title">Subcarrier k on its own</div><canvas id="ifOne" role="img" aria-label="Real and imaginary parts of the single highlighted subcarrier across the block"></canvas><div class="legend"><span><i class="sw blue"></i>real</span><span><i class="sw orange"></i>imaginary</span></div><ul class="bullets" id="ifOneNote"></ul></div>
     <div class="card"><div class="title">Adding the active subcarriers: x[n]</div><canvas id="ifSum" role="img" aria-label="Real part of the OFDM waveform as active subcarriers are summed, with the highlighted subcarrier shown separately"></canvas><div class="legend"><span><i class="sw blue"></i>x[n], all active</span><span><i class="sw green"></i>highlighted subcarrier</span><span><i class="sw" style="background:var(--red)"></i>peak</span></div><ul class="bullets" id="ifSumNote"></ul></div>
-    <div class="card"><div class="title">IFFT input: |X<sub>k</sub>| across subcarriers</div><canvas id="ifStems" role="img" aria-label="Stem plot of the symbol magnitude on each subcarrier, with inactive subcarriers and the highlighted one marked"></canvas><div class="legend"><span><i class="sw blue"></i>active</span><span><i class="sw green"></i>highlighted</span><span><i class="sw" style="background:var(--muted)"></i>off</span></div><ul class="bullets" id="ifStemsNote"></ul></div>
+    <div class="card"><div class="title">IFFT input: |X<sub>k</sub>| across subcarriers &mdash; click to switch one on or off</div><canvas id="ifStems" role="img" aria-label="Stem plot of the symbol magnitude on each subcarrier, with inactive subcarriers and the highlighted one marked"></canvas><div class="legend"><span><i class="sw blue"></i>active</span><span><i class="sw green"></i>highlighted</span><span><i class="sw" style="background:var(--muted)"></i>off</span></div><ul class="bullets" id="ifStemsNote"></ul></div>
     <div class="card"><div class="title">PAPR against the number of active subcarriers</div><canvas id="ifPapr" role="img" aria-label="Peak to average power ratio against the number of active subcarriers"></canvas><div class="legend"><span><i class="sw purple"></i>PAPR (dB)</span><span><i class="sw green"></i>your setting</span></div><ul class="bullets" id="ifPaprNote"></ul></div>
   </div>
 </section>
@@ -95,6 +96,7 @@ channel from pilots.</p>
     <div class="ctrl"><label for="orK"><span>Transmitted subcarrier k</span> <strong id="orKOut">4</strong></label><input id="orK" type="range" min="0" max="15" value="4" step="1"></div>
     <div class="ctrl"><label for="orM"><span>Receiver basis m</span> <strong id="orMOut">4</strong></label><input id="orM" type="range" min="0" max="15" value="4" step="1"></div>
     <div class="ctrl"><label for="orEps"><span>Frequency offset &epsilon;</span> <strong id="orEpsOut">0.00 &Delta;f</strong></label><input id="orEps" type="range" min="0" max="50" value="0" step="1"></div>
+    <div class="ctrl"><label for="orAlpha"><span>Spacing factor &Delta;f&middot;T<sub>sym</sub></span> <strong id="orAlphaOut">1.000</strong></label><input id="orAlpha" type="range" min="85" max="115" value="100" step="1"></div>
     </div>
     <div class="summary-row"><div class="toolbar-metrics">
       <div class="metric"><div class="name">Inner product</div><div class="value" id="orInner">&mdash;</div><div class="small">|&sum;<sub>n</sub> e<sup>j2&pi;(k+&epsilon;&minus;m)n/N</sup>| / N</div></div>
@@ -118,6 +120,7 @@ channel from pilots.</p>
     <div class="ctrl"><label for="cpLc"><span>Cyclic prefix L<sub>c</sub></span> <strong id="cpLcOut">4</strong></label><input id="cpLc" type="range" min="0" max="20" value="4" step="1"></div>
     <div class="ctrl"><label for="cpL">Channel memory L <strong id="cpLOut">3</strong></label><input id="cpL" type="range" min="0" max="16" value="3" step="1"></div>
     <div class="ctrl"><label for="cpSnr"><span>E<sub>x</sub>/N₀</span> <strong id="cpSnrOut">18 dB</strong></label><input id="cpSnr" type="range" min="0" max="30" value="18" step="1"></div>
+    <div class="ctrl"><label for="cpS"><span>FFT window offset s</span> <strong id="cpSOut">0 samples</strong></label><input id="cpS" type="range" min="-8" max="8" value="0" step="1"></div>
   </div><div class="summary-row"><div class="toolbar-metrics">
     <div class="metric"><div class="name">CP condition</div><div class="value" id="cpCond">—</div><div class="small">requires L<sub>c</sub> ≥ L</div></div>
     <div class="metric"><div class="name">CP efficiency</div><div class="value" id="cpEta">—</div><div class="small">η<sub>CP</sub> = N / (N + L<sub>c</sub>)</div></div>
@@ -144,10 +147,14 @@ channel from pilots.</p>
 <section class="panel" id="ofdm" role="tabpanel" aria-labelledby="tab-ofdm" hidden>
   <div class="panel-head"><div><div class="eyebrow">OFDM equalization</div><h2>One complex gain per subcarrier &mdash; once you know what that gain is</h2></div><div class="message">The IFFT at the transmitter is what separates OFDM from SC-FDE. The CP still gives the exact per-subcarrier model; narrowband flatness is a <em>separate</em> condition that only matters for interpolating Ĥ[k] between pilots. The MMSE denominator picks up a factor N because X<sub>k</sub> is a per-subcarrier symbol under the non-unitary DFT.</div></div>
   <div class="sticky-bar"><div class="toolbar">
+    <div class="mode-buttons mode-row"><button type="button" data-of-ch="pdp" aria-pressed="true">Random multipath</button><button type="button" data-of-ch="notch" aria-pressed="false">Parameterised notch</button></div>
     <div class="mode-buttons mode-row"><button type="button" data-of-eq="mmse" aria-pressed="true">MMSE per subcarrier</button><button type="button" data-of-eq="zf" aria-pressed="false">Zero forcing per subcarrier</button><button type="button" id="ofPerfect" aria-pressed="false">Perfect Ĥ[k] (no pilots)</button></div>
     <div class="control-grid">
     <div class="ctrl"><label for="ofN">Subcarriers N <strong id="ofNOut">64</strong></label><input id="ofN" type="range" min="4" max="8" value="6" step="1"></div>
     <div class="ctrl"><label for="ofL">Channel memory L <strong id="ofLOut">5</strong></label><input id="ofL" type="range" min="1" max="20" value="5" step="1"></div>
+    <div class="ctrl" id="ofNotchCtrls" hidden><label for="ofDepth">Notch depth <strong id="ofDepthOut">25 dB</strong></label><input id="ofDepth" type="range" min="5" max="40" value="25" step="1"></div>
+    <div class="ctrl" id="ofWidthCtrl" hidden><label for="ofWidth">Notch width <strong id="ofWidthOut">4.5 subcarriers</strong></label><input id="ofWidth" type="range" min="5" max="120" value="45" step="1"></div>
+    <div class="ctrl" id="ofCentreCtrl" hidden><label for="ofCentre">Notch centre k<sub>c</sub> <strong id="ofCentreOut">0.45 N</strong></label><input id="ofCentre" type="range" min="5" max="95" value="45" step="1"></div>
     <div class="ctrl"><label for="ofP"><span>Pilot spacing P</span> <strong id="ofPOut">4 subcarriers</strong></label><input id="ofP" type="range" min="1" max="24" value="4" step="1"></div>
     <div class="ctrl"><label for="ofSnr">Average subcarrier SNR <strong id="ofSnrOut">15 dB</strong></label><input id="ofSnr" type="range" min="-5" max="30" value="15" step="1"></div>
     <div class="ctrl"><label for="ofTone">Selected subcarrier k <strong id="ofToneOut">16</strong></label><input id="ofTone" type="range" min="0" max="63" value="16" step="1"></div>
@@ -327,25 +334,31 @@ function drawWhy(){
 /* ==================================================================
    2 · IFFT SYNTHESIS
    ================================================================== */
+/* The active set is the source of truth, so any subset can be switched on --
+   the "first M" slider and the preset buttons just write into it. k = 0 is
+   always held out as the DC null. */
+let ifActive=null,ifStemMap=null;
+function ifFirstM(N,m){ifActive=new Set();for(let i=1;i<=Math.min(m,N-1);i++)ifActive.add(i)}
 function ifftParams(){
-  const N=Math.pow(2,+$('ifN').value),actEl=$('ifAct'),kEl=$('ifK');
-  actEl.max=N;kEl.max=N-1;
-  const act=Math.min(+actEl.value,N),k=Math.min(+kEl.value,N-1);
-  if(+actEl.value!==act)actEl.value=act;
+  const N=Math.pow(2,+$('ifN').value),kEl=$('ifK');
+  kEl.max=N-1;$('ifAct').max=N-1;
+  const k=Math.min(+kEl.value,N-1);
   if(+kEl.value!==k)kEl.value=k;
-  return{N,act,k,mod:$('ifMod').value};
+  if(!ifActive)ifFirstM(N,+$('ifAct').value);
+  for(const i of [...ifActive])if(i>=N)ifActive.delete(i);   /* N shrank */
+  return{N,k,mod:$('ifMod').value,act:ifActive.size};
 }
 function ifftSymbols(p){
-  /* Fixed stream, so changing N or the active count does not reshuffle symbols. */
+  /* Fixed stream, so changing N or the active set does not reshuffle symbols. */
   const r=rng(4242),pts=constSet(p.mod),X=[];
   for(let i=0;i<p.N;i++)X.push(pts[Math.min(pts.length-1,Math.floor(r()*pts.length))]);
   const active=[];
-  for(let i=0;i<p.N;i++)active.push(i>0&&i<=p.act);   /* k = 0 held as the DC null */
+  for(let i=0;i<p.N;i++)active.push(ifActive.has(i));
   return{X,active};
 }
 function drawIfft(){
   const p=ifftParams(),{X,active}=ifftSymbols(p);
-  $('ifNOut').textContent=p.N;$('ifActOut').textContent=p.act;$('ifKOut').textContent=p.k;
+  $('ifNOut').textContent=p.N;$('ifActOut').textContent=p.act+' on';$('ifKOut').textContent=p.k;
   const Xz=X.map((v,i)=>active[i]?v:C());
   const x=fft(Xz,true);
   const peak=Math.max(...x.map(v=>abs2(v))),avg=x.reduce((a,v)=>a+abs2(v),0)/p.N,
@@ -392,35 +405,54 @@ function drawIfft(){
   /* --- IFFT input stems --- */
   const magX=Xz.map(v=>Math.sqrt(abs2(v))),topX=Math.max(0.1,...X.map(v=>Math.sqrt(abs2(v))))*1.25;
   z=axes($('ifStems'),0,p.N-1,0,topX,'subcarrier k','|Xₖ|',{xticks:Math.min(8,p.N-1),yticks:4});
+  ifStemMap={l:z.m.l,w:z.w-z.m.l-z.m.r,N:p.N};
   for(let i=0;i<p.N;i++){
     const col=!active[i]?css('--muted'):(i===p.k?css('--green'):css('--blue'));
     stem(z,i,active[i]?magX[i]:0.02,col);
   }
   bullets($('ifStemsNote'),[
-    p.act+' of '+p.N+' subcarriers carry a '+(p.mod==='qam16'?'16-QAM':'QPSK')+' symbol; the rest are zero and cost nothing but bandwidth.',
+    p.act+' of '+p.N+' subcarriers carry a '+(p.mod==='qam16'?'16-QAM':'QPSK')+' symbol; the rest are zero and cost nothing but bandwidth. Click any stem to switch that subcarrier on or off.',
     'Subcarrier 0 is held at zero as the DC null. It would land on the carrier frequency, where local-oscillator leakage and DC offset in the receiver sit.',
     p.mod==='qam16'?'16-QAM gives three distinct magnitudes here, so the stems vary in height; QPSK would make them all equal.'
       :'QPSK puts every symbol on one amplitude ring, so all the active stems are the same height. Switch to 16-QAM to see the magnitudes spread.'
   ]);
 
   /* --- PAPR against active count --- */
-  const xs=[],ys=[];
-  for(let a=1;a<=p.N;a++){
-    const Xa=X.map((v,i)=>(i>0&&i<=a)?v:C()),xa=fft(Xa,true),
+  const order=[...ifActive].sort((a,b)=>a-b),xs=[],ys=[];
+  for(let a=1;a<=order.length;a++){
+    const on=new Set(order.slice(0,a)),
+      Xa=X.map((v,i)=>on.has(i)?v:C()),xa=fft(Xa,true),
       pkA=Math.max(...xa.map(v=>abs2(v))),avA=xa.reduce((s,v)=>s+abs2(v),0)/p.N;
     xs.push(a);ys.push(10*Math.log10(pkA/Math.max(avA,1e-18)));}
+  if(!xs.length){xs.push(0);ys.push(0)}
   const hiP=Math.ceil(Math.max(...ys))+1;
-  z=axes($('ifPapr'),1,p.N,0,Math.max(3,hiP),'active subcarriers','PAPR (dB)',{xticks:Math.min(8,p.N-1),yticks:4});
+  z=axes($('ifPapr'),1,Math.max(2,order.length),0,Math.max(3,hiP),'active subcarriers','PAPR (dB)',{xticks:Math.min(8,Math.max(2,order.length-1)),yticks:4});
   line(z,xs.map((a,i)=>[a,ys[i]]),css('--purple'),2.4);
-  dot(z,p.act,ys[p.act-1],css('--green'),5.5);
-  plotLabel(z,z.X(p.act),z.Y(ys[p.act-1])-8,ys[p.act-1].toFixed(1)+' dB',css('--green'));
+  if(order.length){dot(z,order.length,ys[ys.length-1],css('--green'),5.5);
+    plotLabel(z,z.X(order.length),z.Y(ys[ys.length-1])-8,ys[ys.length-1].toFixed(1)+' dB',css('--green'));}
   bullets($('ifPaprNote'),[
     'With one active subcarrier the waveform is a pure sinusoid and the PAPR is near 0 dB. Adding subcarriers lets their phases occasionally line up, and the peaks grow.',
     'This is the cost side of OFDM: the power amplifier has to stay linear up to those peaks, so it runs backed off from its efficient operating point.',
     'The curve is one realization, not an average — change the constellation and it moves. Week 9 does this properly with a CCDF over many blocks, and covers what to do about it.'
   ]);
 }
-['ifN','ifAct','ifK','ifMod'].forEach(id=>$(id).addEventListener('input',drawIfft));
+$('ifAct').addEventListener('input',()=>{ifFirstM(Math.pow(2,+$('ifN').value),+$('ifAct').value);drawIfft()});
+['ifN','ifK','ifMod'].forEach(id=>$(id).addEventListener('input',drawIfft));
+$('ifAll').addEventListener('click',()=>{const N=Math.pow(2,+$('ifN').value);ifFirstM(N,N-1);drawIfft()});
+$('ifClear').addEventListener('click',()=>{ifActive=new Set();drawIfft()});
+$('ifSingle').addEventListener('click',()=>{ifActive=new Set([Math.max(1,+$('ifK').value)]);drawIfft()});
+$('ifRandom').addEventListener('click',()=>{const N=Math.pow(2,+$('ifN').value);ifActive=new Set();
+  for(let i=1;i<N;i++)if(Math.random()<0.5)ifActive.add(i);
+  if(!ifActive.size)ifActive.add(1);drawIfft()});
+$('ifStems').style.cursor='pointer';
+$('ifStems').addEventListener('click',e=>{
+  if(!ifStemMap)return;
+  const r=$('ifStems').getBoundingClientRect(),
+    k=Math.round((e.clientX-r.left-ifStemMap.l)/ifStemMap.w*(ifStemMap.N-1));
+  if(k<1||k>ifStemMap.N-1)return;       /* k = 0 stays the DC null */
+  if(ifActive.has(k))ifActive.delete(k);else ifActive.add(k);
+  drawIfft();
+});
 
 /* ==================================================================
    3 · ORTHOGONALITY AND SPECTRUM
@@ -431,7 +463,7 @@ function orthoParams(){
   const k=Math.min(+kEl.value,N-1),m=Math.min(+mEl.value,N-1);
   if(+kEl.value!==k)kEl.value=k;
   if(+mEl.value!==m)mEl.value=m;
-  return{N,k,m,eps:+$('orEps').value/100};
+  return{N,k,m,eps:+$('orEps').value/100,alpha:+$('orAlpha').value/100};
 }
 /* Dirichlet kernel, in units of subcarrier spacings. */
 function dirichlet(d,N){
@@ -441,12 +473,15 @@ function dirichlet(d,N){
 function drawOrtho(){
   const p=orthoParams();
   $('orNOut').textContent=p.N;$('orKOut').textContent=p.k;$('orMOut').textContent=p.m;
-  $('orEpsOut').textContent=p.eps.toFixed(2)+' Δf';
+  $('orEpsOut').textContent=p.eps.toFixed(2)+' Δf';$('orAlphaOut').textContent=p.alpha.toFixed(3);
+  /* Where subcarrier k actually sits: spacing error scales with k, a carrier
+     offset shifts every subcarrier by the same amount. */
+  const centre=p.alpha*p.k+p.eps,clean=(p.eps===0&&Math.abs(p.alpha-1)<1e-9);
 
   /* --- term-by-term inner product --- */
   const terms=[],run=[];let acc=C();
   for(let n=0;n<p.N;n++){
-    const th=2*Math.PI*(p.k+p.eps-p.m)*n/p.N,t=C(Math.cos(th),Math.sin(th));
+    const th=2*Math.PI*(centre-p.m)*n/p.N,t=C(Math.cos(th),Math.sin(th));
     terms.push(t);acc=add(acc,t);run.push(Math.sqrt(abs2(acc))/p.N);
   }
   const inner=Math.sqrt(abs2(acc))/p.N;
@@ -457,9 +492,9 @@ function drawOrtho(){
   line(z,run.map((v,n)=>[n,v]),css('--orange'),2.4);
   bullets($('orBasisNote'),[
     'The blue curve is Re{e<sup>j2π(k+ε−m)n/N</sup>}, the product of transmitted subcarrier '+p.k+' with the conjugate of receiver basis '+p.m+'.',
-    p.eps===0&&p.k!==p.m?'k ≠ m and ε = 0: the product goes round a whole number of times, so the terms cancel exactly and the orange running sum returns to zero. That is orthogonality — not approximate, exact.'
-      :p.eps===0&&p.k===p.m?'k = m and ε = 0: every term is 1, so the running sum climbs straight to N and the normalized inner product is exactly 1. All the energy lands in this bin.'
-      :'With ε = '+p.eps.toFixed(2)+' the product no longer completes whole cycles across the block, so the terms fail to cancel and the running sum ends at '+inner.toFixed(4)+' instead of '+(p.k===p.m?'1':'0')+'.',
+    clean&&p.k!==p.m?'k ≠ m with ideal spacing: the product goes round a whole number of times, so the terms cancel exactly and the orange running sum returns to zero. That is orthogonality — not approximate, exact.'
+      :clean&&p.k===p.m?'k = m with ideal spacing: every term is 1, so the running sum climbs straight to N and the normalized inner product is exactly 1. All the energy lands in this bin.'
+      :'Subcarrier '+p.k+' actually sits at '+centre.toFixed(3)+' rather than '+p.k+', so the product no longer completes whole cycles across the block: the terms fail to cancel and the running sum ends at '+inner.toFixed(4)+' instead of '+(p.k===p.m?'1':'0')+'.',
     'Normalized inner product = '+inner.toFixed(4)+'. Every non-zero value on a bin with m ≠ k is interference leaking from one subcarrier into another.'
   ]);
 
@@ -474,24 +509,27 @@ function drawOrtho(){
     line(z,curve,css('--muted'),1.2);
   }
   const main=[];
-  for(let i=0;i<=pts;i++){const f=lo-0.6+(hi-lo+1.2)*i/pts;main.push([f,dirichlet(f-(p.k+p.eps),p.N)]);}
+  for(let i=0;i<=pts;i++){const f=lo-0.6+(hi-lo+1.2)*i/pts;main.push([f,dirichlet(f-centre,p.N)]);}
   line(z,main,css('--blue'),2.6);
-  for(let c=lo;c<=hi;c++)dot(z,c,dirichlet(c-(p.k+p.eps),p.N),css('--red'),4);
+  for(let c=lo;c<=hi;c++)dot(z,c,dirichlet(c-centre,p.N),css('--red'),4);
   bullets($('orSpecNote'),[
     'Each subcarrier occupies a Dirichlet kernel — the finite-block version of a sinc. The lobes overlap heavily: OFDM subcarriers are <em>not</em> separated in frequency.',
     'They do not interfere because of where the nulls fall. The red dots are the receiver’s sampling instants, one per subcarrier centre.',
-    p.eps===0?'At ε = 0 every red dot except the transmitted one sits exactly on a null. The overlap is complete and the interference is still zero.'
-      :'At ε = '+p.eps.toFixed(2)+' the blue kernel has slid off the grid, so the red dots no longer land on its nulls — every one of them now picks up a little of this subcarrier.'
+    clean?'With ideal spacing every red dot except the transmitted one sits exactly on a null. The overlap is complete and the interference is still zero.'
+      :'The blue kernel now sits at '+centre.toFixed(3)+', off the integer grid, so the red dots no longer land on its nulls — every one of them picks up a little of this subcarrier.',
+    Math.abs(p.alpha-1)>1e-9?'Spacing error and carrier offset break orthogonality differently: ε shifts every subcarrier by the same amount, while a spacing factor of '+p.alpha.toFixed(3)+' displaces subcarrier k by (Δf·T − 1)k = '+((p.alpha-1)*p.k).toFixed(3)+' — so the damage grows with k and the band edges suffer most.'
+      :'Δf·T<sub>sym</sub> = 1 exactly. Detune it and the displacement grows with k, unlike a carrier offset, which moves every subcarrier equally.'
   ]);
 
   /* --- receiver bin energies --- */
   const pw=[];let tot=0;
-  for(let mm=0;mm<p.N;mm++){const v=Math.pow(dirichlet(p.k+p.eps-mm,p.N),2);pw.push(v);tot+=v;}
+  for(let mm=0;mm<p.N;mm++){const v=Math.pow(dirichlet(centre-mm,p.N),2);pw.push(v);tot+=v;}
   const wanted=pw[p.k],ici=tot-wanted;
   $('orWanted').textContent=(100*wanted/Math.max(tot,1e-18)).toFixed(2)+'%';
   $('orIci').textContent=(100*ici/Math.max(tot,1e-18)).toFixed(2)+'%';
   $('orSir').textContent=ici<1e-12?'∞':(10*Math.log10(wanted/ici)).toFixed(1)+' dB';
-  $('orNote').textContent=p.eps===0?'ε = 0: exactly orthogonal':'ε = '+p.eps.toFixed(2)+': orthogonality broken, SIR '+(ici<1e-12?'∞':(10*Math.log10(wanted/ici)).toFixed(1)+' dB');
+  $('orNote').textContent=clean?'ε = 0, Δf·T = 1: exactly orthogonal'
+    :'offset '+p.eps.toFixed(2)+', spacing '+p.alpha.toFixed(3)+': orthogonality broken, SIR '+(ici<1e-12?'∞':(10*Math.log10(wanted/ici)).toFixed(1)+' dB');
   const hiB=Math.ceil(Math.log10(Math.max(...pw))),loB=hiB-6;
   z=axes($('orBins'),0,p.N-1,loB,hiB,'receiver bin m','power from subcarrier k',{xticks:Math.min(8,p.N-1),yticks:6,yfmt:decade});
   const clip=v=>Math.min(hiB,Math.max(loB,Math.log10(Math.max(v,1e-12))));
@@ -508,7 +546,7 @@ function drawOrtho(){
     'A frequency offset is the usual cause, from oscillator error or Doppler. It cannot be equalized away subcarrier by subcarrier, because the interference comes from the other subcarriers rather than from the channel.'
   ]);
 }
-['orN','orK','orM','orEps'].forEach(id=>$(id).addEventListener('input',drawOrtho));
+['orN','orK','orM','orEps','orAlpha'].forEach(id=>$(id).addEventListener('input',drawOrtho));
 
 
 /* ==================================================================
@@ -572,7 +610,10 @@ function drawToneConst(cvId,o){
 /* ==================================================================
    3 · CYCLIC PREFIX AND CIRCULAR CONVOLUTION
    ================================================================== */
-function cpParams(){const N=Math.pow(2,+$('cpN').value),Lc=+$('cpLc').value,L=+$('cpL').value,snr=+$('cpSnr').value;return{N,Lc,L,snr,N0:Math.pow(10,-snr/10)}}
+function cpParams(){const N=Math.pow(2,+$('cpN').value),Lc=+$('cpLc').value,L=+$('cpL').value,snr=+$('cpSnr').value,
+    sEl=$('cpS'),s=Math.max(-Lc,Math.min(Lc,+sEl.value));
+  sEl.min=-Lc;sEl.max=Lc;if(+sEl.value!==s)sEl.value=s;
+  return{N,Lc,L,snr,s,N0:Math.pow(10,-snr/10)}}
 function cpSimulate(p,withNoise,seed){
   const r=rng(seed||7701),h=pdpChannel(p.L,5501),
     x0=qpskBlock(p.N,r),x1=qpskBlock(p.N,r),
@@ -580,19 +621,23 @@ function cpSimulate(p,withNoise,seed){
     stream=blk(x0).concat(blk(x1)),
     sd=Math.sqrt(p.N0/2),
     rx=stream.map((_,m)=>{let s=C();for(let l=0;l<h.length;l++){const u=stream[m-l];if(u)s=add(s,mul(h[l],u))}return withNoise?add(s,C(gauss(r)*sd,gauss(r)*sd)):s}),
-    start=p.N+2*p.Lc,
+    start=p.N+2*p.Lc+p.s,
     y=Array.from({length:p.N},(_,n)=>rx[start+n]||C()),
-    ideal=circConv(h,x1,p.N);
+    full=circConv(h,x1,p.N),
+    ideal=Array.from({length:p.N},(_,n)=>full[((n+p.s)%p.N+p.N)%p.N]);
   return{h,x1,stream,rx,y,ideal,start}}
 function drawCp(){
   const p=cpParams();
   $('cpNOut').textContent=p.N;$('cpLcOut').textContent=p.Lc;$('cpLOut').textContent=p.L;$('cpSnrOut').textContent=p.snr+' dB';
-  const ok=p.Lc>=p.L,eta=p.N/(p.N+p.Lc),over=p.Lc/(p.N+p.Lc);
+  $('cpSOut').textContent=(p.s>0?'+':'')+p.s+(Math.abs(p.s)===1?' sample':' samples');
+  /* The window may start early into the CP, which is still safe while the
+     channel spread fits, or late into the data, which never is. */
+  const early=-p.s,ok=p.Lc>=p.L&&p.s<=0&&early<=p.Lc-p.L,eta=p.N/(p.N+p.Lc),over=p.Lc/(p.N+p.Lc);
   const s=cpSimulate(p,false),
     num=s.y.reduce((a,v,n)=>a+abs2(sub(v,s.ideal[n])),0),
     den=s.ideal.reduce((a,v)=>a+abs2(v),0),
     rel=num/Math.max(den,1e-12);
-  $('cpCond').innerHTML=ok?'L<sub>c</sub> ≥ L ✓':'L<sub>c</sub> < L ✗';
+  $('cpCond').innerHTML=ok?'L<sub>c</sub> ≥ L ✓':(p.s>0?'window starts late ✗':(p.Lc<p.L?'L<sub>c</sub> &lt; L ✗':'window starts too early ✗'));
   $('cpEta').textContent=(100*eta).toFixed(1)+'%';
   $('cpOver').textContent=(100*over).toFixed(1)+'%';
   $('cpErr').textContent=rel<1e-12?'0 (exact)':expo(rel);
@@ -651,6 +696,7 @@ function drawCp(){
   errs.forEach((v,k)=>{if(p.N<=64)dot(z,k,clipE(v),css('--blue'),2.6)});
   if(ok)plotLabel(z,z.m.l,z.Y(loE+0.5),'floor is double-precision round-off, not a modelling error',css('--green'));
   bullets($('cpToneErrNote'),[
+    p.s!==0?'The window starts '+Math.abs(p.s)+' sample'+(Math.abs(p.s)===1?'':'s')+' '+(p.s<0?'early':'late')+'. '+(ok?'That is still inside the L<sub>c</sub> − L = '+(p.Lc-p.L)+' sample margin, so the block is only rotated: in frequency that is a phase ramp e^(−j2πks/N) the channel estimate absorbs, and the per-subcarrier model stays exact.':'That is outside the margin, so the window straddles two OFDM symbols and the error below is real inter-block interference no phase correction can undo.'):null,
     ok?'With L_c = '+p.Lc+' ≥ L = '+p.L+' the error is zero to the last bit of double precision — it is plotted on the axis floor because a logarithm of zero has nowhere else to go. The per-bin model is exact, not an approximation.'
       :'With L_c = '+p.Lc+' < L = '+p.L+' the error is of order '+expo(rel)+' of the signal power, and it is spread over every bin — no per-bin equalizer can remove it.',
     'AWGN is switched off for this panel, so everything you see is model mismatch.',
@@ -742,15 +788,34 @@ function drawCpAbsorb(p,s){
     'The condition is only L_c ≥ L. Nothing here asks the channel to be flat, short in an absolute sense, or slowly varying across frequency.'
   ]);
 }
-['cpN','cpLc','cpL','cpSnr'].forEach(id=>$(id).addEventListener('input',drawCp));
+['cpN','cpLc','cpL','cpSnr','cpS'].forEach(id=>$(id).addEventListener('input',drawCp));
 
 /* ==================================================================
    5 · OFDM
    ================================================================== */
-let ofEq='mmse',ofPerfect=false;
+let ofEq='mmse',ofPerfect=false,ofCh='pdp';
+document.querySelectorAll('[data-of-ch]').forEach(b=>b.addEventListener('click',()=>{ofCh=b.dataset.ofCh;drawOfdm()}));
+/* A notch shaped in frequency, then pulled back to L+1 taps so it stays a
+   genuine finite-memory channel: the pilot panels below rely on |H[k]| having
+   only L+1 degrees of freedom, and an arbitrary frequency mask would not. */
+function notchChannelOf(p){
+  const Hf=[];
+  for(let k=0;k<p.N;k++){
+    let d=((k-p.kc+p.N/2+p.N)%p.N)-p.N/2;
+    const g=1-(1-Math.pow(10,-p.depth/20))*Math.exp(-(d*d)/(2*p.width*p.width));
+    Hf.push(C(g,0));
+  }
+  const full=fft(Hf,true),half=Math.floor(p.L/2),taps=[];
+  for(let n=-half;n<=p.L-half;n++)taps.push(full[((n%p.N)+p.N)%p.N]);
+  const e=taps.reduce((a,v)=>a+abs2(v),0),g=1/Math.sqrt(Math.max(e,1e-18));
+  return taps.map(v=>scale(v,g));
+}
+function ofChannel(p){return ofCh==='notch'?notchChannelOf(p):pdpChannel(p.L,4407)}
 document.querySelectorAll('[data-of-eq]').forEach(b=>b.addEventListener('click',()=>{ofEq=b.dataset.ofEq;drawOfdm()}));
 $('ofPerfect').addEventListener('click',()=>{ofPerfect=!ofPerfect;drawOfdm()});
-function ofParams(){const N=Math.pow(2,+$('ofN').value),L=+$('ofL').value,P=+$('ofP').value,snr=+$('ofSnr').value;return{N,L,P:Math.min(P,N),snr,lambda:Math.pow(10,-snr/10)}}
+function ofParams(){const N=Math.pow(2,+$('ofN').value),L=+$('ofL').value,P=+$('ofP').value,snr=+$('ofSnr').value,
+    depth=+$('ofDepth').value,width=+$('ofWidth').value/10,kc=Math.round(+$('ofCentre').value/100*N);
+  return{N,L,P:Math.min(P,N),snr,depth,width,kc,lambda:Math.pow(10,-snr/10)}}
 function combEstimate(H,P,N,lambda,r){
   /* LS on pilot subcarriers with unit-modulus pilots, then linear interpolation with wrap */
   const sd=Math.sqrt(lambda/2),idx=[],val=[];
@@ -762,7 +827,7 @@ function combEstimate(H,P,N,lambda,r){
   est[N-1]=est[N-1]||val[val.length-1];
   return{est,pilots:idx.filter(k=>k<N),pilotVals:val}}
 function drawOfTone(){
-  const p=ofParams(),h=pdpChannel(p.L,4407),H=dftOf(h,p.N),
+  const p=ofParams(),h=ofChannel(p),H=dftOf(h,p.N),
     ce=combEstimate(H,p.P,p.N,p.lambda,rng(8801)),Hh=ofPerfect?H:ce.est,el=$('ofTone');
   el.max=p.N-1;
   const k=Math.min(Math.max(0,+el.value),p.N-1);
@@ -786,9 +851,14 @@ function drawOfTone(){
 }
 function drawOfdm(){
   document.querySelectorAll('[data-of-eq]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.ofEq===ofEq));
+  document.querySelectorAll('[data-of-ch]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.ofCh===ofCh));
+  for(const id of ['ofNotchCtrls','ofWidthCtrl','ofCentreCtrl'])$(id).hidden=(ofCh!=='notch');
   $('ofPerfect').setAttribute('aria-pressed',ofPerfect);
-  const p=ofParams(),h=pdpChannel(p.L,4407),H=dftOf(h,p.N),mag=H.map(v=>Math.sqrt(abs2(v))),tau=rmsDelay(h);
+  const p=ofParams(),h=ofChannel(p),H=dftOf(h,p.N),mag=H.map(v=>Math.sqrt(abs2(v))),tau=rmsDelay(h);
   $('ofNOut').textContent=p.N;$('ofLOut').textContent=p.L;$('ofPOut').textContent=p.P+(p.P===1?' subcarrier':' subcarriers');$('ofSnrOut').textContent=p.snr+' dB';
+  $('ofDepthOut').textContent=p.depth+' dB';
+  $('ofWidthOut').textContent=p.width.toFixed(1)+' subcarriers';
+  $('ofCentreOut').textContent=(p.kc/p.N).toFixed(2)+' N (k = '+p.kc+')';
   $('ofLambda').innerHTML='NN₀/E<sub>X</sub> = '+p.lambda.toFixed(4);
   const flat=5*tau/p.N,limitP=p.N/(p.L+1);
   $('ofFlat').textContent=flat.toFixed(3);
@@ -817,7 +887,9 @@ function drawOfdm(){
   line(z,mag.map((v,k)=>[k,v]),css('--blue'),2.4);
   if(!ofPerfect)line(z,emag.map((v,k)=>[k,v]),css('--purple'),2,[5,4]);
   ce.pilots.forEach(k=>dot(z,k,Math.sqrt(abs2(ce.pilotVals[ce.pilots.indexOf(k)])),css('--orange'),3.4));
+  const achieved=20*Math.log10(Math.min(...mag)/Math.max(...mag));
   bullets($('ofChannelNote'),[
+    ofCh==='notch'?'Notch asked for '+p.depth+' dB and the channel delivers '+(-achieved).toFixed(1)+' dB. The shape is pulled back to L + 1 = '+(p.L+1)+' taps so it stays a genuine finite-memory channel, and a short channel simply cannot cut a deep narrow notch — widen it, or raise L, and the full depth appears.':null,
     'The channel has '+(p.L+1)+' taps, so |H[k]| has at most '+(p.L+1)+' degrees of freedom across the block: it can only wiggle so fast, which is what makes interpolation between pilots possible at all.',
     'Pilots every P = '+p.P+' subcarriers means '+ce.pilots.length+' known subcarriers and '+(100/p.P).toFixed(1)+'% of the block spent on training.',
     p.P<=limitP?'P = '+p.P+' is within the sampling limit N/(L+1) = '+limitP.toFixed(1)+', so the interpolated estimate tracks the true response.'
@@ -973,7 +1045,7 @@ function drawOfCompare(p){
     'SC-FDE and OFDM differ almost nowhere on this chart except PAPR — which is exactly why DFT-spread OFDM exists.'
   ]);
 }
-['ofN','ofL','ofP','ofSnr'].forEach(id=>$(id).addEventListener('input',drawOfdm));
+['ofN','ofL','ofP','ofSnr','ofDepth','ofWidth','ofCentre'].forEach(id=>$(id).addEventListener('input',drawOfdm));
 ['ofTone','ofMod'].forEach(id=>$(id).addEventListener('input',drawOfTone));
 $('ofDenomHelp').addEventListener('click',()=>$('ofDenomDialog').showModal());
 $('ofDenomClose').addEventListener('click',()=>$('ofDenomDialog').close());
