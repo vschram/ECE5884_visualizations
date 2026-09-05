@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Week 8 Guided Walkthrough</title>
+<style>
+
+:root{--bg:#f7f8fb;--surface:#fff;--surface2:#eef2f7;--border:#dfe5ec;--text:#172033;--muted:#667085;--blue:#2563eb;--orange:#ea580c;--green:#059669;--red:#dc2626;--purple:#7c3aed;--cyan:#0891b2;--shadow:0 1px 2px rgba(16,24,40,.04)}
+@media(prefers-color-scheme:dark){:root{--bg:#0e1117;--surface:#171b24;--surface2:#222938;--border:#303949;--text:#e8edf5;--muted:#99a4b5;--shadow:none}}
+*{box-sizing:border-box}html{color-scheme:light dark}body{margin:0 auto;max-width:1160px;padding:24px;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",sans-serif}h1{font-size:1.28rem;margin:0 0 6px}h2{font-size:1.05rem;margin:0 0 5px}h3{font-size:.83rem;margin:0 0 8px}.sub{margin:0 0 16px;color:var(--muted);font-size:.88rem;line-height:1.5}.tabs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px;margin-bottom:14px}.tabs button,button,select{border:1px solid var(--border);background:var(--surface2);color:var(--text);padding:8px 11px;border-radius:999px;cursor:pointer;font:inherit;font-size:.78rem}.tabs button{border-radius:10px;min-height:48px;line-height:1.25}.tabs button[aria-selected=true]{background:var(--blue);border-color:var(--blue);color:#fff}.tabs button:hover,button:hover{border-color:var(--blue)}button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--blue);outline-offset:2px}.panel[hidden]{display:none}.panel-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:12px}.eyebrow{font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;color:var(--blue);margin-bottom:4px}.message{max-width:760px;color:var(--muted);font-size:.83rem;line-height:1.48}.toolbar,.card,.metric,.note,.formula,.flow-step{background:var(--surface);border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow)}.toolbar{padding:13px 15px;margin-bottom:14px}.sticky-bar{position:sticky;top:0;z-index:15;background:var(--bg);padding-top:6px;margin-bottom:14px}.sticky-bar .toolbar{margin-bottom:0}.controls{display:flex;align-items:center;flex-wrap:wrap;gap:15px}.toggle-row{margin-top:10px}.ctrl{min-width:175px;flex:1}.ctrl label,.rowlabel{display:flex;justify-content:space-between;gap:8px;color:var(--muted);font-size:.75rem;margin-bottom:5px}.ctrl strong,.rowlabel strong{color:var(--text);white-space:nowrap}.ctrl input[type=range]{width:100%}.inline-check{display:flex;align-items:center;gap:8px;color:var(--text);font-size:.78rem;cursor:pointer;min-height:34px}.plots{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.two{grid-template-columns:repeat(2,minmax(0,1fr))}.card{padding:14px;min-width:0}.title{font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:8px}.canvas-wrap{width:100%;min-width:0}canvas{display:block;width:100%;height:250px}.plots.two canvas{height:265px}.metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:14px}.metric{padding:11px 12px;text-align:center;min-width:0}.metric .name{font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}.metric .value{font-size:1.02rem;font-weight:700;margin-top:4px;overflow-wrap:anywhere}.metric .small{font-size:.7rem;color:var(--muted);margin-top:3px;line-height:1.35}.wk8{display:inline-block;margin-left:6px;padding:1px 6px;border:1px solid var(--purple);border-radius:999px;font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--purple);vertical-align:middle;white-space:nowrap}.note,.formula{padding:12px 14px;margin-top:14px;font-size:.8rem;color:var(--muted);line-height:1.5}.note strong,.formula strong{color:var(--text)}.formula{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;overflow-x:auto}.flow{display:flex;align-items:stretch;gap:7px;margin-bottom:14px}.flow-step{padding:11px 10px;flex:1;min-width:0;text-align:center}.flow-step strong{display:block;font-size:.75rem}.flow-step span{display:block;font-size:.68rem;color:var(--muted);margin-top:3px;line-height:1.3}.arrow{align-self:center;color:var(--muted)}.mode-buttons{display:flex;gap:7px;flex-wrap:wrap}.mode-buttons button[aria-pressed=true]{background:var(--blue);color:#fff;border-color:var(--blue)}.model-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.matrix-wrap{overflow:auto}.matrix{border-collapse:separate;border-spacing:4px;margin:auto;font-size:.72rem}.matrix th{color:var(--muted);font-weight:600;padding:4px}.matrix td{min-width:49px;text-align:center;padding:7px 5px;border:1px solid var(--border);border-radius:6px;font-family:ui-monospace,SFMono-Regular,Consolas,monospace}.matrix td.active{background:rgba(37,99,235,.16);border-color:var(--blue)}.checklist{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:14px}.check{padding:11px 12px;border-left:3px solid var(--blue);background:var(--surface2);border-radius:0 9px 9px 0}.check strong{display:block;font-size:.76rem}.check span{display:block;color:var(--muted);font-size:.7rem;line-height:1.38;margin-top:3px}.legend{display:flex;gap:14px;flex-wrap:wrap;color:var(--muted);font-size:.72rem;margin-top:7px}.bullets{margin:9px 0 0;padding-left:17px;color:var(--muted);font-size:.76rem;line-height:1.45}.bullets li{margin-bottom:4px}.bullets li:last-child{margin-bottom:0}.bullets strong{color:var(--text)}.sw{display:inline-block;width:12px;height:3px;vertical-align:middle;margin-right:5px;border-radius:2px}.ink{background:var(--text)}.blue{background:var(--blue)}.orange{background:var(--orange)}.purple{background:var(--purple)}.green{background:var(--green)}.cyan{background:var(--cyan)}
+.toolbar-split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,auto);gap:16px;align-items:center}.toolbar-left{min-width:0}.toolbar-left>.controls{margin:0}.toolbar-metrics{display:grid;grid-auto-flow:column;gap:9px}.toolbar-metrics .metric{padding:8px 11px;min-width:118px}.toolbar-metrics .metric .value{font-size:.92rem;margin-top:2px}.toolbar-metrics .metric .small{margin-top:2px}.panel-main{min-width:0}.metric-rail{display:grid;gap:10px;min-width:0}.metric-rail .formula,.metric-rail .note{margin-top:0;overflow-wrap:anywhere}.metric-rail .formula{overflow-x:visible}.metric-rail .formula div+div{margin-top:7px}.gain-dialog{width:calc(100% - 32px);max-width:540px;padding:18px;background:var(--surface);color:var(--text);border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow)}.gain-dialog::backdrop{background:color-mix(in srgb,var(--text) 38%,transparent)}.gain-dialog h3{margin-bottom:10px}.gain-dialog .formula{margin:0 0 12px}.gain-dialog .message{margin:0 0 14px}.metric button{margin-top:8px}
+.plot-formula{margin-top:8px;padding:8px 10px;overflow-wrap:anywhere;overflow-x:visible}
+.plot-card-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:8px}.plot-card-head .title{margin-bottom:0}.plot-card-head button{flex:0 0 auto;padding:6px 10px}
+.control-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px 14px;align-items:end}.control-grid .ctrl{min-width:0}.control-grid select{width:100%}
+.summary-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(320px,.85fr);gap:10px;align-items:stretch;margin-top:12px}.summary-row .toolbar-metrics{grid-auto-flow:row;grid-template-columns:repeat(4,minmax(0,1fr))}.summary-row .note{display:block;margin:0;max-width:none}.summary-row .formula{display:block;margin:0;overflow-wrap:anywhere;overflow-x:visible;font-size:.74rem;line-height:1.4}.summary-row .formula div+div{margin-top:5px}
+.mode-row{margin-bottom:10px}.mode-row button{padding:6px 10px}
+.flow-caption{color:var(--muted);font-size:.72rem;margin:-6px 0 14px}
+#brCompare,#cpTimeline{height:300px}#ofGrid{height:290px}#ofCompare{height:300px}
+#brCompare,#ifStems,#ifTone,#ifSum,#orSpec,#orLeak,#cpTimeline,#cpChan,#cpToneErr,#cpConst,#ofChannelPilots,#ofToneConst,#ofSnrTones,#ofPilotSweep,#ofPapr,#ofEvm{height:265px}
+@media(max-width:900px){.toolbar-split{grid-template-columns:1fr}.toolbar-metrics{grid-auto-flow:row;grid-template-columns:repeat(3,minmax(0,1fr))}.metric-rail{grid-template-columns:repeat(3,minmax(0,1fr))}.metric-rail .formula,.metric-rail .note{grid-column:1/-1}.tabs{grid-template-columns:repeat(3,1fr)}.plots{grid-template-columns:1fr 1fr}.plots:not(.two) .card:last-child{grid-column:1/-1}.model-grid{grid-template-columns:1fr}.checklist{grid-template-columns:1fr 1fr}.control-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.summary-row{grid-template-columns:1fr}.summary-row .toolbar-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:620px){.metric-rail,.toolbar-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}body{padding:14px}.tabs{grid-template-columns:1fr 1fr}.panel-head{display:block}.plots,.two{grid-template-columns:1fr}.plots .card:last-child{grid-column:auto}.flow{display:grid;grid-template-columns:1fr 1fr}.arrow{display:none}.metrics,.checklist{grid-template-columns:1fr 1fr}canvas,.plots.two canvas{height:245px}#brCompare,#ifStems,#ifTone,#ifSum,#orSpec,#orLeak,#cpTimeline,#cpChan,#cpToneErr,#cpConst,#ofChannelPilots,#ofToneConst,#ofSnrTones,#ofPilotSweep,#ofPapr,#ofEvm{height:262px}}
+@media(max-width:390px){.tabs,.metrics,.checklist,.flow,.control-grid{grid-template-columns:1fr}.ctrl{min-width:100%}.ctrl label{flex-wrap:wrap}}
+
+</style>
+</head>
+<body>
+<h1>Week 8 · OFDM</h1>
+<p class="sub">Follow one OFDM block from the Week 7 per-bin model through IFFT synthesis, orthogonality, the cyclic prefix under multipath, to per-subcarrier equalization with comb pilots.</p>
+
+<nav class="tabs" role="tablist" aria-label="Week 8 topics">
+  <button type="button" role="tab" id="tab-bridge" aria-controls="bridge" aria-selected="true">1 · Bridge from Week 7</button>
+  <button type="button" role="tab" id="tab-ifft" aria-controls="ifft" aria-selected="false">2 · IFFT Synthesis</button>
+  <button type="button" role="tab" id="tab-ortho" aria-controls="ortho" aria-selected="false">3 · Orthogonality &amp; Spectra</button>
+  <button type="button" role="tab" id="tab-cp" aria-controls="cp" aria-selected="false">4 · CP, Multipath &amp; ICI</button>
+  <button type="button" role="tab" id="tab-eq" aria-controls="eq" aria-selected="false">5 · EQ, Pilots &amp; Practical</button>
+</nav>
+
+<main>
+<!-- ============================ 1 · BRIDGE ============================ -->
+<section class="panel" id="bridge" role="tabpanel" aria-labelledby="tab-bridge">
+  <div class="panel-head"><div><div class="eyebrow">Bridge from Week 7</div><h2>Same per-bin model Y[k]=H[k]X[k]+V[k]; OFDM and SC-FDE differ only in where the IFFT sits</h2></div><div class="message">Week 7 left you with a circular block and one complex multiply per frequency bin. OFDM puts an independent QAM symbol on each bin and places the IFFT at the transmitter. SC-FDE keeps a single-carrier time waveform and places the IFFT at the receiver after equalization.</div></div>
+  <div class="sticky-bar"><div class="toolbar"><div class="control-grid">
+    <div class="ctrl"><label for="brN">Block size N <strong id="brNOut">64</strong></label><input id="brN" type="range" min="4" max="8" value="6" step="1"></div>
+    <div class="ctrl"><label for="brL">Channel memory L <strong id="brLOut">5</strong></label><input id="brL" type="range" min="1" max="20" value="5" step="1"></div>
+  </div><div class="summary-row"><div class="toolbar-metrics">
+    <div class="metric"><div class="name">CP overhead</div><div class="value" id="brOver">—</div><div class="small">L<sub>c</sub>/(N+L<sub>c</sub>) with L<sub>c</sub>=L</div></div>
+    <div class="metric"><div class="name">Multiplies / symbol (FDE)</div><div class="value" id="brMult">—</div><div class="small">≈ log₂N + 1</div></div>
+    <div class="metric"><div class="name">PAPR</div><div class="value" id="brPapr">—</div><div class="small">OFDM high · SC-FDE low</div></div>
+    <div class="metric"><div class="name">Same model</div><div class="value">Y[k]=H[k]X[k]+V[k]</div><div class="small">after a sufficient CP</div></div>
+  </div><div class="note" id="brNote" aria-live="polite"></div></div></div></div>
+
+  <div class="flow" aria-label="SC-FDE chain"><div class="flow-step" data-state="ready"><strong>Map x[n]</strong><span>SC QAM in time</span></div><div class="arrow">→</div><div class="flow-step" data-state="ready"><strong>Add CP</strong><span id="brScCp">L<sub>c</sub> ≥ L</span></div><div class="arrow">→</div><div class="flow-step" data-state="ready"><strong>Channel</strong><span>linear multipath</span></div><div class="arrow">→</div><div class="flow-step" data-state="ready"><strong>Remove CP · FFT</strong><span id="brScFft">N-point</span></div><div class="arrow">→</div><div class="flow-step" data-state="ready"><strong>Per-bin G[k]</strong><span>EQ in frequency</span></div><div class="arrow">→</div><div class="flow-step" id="brScIfftStep" data-state="required"><strong>IFFT → detect</strong><span>IFFT at RX</span></div></div>
+  <p class="flow-caption">SC-FDE: single-carrier at the transmitter; the IFFT closes the receiver after per-bin equalization.</p>
+  <div class="flow" aria-label="OFDM chain"><div class="flow-step" data-state="ready"><strong>Map X[k]</strong><span>QAM per subcarrier</span></div><div class="arrow">→</div><div class="flow-step" id="brOfIfftStep" data-state="required"><strong>IFFT</strong><span id="brOfIfft">N-point at TX</span></div><div class="arrow">→</div><div class="flow-step" data-state="ready"><strong>Add CP</strong><span id="brOfCp">L<sub>c</sub> ≥ L</span></div><div class="arrow">→</div><div class="flow-step" data-state="ready"><strong>Channel</strong><span>linear multipath</span></div><div class="arrow">→</div><div class="flow-step" data-state="ready"><strong>Remove CP · FFT</strong><span id="brOfFft">N-point</span></div><div class="arrow">→</div><div class="flow-step" data-state="ready"><strong>Per-bin G[k] · demap</strong><span>no RX IFFT</span></div></div>
+  <p class="flow-caption">OFDM: the IFFT sits at the transmitter (highlighted). After the FFT the receiver equalizes and demaps in frequency.</p>
+
+  <div class="plots two">
+    <div class="card"><div class="title">Architecture comparison at the current settings</div><canvas id="brCompare" role="img" aria-label="Bar chart comparing TDE, SC-FDE and OFDM on multiplies, latency, CP overhead and PAPR"></canvas><div class="legend"><span><i class="sw orange"></i>TDE</span><span><i class="sw blue"></i>SC-FDE</span><span><i class="sw purple"></i>OFDM</span></div><ul class="bullets" id="brCompareNote"></ul></div>
+  </div>
+</section>
+
+<!-- ============================ 2 · IFFT ============================ -->
+<section class="panel" id="ifft" role="tabpanel" aria-labelledby="tab-ifft" hidden>
+  <div class="panel-head"><div><div class="eyebrow">IFFT synthesis</div><h2>x[n] = (1/N) Σ X[k] e<sup>j2πkn/N</sup> — each subcarrier is one complex sinusoid</h2></div><div class="message">Choose the frequency-domain symbols, watch each subcarrier’s time contribution, and verify that the FFT recovers X[k]. The IFFT is a bank of complex exponentials; OFDM is their sum.</div></div>
+  <div class="sticky-bar"><div class="toolbar">
+    <div class="mode-buttons mode-row">
+      <button type="button" data-if-preset="single" aria-pressed="true">Single tone</button>
+      <button type="button" data-if-preset="random" aria-pressed="false">Random QPSK</button>
+      <button type="button" data-if-preset="nulldc" aria-pressed="false">Null DC</button>
+      <button type="button" data-if-preset="clear" aria-pressed="false">Clear</button>
+      <button type="button" id="ifCycle">Cycle symbol on k</button>
+    </div>
+    <div class="control-grid">
+    <div class="ctrl"><label for="ifN">Subcarriers N <strong id="ifNOut">16</strong></label><input id="ifN" type="range" min="2" max="5" value="4" step="1"></div>
+    <div class="ctrl"><label for="ifK">Selected subcarrier k <strong id="ifKOut">2</strong></label><input id="ifK" type="range" min="0" max="15" value="2" step="1"></div>
+    </div>
+    <div class="summary-row"><div class="toolbar-metrics">
+      <div class="metric"><div class="name">Active subcarriers</div><div class="value" id="ifActive">—</div><div class="small">|X[k]| &gt; 0</div></div>
+      <div class="metric"><div class="name">Mean |x[n]|²</div><div class="value" id="ifPower">—</div><div class="small">time-domain power</div></div>
+      <div class="metric"><div class="name">FFT recovery error</div><div class="value" id="ifErr">—</div><div class="small">max |X − FFT(IFFT(X))|</div></div>
+      <div class="metric"><div class="name">Cycles of k</div><div class="value" id="ifCycles">—</div><div class="small">across the block</div></div>
+    </div><div class="formula"><div>x[n] = (1/N) Σ<sub>k</sub> X[k] e<sup>j2πkn/N</sup></div><div id="ifOneFormula">selected term: —</div></div></div>
+  </div></div>
+
+  <div class="plots">
+    <div class="card"><div class="title">|X[k]| across subcarriers</div><canvas id="ifStems" role="img" aria-label="Stem plot of frequency domain symbol magnitudes with selected subcarrier highlighted"></canvas><div class="legend"><span><i class="sw blue"></i>active</span><span><i class="sw orange"></i>selected k</span><span><i class="sw" style="background:var(--muted)"></i>zero</span></div><ul class="bullets" id="ifStemsNote"></ul></div>
+    <div class="card"><div class="title">Selected subcarrier time contribution</div><canvas id="ifTone" role="img" aria-label="Real and imaginary parts of the selected subcarrier contribution"></canvas><div class="legend"><span><i class="sw blue"></i>Re</span><span><i class="sw orange"></i>Im</span></div><ul class="bullets" id="ifToneNote"></ul></div>
+    <div class="card"><div class="title">Full IFFT sum Re{x[n]} (and Im)</div><canvas id="ifSum" role="img" aria-label="Real and imaginary parts of the full OFDM time waveform"></canvas><div class="legend"><span><i class="sw blue"></i>Re{x[n]}</span><span><i class="sw orange"></i>Im{x[n]}</span><span><i class="sw green"></i>selected tone Re</span></div><ul class="bullets" id="ifSumNote"></ul></div>
+  </div>
+</section>
+
+<!-- ============================ 3 · ORTHOGONALITY ============================ -->
+<section class="panel" id="ortho" role="tabpanel" aria-labelledby="tab-ortho" hidden>
+  <div class="panel-head"><div><div class="eyebrow">Orthogonality &amp; spectra</div><h2>Integer cycles per block make subcarriers orthogonal; spacing errors and CFO create ICI</h2></div><div class="message">Each finite-N subcarrier has a Dirichlet response. At ideal spacing α = Δf·T<sub>sym</sub> = 1 and zero CFO, receiver FFT bins land on the nulls of every unwanted tone. Change α or ε and energy leaks across bins.</div></div>
+  <div class="sticky-bar"><div class="toolbar">
+    <div class="mode-buttons mode-row">
+      <button type="button" data-or-preset="ideal" aria-pressed="true">Ideal</button>
+      <button type="button" data-or-preset="cfo" aria-pressed="false">ε = 0.25</button>
+      <button type="button" data-or-preset="spacing" aria-pressed="false">Spacing = 0.92</button>
+    </div>
+    <div class="control-grid">
+    <div class="ctrl"><label for="orN">Subcarriers N <strong id="orNOut">32</strong></label><input id="orN" type="range" min="4" max="6" value="5" step="1"></div>
+    <div class="ctrl"><label for="orK">TX subcarrier k <strong id="orKOut">4</strong></label><input id="orK" type="range" min="0" max="31" value="4" step="1"></div>
+    <div class="ctrl"><label for="orAlpha"><span>Spacing α = Δf·T<sub>sym</sub></span> <strong id="orAlphaOut">1.00</strong></label><input id="orAlpha" type="range" min="0.80" max="1.20" value="1.00" step="0.01"></div>
+    <div class="ctrl"><label for="orEps"><span>CFO ε (bins)</span> <strong id="orEpsOut">0.00</strong></label><input id="orEps" type="range" min="-0.50" max="0.50" value="0" step="0.01"></div>
+    </div>
+    <div class="summary-row"><div class="toolbar-metrics">
+      <div class="metric"><div class="name">Power in intended bin</div><div class="value" id="orWanted">—</div><div class="small">fraction in bin k</div></div>
+      <div class="metric"><div class="name">Power outside</div><div class="value" id="orOutside">—</div><div class="small">ICI into other bins</div></div>
+      <div class="metric"><div class="name">|C[k+1,k]|</div><div class="value" id="orInner">—</div><div class="small">nearest-neighbour leakage</div></div>
+      <div class="metric"><div class="name">Dominant RX bin</div><div class="value" id="orDom">—</div><div class="small">argmax<sub>m</sub> |C[m,k]|²</div></div>
+    </div><div class="formula"><div>C[m,k] = (1/N) Σ<sub>n</sub> exp(j2π(αk+ε−m)n/N)</div><div>|sin(πδ)/(N sin(πδ/N))| · Dirichlet magnitude</div></div></div>
+  </div></div>
+
+  <div class="plots two">
+    <div class="card"><div class="title">Dirichlet response of selected subcarrier</div><canvas id="orSpec" role="img" aria-label="Continuous Dirichlet magnitude of the selected subcarrier with receiver FFT bin samples"></canvas><div class="legend"><span><i class="sw blue"></i>selected response</span><span><i class="sw" style="background:var(--muted)"></i>neighbours</span><span><i class="sw" style="background:var(--red)"></i>RX bin samples</span></div><ul class="bullets" id="orSpecNote"></ul></div>
+    <div class="card"><div class="title">Leakage power across receiver bins m</div><canvas id="orLeak" role="img" aria-label="Power observed in each receiver FFT bin from one transmitted subcarrier"></canvas><div class="legend"><span><i class="sw green"></i>intended bin</span><span><i class="sw" style="background:var(--red)"></i>leakage</span></div><ul class="bullets" id="orLeakNote"></ul></div>
+  </div>
+</section>
+
+<!-- ============================ 4 · CP MULTIPATH ============================ -->
+<section class="panel" id="cp" role="tabpanel" aria-labelledby="tab-cp" hidden>
+  <div class="panel-head"><div><div class="eyebrow">CP, multipath &amp; ICI</div><h2>A sufficient CP does not remove multipath — it makes the useful block circular so the FFT diagonalises it</h2></div><div class="message">Copy the last L<sub>c</sub> samples to the front. When L<sub>c</sub> ≥ L and the FFT window starts in the safe interval, Y[k] = e<sup>j2πks/N</sup> H[k] X[k]. Too short a CP or a late window breaks the model and no per-bin equalizer can repair it.</div></div>
+  <div class="sticky-bar"><div class="toolbar">
+    <div class="mode-buttons mode-row">
+      <button type="button" data-cp-preset="safe" aria-pressed="true">Sufficient CP</button>
+      <button type="button" data-cp-preset="short" aria-pressed="false">CP too short</button>
+      <button type="button" data-cp-preset="late" aria-pressed="false">Late window</button>
+    </div>
+    <div class="control-grid">
+    <div class="ctrl"><label for="cpN">Useful size N <strong id="cpNOut">32</strong></label><input id="cpN" type="range" min="4" max="6" value="5" step="1"></div>
+    <div class="ctrl"><label for="cpLc"><span>CP length L<sub>c</sub></span> <strong id="cpLcOut">8</strong></label><input id="cpLc" type="range" min="0" max="20" value="8" step="1"></div>
+    <div class="ctrl"><label for="cpL">Delay L <strong id="cpLOut">6</strong></label><input id="cpL" type="range" min="1" max="20" value="6" step="1"></div>
+    <div class="ctrl"><label for="cpG"><span>Delayed-path gain g</span> <strong id="cpGOut">0.60</strong></label><input id="cpG" type="range" min="0.10" max="0.90" value="0.60" step="0.05"></div>
+    <div class="ctrl"><label for="cpS"><span>FFT-start offset s</span> <strong id="cpSOut">0</strong></label><input id="cpS" type="range" min="-20" max="12" value="0" step="1"></div>
+    </div>
+    <div class="summary-row"><div class="toolbar-metrics">
+      <div class="metric"><div class="name">η<sub>CP</sub></div><div class="value" id="cpEta">—</div><div class="small">N / (N + L<sub>c</sub>)</div></div>
+      <div class="metric"><div class="name">Safe start range</div><div class="value" id="cpSafe">—</div><div class="small">when L<sub>c</sub> ≥ L</div></div>
+      <div class="metric"><div class="name">Model EVM</div><div class="value" id="cpEvm">—</div><div class="small">‖Y − e<sup>jθ</sup>HX‖ / RMS</div></div>
+      <div class="metric"><div class="name">Verdict</div><div class="value" id="cpVerdict">—</div><div class="small">per-subcarrier model</div></div>
+    </div><div class="note" id="cpNote" aria-live="polite"></div></div>
+  </div></div>
+
+  <div class="plots two">
+    <div class="card"><div class="title">Timeline: previous / CP / useful / next · FFT window</div><canvas id="cpTimeline" role="img" aria-label="OFDM symbol timeline with cyclic prefix, safe FFT start interval and selected window"></canvas><div class="legend"><span><i class="sw" style="background:var(--cyan)"></i>CP</span><span><i class="sw green"></i>useful / safe</span><span><i class="sw orange"></i>FFT window</span><span><i class="sw" style="background:var(--muted)"></i>adjacent</span></div><ul class="bullets" id="cpTimelineNote"></ul></div>
+    <div class="card"><div class="title">Two-path impulse response</div><canvas id="cpChan" role="img" aria-label="Two path channel impulse response stems"></canvas><div class="legend"><span><i class="sw blue"></i>|h[0]| = 1</span><span><i class="sw purple"></i>|h[L]| = g</span></div><ul class="bullets" id="cpChanNote"></ul></div>
+  </div>
+  <div class="plots" style="margin-top:14px">
+    <div class="card"><div class="title">Per-subcarrier model error |Y[k] − e<sup>j2πks/N</sup> H[k] X[k]|</div><canvas id="cpToneErr" role="img" aria-label="Normalized per subcarrier deviation from the diagonal FFT model"></canvas><div class="legend"><span><i class="sw green"></i>valid model</span><span><i class="sw" style="background:var(--red)"></i>broken model</span></div><ul class="bullets" id="cpToneErrNote"></ul></div>
+    <div class="card"><div class="title">Equalized constellation (QPSK)</div><canvas id="cpConst" role="img" aria-label="QPSK constellation after per bin equalization showing damage when the model is broken"></canvas><div class="legend"><span><i class="sw blue"></i>after ZF with true H</span><span><i class="sw" style="background:var(--red)"></i>ideal QPSK</span></div><ul class="bullets" id="cpConstNote"></ul></div>
+  </div>
+</section>
+
+<!-- ============================ 5 · EQ ============================ -->
+<section class="panel" id="eq" role="tabpanel" aria-labelledby="tab-eq" hidden>
+  <div class="panel-head"><div><div class="eyebrow">EQ, pilots &amp; practical</div><h2>One complex gain per subcarrier — once you know what that gain is</h2></div><div class="message">The CP gives the exact per-subcarrier model. Comb pilots estimate Ĥ[k]; flatness across Δf only matters for interpolating between pilots. The MMSE denominator uses NN₀/E<sub>X</sub> because X<sub>k</sub> is a per-subcarrier symbol under the non-unitary DFT.</div></div>
+  <div class="sticky-bar"><div class="toolbar">
+    <div class="mode-buttons mode-row"><button type="button" data-of-eq="mmse" aria-pressed="true">MMSE per subcarrier</button><button type="button" data-of-eq="zf" aria-pressed="false">Zero forcing per subcarrier</button><button type="button" id="ofPerfect" aria-pressed="false">Perfect Ĥ[k] (no pilots)</button></div>
+    <div class="control-grid">
+    <div class="ctrl"><label for="ofN">Subcarriers N <strong id="ofNOut">64</strong></label><input id="ofN" type="range" min="4" max="8" value="6" step="1"></div>
+    <div class="ctrl"><label for="ofL">Channel memory L <strong id="ofLOut">5</strong></label><input id="ofL" type="range" min="1" max="20" value="5" step="1"></div>
+    <div class="ctrl"><label for="ofP"><span>Pilot spacing P</span> <strong id="ofPOut">4 subcarriers</strong></label><input id="ofP" type="range" min="1" max="24" value="4" step="1"></div>
+    <div class="ctrl"><label for="ofSnr">Average subcarrier SNR <strong id="ofSnrOut">15 dB</strong></label><input id="ofSnr" type="range" min="-5" max="30" value="15" step="1"></div>
+    <div class="ctrl"><label for="ofTone">Selected subcarrier k <strong id="ofToneOut">16</strong></label><input id="ofTone" type="range" min="0" max="63" value="16" step="1"></div>
+    <div class="ctrl"><label for="ofMod">Subcarrier constellation</label><select id="ofMod"><option value="qpsk" selected>QPSK</option><option value="qam16">16-QAM</option></select></div>
+    </div>
+    <div class="summary-row"><div class="toolbar-metrics">
+      <div class="metric"><div class="name">Flatness ratio</div><div class="value" id="ofFlat">—</div><div class="small">Δf / B<sub>coh</sub>, B<sub>coh</sub> ≈ 1/(5τ<sub>rms</sub>)</div></div>
+      <div class="metric"><div class="name">Pilot overhead</div><div class="value" id="ofPilotOver">—</div><div class="small">1 / P of the subcarriers</div></div>
+      <div class="metric"><div class="name">Channel estimate NMSE</div><div class="value" id="ofNmse">—</div><div class="small">Ĥ[k] from comb pilots + interpolation</div></div>
+      <div class="metric"><div class="name">PAPR at 0.1 %</div><div class="value" id="ofPaprVal">—</div><div class="small">OFDM versus SC-FDE</div><button type="button" id="ofDenomHelp">Why NN₀/E<sub>X</sub>?</button></div>
+    </div><div class="formula"><div>X̂<sub>ZF,k</sub> = Y<sub>k</sub> / Ĥ<sub>k</sub></div><div>X̂<sub>MMSE,k</sub> = Ĥ*<sub>k</sub> Y<sub>k</sub> / (|Ĥ<sub>k</sub>|² + NN₀/E<sub>X</sub>)</div><div id="ofLambda">NN₀/E<sub>X</sub> = 0.0316</div></div></div>
+  </div></div>
+
+  <div class="flow" aria-label="OFDM transmitter chain"><div class="flow-step" data-state="ready"><strong>Map to X<sub>k</sub></strong><span>QAM per subcarrier</span></div><div class="arrow">→</div><div class="flow-step" data-state="required"><strong>IFFT</strong><span id="ofTxIfft">N-point, required</span></div><div class="arrow">→</div><div class="flow-step" data-state="ready"><strong>Add CP</strong><span id="ofTxCp">L<sub>c</sub> ≥ L</span></div><div class="arrow">→</div><div class="flow-step" data-state="ready"><strong>Pulse shape / RF</strong><span id="ofTxPapr">high PAPR</span></div><div class="arrow">→</div><div class="flow-step" data-state="warning"><strong>Channel</strong><span id="ofTxChan">memory L</span></div></div>
+  <div class="flow" aria-label="OFDM receiver chain"><div class="flow-step" data-state="ready"><strong>Sync, remove CP</strong><span>keep N samples</span></div><div class="arrow">→</div><div class="flow-step" data-state="ready"><strong>FFT</strong><span id="ofRxFft">N-point</span></div><div class="arrow">→</div><div class="flow-step" data-state="required"><strong>Estimate Ĥ<sub>k</sub></strong><span id="ofRxEst">—</span></div><div class="arrow">→</div><div class="flow-step" data-state="required"><strong>Per-subcarrier G<sub>k</sub></strong><span id="ofRxEq">—</span></div><div class="arrow">→</div><div class="flow-step" data-state="ready"><strong>Demap</strong><span>no IFFT needed</span></div></div>
+  <p class="flow-caption">The receiver after the FFT is identical to SC-FDE. The architectures differ before the IFFT/FFT and in how symbols are assigned to subcarriers.</p>
+
+  <div class="plots two">
+    <div class="card"><div class="title">Subcarrier grid: comb pilots across OFDM symbols</div><canvas id="ofGrid" role="img" aria-label="Time frequency grid of subcarriers against OFDM symbols showing comb pilot placement"></canvas><ul class="bullets" id="ofGridNote"></ul></div>
+    <div class="card"><div class="title">Architecture comparison at the current settings</div><canvas id="ofCompare" role="img" aria-label="Bar chart comparing time-domain equalization, SC-FDE and OFDM on complexity, latency, overhead and null sensitivity"></canvas><div class="legend"><span><i class="sw orange"></i>TDE</span><span><i class="sw blue"></i>SC-FDE</span><span><i class="sw purple"></i>OFDM</span></div><ul class="bullets" id="ofCompareNote"></ul></div>
+  </div>
+
+  <div class="plots" style="margin-top:14px">
+    <div class="card"><div class="title">|H[k]| across subcarriers with comb pilots</div><canvas id="ofChannelPilots" role="img" aria-label="Channel magnitude across subcarriers with pilot subcarriers and the interpolated channel estimate"></canvas><div class="legend"><span><i class="sw blue"></i>True |H[k]|</span><span><i class="sw orange"></i>Pilot subcarriers</span><span><i class="sw purple"></i>Interpolated |Ĥ[k]|</span></div><ul class="bullets" id="ofChannelNote"></ul></div>
+    <div class="card"><div class="title">Per-subcarrier SNR |H<sub>k</sub>|²E<sub>X</sub>/(NN₀)</div><canvas id="ofSnrTones" role="img" aria-label="Per subcarrier signal-to-noise ratio in decibels with deep fades highlighted"></canvas><div class="legend"><span><i class="sw blue"></i>Per-subcarrier SNR</span><span><i class="sw green"></i>Average</span><span><i class="sw" style="background:var(--red)"></i>Below 0 dB</span></div><ul class="bullets" id="ofSnrNote"></ul></div>
+    <div class="card"><div class="title">Subcarrier k: the constellation faded by H<sub>k</sub></div><canvas id="ofToneConst" role="img" aria-label="Constellation carried by the selected subcarrier, faded by the channel and after per-subcarrier equalization"></canvas><div class="legend"><span><i class="sw" style="background:var(--red)"></i>Ideal (circles)</span><span><i class="sw orange"></i>Faded by H<sub>k</sub></span><span><i class="sw blue"></i>After G<sub>k</sub></span></div><ul class="bullets" id="ofToneConstNote"></ul></div>
+    <div class="card"><div class="title">Estimation NMSE versus pilot spacing</div><canvas id="ofPilotSweep" role="img" aria-label="Channel estimation normalized mean square error against comb pilot spacing with the sampling limit marked"></canvas><div class="legend"><span><i class="sw blue"></i>NMSE(P)</span><span><i class="sw" style="background:var(--red)"></i>Sampling limit P = N/(L+1)</span><span><i class="sw green"></i>Your P</span></div><ul class="bullets" id="ofPilotNote"></ul></div>
+    <div class="card"><div class="title">PAPR: OFDM versus single carrier</div><canvas id="ofPapr" role="img" aria-label="Complementary cumulative distribution of peak to average power ratio for OFDM and single-carrier blocks"></canvas><div class="legend"><span><i class="sw purple"></i>OFDM (IFFT of QPSK subcarriers)</span><span><i class="sw blue"></i>SC-FDE (QPSK in time)</span></div><ul class="bullets" id="ofPaprNote"></ul></div>
+    <div class="card"><div class="title">Symbol error power versus SNR</div><canvas id="ofEvm" role="img" aria-label="Normalized symbol error power against SNR for ZF and MMSE with estimated and perfect channel knowledge"></canvas><div class="legend"><span><i class="sw orange"></i>ZF</span><span><i class="sw purple"></i>MMSE</span><span><i class="sw" style="background:var(--cyan)"></i>Dashed — perfect Ĥ</span><span><i class="sw green"></i>Your SNR</span></div><ul class="bullets" id="ofEvmNote"></ul></div>
+  </div>
+
+  <div class="checklist">
+    <div class="check"><strong>CP length L<sub>c</sub> ≥ L</strong><span>Sets whether the per-subcarrier model holds at all. Too short leaves inter-block interference no equalizer can undo.</span></div>
+    <div class="check"><strong>Block size N</strong><span>Larger N amortizes the CP but adds latency and assumes the channel is static over N + L<sub>c</sub> symbols.</span></div>
+    <div class="check"><strong>Pilot spacing P</strong><span>Must satisfy P ≤ N/(L+1) to sample H[k] adequately; beyond that, interpolation aliases.</span></div>
+    <div class="check"><strong>Deep fades</strong><span>ZF inverts them and amplifies noise. MMSE, coding across subcarriers, and frequency diversity are the standard answers.</span></div>
+    <div class="check"><strong>PAPR</strong><span>OFDM superposes N subcarriers and needs power-amplifier back-off; SC-FDE and DFT-spread OFDM keep a single-carrier envelope.</span></div>
+    <div class="check"><strong>Carrier frequency offset</strong><span>Residual CFO destroys subcarrier orthogonality in OFDM and needs extra synchronization (Heath Sec. 5.4.4).</span></div>
+  </div>
+</section>
+</main>
+
+<dialog class="gain-dialog" id="ofDenomDialog" aria-labelledby="ofDenomDialogTitle"><h3 id="ofDenomDialogTitle">Why SC-FDE uses N₀/E<sub>x</sub> and OFDM uses NN₀/E<sub>X</sub></h3><div class="formula" id="ofDenomCalc"></div><p class="message">Both denominators are the same thing — the inverse per-subcarrier SNR — written for different symbol mappings. In SC-FDE, X[k] is the DFT of a block of time-domain symbols of energy E<sub>x</sub>, so its energy picks up the same factor N that the noise does and the N cancels. In OFDM, X<sub>k</sub> <em>is</em> the transmitted symbol on subcarrier k with energy E<sub>X</sub>, while the noise still gains N from the non-unitary DFT, so the factor survives. With a unitary DFT it disappears from both.</p><button type="button" id="ofDenomClose">Close</button></dialog>
+
+<script>
+'use strict';
+const $=id=>document.getElementById(id);
+function css(name){return getComputedStyle(document.documentElement).getPropertyValue(name).trim()}
+function resizeCanvas(cv){const dpr=Math.min(window.devicePixelRatio||1,3),w=Math.max(1,cv.clientWidth||700),h=Math.max(1,cv.clientHeight||285);cv.width=Math.round(w*dpr);cv.height=Math.round(h*dpr);const c=cv.getContext('2d');c.setTransform(dpr,0,0,dpr,0,0);return{c,w,h}}
+function axes(cv,xmin,xmax,ymin,ymax,xlab,ylab,opt){const ntx=(opt&&(opt.xticks||opt.ticks))||4,nty=(opt&&(opt.yticks||opt.ticks))||4,yfmt=opt&&opt.yfmt,xfmt=opt&&opt.xfmt,z=resizeCanvas(cv),{c,w,h}=z,m={l:52,r:15,t:16,b:39},X=x=>m.l+(x-xmin)/(xmax-xmin)*(w-m.l-m.r),Y=y=>m.t+(ymax-y)/(ymax-ymin)*(h-m.t-m.b);c.clearRect(0,0,w,h);c.font='11px system-ui';c.strokeStyle=css('--border');c.fillStyle=css('--muted');c.lineWidth=1;for(let i=0;i<=ntx;i++){const x=xmin+(xmax-xmin)*i/ntx,px=X(x);c.beginPath();c.moveTo(px,m.t);c.lineTo(px,h-m.b);c.stroke();c.textAlign='center';c.textBaseline='top';c.fillText(xfmt?xfmt(x):(Number.isInteger(x)?x:x.toFixed(1)),px,h-m.b+6)}for(let i=0;i<=nty;i++){const y=ymin+(ymax-ymin)*i/nty,py=Y(y);c.beginPath();c.moveTo(m.l,py);c.lineTo(w-m.r,py);c.stroke();c.textAlign='right';c.textBaseline='middle';c.fillText(yfmt?yfmt(y):(Math.abs(y)<10?y.toFixed(1):y.toFixed(0)),m.l-6,py)}c.strokeStyle=css('--text');c.strokeRect(m.l,m.t,w-m.l-m.r,h-m.t-m.b);c.fillStyle=css('--text');c.textAlign='center';c.textBaseline='bottom';c.fillText(xlab,(m.l+w-m.r)/2,h-1);c.save();c.translate(12,(m.t+h-m.b)/2);c.rotate(-Math.PI/2);c.fillText(ylab,0,0);c.restore();return{...z,m,X,Y}}
+function plotLabel(z,px,py,text,color,baseline){z.c.save();z.c.font='11px system-ui';z.c.fillStyle=color;z.c.textAlign='left';z.c.textBaseline=baseline||'bottom';const w=z.c.measureText(text).width,left=z.m.l+4,right=z.w-z.m.r-4;let x=px+9;if(x+w>right)x=px-9-w;x=Math.min(Math.max(x,left),Math.max(left,right-w));z.c.fillText(text,x,py);z.c.restore()}
+function line(z,pts,color,width=2,dash=[]){if(!pts.length)return;z.c.save();z.c.strokeStyle=color;z.c.lineWidth=width;z.c.setLineDash(dash);z.c.beginPath();pts.forEach((p,i)=>i?z.c.lineTo(z.X(p[0]),z.Y(p[1])):z.c.moveTo(z.X(p[0]),z.Y(p[1])));z.c.stroke();z.c.restore()}
+function isiBand(z,a,b,color,label){const left=z.m.l,right=z.w-z.m.r,top=z.m.t,bot=z.h-z.m.b,xa=Math.max(left,z.X(a)),xb=Math.min(right,z.X(b));if(xb-xa<3)return;z.c.save();z.c.globalAlpha=.10;z.c.fillStyle=color;z.c.fillRect(xa,top,xb-xa,bot-top);z.c.restore();if(label&&xb-xa>34){z.c.save();z.c.fillStyle=color;z.c.font='10px system-ui';z.c.textAlign='center';z.c.textBaseline='top';z.c.fillText(label,(xa+xb)/2,top+4);z.c.restore()}}
+function stem(z,x,y,color,label){const px=z.X(x),py=z.Y(y),zero=z.Y(0);z.c.strokeStyle=color;z.c.fillStyle=color;z.c.lineWidth=2;z.c.beginPath();z.c.moveTo(px,zero);z.c.lineTo(px,py);z.c.stroke();z.c.beginPath();z.c.arc(px,py,5,0,Math.PI*2);z.c.fill();if(label){z.c.font='11px system-ui';z.c.textAlign='center';z.c.textBaseline=y>=0?'bottom':'top';z.c.fillText(label,px,py+(y>=0?-8:8))}}
+function dot(z,x,y,color,r=5){z.c.fillStyle=color;z.c.beginPath();z.c.arc(z.X(x),z.Y(y),r,0,Math.PI*2);z.c.fill()}
+
+/* ---- complex arithmetic ---- */
+function C(re=0,im=0){return{re,im}}
+function add(a,b){return C(a.re+b.re,a.im+b.im)}
+function sub(a,b){return C(a.re-b.re,a.im-b.im)}
+function mul(a,b){return C(a.re*b.re-a.im*b.im,a.re*b.im+a.im*b.re)}
+function scale(a,s){return C(a.re*s,a.im*s)}
+function abs2(a){return a.re*a.re+a.im*a.im}
+function conj(a){return C(a.re,-a.im)}
+function divc(a,b){return scale(mul(a,conj(b)),1/Math.max(abs2(b),1e-14))}
+function rng(seed){return()=>{seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function gauss(r){let u=Math.max(r(),1e-9),v=r();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v)}
+const qpsk=[C(1,1),C(-1,1),C(-1,-1),C(1,-1)].map(z=>scale(z,1/Math.sqrt(2)));
+function qpskBlock(n,r){return Array.from({length:n},()=>qpsk[Math.min(3,Math.floor(r()*4))])}
+function solveComplex(A,b){const n=b.length,M=A.map((row,i)=>row.map(v=>C(v.re,v.im)).concat(C(b[i].re,b[i].im)));for(let k=0;k<n;k++){let p=k;for(let i=k+1;i<n;i++)if(abs2(M[i][k])>abs2(M[p][k]))p=i;[M[k],M[p]]=[M[p],M[k]];const pivot=M[k][k];for(let j=k;j<=n;j++)M[k][j]=divc(M[k][j],pivot);for(let i=0;i<n;i++)if(i!==k){const f=M[i][k];for(let j=k;j<=n;j++)M[i][j]=sub(M[i][j],mul(f,M[k][j]))}}return M.map(row=>row[n])}
+
+/* ---- DFT: X[k]=sum x[n]e^{-j2pi kn/N}, x[n]=(1/N) sum X[k]e^{+j2pi kn/N} ---- */
+function fft(input,inverse){const n=input.length,a=input.map(v=>C(v.re,v.im));for(let i=1,j=0;i<n;i++){let bit=n>>1;for(;j&bit;bit>>=1)j^=bit;j^=bit;if(i<j){const t=a[i];a[i]=a[j];a[j]=t}}
+  for(let len=2;len<=n;len<<=1){const ang=(inverse?2:-2)*Math.PI/len,half=len>>1;for(let i=0;i<n;i+=len)for(let k=0;k<half;k++){const w=C(Math.cos(ang*k),Math.sin(ang*k)),u=a[i+k],v=mul(a[i+k+half],w);a[i+k]=add(u,v);a[i+k+half]=sub(u,v)}}
+  return inverse?a.map(v=>scale(v,1/n)):a}
+function padTo(v,N){const out=Array.from({length:N},()=>C());for(let i=0;i<Math.min(v.length,N);i++)out[i]=v[i];return out}
+function dftOf(h,N){return fft(padTo(h,N),false)}
+function circConv(h,x,N){const out=[];for(let n=0;n<N;n++){let s=C();for(let l=0;l<h.length;l++)s=add(s,mul(h[l],x[((n-l)%N+N)%N]));out.push(s)}return out}
+function linFilter(sig,taps){return sig.map((_,n)=>{let s=C();for(let k=0;k<taps.length;k++){const u=sig[n-k];if(u)s=add(s,mul(taps[k],u))}return s})}
+
+/* ---- channels ---- */
+function pdpChannel(L,seed,decay){const r=rng(seed),beta=decay||Math.max(1,(L+1)/3),t=[];let e=0;for(let l=0;l<=L;l++){const g=Math.exp(-l/(2*beta)),v=C(gauss(r)*g,gauss(r)*g);t.push(v);e+=abs2(v)}const s=1/Math.sqrt(Math.max(e,1e-12));return t.map(v=>scale(v,s))}
+function notchChannel(a,k0,N){const th=2*Math.PI*k0/N,h=[C(1,0),scale(C(Math.cos(th),Math.sin(th)),-a)],e=h.reduce((s,v)=>s+abs2(v),0),g=1/Math.sqrt(e);return h.map(v=>scale(v,g))}
+function rmsDelay(h){let p=0,m1=0,m2=0;h.forEach((v,l)=>{const w=abs2(v);p+=w;m1+=l*w;m2+=l*l*w});const mean=m1/p;return Math.sqrt(Math.max(0,m2/p-mean*mean))}
+
+/* ---- formatting ---- */
+function bullets(el,items){el.innerHTML=items.filter(Boolean).map(t=>'<li>'+t+'</li>').join('')}
+function decade(v){const e=Math.round(v),d='⁰¹²³⁴⁵⁶⁷⁸⁹';return '10'+(e<0?'⁻':'')+String(Math.abs(e)).split('').map(c=>d[+c]).join('')}
+function fmt1(v){return(v<0?'−':'')+Math.abs(v).toFixed(1)}
+function fmtCount(v){if(v>=1e9)return(v/1e9).toFixed(v>=1e10?0:1)+'G';if(v>=1e6)return(v/1e6).toFixed(v>=1e7?0:1)+'M';if(v>=1e3)return(v/1e3).toFixed(v>=1e4?0:1)+'k';return String(Math.round(v))}
+function fmtRate(v){if(v>=1e9)return(v/1e9).toFixed(v>=1e10?0:1)+' Gsym/s';if(v>=1e6)return(v/1e6).toFixed(v>=1e7?0:1)+' Msym/s';if(v>=1e3)return(v/1e3).toFixed(0)+' ksym/s';return v.toFixed(0)+' sym/s'}
+function expo(v){return v.toExponential(2).replace('e-','e−').replace('e+','e')}
+function dB(v){return(10*Math.log10(Math.max(v,1e-300))).toFixed(1)+' dB'}
+
+
+document.querySelectorAll('[role=tab]').forEach((b,i,all)=>b.addEventListener('click',()=>{all.forEach(x=>{const on=x===b;x.setAttribute('aria-selected',on);$(x.getAttribute('aria-controls')).hidden=!on});requestAnimationFrame(drawActive)}));
+function drawActive(){const id=document.querySelector('[role=tab][aria-selected=true]').getAttribute('aria-controls');({bridge:drawBridge,ifft:drawIfft,ortho:drawOrtho,cp:drawCp,eq:drawEq})[id]()}
+
+
+const qam16=(()=>{const p=[];for(const a of[-3,-1,1,3])for(const b of[-3,-1,1,3])p.push(scale(C(a,b),1/Math.sqrt(10)));return p})();
+function constSet(name){return name==='qam16'?qam16:qpsk}
+function degOf(z){return Math.atan2(z.im,z.re)*180/Math.PI}
+function fmtDeg(d){return(d<0?'−':'')+Math.abs(d).toFixed(1)+'°'}
+/* Draws the ideal points as reference circles with the faded cloud underneath them,
+   so the rotation and scaling the channel applies in bin k is read off directly. */
+function drawToneConst(cvId,o){
+  const pts=constSet(o.mod),r=rng(o.seed),sd=Math.sqrt(o.lambda/2),COUNT=480,faded=[],eq=[];
+  let acc=0;
+  for(let i=0;i<COUNT;i++){
+    const sym=pts[Math.min(pts.length-1,Math.floor(r()*pts.length))],
+      y=add(mul(o.H,sym),C(gauss(r)*sd,gauss(r)*sd)),x=mul(o.G,y);
+    faded.push(y);eq.push(x);acc+=abs2(sub(x,sym))}
+  let peak=0;
+  for(const v of faded)peak=Math.max(peak,Math.abs(v.re),Math.abs(v.im));
+  for(const v of eq)peak=Math.max(peak,Math.abs(v.re),Math.abs(v.im));
+  const lim=Math.min(4,Math.max(1.8,peak*1.06)),cv=$(cvId),
+    ar=Math.max(1,((cv.clientWidth||700)-67)/Math.max(1,(cv.clientHeight||285)-55)),
+    limX=lim*ar,
+    z=axes(cv,-limX,limX,-lim,lim,'In-phase','Quadrature',{xticks:Math.round(4*Math.min(2,ar)),yticks:4});
+  z.c.save();z.c.strokeStyle=css('--text');z.c.globalAlpha=.35;z.c.lineWidth=1.2;z.c.beginPath();
+  z.c.moveTo(z.m.l,z.Y(0));z.c.lineTo(z.w-z.m.r,z.Y(0));z.c.moveTo(z.X(0),z.m.t);z.c.lineTo(z.X(0),z.h-z.m.b);z.c.stroke();z.c.restore();
+  let outside=0;
+  const cloud=(arr,color,alpha,rad)=>{z.c.save();z.c.globalAlpha=alpha;z.c.fillStyle=color;
+    for(const v of arr){if(Math.abs(v.re)>limX||Math.abs(v.im)>lim){outside++;continue}
+      z.c.beginPath();z.c.arc(z.X(v.re),z.Y(v.im),rad,0,Math.PI*2);z.c.fill()}z.c.restore()};
+  cloud(faded,css('--orange'),.30,2.7);
+  cloud(eq,css('--blue'),.50,2.4);
+  /* where the channel puts each ideal point */
+  z.c.save();z.c.strokeStyle=css('--orange');z.c.lineWidth=1.6;z.c.setLineDash([3,3]);
+  for(const sym of pts){const v=mul(o.H,sym);if(Math.abs(v.re)>limX||Math.abs(v.im)>lim)continue;
+    z.c.beginPath();z.c.arc(z.X(v.re),z.Y(v.im),4.5,0,Math.PI*2);z.c.stroke()}z.c.restore();
+  /* rotation and scaling read off one outer point */
+  const ref=pts.reduce((best,v)=>(v.re>0&&v.im>0&&abs2(v)>abs2(best))?v:best,C(1e-9,1e-9)),
+    fad=mul(o.H,ref),a0=Math.atan2(ref.im,ref.re),a1=Math.atan2(fad.im,fad.re),
+    rad0=Math.sqrt(abs2(ref)),rad1=Math.sqrt(abs2(fad));
+  if(rad1<lim*1.4){
+    z.c.save();z.c.lineWidth=1.3;z.c.setLineDash([4,4]);
+    z.c.strokeStyle=css('--muted');z.c.beginPath();z.c.moveTo(z.X(0),z.Y(0));z.c.lineTo(z.X(ref.re),z.Y(ref.im));z.c.stroke();
+    z.c.strokeStyle=css('--orange');z.c.beginPath();z.c.moveTo(z.X(0),z.Y(0));z.c.lineTo(z.X(Math.max(-limX,Math.min(limX,fad.re))),z.Y(Math.max(-lim,Math.min(lim,fad.im))));z.c.stroke();
+    z.c.setLineDash([]);
+    const ar=Math.min(rad0,rad1)*0.58,px=t=>z.X(ar*Math.cos(t)),py=t=>z.Y(ar*Math.sin(t));
+    z.c.strokeStyle=css('--orange');z.c.lineWidth=1.6;z.c.beginPath();
+    const steps=24;for(let i=0;i<=steps;i++){const t=a0+(a1-a0)*i/steps;i?z.c.lineTo(px(t),py(t)):z.c.moveTo(px(t),py(t))}z.c.stroke();z.c.restore();
+    const tm=(a0+a1)/2;
+    plotLabel(z,px(tm),py(tm),'∠H = '+fmtDeg(degOf(o.H)),css('--orange'));
+  }
+  /* ideal reference circles last, so the faded cloud sits under them */
+  z.c.save();z.c.strokeStyle=css('--red');z.c.lineWidth=2;
+  for(const sym of pts){z.c.beginPath();z.c.arc(z.X(sym.re),z.Y(sym.im),o.mod==='qam16'?5:6.5,0,Math.PI*2);z.c.stroke()}z.c.restore();
+  if(outside)plotLabel(z,z.w-z.m.r-6,z.m.t+13,outside+' point'+(outside===1?'':'s')+' outside the axes',css('--red'),'top');
+  const gh=mul(o.G,o.H);
+  return{evm:Math.sqrt(acc/COUNT),outside,gh,ghMag:Math.sqrt(abs2(gh)),ghDeg:degOf(gh),
+    hMag:Math.sqrt(abs2(o.H)),hDeg:degOf(o.H),pts:pts.length}}
+
+
+function panelCanvas(cv){const z=resizeCanvas(cv);z.c.clearRect(0,0,z.w,z.h);z.c.font='11px system-ui';return z}
+function labelledBlock(z,x,y,w,h,fill,stroke,label,sub){z.c.save();z.c.globalAlpha=.18;z.c.fillStyle=fill;z.c.fillRect(x,y,w,h);z.c.restore();z.c.strokeStyle=stroke;z.c.lineWidth=1.6;z.c.strokeRect(x,y,w,h);if(label&&w>26){z.c.fillStyle=stroke;z.c.textAlign='center';z.c.textBaseline='middle';z.c.fillText(label,x+w/2,y+h/2-(sub?6:0));if(sub){z.c.fillStyle=css('--muted');z.c.font='10px system-ui';z.c.fillText(sub,x+w/2,y+h/2+8);z.c.font='11px system-ui'}}}
+function brace(z,x1,x2,y,text,color){z.c.save();z.c.strokeStyle=color;z.c.lineWidth=1.4;z.c.beginPath();z.c.moveTo(x1,y-5);z.c.lineTo(x1,y);z.c.lineTo(x2,y);z.c.lineTo(x2,y-5);z.c.stroke();z.c.fillStyle=color;z.c.textAlign='center';z.c.textBaseline='top';z.c.fillText(text,(x1+x2)/2,y+3);z.c.restore()}
+function arrowCurve(z,x1,y1,x2,y2,color,text){z.c.save();z.c.strokeStyle=color;z.c.lineWidth=1.8;z.c.beginPath();z.c.moveTo(x1,y1);z.c.bezierCurveTo(x1,y1-34,x2,y2-34,x2,y2);z.c.stroke();const ang=Math.PI/2;z.c.fillStyle=color;z.c.beginPath();z.c.moveTo(x2,y2);z.c.lineTo(x2-5,y2-9);z.c.lineTo(x2+5,y2-9);z.c.closePath();z.c.fill();if(text){z.c.textAlign='center';z.c.textBaseline='bottom';z.c.fillText(text,(x1+x2)/2,Math.min(y1,y2)-26)}z.c.restore()}
+
+
+/* ==================================================================
+   1 · BRIDGE FROM WEEK 7
+   ================================================================== */
+function brParams(){const N=Math.pow(2,+$('brN').value),L=+$('brL').value;return{N,L,Lc:L}}
+function drawBridge(){
+  const p=brParams(),Lc=p.Lc,over=Lc/(p.N+Lc),fdePer=Math.log2(p.N)+1;
+  $('brNOut').textContent=p.N;$('brLOut').textContent=p.L;
+  $('brOver').textContent=(100*over).toFixed(1)+'%';
+  $('brMult').textContent=fdePer.toFixed(0);
+  $('brPapr').textContent='high vs low';
+  $('brScCp').innerHTML='L<sub>c</sub> ≥ L = '+p.L;
+  $('brOfCp').innerHTML='L<sub>c</sub> ≥ L = '+p.L;
+  $('brScFft').textContent=p.N+'-point';
+  $('brOfFft').textContent=p.N+'-point';
+  $('brOfIfft').textContent=p.N+'-point at TX';
+  $('brNote').innerHTML='<strong>Same Y[k]=H[k]X[k]+V[k] after the CP.</strong> OFDM puts independent QAM on each k and an IFFT at the transmitter; SC-FDE puts the IFFT at the receiver after per-bin equalization. Complexity and CP overhead match; PAPR is where they diverge.';
+  const z=panelCanvas($('brCompare')),
+    tdePer=Math.round(1.5*p.L)+1,
+    rows=[
+      {name:'Multiplies / symbol',vals:[tdePer,fdePer,fdePer],fmt:v=>v.toFixed(0)},
+      {name:'Latency (symbols)',vals:[Math.round(1.5*p.L),p.N+Lc,p.N+Lc],fmt:v=>v.toFixed(0)},
+      {name:'CP overhead',vals:[0,Lc/(p.N+Lc),Lc/(p.N+Lc)],fmt:v=>(100*v).toFixed(1)+'%'},
+      {name:'PAPR penalty',vals:[0.2,0.3,1],fmt:v=>v<.5?'low':'high'}
+    ],
+    pad=140,W=z.w-pad-20,rowH=(z.h-46)/rows.length,cols=[css('--orange'),css('--blue'),css('--purple')];
+  z.c.textBaseline='middle';
+  rows.forEach((row,i)=>{
+    const y=24+i*rowH,mx=Math.max(...row.vals,1e-9);
+    z.c.fillStyle=css('--text');z.c.textAlign='right';z.c.font='11px system-ui';
+    z.c.fillText(row.name,pad-10,y+rowH/2-4);
+    row.vals.forEach((v,j)=>{
+      const bh=Math.max(3,(rowH-20)/3-3),by=y+4+j*((rowH-16)/3),bw=Math.max(2,W*v/mx);
+      z.c.fillStyle=cols[j];z.c.globalAlpha=.8;z.c.fillRect(pad,by,bw,bh);z.c.globalAlpha=1;
+      z.c.fillStyle=css('--muted');z.c.textAlign='left';z.c.font='10px system-ui';
+      z.c.fillText(row.fmt(v),pad+bw+6,by+bh/2)});
+    z.c.strokeStyle=css('--border');z.c.beginPath();z.c.moveTo(pad-4,y+rowH-3);z.c.lineTo(z.w-14,y+rowH-3);z.c.stroke()});
+  z.c.font='11px system-ui';z.c.fillStyle=css('--muted');z.c.textAlign='left';z.c.textBaseline='top';
+  z.c.fillText('bars within each row: TDE, SC-FDE, OFDM (top to bottom)',pad-130,6);
+  bullets($('brCompareNote'),[
+    'At N = '+p.N+', L = '+p.L+' and L_c = L: TDE needs about '+tdePer+' multiplies per symbol against '+fdePer.toFixed(0)+' for either block architecture.',
+    'Both SC-FDE and OFDM wait a whole block of '+(p.N+Lc)+' symbols and pay the same '+(100*over).toFixed(1)+'% CP overhead — the model is identical once the CP has done its job.',
+    'The chart differs almost only on PAPR: OFDM’s IFFT at the TX superposes N tones; SC-FDE keeps a single-carrier envelope. That is why DFT-spread OFDM exists.'
+  ]);
+}
+['brN','brL'].forEach(id=>$(id).addEventListener('input',drawBridge));
+
+/* ==================================================================
+   2 · IFFT SYNTHESIS
+   ================================================================== */
+const ifStates=[{re:0,im:0},{re:Math.SQRT1_2,im:Math.SQRT1_2},{re:Math.SQRT1_2,im:-Math.SQRT1_2},{re:-Math.SQRT1_2,im:Math.SQRT1_2},{re:-Math.SQRT1_2,im:-Math.SQRT1_2}];
+let ifN=16, ifK=2, ifIdx=Array(16).fill(0), ifPreset='single';
+function ifResize(n){const old=ifIdx;ifIdx=Array(n).fill(0);for(let i=0;i<Math.min(n,old.length);i++)ifIdx[i]=old[i];ifN=n;ifK=Math.min(ifK,n-1);$('ifK').max=n-1;$('ifK').value=ifK}
+function ifApplyPreset(name){
+  ifPreset=name;document.querySelectorAll('[data-if-preset]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.ifPreset===name));
+  if(name==='single'){ifIdx=Array(ifN).fill(0);ifK=Math.min(2,ifN-1);ifIdx[ifK]=1;$('ifK').value=ifK}
+  else if(name==='random'){const r=rng(Date.now()&0xffff);ifIdx=Array.from({length:ifN},()=>1+Math.floor(r()*4))}
+  else if(name==='nulldc'){const r=rng(9101);ifIdx=Array.from({length:ifN},()=>1+Math.floor(r()*4));ifIdx[0]=0}
+  else if(name==='clear'){ifIdx=Array(ifN).fill(0)}
+  drawIfft();
+}
+function ifSymbols(){return ifIdx.map(i=>C(ifStates[i].re,ifStates[i].im))}
+function drawIfft(){
+  document.querySelectorAll('[data-if-preset]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.ifPreset===ifPreset));
+  const nExp=+$('ifN').value,N=Math.pow(2,nExp);
+  if(N!==ifN)ifResize(N);
+  ifK=Math.min(+$('ifK').value,ifN-1);$('ifK').value=ifK;
+  $('ifNOut').textContent=ifN;$('ifKOut').textContent=ifK;
+  const X=ifSymbols(),x=fft(X,true),Xr=fft(x,false);
+  const err=Math.max(...X.map((z,k)=>Math.hypot(z.re-Xr[k].re,z.im-Xr[k].im)));
+  const active=X.filter(z=>Math.hypot(z.re,z.im)>1e-12).length;
+  const pwr=x.reduce((a,z)=>a+abs2(z),0)/ifN;
+  $('ifActive').textContent=active+' / '+ifN;
+  $('ifPower').textContent=pwr.toFixed(5);
+  $('ifErr').textContent=err.toExponential(2);
+  $('ifCycles').textContent=String(ifK);
+  const zk=X[ifK],on=Math.hypot(zk.re,zk.im)>1e-12;
+  $('ifOneFormula').innerHTML=on
+    ?'X['+ifK+'] · e<sup>j2π·'+ifK+'·n/'+ifN+'</sup> / '+ifN
+    :'X['+ifK+'] = 0 (off)';
+
+  /* stems */
+  const mags=X.map(v=>Math.hypot(v.re,v.im)),top=Math.max(1,...mags)*1.2;
+  let z=axes($('ifStems'),-0.5,ifN-0.5,0,top,'subcarrier k','|X[k]|',{xticks:Math.min(8,ifN-1),yticks:4});
+  for(let k=0;k<ifN;k++)stem(z,k,mags[k]||0.02,k===ifK?css('--orange'):(mags[k]>1e-12?css('--blue'):css('--muted')));
+  bullets($('ifStemsNote'),[
+    active+' of '+ifN+' subcarriers are active. Selected k = '+ifK+(on?' carries a QPSK symbol.':' is zero — use Cycle symbol on k or a preset to activate it.'),
+    'Null DC zeros k = 0: that bin sits on the carrier frequency where LO leakage and DC offset land.',
+    'Cycle symbol on k advances the selected bin through the four QPSK points and zero.'
+  ]);
+
+  /* selected tone */
+  const tone=Array.from({length:ifN},(_,n)=>{const th=2*Math.PI*ifK*n/ifN;return scale(mul(zk,C(Math.cos(th),Math.sin(th))),1/ifN)});
+  const lim1=Math.max(0.08/ifN,...tone.map(v=>Math.max(Math.abs(v.re),Math.abs(v.im))))*1.35;
+  z=axes($('ifTone'),0,ifN-1,-lim1,lim1,'sample n','contribution of k',{xticks:Math.min(8,ifN-1),yticks:4});
+  line(z,[[0,0],[ifN-1,0]],css('--border'),1);
+  line(z,tone.map((v,n)=>[n,v.re]),css('--blue'),2.4);
+  line(z,tone.map((v,n)=>[n,v.im]),css('--orange'),2,[5,4]);
+  bullets($('ifToneNote'),[
+    on?'Subcarrier '+ifK+' contributes (1/N) X[k] e<sup>j2πkn/N</sup>: a complex sinusoid completing exactly '+ifK+' cycle'+(ifK===1?'':'s')+' across the block.'
+      :'Selected subcarrier is off, so this contribution is zero.',
+    'Amplitude |X[k]|/N and phase ∠X[k] carry the symbol; individual time samples are not constellation points.',
+    'Whole cycles per block are why the receiver FFT can separate this tone from every other one (next tab).'
+  ]);
+
+  /* full sum */
+  const lim=Math.max(0.08,...x.map(v=>Math.max(Math.abs(v.re),Math.abs(v.im))))*1.2;
+  z=axes($('ifSum'),0,ifN-1,-lim,lim,'sample n','x[n]',{xticks:Math.min(8,ifN-1),yticks:4});
+  line(z,[[0,0],[ifN-1,0]],css('--border'),1);
+  line(z,tone.map((v,n)=>[n,v.re]),css('--green'),1.6,[4,4]);
+  line(z,x.map((v,n)=>[n,v.re]),css('--blue'),2.5);
+  line(z,x.map((v,n)=>[n,v.im]),css('--orange'),1.8,[5,4]);
+  bullets($('ifSumNote'),[
+    'x[n] is the sum of the active complex sinusoids. Detection happens after an FFT at the receiver, not on these time samples.',
+    'Dashed green is the selected tone alone; blue/orange are Re/Im of the full IFFT output.',
+    'FFT recovery error '+err.toExponential(2)+' '+(err<1e-10?'— numerical floor; the IFFT/FFT pair is exact.':'(unexpected).')
+  ]);
+}
+document.querySelectorAll('[data-if-preset]').forEach(b=>b.addEventListener('click',()=>ifApplyPreset(b.dataset.ifPreset)));
+$('ifCycle').addEventListener('click',()=>{ifIdx[ifK]=(ifIdx[ifK]+1)%ifStates.length;ifPreset='';document.querySelectorAll('[data-if-preset]').forEach(b=>b.setAttribute('aria-pressed','false'));drawIfft()});
+['ifN','ifK'].forEach(id=>$(id).addEventListener('input',drawIfft));
+ifApplyPreset('single');
+
+/* ==================================================================
+   3 · ORTHOGONALITY
+   ================================================================== */
+function orParams(){
+  const N=Math.pow(2,+$('orN').value);$('orK').max=N-1;
+  const k=Math.min(+$('orK').value,N-1);if(+$('orK').value!==k)$('orK').value=k;
+  return{N,k,alpha:+$('orAlpha').value,eps:+$('orEps').value}}
+function dirichletMag(delta,N){const den=Math.sin(Math.PI*delta/N);if(Math.abs(den)<1e-12)return Math.abs(delta)<1e-9||Math.abs(delta-Math.round(delta))<1e-9?1:0;return Math.abs(Math.sin(Math.PI*delta)/(N*den))}
+function orCoeff(m,k,N,alpha,eps){let re=0,im=0;for(let n=0;n<N;n++){const a=2*Math.PI*(alpha*k+eps-m)*n/N;re+=Math.cos(a);im+=Math.sin(a)}return{re:re/N,im:im/N,p:(re*re+im*im)/(N*N)}}
+function drawOrtho(){
+  const p=orParams();
+  $('orNOut').textContent=p.N;$('orKOut').textContent=p.k;
+  $('orAlphaOut').textContent=p.alpha.toFixed(2);$('orEpsOut').textContent=p.eps.toFixed(2);
+  const powers=Array.from({length:p.N},(_,m)=>orCoeff(m,p.k,p.N,p.alpha,p.eps).p);
+  const total=powers.reduce((a,b)=>a+b,0),wanted=powers[p.k]||0,outside=Math.max(0,total-wanted);
+  const neigh=Math.sqrt(orCoeff((p.k+1)%p.N,p.k,p.N,p.alpha,p.eps).p);
+  const dom=powers.indexOf(Math.max(...powers));
+  $('orWanted').textContent=(100*wanted/Math.max(total,1e-18)).toFixed(2)+'%';
+  $('orOutside').textContent=(100*outside/Math.max(total,1e-18)).toFixed(2)+'%';
+  $('orInner').textContent=neigh.toFixed(4);
+  $('orDom').textContent='m = '+dom;
+
+  const center=p.alpha*p.k+p.eps,lo=center-3.5,hi=center+3.5;
+  let z=axes($('orSpec'),lo,hi,0,1.08,'Frequency / nominal Δf','|Dirichlet|',{xticks:7,yticks:4});
+  for(let q=-2;q<=2;q++){
+    if(q===0)continue;const kt=p.k+q;if(kt<0||kt>=p.N)continue;
+    const c=p.alpha*kt+p.eps,curve=[];
+    for(let i=0;i<=280;i++){const f=lo+(hi-lo)*i/280;curve.push([f,dirichletMag(c-f,p.N)])}
+    line(z,curve,css('--muted'),1.2);
+  }
+  const main=[];for(let i=0;i<=400;i++){const f=lo+(hi-lo)*i/400;main.push([f,dirichletMag(center-f,p.N)])}
+  line(z,main,css('--blue'),2.6);
+  for(let b=Math.ceil(lo);b<=Math.floor(hi);b++){
+    const amp=dirichletMag(center-b,p.N);
+    z.c.save();z.c.strokeStyle=css('--border');z.c.beginPath();z.c.moveTo(z.X(b),z.Y(0));z.c.lineTo(z.X(b),z.Y(amp));z.c.stroke();z.c.restore();
+    dot(z,b,amp,css('--red'),4);
+  }
+  bullets($('orSpecNote'),[
+    'Finite-N response |sin(πδ)/(N sin(πδ/N))| with δ = αk+ε − f. Ideal OFDM uses α = 1 and ε = 0 so nulls sit on other bin centres.',
+    'Red dots are receiver FFT bin samples. Neighbour kernels (grey) show the dense spectral overlap — orthogonality is about sampling, not separation.',
+    Math.abs(p.alpha-1)<1e-9&&Math.abs(p.eps)<1e-9
+      ?'Ideal: every red dot except bin '+p.k+' sits on a null of the blue kernel.'
+      :'Mismatch: centre at '+center.toFixed(3)+' bins, so samples miss the nulls and energy leaks.'
+  ]);
+
+  const mx=Math.max(...powers,1e-4);
+  z=axes($('orLeak'),-0.5,p.N-0.5,0,mx*1.15,'Receiver FFT bin m','Observed power',{xticks:Math.min(8,p.N-1),yticks:4,yfmt:v=>(100*v).toFixed(mx<.05?1:0)+'%'});
+  for(let m=0;m<p.N;m++){
+    const px=z.X(m),y0=z.Y(0),y1=z.Y(powers[m]),bw=Math.max(2,(z.w-z.m.l-z.m.r)/p.N*0.65);
+    z.c.fillStyle=m===p.k?css('--green'):css('--red');
+    z.c.fillRect(px-bw/2,y1,bw,y0-y1);
+  }
+  bullets($('orLeakNote'),[
+    'Only subcarrier k = '+p.k+' is transmitted at unit amplitude. Bars are |C[m,k]|² from the exact finite-N sum.',
+    (100*wanted/Math.max(total,1e-18)).toFixed(2)+'% in the intended bin; '+(100*outside/Math.max(total,1e-18)).toFixed(2)+'% outside. |C[k+1,k]| = '+neigh.toFixed(4)+'.',
+    Math.abs(p.alpha-1)<1e-9&&Math.abs(p.eps)<1e-9
+      ?'Exact orthogonality: leakage is numerical zero, not “small”.'
+      :'Fractional mismatch produces genuine distributed ICI that per-bin EQ cannot remove.'
+  ]);
+}
+document.querySelectorAll('[data-or-preset]').forEach(b=>b.addEventListener('click',()=>{
+  const name=b.dataset.orPreset;
+  document.querySelectorAll('[data-or-preset]').forEach(x=>x.setAttribute('aria-pressed',x===b));
+  if(name==='ideal'){$('orAlpha').value=1;$('orEps').value=0}
+  else if(name==='cfo'){$('orAlpha').value=1;$('orEps').value=0.25}
+  else if(name==='spacing'){$('orAlpha').value=0.92;$('orEps').value=0}
+  drawOrtho();
+}));
+['orN','orK','orAlpha','orEps'].forEach(id=>$(id).addEventListener('input',()=>{
+  document.querySelectorAll('[data-or-preset]').forEach(b=>b.setAttribute('aria-pressed','false'));drawOrtho()}));
+
+/* ==================================================================
+   4 · CP, MULTIPATH & ICI
+   ================================================================== */
+let cpSeed=1234567, cpBlocks=[];
+function cpRng(){cpSeed=(1664525*cpSeed+1013904223)>>>0;return cpSeed/4294967296}
+function cpNewData(N){cpBlocks=Array.from({length:5},()=>{const X=Array.from({length:N},()=>{const q=Math.SQRT1_2;return C(cpRng()<.5?-q:q,cpRng()<.5?-q:q)});return{X,x:fft(X,true)}})}
+function cpParams(){const N=Math.pow(2,+$('cpN').value),Lc=+$('cpLc').value,L=+$('cpL').value,g=+$('cpG').value,s=+$('cpS').value;return{N,Lc,L,g,s}}
+function cpSimulate(p){
+  if(!cpBlocks.length||cpBlocks[0].X.length!==p.N)cpNewData(p.N);
+  const stream=[];for(const b of cpBlocks){const x=b.x;stream.push(...x.slice(p.N-p.Lc).concat(x))}
+  const h1=mul(C(p.g,0),C(Math.cos(Math.PI/5),Math.sin(Math.PI/5)));
+  const y=Array.from({length:stream.length+p.L},()=>C());
+  for(let n=0;n<stream.length;n++){y[n]=add(y[n],stream[n]);y[n+p.L]=add(y[n+p.L],mul(h1,stream[n]))}
+  const blockLen=p.N+p.Lc,curr=2,start=curr*blockLen+p.Lc+p.s;
+  const seg=Array.from({length:p.N},(_,n)=>y[start+n]||C());
+  const Y=fft(seg,false);
+  const H=Array.from({length:p.N},(_,k)=>add(C(1,0),mul(h1,C(Math.cos(-2*Math.PI*k*p.L/p.N),Math.sin(-2*Math.PI*k*p.L/p.N)))));
+  const X=cpBlocks[curr].X;
+  const model=X.map((z,k)=>mul(mul(H[k],z),C(Math.cos(2*Math.PI*k*p.s/p.N),Math.sin(2*Math.PI*k*p.s/p.N))));
+  const err=Y.map((z,k)=>Math.hypot(z.re-model[k].re,z.im-model[k].im));
+  const den=Math.sqrt(model.reduce((a,z)=>a+abs2(z),0)/p.N)||1;
+  const normErr=err.map(e=>e/den);
+  const evm=Math.sqrt(normErr.reduce((a,e)=>a+e*e,0)/p.N);
+  const eq=Y.map((z,k)=>divc(z,mul(H[k],C(Math.cos(2*Math.PI*k*p.s/p.N),Math.sin(2*Math.PI*k*p.s/p.N)))));
+  return{normErr,evm,eq,H,X,safe:p.Lc>=p.L&&p.s>=p.L-p.Lc&&p.s<=0}
+}
+function drawCp(){
+  const p=cpParams();
+  $('cpNOut').textContent=p.N;$('cpLcOut').textContent=p.Lc;$('cpLOut').textContent=p.L;
+  $('cpGOut').textContent=p.g.toFixed(2);$('cpSOut').textContent=String(p.s);
+  $('cpS').min=String(-Math.max(p.Lc+4,8));$('cpS').max=String(Math.min(p.N/2,16));
+  const res=cpSimulate(p);
+  $('cpEta').textContent=(100*p.N/(p.N+p.Lc)).toFixed(1)+'%';
+  $('cpSafe').textContent=p.Lc>=p.L?'['+(p.L-p.Lc)+', 0]':'none';
+  $('cpEvm').textContent=(100*res.evm).toFixed(res.evm<.001?4:2)+'%';
+  $('cpVerdict').textContent=res.safe?'valid':'broken';
+  $('cpNote').innerHTML=p.Lc<p.L
+    ?'<strong>Insufficient CP:</strong> L<sub>c</sub> &lt; L. No length-N window avoids adjacent-symbol contamination; the block is not a circular convolution.'
+    :(!res.safe
+      ?'<strong>Window outside the CP-safe interval:</strong> the CP is long enough, but this start includes samples from an adjacent symbol.'
+      :'<strong>Valid circular-convolution block:</strong> the FFT diagonalises the channel. A negative start offset contributes only the phase ramp e<sup>j2πks/N</sup>.');
+
+  /* timeline */
+  const z=panelCanvas($('cpTimeline')),Lm=52,R=18,T=28,B=48,xMin=-Math.max(p.Lc+8,16),xMax=p.N+Math.max(8,p.Lc),
+    pw=z.w-Lm-R,x=t=>Lm+(t-xMin)/(xMax-xMin)*pw;
+  z.c.strokeStyle=css('--border');z.c.fillStyle=css('--muted');z.c.font='11px system-ui';
+  for(let q=0;q<=8;q++){const t=xMin+q*(xMax-xMin)/8,px=x(t);z.c.beginPath();z.c.moveTo(px,T);z.c.lineTo(px,z.h-B);z.c.stroke();z.c.textAlign='center';z.c.textBaseline='top';z.c.fillText(String(Math.round(t)),px,z.h-B+6)}
+  z.c.strokeStyle=css('--text');z.c.beginPath();z.c.moveTo(Lm,z.h-B);z.c.lineTo(z.w-R,z.h-B);z.c.stroke();
+  const rect=(a,b,y,h,col)=>{const xa=x(a),xb=x(b);z.c.save();z.c.globalAlpha=.22;z.c.fillStyle=col;z.c.fillRect(xa,y,Math.max(0,xb-xa),h);z.c.restore();z.c.strokeStyle=col;z.c.strokeRect(xa,y,Math.max(0,xb-xa),h)};
+  rect(xMin,-p.Lc,70,44,css('--muted'));
+  if(p.Lc>0)rect(-p.Lc,0,70,44,css('--cyan'));
+  rect(0,p.N,70,44,css('--green'));
+  rect(p.N,xMax,70,44,css('--muted'));
+  z.c.fillStyle=css('--text');z.c.textAlign='center';z.c.textBaseline='middle';
+  if(p.Lc>0)z.c.fillText('CP',x(-p.Lc/2),92);
+  z.c.fillText('useful N='+p.N,x(p.N/2),92);
+  z.c.fillText('prev',x((xMin-p.Lc)/2),92);z.c.fillText('next',x((p.N+xMax)/2),92);
+  z.c.fillStyle=css('--muted');z.c.textAlign='left';z.c.fillText('Safe FFT-start positions',Lm,140);
+  if(p.Lc>=p.L){const a=p.L-p.Lc,b=0;z.c.save();z.c.globalAlpha=.35;z.c.fillStyle=css('--green');z.c.fillRect(x(a),152,Math.max(3,x(b)-x(a)),22);z.c.restore()}
+  else{z.c.fillStyle=css('--red');z.c.fillText('none: CP shorter than L',Lm,162)}
+  const yW=210;z.c.strokeStyle=css('--orange');z.c.lineWidth=3;
+  z.c.beginPath();z.c.moveTo(x(p.s),yW);z.c.lineTo(x(p.s+p.N),yW);z.c.stroke();
+  z.c.beginPath();z.c.moveTo(x(p.s),yW-10);z.c.lineTo(x(p.s),yW+10);z.c.moveTo(x(p.s+p.N),yW-10);z.c.lineTo(x(p.s+p.N),yW+10);z.c.stroke();
+  z.c.fillStyle=css('--orange');z.c.font='11px system-ui';z.c.textAlign='center';
+  z.c.fillText('FFT window [s, s+N)',x(p.s+p.N/2),yW-18);
+  z.c.strokeStyle=css('--text');z.c.lineWidth=1.5;z.c.beginPath();z.c.moveTo(x(0),48);z.c.lineTo(x(p.L),48);z.c.stroke();
+  z.c.fillStyle=css('--muted');z.c.fillText('L = '+p.L,x(p.L/2),40);
+  bullets($('cpTimelineNote'),[
+    'Safe starts exist only when L_c ≥ L: the interval is ['+(p.Lc>=p.L?(p.L-p.Lc)+', 0':'none')+'].',
+    'Selected window starts at s = '+p.s+'. '+(res.safe?'Inside the safe range.':'Outside — model broken.'),
+    'Efficiency η_CP = '+(100*p.N/(p.N+p.Lc)).toFixed(1)+'%.'
+  ]);
+
+  /* channel stems */
+  z=axes($('cpChan'),-0.5,Math.max(p.L+1,8),0,1.15,'Delay ℓ (samples)','|h[ℓ]|',{xticks:Math.min(6,Math.max(p.L+1,8)),yticks:4});
+  stem(z,0,1,css('--blue'));stem(z,p.L,p.g,css('--purple'));
+  bullets($('cpChanNote'),[
+    'Two-path channel: h[0] = 1 and h[L] = g·e<sup>jπ/5</sup> with |g| = '+p.g.toFixed(2)+'.',
+    'Multipath is not removed by the CP — it becomes a per-subcarrier complex gain H[k] = 1 + g e<sup>−j2πkL/N</sup> e<sup>jπ/5</sup>.',
+    'The CP only ensures that the useful N samples equal a circular convolution of h with the current block.'
+  ]);
+
+  /* model error bars */
+  const mxE=Math.max(...res.normErr,1e-8);
+  z=axes($('cpToneErr'),-0.5,p.N-0.5,0,mxE*1.15,'Subcarrier k','Normalised |Y−model|',{xticks:Math.min(8,p.N-1),yticks:4,yfmt:v=>v.toExponential(1)});
+  for(let k=0;k<p.N;k++){
+    const px=z.X(k),y0=z.Y(0),y1=z.Y(res.normErr[k]),bw=Math.max(2,(z.w-z.m.l-z.m.r)/p.N*0.65);
+    z.c.fillStyle=res.safe?css('--green'):css('--red');
+    z.c.fillRect(px-bw/2,y1,bw,y0-y1);
+  }
+  bullets($('cpToneErrNote'),[
+    'Each bar is |Y[k] − e<sup>j2πks/N</sup> H[k] X[k]| / RMS(model).',
+    res.safe?'Model EVM '+(100*res.evm).toFixed(4)+'% — numerical floor; the diagonal model holds.'
+      :'Model EVM '+(100*res.evm).toFixed(2)+'% — ICI/ISI from an insufficient CP or a bad window.',
+    'AWGN is off here so the residual is pure model mismatch.'
+  ]);
+
+  /* constellation after ZF */
+  const zc=axes($('cpConst'),-2,2,-2,2,'In-phase','Quadrature');
+  zc.c.save();zc.c.globalAlpha=.55;zc.c.fillStyle=css('--blue');
+  res.eq.forEach(v=>{zc.c.beginPath();zc.c.arc(zc.X(Math.max(-2,Math.min(2,v.re))),zc.Y(Math.max(-2,Math.min(2,v.im))),3.2,0,Math.PI*2);zc.c.fill()});zc.c.restore();
+  zc.c.save();zc.c.strokeStyle=css('--red');zc.c.lineWidth=2;
+  qpsk.forEach(pt=>{const px=zc.X(pt.re),py=zc.Y(pt.im);zc.c.beginPath();zc.c.moveTo(px-6,py-6);zc.c.lineTo(px+6,py+6);zc.c.moveTo(px-6,py+6);zc.c.lineTo(px+6,py-6);zc.c.stroke()});zc.c.restore();
+  bullets($('cpConstNote'),[
+    'Per-bin ZF with the true H[k] and phase ramp for offset s — no estimation error.',
+    res.safe?'Clusters sit on the QPSK points: the model is exact, so equalization undoes H[k] completely (noise-free sim).'
+      :'Clusters smear: when the circular model is broken, a diagonal equalizer cannot undo the interference.',
+    'Try the presets: Sufficient CP, CP too short, Late window.'
+  ]);
+}
+document.querySelectorAll('[data-cp-preset]').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('[data-cp-preset]').forEach(x=>x.setAttribute('aria-pressed',x===b));
+  const name=b.dataset.cpPreset;
+  if(name==='safe'){$('cpLc').value=10;$('cpL').value=6;$('cpS').value=-2}
+  else if(name==='short'){$('cpLc').value=4;$('cpL').value=9;$('cpS').value=0}
+  else if(name==='late'){$('cpLc').value=10;$('cpL').value=6;$('cpS').value=3}
+  drawCp();
+}));
+['cpN','cpLc','cpL','cpG','cpS'].forEach(id=>$(id).addEventListener('input',()=>{
+  document.querySelectorAll('[data-cp-preset]').forEach(b=>b.setAttribute('aria-pressed','false'));drawCp()}));
+
+let ofEq='mmse',ofPerfect=false;
+document.querySelectorAll('[data-of-eq]').forEach(b=>b.addEventListener('click',()=>{ofEq=b.dataset.ofEq;drawEq()}));
+$('ofPerfect').addEventListener('click',()=>{ofPerfect=!ofPerfect;drawEq()});
+function ofParams(){const N=Math.pow(2,+$('ofN').value),L=+$('ofL').value,P=+$('ofP').value,snr=+$('ofSnr').value;return{N,L,P:Math.min(P,N),snr,lambda:Math.pow(10,-snr/10)}}
+function combEstimate(H,P,N,lambda,r){
+  /* LS on pilot subcarriers with unit-modulus pilots, then linear interpolation with wrap */
+  const sd=Math.sqrt(lambda/2),idx=[],val=[];
+  for(let k=0;k<N;k+=P){idx.push(k);val.push(add(H[k],C(gauss(r)*sd,gauss(r)*sd)))}
+  if(idx[idx.length-1]!==N-1){idx.push(N);val.push(val[0])}
+  const est=Array.from({length:N},()=>C());
+  for(let s=0;s<idx.length-1;s++){const a=idx[s],b=idx[s+1],va=val[s],vb=val[s+1];
+    for(let k=a;k<Math.min(b,N);k++){const t=(k-a)/(b-a);est[k]=add(scale(va,1-t),scale(vb,t))}}
+  est[N-1]=est[N-1]||val[val.length-1];
+  return{est,pilots:idx.filter(k=>k<N),pilotVals:val}}
+function drawOfTone(){
+  const p=ofParams(),h=pdpChannel(p.L,4407),H=dftOf(h,p.N),
+    ce=combEstimate(H,p.P,p.N,p.lambda,rng(8801)),Hh=ofPerfect?H:ce.est,el=$('ofTone');
+  el.max=p.N-1;
+  const k=Math.min(Math.max(0,+el.value),p.N-1);
+  if(+el.value!==k)el.value=k;
+  const isPilot=k%p.P===0;
+  $('ofToneOut').textContent=k+(isPilot?' (pilot)':'');
+  const Hk=H[k],He=Hh[k],G=ofEq==='zf'?divc(C(1,0),He):scale(conj(He),1/(abs2(He)+p.lambda)),
+    mod=$('ofMod').value,name=ofEq==='zf'?'ZF':'MMSE',
+    st=drawToneConst('ofToneConst',{H:Hk,G,lambda:p.lambda,mod,seed:7301+k,k}),
+    estErr=Math.sqrt(abs2(sub(He,Hk)));
+  bullets($('ofToneConstNote'),[
+    'Subcarrier k = '+k+' carries its own '+(mod==='qam16'?'16-QAM':'QPSK')+' symbol Xₖ, and the channel hands it |Hₖ| = '+st.hMag.toFixed(3)+' at ∠Hₖ = '+fmtDeg(st.hDeg)+'. The dashed orange circles are the ideal points after that rotation and scaling.',
+    'Drag k across the block: every subcarrier sits at a different point of the same H(f), so the constellation turns and breathes subcarrier by subcarrier. That is the picture per-subcarrier equalization exists to undo.',
+    ofPerfect?'With Ĥₖ assumed perfect the residual gain is GₖHₖ = '+st.ghMag.toFixed(3)+' ∠'+fmtDeg(st.ghDeg)+' — rotation fully removed'+(ofEq==='mmse'?', with the MMSE shrinkage left in on purpose.':'.')
+      :'Ĥₖ comes from comb pilots every P = '+p.P+' subcarriers, and here it is off by '+estErr.toFixed(3)+'. The residual gain is GₖHₖ = '+st.ghMag.toFixed(3)+' ∠'+fmtDeg(st.ghDeg)+', so a residual twist survives equalization — visible as the blue cloud sitting off the red circles.',
+    isPilot?'Subcarrier '+k+' is itself a pilot, so its estimate is the cleanest in the block: pilot noise only, no interpolation error. Step one subcarrier either side to see interpolation take over.'
+      :'Subcarrier '+k+' lies between pilots, so Ĥₖ is interpolated. Widen P and watch the blue cloud drift off the circles as the interpolation starts to alias.',
+    mod==='qam16'?'16-QAM is where a faded subcarrier hurts: its rings are '+(2/Math.sqrt(10)).toFixed(2)+' apart against QPSK’s '+(2/Math.sqrt(2)).toFixed(2)+', so the same |Hₖ| and the same noise now push the inner ring into its neighbours’ decision regions. Measured EVM '+(100*st.evm).toFixed(1)+'%.'
+      :'Measured EVM '+(100*st.evm).toFixed(1)+'% with the '+name+' equalizer. Switch to 16-QAM to see why deep subcarriers need coding across subcarriers: the same fade QPSK shrugs off closes the 16-QAM rings.'
+  ]);
+}
+function drawEq(){
+  document.querySelectorAll('[data-of-eq]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.ofEq===ofEq));
+  $('ofPerfect').setAttribute('aria-pressed',ofPerfect);
+  const p=ofParams(),h=pdpChannel(p.L,4407),H=dftOf(h,p.N),mag=H.map(v=>Math.sqrt(abs2(v))),tau=rmsDelay(h);
+  $('ofNOut').textContent=p.N;$('ofLOut').textContent=p.L;$('ofPOut').textContent=p.P+(p.P===1?' subcarrier':' subcarriers');$('ofSnrOut').textContent=p.snr+' dB';
+  $('ofLambda').innerHTML='NN₀/E<sub>X</sub> = '+p.lambda.toFixed(4);
+  const flat=5*tau/p.N,limitP=p.N/(p.L+1);
+  $('ofFlat').textContent=flat.toFixed(3);
+  $('ofPilotOver').textContent=(100/p.P).toFixed(1)+'%';
+  $('ofRxFft').textContent=p.N+'-point';
+  $('ofTxIfft').textContent=p.N+'-point, required';
+  $('ofTxCp').innerHTML='L<sub>c</sub> ≥ L = '+p.L;
+  $('ofTxChan').textContent='memory L = '+p.L;
+  $('ofRxEst').textContent=ofPerfect?'assumed perfect':'comb pilots, P = '+p.P;
+  $('ofRxEq').textContent=ofEq==='zf'?'ZF: 1/Ĥ_k':'MMSE: Ĥ*/(|Ĥ|²+NN₀/E_X)';
+  $('ofDenomCalc').innerHTML='SC-FDE: E|X[k]|² = N·E<sub>x</sub>, E|V[k]|² = N·N₀ → ratio N₀/E<sub>x</sub><br>OFDM: E|X<sub>k</sub>|² = E<sub>X</sub>, E|V<sub>k</sub>|² = N·N₀ → ratio NN₀/E<sub>X</sub><br>current value = '+p.lambda.toFixed(4)+' ('+p.snr+' dB average subcarrier SNR)';
+
+  /* --- estimate --- */
+  const er=rng(8801),ce=combEstimate(H,p.P,p.N,p.lambda,er),Hh=ofPerfect?H:ce.est,
+    nmse=H.reduce((a,v,k)=>a+abs2(sub(Hh[k],v)),0)/H.reduce((a,v)=>a+abs2(v),0);
+  $('ofNmse').textContent=ofPerfect?'0 (assumed)':expo(nmse);
+
+  /* --- subcarrier grid (deck: ofdm_transceiver inset) --- */
+  drawOfGrid(p);
+
+  /* --- |H[k]| with pilots (deck: ofdm_subcarrier_flat_fading) --- */
+  const emag=Hh.map(v=>Math.sqrt(abs2(v))),top=Math.max(...mag,...emag)*1.2;
+  let z=axes($('ofChannelPilots'),0,p.N-1,0,top,'Subcarrier index k','|H[k]|',{xticks:Math.min(8,p.N-1),yticks:4});
+  z.c.save();z.c.strokeStyle=css('--orange');z.c.globalAlpha=.35;z.c.lineWidth=1;
+  ce.pilots.forEach(k=>{z.c.beginPath();z.c.moveTo(z.X(k),z.m.t);z.c.lineTo(z.X(k),z.h-z.m.b);z.c.stroke()});z.c.restore();
+  line(z,mag.map((v,k)=>[k,v]),css('--blue'),2.4);
+  if(!ofPerfect)line(z,emag.map((v,k)=>[k,v]),css('--purple'),2,[5,4]);
+  ce.pilots.forEach(k=>dot(z,k,Math.sqrt(abs2(ce.pilotVals[ce.pilots.indexOf(k)])),css('--orange'),3.4));
+  bullets($('ofChannelNote'),[
+    'The channel has '+(p.L+1)+' taps, so |H[k]| has at most '+(p.L+1)+' degrees of freedom across the block: it can only wiggle so fast, which is what makes interpolation between pilots possible at all.',
+    'Pilots every P = '+p.P+' subcarriers means '+ce.pilots.length+' known subcarriers and '+(100/p.P).toFixed(1)+'% of the block spent on training.',
+    p.P<=limitP?'P = '+p.P+' is within the sampling limit N/(L+1) = '+limitP.toFixed(1)+', so the interpolated estimate tracks the true response.'
+      :'P = '+p.P+' exceeds the sampling limit N/(L+1) = '+limitP.toFixed(1)+'. The interpolation now aliases: the dashed estimate cuts across features it never sampled.'
+  ]);
+
+  /* --- per-subcarrier SNR --- */
+  const snrK=mag.map(m=>10*Math.log10(Math.max(m*m/p.lambda,1e-12))),
+    avg=10*Math.log10(mag.reduce((a,m)=>a+m*m,0)/p.N/p.lambda),
+    loT=Math.floor(Math.min(...snrK,0)/5)*5,hiT=Math.ceil(Math.max(...snrK,avg)/5)*5;
+  z=axes($('ofSnrTones'),0,p.N-1,loT,hiT,'Subcarrier index k','Per-subcarrier SNR (dB)',{xticks:Math.min(8,p.N-1),yticks:Math.min(7,Math.max(2,(hiT-loT)/5))});
+  z.c.save();z.c.globalAlpha=.10;z.c.fillStyle=css('--red');z.c.fillRect(z.m.l,z.Y(Math.min(0,hiT)),z.w-z.m.l-z.m.r,Math.max(0,z.Y(loT)-z.Y(Math.min(0,hiT))));z.c.restore();
+  line(z,[[0,avg],[p.N-1,avg]],css('--green'),1.8,[5,4]);
+  line(z,snrK.map((v,k)=>[k,v]),css('--blue'),2.4);
+  const deep=snrK.filter(v=>v<0).length;
+  plotLabel(z,z.X(p.N*0.02),z.Y(avg)-7,'average '+avg.toFixed(1)+' dB',css('--green'));
+  bullets($('ofSnrNote'),[
+    'Each subcarrier carries its own QAM symbol at its own SNR: the spread here is '+(Math.max(...snrK)-Math.min(...snrK)).toFixed(1)+' dB across the block, around an average of '+avg.toFixed(1)+' dB.',
+    deep?deep+' of '+p.N+' subcarriers fall below 0 dB. Uncoded, those subcarriers dominate the error rate however good the rest are.'
+      :'No subcarrier falls below 0 dB at this setting, but the weakest still sits '+(avg-Math.min(...snrK)).toFixed(1)+' dB below average.',
+    'This is why practical OFDM codes across subcarriers: coding turns a few dead subcarriers into a manageable average, which per-subcarrier equalization alone cannot do.'
+  ]);
+
+  /* --- selected-subcarrier constellation --- */
+  drawOfTone();
+
+  /* --- NMSE versus pilot spacing --- */
+  const Ps=[],nm=[];
+  for(let P=1;P<=Math.min(24,p.N);P++){let acc=0;const rr=rng(1200+P);
+    for(let t=0;t<12;t++){const e=combEstimate(H,P,p.N,p.lambda,rr);acc+=H.reduce((a,v,k)=>a+abs2(sub(e.est[k],v)),0)/H.reduce((a,v)=>a+abs2(v),0)}
+    Ps.push(P);nm.push(acc/12)}
+  const hiN=Math.ceil(Math.log10(Math.max(...nm))),loN=Math.floor(Math.log10(Math.max(Math.min(...nm),1e-6))),spanN=Math.min(6,Math.max(2,hiN-loN));
+  z=axes($('ofPilotSweep'),1,Math.min(24,p.N),hiN-spanN,hiN,'Pilot spacing P (subcarriers)','Estimation NMSE',{xticks:Math.min(6,Math.min(24,p.N)-1),yticks:spanN,yfmt:decade});
+  const clipN=v=>Math.min(hiN,Math.max(hiN-spanN,Math.log10(Math.max(v,1e-9))));
+  if(limitP>1&&limitP<Math.min(24,p.N)){z.c.save();z.c.strokeStyle=css('--red');z.c.lineWidth=2;z.c.beginPath();z.c.moveTo(z.X(limitP),z.Y(hiN-spanN));z.c.lineTo(z.X(limitP),z.Y(hiN));z.c.stroke();z.c.restore();plotLabel(z,z.X(limitP),z.Y(hiN)+6,'P = N/(L+1) = '+limitP.toFixed(1),css('--red'),'top')}
+  line(z,Ps.map((P,i)=>[P,clipN(nm[i])]),css('--blue'),2.4);
+  Ps.forEach((P,i)=>dot(z,P,clipN(nm[i]),css('--blue'),3));
+  const idxP=Ps.indexOf(p.P);if(idxP>=0)dot(z,p.P,clipN(nm[idxP]),css('--green'),6);
+  bullets($('ofPilotNote'),[
+    'Below the red line, adding pilots buys little: the estimate is already limited by pilot noise, and the extra subcarriers just cost throughput.',
+    'Above it the curve turns sharply upward. The channel response has '+(p.L+1)+' degrees of freedom, so sampling it more coarsely than every N/(L+1) = '+limitP.toFixed(1)+' subcarriers aliases.',
+    'Your P = '+p.P+' gives NMSE '+expo(nm[Math.max(idxP,0)])+' at '+(100/p.P).toFixed(1)+'% pilot overhead — on top of the CP overhead, which is separate.'
+  ]);
+
+  /* --- PAPR --- */
+  drawOfPapr(p);
+
+  /* --- error versus SNR with estimated and perfect channel --- */
+  drawOfEvm(p,H,mag);
+
+  /* --- architecture comparison (deck: tde_fde_ofdm_comparison) --- */
+  drawOfCompare(p);
+}
+function drawOfGrid(p){
+  const z=panelCanvas($('ofGrid')),pad=42,symbols=8,subcarriers=Math.min(p.N,32),
+    W=z.w-pad-16,Hh=z.h-58,cw=W/symbols,ch=Hh/subcarriers;
+  z.c.fillStyle=css('--muted');z.c.textAlign='center';z.c.textBaseline='top';
+  z.c.fillText('OFDM symbol index →',pad+W/2,z.h-16);
+  z.c.save();z.c.translate(13,30+Hh/2);z.c.rotate(-Math.PI/2);z.c.fillText('subcarrier k →',0,0);z.c.restore();
+  for(let s=0;s<symbols;s++)for(let k=0;k<subcarriers;k++){
+    const isPilot=(k%p.P===0)&&(s%2===0),isBlockPilot=(s===0);
+    const x=pad+s*cw,y=30+k*ch;
+    z.c.fillStyle=isBlockPilot?css('--green'):(isPilot?css('--orange'):css('--blue'));
+    z.c.globalAlpha=isBlockPilot?.55:(isPilot?.75:.22);
+    z.c.fillRect(x+1,y+1,Math.max(1,cw-2),Math.max(1,ch-2));z.c.globalAlpha=1}
+  z.c.strokeStyle=css('--border');z.c.strokeRect(pad,30,W,Hh);
+  z.c.fillStyle=css('--muted');z.c.textAlign='left';z.c.textBaseline='bottom';
+  z.c.fillText('green: block (preamble) pilot · orange: comb pilots every P = '+p.P+' · blue: data',pad,26);
+  bullets($('ofGridNote'),[
+    'A block pilot (a whole training symbol) gives frame sync and an initial Ĥ[k] on every subcarrier; comb pilots then track it across later symbols.',
+    'Showing '+subcarriers+' of '+p.N+' subcarriers over 8 OFDM symbols. Comb pilots occupy 1 subcarrier in '+p.P+', which is '+(100/p.P).toFixed(1)+'% of the grid here.',
+    'Time-varying channels interpolate along both axes: across subcarriers within a symbol, and across symbols within the coherence time.'
+  ]);
+}
+function drawOfPapr(p){
+  const rr=rng(5150),blocks=260,ofdmP=[],scP=[];
+  for(let b=0;b<blocks;b++){
+    const X=qpskBlock(p.N,rr),x=fft(X,true);
+    let pk=0,mn=0;x.forEach(v=>{const q=abs2(v);pk=Math.max(pk,q);mn+=q});
+    ofdmP.push(10*Math.log10(pk/(mn/p.N)));
+    const s=qpskBlock(p.N,rr);let pk2=0,mn2=0;s.forEach(v=>{const q=abs2(v);pk2=Math.max(pk2,q);mn2+=q});
+    scP.push(10*Math.log10(pk2/(mn2/p.N)))}
+  const ccdf=(arr,x)=>arr.filter(v=>v>x).length/arr.length;
+  const xmax=Math.max(12,Math.ceil(Math.max(...ofdmP))),z=axes($('ofPapr'),0,xmax,-3,0,'PAPR threshold (dB)','P(PAPR > threshold)',{xticks:6,yticks:3,yfmt:decade});
+  const build=arr=>{const q=[];for(let x=0;x<=xmax;x+=0.15){const v=ccdf(arr,x);if(v>0)q.push([x,Math.max(-3,Math.log10(v))]);else break}return q};
+  line(z,build(scP),css('--blue'),2.4);
+  line(z,build(ofdmP),css('--purple'),2.4);
+  const pct=arr=>{const s=arr.slice().sort((a,b)=>a-b);return s[Math.min(s.length-1,Math.floor(0.999*s.length))]};
+  const o999=pct(ofdmP),s999=pct(scP);
+  $('ofPaprVal').textContent=o999.toFixed(1)+' vs '+Math.max(0,s999).toFixed(1)+' dB';
+  bullets($('ofPaprNote'),[
+    'At the 0.1% level: OFDM '+o999.toFixed(1)+' dB against '+Math.max(0,s999).toFixed(1)+' dB for the single-carrier block — the IFFT superposes '+p.N+' independent subcarriers, and occasionally they add up.',
+    'The single-carrier curve is nearly a step: QPSK in the time domain has constant modulus, so its symbol-rate PAPR is essentially 0 dB.',
+    'Measured at symbol rate without pulse shaping, so both figures understate the true continuous-time PAPR. The gap between the two architectures is the point, not the absolute numbers.'
+  ]);
+}
+function drawOfEvm(p,H,mag){
+  const xs=[],zfE=[],mmE=[],zfP=[],mmP=[];
+  for(let sn=-5;sn<=30;sn+=2.5){
+    const lam=Math.pow(10,-sn/10),rr=rng(3300+Math.round(sn*4));
+    let aZ=0,aM=0,aZp=0,aMp=0,cnt=0;
+    for(let t=0;t<10;t++){
+      const est=combEstimate(H,p.P,p.N,lam,rr).est,
+        X=qpskBlock(p.N,rr),sd=Math.sqrt(lam/2),
+        Y=X.map((v,k)=>add(mul(H[k],v),C(gauss(rr)*sd,gauss(rr)*sd)));
+      for(let k=0;k<p.N;k++){
+        const zf=divc(Y[k],est[k]),mm=mul(divc(conj(est[k]),C(abs2(est[k])+lam,0)),Y[k]),
+          zfp=divc(Y[k],H[k]),mmp=mul(divc(conj(H[k]),C(abs2(H[k])+lam,0)),Y[k]);
+        aZ+=abs2(sub(zf,X[k]));aM+=abs2(sub(mm,X[k]));aZp+=abs2(sub(zfp,X[k]));aMp+=abs2(sub(mmp,X[k]));cnt++}}
+    xs.push(sn);zfE.push(aZ/cnt);mmE.push(aM/cnt);zfP.push(aZp/cnt);mmP.push(aMp/cnt)}
+  const all=zfE.concat(mmE,zfP,mmP),hi=Math.ceil(Math.log10(Math.max(...all))),lo=Math.floor(Math.log10(Math.max(Math.min(...all),1e-6))),span=Math.min(7,Math.max(2,hi-lo));
+  const z=axes($('ofEvm'),-5,30,hi-span,hi,'Average subcarrier SNR E'+'_X/(NN₀) (dB)','Normalized symbol error power',{xticks:7,yticks:span,yfmt:decade});
+  const clip=v=>Math.min(hi,Math.max(hi-span,Math.log10(Math.max(v,1e-9))));
+  line(z,xs.map((s,i)=>[s,clip(zfP[i])]),css('--cyan'),1.8,[6,4]);
+  line(z,xs.map((s,i)=>[s,clip(mmP[i])]),css('--cyan'),1.8,[2,4]);
+  line(z,xs.map((s,i)=>[s,clip(zfE[i])]),css('--orange'),2.4);
+  line(z,xs.map((s,i)=>[s,clip(mmE[i])]),css('--purple'),2.4);
+  const i0=xs.reduce((b,s,i)=>Math.abs(s-p.snr)<Math.abs(xs[b]-p.snr)?i:b,0);
+  dot(z,xs[i0],clip(ofEq==='zf'?zfE[i0]:mmE[i0]),css('--green'),6);
+  plotLabel(z,z.X(xs[i0]),z.Y(clip(Math.max(zfE[i0],mmE[i0])))-9,p.snr+' dB',css('--green'));
+  bullets($('ofEvmNote'),[
+    'Solid curves use the comb-pilot estimate Ĥ[k]; dashed cyan curves assume perfect channel knowledge. The gap between them is the cost of estimation, and it does not vanish at high SNR if P is too large.',
+    'ZF stays above MMSE throughout because the channel has deep fades: at '+p.snr+' dB the measured gap is '+(zfE[i0]/Math.max(mmE[i0],1e-12)).toFixed(1)+'×.',
+    'Monte Carlo over 10 blocks per point, so a little scatter in the curves is expected.'
+  ]);
+}
+function drawOfCompare(p){
+  const z=panelCanvas($('ofCompare')),Lc=p.L,
+    tdePer=Math.round(1.5*p.L)+1,fdePer=Math.log2(p.N)+1,
+    rows=[
+      {name:'Multiplies / symbol',vals:[tdePer,fdePer,fdePer],fmt:v=>v.toFixed(0)},
+      {name:'Latency (symbols)',vals:[Math.round(1.5*p.L),p.N+Lc,p.N+Lc],fmt:v=>v.toFixed(0)},
+      {name:'CP overhead',vals:[0,Lc/(p.N+Lc),Lc/(p.N+Lc)],fmt:v=>(100*v).toFixed(1)+'%'},
+      {name:'PAPR penalty',vals:[0.2,0.3,1],fmt:v=>v<.5?'low':'high'}
+    ],
+    pad=140,W=z.w-pad-20,rowH=(z.h-46)/rows.length,cols=[css('--orange'),css('--blue'),css('--purple')];
+  z.c.textBaseline='middle';
+  rows.forEach((row,i)=>{
+    const y=24+i*rowH,mx=Math.max(...row.vals,1e-9);
+    z.c.fillStyle=css('--text');z.c.textAlign='right';z.c.font='11px system-ui';
+    z.c.fillText(row.name,pad-10,y+rowH/2-4);
+    row.vals.forEach((v,j)=>{
+      const bh=Math.max(3,(rowH-20)/3-3),by=y+4+j*((rowH-16)/3),bw=Math.max(2,W*v/mx);
+      z.c.fillStyle=cols[j];z.c.globalAlpha=.8;z.c.fillRect(pad,by,bw,bh);z.c.globalAlpha=1;
+      z.c.fillStyle=css('--muted');z.c.textAlign='left';z.c.font='10px system-ui';
+      z.c.fillText(row.fmt(v),pad+bw+6,by+bh/2)});
+    z.c.strokeStyle=css('--border');z.c.beginPath();z.c.moveTo(pad-4,y+rowH-3);z.c.lineTo(z.w-14,y+rowH-3);z.c.stroke()});
+  z.c.font='11px system-ui';z.c.fillStyle=css('--muted');z.c.textAlign='left';z.c.textBaseline='top';
+  z.c.fillText('bars within each row: TDE, SC-FDE, OFDM (top to bottom)',pad-130,6);
+  bullets($('ofCompareNote'),[
+    'At N = '+p.N+', L = '+p.L+' and L_c = L: TDE needs about '+tdePer+' multiplies per symbol against '+fdePer.toFixed(0)+' for either block architecture.',
+    'TDE streams with only equalizer and decision delay; both block architectures wait a whole block of '+(p.N+Lc)+' symbols, and both pay the same '+(100*Lc/(p.N+Lc)).toFixed(1)+'% CP overhead.',
+    'SC-FDE and OFDM differ almost nowhere on this chart except PAPR — which is exactly why DFT-spread OFDM exists.'
+  ]);
+}
+['ofN','ofL','ofP','ofSnr'].forEach(id=>$(id).addEventListener('input',drawEq));
+['ofTone','ofMod'].forEach(id=>$(id).addEventListener('input',drawOfTone));
+$('ofDenomHelp').addEventListener('click',()=>$('ofDenomDialog').showModal());
+$('ofDenomClose').addEventListener('click',()=>$('ofDenomDialog').close());
+
+
+
+window.addEventListener('resize',drawActive);
+drawBridge();
+</script>
+</body>
+</html>

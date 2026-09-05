@@ -15,10 +15,10 @@
 .summary-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(320px,.85fr);gap:10px;align-items:stretch;margin-top:12px}.summary-row .toolbar-metrics{grid-auto-flow:row;grid-template-columns:repeat(4,minmax(0,1fr))}.summary-row .note{display:block;margin:0;max-width:none}.summary-row .formula{display:block;margin:0;overflow-wrap:anywhere;overflow-x:visible;font-size:.74rem;line-height:1.4}.summary-row .formula div+div{margin-top:5px}
 .mode-row{margin-bottom:10px}.mode-row button{padding:6px 10px}
 .flow-caption{color:var(--muted);font-size:.72rem;margin:-6px 0 14px}
-#cpAssembly,#cpAbsorb{height:300px}#ofGrid{height:290px}#ofCompare{height:300px}
-#motMemoryPlot,#motComplexity,#motTaps,#tdeTaps,#tdeCascade,#tdeDelayCost,#tdeConst,#tdeCostLen,#cpLinCirc,#cpProduct,#cpToneErr,#cpOverhead,#cpConst,#scChannel,#scGain,#scNoise,#scConst,#scToneConst,#scEvmCurve,#ofChannelPilots,#ofToneConst,#ofSnrTones,#ofPilotSweep,#ofPapr,#ofEvm{height:265px}
+#cpAssembly,#cpAbsorb{height:300px}#ofCompare{height:300px}
+#motMemoryPlot,#motComplexity,#motTaps,#tdeTaps,#tdeCascade,#tdeDelayCost,#tdeConst,#tdeCostLen,#cpLinCirc,#cpProduct,#cpToneErr,#cpOverhead,#cpConst,#scChannel,#scGain,#scNoise,#scConst,#scToneConst,#scEvmCurve,#ofToneConst,#ofSnrTones,#ofPapr,#ofEvm{height:265px}
 @media(max-width:900px){.toolbar-split{grid-template-columns:1fr}.toolbar-metrics{grid-auto-flow:row;grid-template-columns:repeat(3,minmax(0,1fr))}.metric-rail{grid-template-columns:repeat(3,minmax(0,1fr))}.metric-rail .formula,.metric-rail .note{grid-column:1/-1}.tabs{grid-template-columns:repeat(3,1fr)}.plots{grid-template-columns:1fr 1fr}.plots:not(.two) .card:last-child{grid-column:1/-1}.model-grid{grid-template-columns:1fr}.checklist{grid-template-columns:1fr 1fr}.control-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.summary-row{grid-template-columns:1fr}.summary-row .toolbar-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:620px){.metric-rail,.toolbar-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}body{padding:14px}.tabs{grid-template-columns:1fr 1fr}.panel-head{display:block}.plots,.two{grid-template-columns:1fr}.plots .card:last-child{grid-column:auto}.flow{display:grid;grid-template-columns:1fr 1fr}.arrow{display:none}.metrics,.checklist{grid-template-columns:1fr 1fr}canvas,.plots.two canvas{height:245px}#motMemoryPlot,#motComplexity,#motTaps,#tdeTaps,#tdeCascade,#tdeDelayCost,#tdeConst,#tdeCostLen,#cpLinCirc,#cpProduct,#cpToneErr,#cpOverhead,#cpConst,#scChannel,#scGain,#scNoise,#scConst,#scToneConst,#scEvmCurve,#ofChannelPilots,#ofToneConst,#ofSnrTones,#ofPilotSweep,#ofPapr,#ofEvm{height:262px}}
+@media(max-width:620px){.metric-rail,.toolbar-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}body{padding:14px}.tabs{grid-template-columns:1fr 1fr}.panel-head{display:block}.plots,.two{grid-template-columns:1fr}.plots .card:last-child{grid-column:auto}.flow{display:grid;grid-template-columns:1fr 1fr}.arrow{display:none}.metrics,.checklist{grid-template-columns:1fr 1fr}canvas,.plots.two canvas{height:245px}#motMemoryPlot,#motComplexity,#motTaps,#tdeTaps,#tdeCascade,#tdeDelayCost,#tdeConst,#tdeCostLen,#cpLinCirc,#cpProduct,#cpToneErr,#cpOverhead,#cpConst,#scChannel,#scGain,#scNoise,#scConst,#scToneConst,#scEvmCurve,#ofToneConst,#ofSnrTones,#ofPapr,#ofEvm{height:262px}}
 @media(max-width:390px){.tabs,.metrics,.checklist,.flow,.control-grid{grid-template-columns:1fr}.ctrl{min-width:100%}.ctrl label{flex-wrap:wrap}}
 </style>
 </head>
@@ -186,7 +186,7 @@
     <div class="card"><div class="title">Per-subcarrier SNR |H<sub>k</sub>|²E<sub>X</sub>/(NN₀)</div><canvas id="ofSnrTones" role="img" aria-label="Per subcarrier signal-to-noise ratio in decibels with deep fades highlighted"></canvas><div class="legend"><span><i class="sw blue"></i>Per-subcarrier SNR</span><span><i class="sw green"></i>Average</span><span><i class="sw" style="background:var(--red)"></i>Below 0 dB</span></div><ul class="bullets" id="ofSnrNote"></ul></div>
     <div class="card"><div class="title">Subcarrier k: the constellation faded by H<sub>k</sub></div><canvas id="ofToneConst" role="img" aria-label="Constellation carried by the selected subcarrier, faded by the channel and after per-subcarrier equalization, against ideal reference circles"></canvas><div class="legend"><span><i class="sw" style="background:var(--red)"></i>Ideal (circles)</span><span><i class="sw orange"></i>Faded by H<sub>k</sub></span><span><i class="sw blue"></i>After G<sub>k</sub></span></div><ul class="bullets" id="ofToneConstNote"></ul></div>
     <div class="card"><div class="title">PAPR: OFDM versus single carrier</div><canvas id="ofPapr" role="img" aria-label="Complementary cumulative distribution of peak to average power ratio for OFDM and single-carrier blocks"></canvas><div class="legend"><span><i class="sw purple"></i>OFDM (IFFT of QPSK subcarriers)</span><span><i class="sw blue"></i>SC-FDE (QPSK in time)</span></div><ul class="bullets" id="ofPaprNote"></ul></div>
-    <div class="card"><div class="title">Symbol error power versus SNR</div><canvas id="ofEvm" role="img" aria-label="Normalized symbol error power against signal to noise ratio for zero forcing and MMSE with estimated and perfect channel knowledge"></canvas><div class="legend"><span><i class="sw orange"></i>ZF</span><span><i class="sw purple"></i>MMSE</span><span><i class="sw" style="background:var(--cyan)"></i>Dashed — perfect Ĥ</span><span><i class="sw green"></i>Your SNR</span></div><ul class="bullets" id="ofEvmNote"></ul></div>
+    <div class="card"><div class="title">Symbol error power versus SNR</div><canvas id="ofEvm" role="img" aria-label="Normalized symbol error power against signal to noise ratio for zero forcing and MMSE with perfect channel knowledge"></canvas><div class="legend"><span><i class="sw orange"></i>ZF</span><span><i class="sw purple"></i>MMSE</span><span><i class="sw green"></i>Your SNR</span></div><ul class="bullets" id="ofEvmNote"></ul></div>
   </div>
 
   <div class="checklist">
@@ -827,58 +827,38 @@ $('scMmseHelp').addEventListener('click',()=>$('scMmseDialog').showModal());
 $('scMmseClose').addEventListener('click',()=>$('scMmseDialog').close());
 
 /* ==================================================================
-   5 · OFDM
+   5 · OFDM (preview — comb pilots / CE live in the Week 8 walkthrough)
    ================================================================== */
 let ofEq='mmse';
-/* Pilot-based estimation moved to the Week 8 walkthrough: Week 7 assumes
-   the channel is known, so the per-subcarrier gain is the true H[k]. */
-const ofPerfect=true,OF_PILOT_P=4;
 document.querySelectorAll('[data-of-eq]').forEach(b=>b.addEventListener('click',()=>{ofEq=b.dataset.ofEq;drawOfdm()}));
-function ofParams(){const N=Math.pow(2,+$('ofN').value),L=+$('ofL').value,P=OF_PILOT_P,snr=+$('ofSnr').value;return{N,L,P:Math.min(P,N),snr,lambda:Math.pow(10,-snr/10)}}
-function combEstimate(H,P,N,lambda,r){
-  /* LS on pilot subcarriers with unit-modulus pilots, then linear interpolation with wrap */
-  const sd=Math.sqrt(lambda/2),idx=[],val=[];
-  for(let k=0;k<N;k+=P){idx.push(k);val.push(add(H[k],C(gauss(r)*sd,gauss(r)*sd)))}
-  if(idx[idx.length-1]!==N-1){idx.push(N);val.push(val[0])}
-  const est=Array.from({length:N},()=>C());
-  for(let s=0;s<idx.length-1;s++){const a=idx[s],b=idx[s+1],va=val[s],vb=val[s+1];
-    for(let k=a;k<Math.min(b,N);k++){const t=(k-a)/(b-a);est[k]=add(scale(va,1-t),scale(vb,t))}}
-  est[N-1]=est[N-1]||val[val.length-1];
-  return{est,pilots:idx.filter(k=>k<N),pilotVals:val}}
+function ofParams(){const N=Math.pow(2,+$('ofN').value),L=+$('ofL').value,snr=+$('ofSnr').value;return{N,L,snr,lambda:Math.pow(10,-snr/10)}}
 function drawOfTone(){
-  const p=ofParams(),h=pdpChannel(p.L,4407),H=dftOf(h,p.N),
-    ce=combEstimate(H,p.P,p.N,p.lambda,rng(8801)),Hh=ofPerfect?H:ce.est,el=$('ofTone');
+  const p=ofParams(),h=pdpChannel(p.L,4407),H=dftOf(h,p.N),el=$('ofTone');
   el.max=p.N-1;
   const k=Math.min(Math.max(0,+el.value),p.N-1);
   if(+el.value!==k)el.value=k;
-  const isPilot=k%p.P===0;
-  $('ofToneOut').textContent=k+(isPilot?' (pilot)':'');
-  const Hk=H[k],He=Hh[k],G=ofEq==='zf'?divc(C(1,0),He):scale(conj(He),1/(abs2(He)+p.lambda)),
+  $('ofToneOut').textContent=k;
+  const Hk=H[k],G=ofEq==='zf'?divc(C(1,0),Hk):scale(conj(Hk),1/(abs2(Hk)+p.lambda)),
     mod=$('ofMod').value,name=ofEq==='zf'?'ZF':'MMSE',
-    st=drawToneConst('ofToneConst',{H:Hk,G,lambda:p.lambda,mod,seed:7301+k,k}),
-    estErr=Math.sqrt(abs2(sub(He,Hk)));
+    st=drawToneConst('ofToneConst',{H:Hk,G,lambda:p.lambda,mod,seed:7301+k,k});
   bullets($('ofToneConstNote'),[
     'Subcarrier k = '+k+' carries its own '+(mod==='qam16'?'16-QAM':'QPSK')+' symbol Xₖ, and the channel hands it |Hₖ| = '+st.hMag.toFixed(3)+' at ∠Hₖ = '+fmtDeg(st.hDeg)+'. The dashed orange circles are the ideal points after that rotation and scaling.',
     'Drag k across the block: every subcarrier sits at a different point of the same H(f), so the constellation turns and breathes subcarrier by subcarrier. That is the picture per-subcarrier equalization exists to undo.',
-    ofPerfect?'With Ĥₖ assumed perfect the residual gain is GₖHₖ = '+st.ghMag.toFixed(3)+' ∠'+fmtDeg(st.ghDeg)+' — rotation fully removed'+(ofEq==='mmse'?', with the MMSE shrinkage left in on purpose.':'.')
-      :'Ĥₖ comes from comb pilots every P = '+p.P+' subcarriers, and here it is off by '+estErr.toFixed(3)+'. The residual gain is GₖHₖ = '+st.ghMag.toFixed(3)+' ∠'+fmtDeg(st.ghDeg)+', so a residual twist survives equalization — visible as the blue cloud sitting off the red circles.',
-    isPilot?'Subcarrier '+k+' is itself a pilot, so its estimate is the cleanest in the block: pilot noise only, no interpolation error. Step one subcarrier either side to see interpolation take over.'
-      :'Subcarrier '+k+' lies between pilots, so Ĥₖ is interpolated. Widen P and watch the blue cloud drift off the circles as the interpolation starts to alias.',
+    'With Ĥₖ assumed perfect (Week 7 preview) the residual gain is GₖHₖ = '+st.ghMag.toFixed(3)+' ∠'+fmtDeg(st.ghDeg)+' — rotation fully removed'+(ofEq==='mmse'?', with the MMSE shrinkage left in on purpose.':'.')+' Comb-pilot estimation of Ĥₖ is developed in the Week 8 walkthrough.',
     mod==='qam16'?'16-QAM is where a faded subcarrier hurts: its rings are '+(2/Math.sqrt(10)).toFixed(2)+' apart against QPSK’s '+(2/Math.sqrt(2)).toFixed(2)+', so the same |Hₖ| and the same noise now push the inner ring into its neighbours’ decision regions. Measured EVM '+(100*st.evm).toFixed(1)+'%.'
       :'Measured EVM '+(100*st.evm).toFixed(1)+'% with the '+name+' equalizer. Switch to 16-QAM to see why deep subcarriers need coding across subcarriers: the same fade QPSK shrugs off closes the 16-QAM rings.'
   ]);
 }
 function drawOfdm(){
   document.querySelectorAll('[data-of-eq]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.ofEq===ofEq));
-  const p=ofParams(),h=pdpChannel(p.L,4407),H=dftOf(h,p.N),mag=H.map(v=>Math.sqrt(abs2(v))),tau=rmsDelay(h);
+  const p=ofParams(),h=pdpChannel(p.L,4407),H=dftOf(h,p.N),mag=H.map(v=>Math.sqrt(abs2(v)));
   $('ofNOut').textContent=p.N;$('ofLOut').textContent=p.L;$('ofSnrOut').textContent=p.snr+' dB';
   $('ofLambda').innerHTML='NN₀/E<sub>X</sub> = '+p.lambda.toFixed(4);
-  const flat=5*tau/p.N,limitP=p.N/(p.L+1);
   $('ofRxFft').textContent=p.N+'-point';
   $('ofTxIfft').textContent=p.N+'-point, required';
   $('ofTxCp').innerHTML='L<sub>c</sub> ≥ L = '+p.L;
   $('ofTxChan').textContent='memory L = '+p.L;
-  $('ofRxEst').textContent=ofPerfect?'assumed perfect':'comb pilots, P = '+p.P;
+  $('ofRxEst').textContent='assumed perfect (Week 8: pilots)';
   $('ofRxEq').textContent=ofEq==='zf'?'ZF: 1/Ĥ_k':'MMSE: Ĥ*/(|Ĥ|²+NN₀/E_X)';
   $('ofDenomCalc').innerHTML='SC-FDE: E|X[k]|² = N·E<sub>x</sub>, E|V[k]|² = N·N₀ → ratio N₀/E<sub>x</sub><br>OFDM: E|X<sub>k</sub>|² = E<sub>X</sub>, E|V<sub>k</sub>|² = N·N₀ → ratio NN₀/E<sub>X</sub><br>current value = '+p.lambda.toFixed(4)+' ('+p.snr+' dB average subcarrier SNR)';
 
@@ -899,16 +879,9 @@ function drawOfdm(){
     'This is why practical OFDM codes across subcarriers: coding turns a few dead subcarriers into a manageable average, which per-subcarrier equalization alone cannot do.'
   ]);
 
-  /* --- selected-subcarrier constellation --- */
   drawOfTone();
-
-  /* --- PAPR --- */
   drawOfPapr(p);
-
-  /* --- error versus SNR with estimated and perfect channel --- */
   drawOfEvm(p,H,mag);
-
-  /* --- architecture comparison (deck: tde_fde_ofdm_comparison) --- */
   drawOfCompare(p);
 }
 function drawOfPapr(p){
@@ -934,32 +907,28 @@ function drawOfPapr(p){
   ]);
 }
 function drawOfEvm(p,H,mag){
-  const xs=[],zfE=[],mmE=[],zfP=[],mmP=[];
+  const xs=[],zfP=[],mmP=[];
   for(let sn=-5;sn<=30;sn+=2.5){
     const lam=Math.pow(10,-sn/10),rr=rng(3300+Math.round(sn*4));
-    let aZ=0,aM=0,aZp=0,aMp=0,cnt=0;
+    let aZp=0,aMp=0,cnt=0;
     for(let t=0;t<10;t++){
-      const est=combEstimate(H,p.P,p.N,lam,rr).est,
-        X=qpskBlock(p.N,rr),sd=Math.sqrt(lam/2),
+      const X=qpskBlock(p.N,rr),sd=Math.sqrt(lam/2),
         Y=X.map((v,k)=>add(mul(H[k],v),C(gauss(rr)*sd,gauss(rr)*sd)));
       for(let k=0;k<p.N;k++){
-        const zf=divc(Y[k],est[k]),mm=mul(divc(conj(est[k]),C(abs2(est[k])+lam,0)),Y[k]),
-          zfp=divc(Y[k],H[k]),mmp=mul(divc(conj(H[k]),C(abs2(H[k])+lam,0)),Y[k]);
-        aZ+=abs2(sub(zf,X[k]));aM+=abs2(sub(mm,X[k]));aZp+=abs2(sub(zfp,X[k]));aMp+=abs2(sub(mmp,X[k]));cnt++}}
-    xs.push(sn);zfE.push(aZ/cnt);mmE.push(aM/cnt);zfP.push(aZp/cnt);mmP.push(aMp/cnt)}
-  const all=zfE.concat(mmE,zfP,mmP),hi=Math.ceil(Math.log10(Math.max(...all))),lo=Math.floor(Math.log10(Math.max(Math.min(...all),1e-6))),span=Math.min(7,Math.max(2,hi-lo));
+        const zfp=divc(Y[k],H[k]),mmp=mul(divc(conj(H[k]),C(abs2(H[k])+lam,0)),Y[k]);
+        aZp+=abs2(sub(zfp,X[k]));aMp+=abs2(sub(mmp,X[k]));cnt++}}
+    xs.push(sn);zfP.push(aZp/cnt);mmP.push(aMp/cnt)}
+  const all=zfP.concat(mmP),hi=Math.ceil(Math.log10(Math.max(...all))),lo=Math.floor(Math.log10(Math.max(Math.min(...all),1e-6))),span=Math.min(7,Math.max(2,hi-lo));
   const z=axes($('ofEvm'),-5,30,hi-span,hi,'Average subcarrier SNR E'+'_X/(NN₀) (dB)','Normalized symbol error power',{xticks:7,yticks:span,yfmt:decade});
   const clip=v=>Math.min(hi,Math.max(hi-span,Math.log10(Math.max(v,1e-9))));
-  line(z,xs.map((s,i)=>[s,clip(zfP[i])]),css('--cyan'),1.8,[6,4]);
-  line(z,xs.map((s,i)=>[s,clip(mmP[i])]),css('--cyan'),1.8,[2,4]);
-  line(z,xs.map((s,i)=>[s,clip(zfE[i])]),css('--orange'),2.4);
-  line(z,xs.map((s,i)=>[s,clip(mmE[i])]),css('--purple'),2.4);
+  line(z,xs.map((s,i)=>[s,clip(zfP[i])]),css('--orange'),2.4);
+  line(z,xs.map((s,i)=>[s,clip(mmP[i])]),css('--purple'),2.4);
   const i0=xs.reduce((b,s,i)=>Math.abs(s-p.snr)<Math.abs(xs[b]-p.snr)?i:b,0);
-  dot(z,xs[i0],clip(ofEq==='zf'?zfE[i0]:mmE[i0]),css('--green'),6);
-  plotLabel(z,z.X(xs[i0]),z.Y(clip(Math.max(zfE[i0],mmE[i0])))-9,p.snr+' dB',css('--green'));
+  dot(z,xs[i0],clip(ofEq==='zf'?zfP[i0]:mmP[i0]),css('--green'),6);
+  plotLabel(z,z.X(xs[i0]),z.Y(clip(Math.max(zfP[i0],mmP[i0])))-9,p.snr+' dB',css('--green'));
   bullets($('ofEvmNote'),[
-    'Solid curves use the comb-pilot estimate Ĥ[k]; dashed cyan curves assume perfect channel knowledge. The gap between them is the cost of estimation, and it does not vanish at high SNR if P is too large.',
-    'ZF stays above MMSE throughout because the channel has deep fades: at '+p.snr+' dB the measured gap is '+(zfE[i0]/Math.max(mmE[i0],1e-12)).toFixed(1)+'×.',
+    'Perfect channel knowledge is assumed here — the Week 7 OFDM preview. Comb-pilot estimation and the NMSE-versus-P curve live in the Week 8 guided walkthrough.',
+    'ZF stays above MMSE throughout because the channel has deep fades: at '+p.snr+' dB the measured gap is '+(zfP[i0]/Math.max(mmP[i0],1e-12)).toFixed(1)+'×.',
     'Monte Carlo over 10 blocks per point, so a little scatter in the curves is expected.'
   ]);
 }
