@@ -246,6 +246,7 @@ function expo(v){return v.toExponential(2).replace('e-','e−').replace('e+','e'
 function dB(v){return(10*Math.log10(Math.max(v,1e-300))).toFixed(1)+' dB'}
 
 
+document.querySelectorAll('[role=tab]').forEach((b,i,all)=>b.addEventListener('click',()=>{all.forEach(x=>{const on=x===b;x.setAttribute('aria-selected',on);$(x.getAttribute('aria-controls')).hidden=!on});requestAnimationFrame(drawActive)}));
 function drawActive(){const id=document.querySelector('[role=tab][aria-selected=true]').getAttribute('aria-controls');({why:drawWhy,ifft:drawIfft,ortho:drawOrtho,cp:drawCp,ofdm:drawOfdm})[id]()}
 
 /* ==================================================================
