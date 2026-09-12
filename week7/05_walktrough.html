@@ -15,12 +15,12 @@
 .ctrl-help{margin-top:5px;color:var(--muted);font-size:.68rem;line-height:1.35}#motivation .control-grid{align-items:start}
 .summary-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(320px,.85fr);gap:10px;align-items:stretch;margin-top:12px}.summary-row .toolbar-metrics{grid-auto-flow:row;grid-template-columns:repeat(4,minmax(0,1fr))}.summary-row .note{display:block;margin:0;max-width:none}.summary-row .formula{display:block;margin:0;overflow-wrap:anywhere;overflow-x:visible;font-size:.74rem;line-height:1.4}.summary-row .formula div+div{margin-top:5px}
 .mode-row{margin-bottom:10px}.mode-row button{padding:6px 10px}
-.of-control-layout{display:grid;grid-template-columns:minmax(0,3fr) minmax(280px,2fr);gap:20px}.control-section{min-width:0;margin:0;padding:0;border:0}.control-section-title{width:100%;margin:0 0 9px;padding:0 0 6px;border-bottom:1px solid var(--border);color:var(--muted);font-size:.68rem;text-transform:uppercase;letter-spacing:.08em}.of-block-controls{grid-template-columns:repeat(3,minmax(0,1fr))}.of-probe-controls{grid-template-columns:repeat(2,minmax(0,1fr))}.of-summary{grid-template-columns:minmax(180px,.32fr) minmax(0,1fr)}.of-summary .toolbar-metrics{display:block}.of-summary .metric{height:100%;display:flex;flex-direction:column;justify-content:center}.of-summary .formula strong{color:var(--text)}.formula-head{display:flex;align-items:center;justify-content:space-between;gap:12px;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}.formula-head button{flex:0 0 auto;padding:6px 10px}
+.of-control-layout{display:grid;grid-template-columns:minmax(0,3fr) minmax(280px,2fr);gap:20px}.control-section{min-width:0;margin:0;padding:0;border:0}.control-section-title{width:100%;margin:0 0 9px;padding:0 0 6px;border-bottom:1px solid var(--border);color:var(--muted);font-size:.68rem;text-transform:uppercase;letter-spacing:.08em}.of-block-controls{grid-template-columns:repeat(3,minmax(0,1fr))}.of-probe-controls{grid-template-columns:repeat(2,minmax(0,1fr))}.of-summary{grid-template-columns:minmax(180px,.32fr) minmax(0,1fr)}.of-summary .toolbar-metrics{display:block}.of-summary .metric{height:100%;display:flex;flex-direction:column;justify-content:center}.of-summary .formula strong{color:var(--text)}.formula-head{display:flex;align-items:center;justify-content:space-between;gap:12px;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}.formula-head button{flex:0 0 auto;padding:6px 10px}.equalizer-choice{display:flex;align-items:center;justify-content:flex-start;gap:10px;flex-wrap:wrap;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--muted);font-size:.75rem}.equalizer-choice select{min-width:150px;padding:6px 10px}
 .flow-caption{color:var(--muted);font-size:.72rem;margin:-6px 0 14px}
-#cpAssembly,#cpAbsorb{height:300px}#ofCompare{height:300px}
+#cpAssembly,#cpAbsorb,#cpDiagonalize{height:300px}#ofCompare{height:300px}
 #motMemoryPlot,#motComplexity,#motTaps,#tdeTaps,#tdeCascade,#tdeDelayCost,#tdeConst,#tdeCostLen,#cpLinCirc,#cpProduct,#cpToneErr,#cpOverhead,#cpConst,#scChannel,#scGain,#scNoise,#scConst,#scToneConst,#scEvmCurve,#ofToneConst,#ofSnrTones,#ofPapr,#ofEvm{height:265px}
 @media(max-width:900px){.toolbar-split{grid-template-columns:1fr}.toolbar-metrics{grid-auto-flow:row;grid-template-columns:repeat(3,minmax(0,1fr))}.metric-rail{grid-template-columns:repeat(3,minmax(0,1fr))}.metric-rail .formula,.metric-rail .note{grid-column:1/-1}.tabs{grid-template-columns:repeat(3,1fr)}.plots{grid-template-columns:1fr 1fr}.plots:not(.two) .card:last-child{grid-column:1/-1}.model-grid{grid-template-columns:1fr}.checklist{grid-template-columns:1fr 1fr}.control-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.summary-row{grid-template-columns:1fr}.summary-row .toolbar-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.of-control-layout{grid-template-columns:1fr}.of-block-controls{grid-template-columns:repeat(3,minmax(0,1fr))}.of-probe-controls{grid-template-columns:repeat(2,minmax(0,1fr))}.of-summary{grid-template-columns:minmax(180px,.32fr) minmax(0,1fr)}}
-@media(max-width:620px){.metric-rail,.toolbar-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}body{padding:14px}.tabs{grid-template-columns:1fr 1fr}.panel-head{display:block}.plots,.two{grid-template-columns:1fr}.plots .card:last-child{grid-column:auto}.flow{display:grid;grid-template-columns:1fr 1fr}.arrow{display:none}.metrics,.checklist{grid-template-columns:1fr 1fr}.of-block-controls,.of-probe-controls{grid-template-columns:repeat(2,minmax(0,1fr))}.of-summary{grid-template-columns:1fr}canvas,.plots.two canvas{height:245px}#motMemoryPlot,#motComplexity,#motTaps,#tdeTaps,#tdeCascade,#tdeDelayCost,#tdeConst,#tdeCostLen,#cpLinCirc,#cpProduct,#cpToneErr,#cpOverhead,#cpConst,#scChannel,#scGain,#scNoise,#scConst,#scToneConst,#scEvmCurve,#ofToneConst,#ofSnrTones,#ofPapr,#ofEvm{height:262px}}
+@media(max-width:620px){.metric-rail,.toolbar-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}body{padding:14px}.tabs{grid-template-columns:1fr 1fr}.panel-head{display:block}.plots,.two{grid-template-columns:1fr}.plots .card:last-child{grid-column:auto}.flow{display:grid;grid-template-columns:1fr 1fr}.arrow{display:none}.metrics,.checklist{grid-template-columns:1fr 1fr}.of-block-controls,.of-probe-controls{grid-template-columns:repeat(2,minmax(0,1fr))}.of-summary{grid-template-columns:1fr}canvas,.plots.two canvas{height:245px}#cpDiagonalize{height:380px}#motMemoryPlot,#motComplexity,#motTaps,#tdeTaps,#tdeCascade,#tdeDelayCost,#tdeConst,#tdeCostLen,#cpLinCirc,#cpProduct,#cpToneErr,#cpOverhead,#cpConst,#scChannel,#scGain,#scNoise,#scConst,#scToneConst,#scEvmCurve,#ofToneConst,#ofSnrTones,#ofPapr,#ofEvm{height:262px}}
 @media(max-width:390px){.tabs,.metrics,.checklist,.flow,.control-grid{grid-template-columns:1fr}.ctrl{min-width:100%}.ctrl label{flex-wrap:wrap}}
 </style>
 </head>
@@ -117,6 +117,8 @@
     <div class="card"><div class="title">Where previous-block interference lands</div><canvas id="cpAbsorb" role="img" aria-label="Aligned transmitted stream, previous-block interference at the channel output, and receiver windows showing the discarded cyclic prefix and useful FFT samples"></canvas><ul class="bullets" id="cpAbsorbNote"></ul></div>
   </div>
 
+  <div class="card" style="margin-top:14px"><div class="title">The DFT diagonalizes circular convolution</div><canvas id="cpDiagonalize" role="img" aria-label="Circulant channel matrix transformed by the DFT into a diagonal matrix containing the channel frequency-response samples H of k"></canvas><div class="legend"><span><i class="sw blue"></i>Coupling between time samples</span><span><i class="sw purple"></i>Independent frequency-bin gains H[k]</span></div><ul class="bullets" id="cpDiagonalizeNote"></ul></div>
+
   <div class="plots" style="margin-top:14px">
     <div class="card"><div class="title">Linear received stream versus circular model · AWGN omitted</div><canvas id="cpLinCirc" role="img" aria-label="Real part of the received stream around one block compared with the circular convolution of the channel and data block"></canvas><div class="legend"><span><i class="sw blue"></i>Re{received y}</span><span><i class="sw orange"></i>Re{h ⊛ x}</span><span><i class="sw" style="background:var(--red)"></i>Discarded CP window</span></div><ul class="bullets" id="cpLinCircNote"></ul></div>
     <div class="card"><div class="title">DFT check: Y[k] against H[k]X[k]</div><canvas id="cpProduct" role="img" aria-label="Magnitude of the received block spectrum compared with the product of the channel and data spectra"></canvas><div class="legend"><span><i class="sw blue"></i>|Y[k]|</span><span><i class="sw orange"></i>|H[k]X[k]|</span></div><ul class="bullets" id="cpProductNote"></ul></div>
@@ -165,7 +167,6 @@
 <section class="panel" id="ofdm" role="tabpanel" aria-labelledby="tab-ofdm" hidden>
   <div class="panel-head"><div><div class="eyebrow">OFDM equalization</div><h2>The same per-bin core, but each subcarrier now carries its own QAM symbol</h2></div><div class="message"><strong>The channel is assumed known here. Estimating it from comb pilots, and what pilot spacing costs, is Week 8 &mdash; see the Week 8 guided walkthrough.</strong> The IFFT at the transmitter is what separates OFDM from SC-FDE. The CP still gives the exact per-subcarrier model; narrowband flatness is a <em>separate</em> condition that only matters for interpolating Ĥ[k] between pilots. The MMSE denominator picks up a factor N because X<sub>k</sub> is a per-subcarrier symbol under the non-unitary DFT.</div></div>
   <div class="sticky-bar"><div class="toolbar">
-    <div class="mode-buttons mode-row"><button type="button" data-of-eq="mmse" aria-pressed="true">MMSE per subcarrier</button><button type="button" data-of-eq="zf" aria-pressed="false">Zero forcing per subcarrier</button></div>
     <div class="of-control-layout">
       <fieldset class="control-section"><legend class="control-section-title">Whole OFDM block and channel</legend><div class="control-grid of-block-controls">
         <div class="ctrl"><label for="ofN">Subcarriers N <strong id="ofNOut">64</strong></label><input id="ofN" type="range" min="4" max="8" value="6" step="1"></div>
@@ -179,7 +180,7 @@
     </div>
     <div class="summary-row of-summary"><div class="toolbar-metrics">
       <div class="metric"><div class="name">PAPR at 0.1 %</div><div class="value" id="ofPaprVal">—</div><div class="small">OFDM versus SC-FDE</div></div>
-    </div><div class="formula"><div class="formula-head"><strong>Per-subcarrier equalizer</strong><button type="button" id="ofDenomHelp">Why NN₀/E<sub>X</sub>?</button></div><div>X̂<sub>ZF,k</sub> = Y<sub>k</sub> / Ĥ<sub>k</sub></div><div>X̂<sub>MMSE,k</sub> = Ĥ*<sub>k</sub> Y<sub>k</sub> / (|Ĥ<sub>k</sub>|² + NN₀/E<sub>X</sub>)</div><div id="ofLambda">NN₀/E<sub>X</sub> = 0.0316</div></div></div>
+    </div><div class="formula"><div class="formula-head"><strong>Per-subcarrier equalizer</strong><button type="button" id="ofDenomHelp">Why NN₀/E<sub>X</sub>?</button></div><div>X̂<sub>ZF,k</sub> = Y<sub>k</sub> / Ĥ<sub>k</sub></div><div>X̂<sub>MMSE,k</sub> = Ĥ*<sub>k</sub> Y<sub>k</sub> / (|Ĥ<sub>k</sub>|² + NN₀/E<sub>X</sub>)</div><div id="ofLambda">NN₀/E<sub>X</sub> = 0.0316</div><div class="equalizer-choice"><label for="ofEqSelect">Use in the selected-subcarrier demonstration</label><select id="ofEqSelect"><option value="mmse" selected>MMSE</option><option value="zf">Zero forcing</option></select></div></div></div>
   </div></div>
 
   <div class="flow" aria-label="OFDM transmitter chain"><div class="flow-step" data-state="ready"><strong>Map to X<sub>k</sub></strong><span>QAM per subcarrier</span></div><div class="arrow">→</div><div class="flow-step" data-state="required"><strong>IFFT</strong><span id="ofTxIfft">N-point, required</span></div><div class="arrow">→</div><div class="flow-step" data-state="ready"><strong>Add CP</strong><span id="ofTxCp">L<sub>c</sub> ≥ L</span></div><div class="arrow">→</div><div class="flow-step" data-state="ready"><strong>Pulse shape / RF</strong><span id="ofTxPapr">high PAPR</span></div><div class="arrow">→</div><div class="flow-step" data-state="warning"><strong>Channel</strong><span id="ofTxChan">memory L</span></div></div>
@@ -551,8 +552,9 @@ function drawCp(){
   ]);
 
   /* --- DFT product check (deck: dft_circular_convolution) --- */
-  const Y=fft(s.y,false),X=fft(s.x1,false),H=dftOf(s.h,p.N),
-    HX=H.map((v,k)=>mul(v,X[k])),
+  const Y=fft(s.y,false),X=fft(s.x1,false),H=dftOf(s.h,p.N);
+  drawCpDiagonalize(p,ok);
+  const HX=H.map((v,k)=>mul(v,X[k])),
     ym=Y.map(v=>Math.sqrt(abs2(v))),hxm=HX.map(v=>Math.sqrt(abs2(v))),
     ptop=Math.max(...ym,...hxm,1e-6)*1.18;
   z=axes($('cpProduct'),0,p.N-1,0,ptop,'Frequency bin k','Magnitude',{xticks:Math.min(8,p.N-1),yticks:4});
@@ -615,6 +617,59 @@ function drawCp(){
     :'With L_c = '+p.Lc+' < L = '+p.L+', the tail of the previous block reaches '+(p.L-p.Lc)+' samples into the useful window. That is inter-block interference: it survives the FFT, contaminates every bin, and sets an error floor no equalizer can lower.');
 }
 function panelCanvas(cv){const z=resizeCanvas(cv);z.c.clearRect(0,0,z.w,z.h);z.c.font='11px system-ui';return z}
+function drawCpDiagonalize(p,ok){
+  const z=panelCanvas($('cpDiagonalize')),compact=z.w<620,
+    sub=n=>String(n).split('').map(d=>'₀₁₂₃₄₅₆₇₈₉'[+d]).join(''),
+    M=6,indices=Array.from({length:M},(_,i)=>i),demoL=Math.min(p.L,M-1);
+  const matrix=(x,y,size,kind)=>{
+    const cell=size/M;
+    z.c.save();z.c.font='11px system-ui';z.c.lineWidth=.8;z.c.strokeStyle=css('--border');
+    z.c.fillStyle=css('--muted');z.c.textAlign='center';z.c.textBaseline='bottom';
+    for(let c=0;c<M;c++)z.c.fillText((kind==='circ'?'x':'X')+sub(indices[c]),x+(c+.5)*cell,y-5);
+    z.c.textAlign='right';z.c.textBaseline='middle';
+    for(let r=0;r<M;r++)z.c.fillText((kind==='circ'?'y':'Y')+sub(indices[r]),x-6,y+(r+.5)*cell);
+    for(let r=0;r<M;r++)for(let c=0;c<M;c++){
+      const lag=(r-c+M)%M,isTap=kind==='circ'&&lag<=demoL,isDiag=kind==='diag'&&r===c,
+        label=isTap?'h'+sub(lag):(isDiag?'H'+sub(r):'0'),color=isDiag?css('--purple'):css('--blue');
+      if(isTap||isDiag){z.c.save();z.c.globalAlpha=isDiag?.30:Math.max(.16,.34-.025*lag);z.c.fillStyle=color;z.c.fillRect(x+c*cell+1,y+r*cell+1,cell-2,cell-2);z.c.restore()}
+      z.c.strokeRect(x+c*cell,y+r*cell,cell,cell);
+      z.c.fillStyle=isTap||isDiag?color:css('--muted');z.c.globalAlpha=isTap||isDiag?1:.55;z.c.textAlign='center';z.c.textBaseline='middle';z.c.fillText(label,x+(c+.5)*cell,y+(r+.5)*cell);z.c.globalAlpha=1;
+    }
+    z.c.restore();
+  };
+  const tapCount=p.L+1,status='N = '+p.N+', L = '+p.L+' ('+tapCount+' tap'+(tapCount===1?'':'s')+'), L_c = '+p.Lc+' — '+(ok?'exact circular model':'CP too short');
+  z.c.fillStyle=css('--text');z.c.textAlign='center';z.c.textBaseline='top';
+  if(!compact){
+    const size=Math.min(180,(z.w-320)/2),y=53,left=54,right=z.w-42-size;
+    z.c.fillText('6 × 6 illustration of H_circ',left+size/2,8);
+    z.c.fillStyle=ok?css('--muted'):css('--red');z.c.fillText(status,z.w/2,27);
+    matrix(left,y,size,'circ');
+    z.c.fillStyle=css('--muted');z.c.fillText('consecutive samples x₀ through x₅',left+size/2,y+size+12);
+    z.c.fillStyle=css('--text');z.c.font='13px system-ui';z.c.fillText('F H_circ F⁻¹  =',z.w/2,y+size/2-10);
+    z.c.font='11px system-ui';z.c.fillText('change to the DFT basis',z.w/2,y+size/2+14);
+    z.c.fillText('DFT-domain matrix',right+size/2,8);
+    matrix(right,y,size,'diag');
+    z.c.fillStyle=css('--muted');z.c.fillText('same pattern for diag(H₀, …, H'+sub(p.N-1)+')',right+size/2,y+size+12);
+  }else{
+    const size=108,x=z.w/2-size/2;
+    z.c.fillText('6 × 6 illustration of H_circ',z.w/2,2);z.c.fillStyle=ok?css('--muted'):css('--red');z.c.fillText(status,z.w/2,18);matrix(x,46,size,'circ');
+    z.c.fillStyle=css('--muted');z.c.fillText('consecutive samples x₀ through x₅',z.w/2,164);
+    z.c.fillStyle=css('--text');z.c.font='12px system-ui';z.c.fillText('F H_circ F⁻¹  =',z.w/2,178);
+    z.c.font='11px system-ui';z.c.fillText('DFT-domain matrix',z.w/2,206);matrix(x,238,size,'diag');
+    z.c.fillStyle=css('--muted');z.c.fillText('diag(H₀, …, H'+sub(p.N-1)+')',z.w/2,354);
+  }
+  const row0Terms=Array.from({length:demoL+1},(_,l)=>'h<sub>'+l+'</sub>x<sub>'+(l===0?'0':M-l)+'</sub>'),
+    row0=row0Terms.join(' + '),
+    row1='y<sub>1</sub> = h<sub>0</sub>x<sub>1</sub>'+(demoL>=1?' + h<sub>1</sub>x<sub>0</sub>':'')+(demoL>=2?' + h<sub>2</sub>x<sub>5</sub>':'')+(demoL>=3?' + …':'');
+  bullets($('cpDiagonalizeNote'),[
+    'This short 6 × 6 matrix is a readable illustration; the real matrix has N = '+p.N+' rows and columns. Its labels run consecutively, with no missing middle columns.',
+    'In the illustration, row 0 is y<sub>0</sub> = '+row0+'. The entries on the right multiply samples wrapped from the end of the six-sample example.',
+    row1+'. Every following row shifts the same tap pattern one position, which is what “circulant” means.',
+    'For the actual block, h<sub>1</sub> multiplies x<sub>N−1</sub>, h<sub>2</sub> multiplies x<sub>N−2</sub>, and so on. Changing L changes the displayed tap pattern'+(p.L>demoL?'; taps beyond h<sub>5</sub> are omitted from this compact illustration':'')+'.',
+    'For the actual N-sample block, apply F and use Y = Fy, X = Fx, V = Fv, and x = F⁻¹X. This gives Y = (F H_circ F⁻¹)X + V.',
+    'The transformed matrix is diag(H[0], …, H[N−1]), so bin k becomes Y[k] = H[k]X[k] + V[k].'+(ok?' The current L_c ≥ L setting makes this exact.':' Here L_c < L, so the received block is not exactly H_circ x and the diagonal model is broken.')+' E_x/N₀ = '+p.snr+' dB changes the noise V, not either channel matrix. With a unitary DFT, F⁻¹ = Fᴴ.'
+  ]);
+}
 function labelledBlock(z,x,y,w,h,fill,stroke,label,sub){z.c.save();z.c.globalAlpha=.18;z.c.fillStyle=fill;z.c.fillRect(x,y,w,h);z.c.globalAlpha=1;z.c.strokeStyle=stroke;z.c.lineWidth=1.6;z.c.strokeRect(x,y,w,h);if(label&&w>26){z.c.fillStyle=stroke;z.c.textAlign='center';z.c.textBaseline='middle';z.c.fillText(label,x+w/2,y+h/2-(sub?6:0));if(sub){z.c.fillStyle=css('--muted');z.c.font='10px system-ui';z.c.fillText(sub,x+w/2,y+h/2+8)}}z.c.restore()}
 function brace(z,x1,x2,y,text,color){z.c.save();z.c.strokeStyle=color;z.c.lineWidth=1.4;z.c.beginPath();z.c.moveTo(x1,y-5);z.c.lineTo(x1,y);z.c.lineTo(x2,y);z.c.lineTo(x2,y-5);z.c.stroke();z.c.fillStyle=color;z.c.textAlign='center';z.c.textBaseline='top';const tw=z.c.measureText(text).width,half=tw/2,cx=Math.max(half+4,Math.min(z.w-half-4,(x1+x2)/2));z.c.fillText(text,cx,y+3);z.c.restore()}
 function arrowCurve(z,x1,y1,x2,y2,color,text){z.c.save();z.c.strokeStyle=color;z.c.lineWidth=1.8;z.c.beginPath();z.c.moveTo(x1,y1);z.c.bezierCurveTo(x1,y1-34,x2,y2-34,x2,y2);z.c.stroke();const ang=Math.PI/2;z.c.fillStyle=color;z.c.beginPath();z.c.moveTo(x2,y2);z.c.lineTo(x2-5,y2-9);z.c.lineTo(x2+5,y2-9);z.c.closePath();z.c.fill();if(text){z.c.textAlign='center';z.c.textBaseline='bottom';z.c.fillText(text,(x1+x2)/2,Math.min(y1,y2)-26)}z.c.restore()}
@@ -883,7 +938,7 @@ $('scMmseClose').addEventListener('click',()=>$('scMmseDialog').close());
    5 · OFDM (preview — comb pilots / CE live in the Week 8 walkthrough)
    ================================================================== */
 let ofEq='mmse';
-document.querySelectorAll('[data-of-eq]').forEach(b=>b.addEventListener('click',()=>{ofEq=b.dataset.ofEq;drawOfdm()}));
+$('ofEqSelect').addEventListener('change',()=>{ofEq=$('ofEqSelect').value;drawOfdm()});
 function ofParams(){const N=Math.pow(2,+$('ofN').value),L=+$('ofL').value,snr=+$('ofSnr').value;return{N,L,snr,lambda:Math.pow(10,-snr/10)}}
 function drawOfTone(){
   const p=ofParams(),h=pdpChannel(p.L,4407),H=dftOf(h,p.N),el=$('ofTone');
@@ -903,7 +958,7 @@ function drawOfTone(){
   ]);
 }
 function drawOfdm(){
-  document.querySelectorAll('[data-of-eq]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.ofEq===ofEq));
+  $('ofEqSelect').value=ofEq;
   const p=ofParams(),h=pdpChannel(p.L,4407),H=dftOf(h,p.N),mag=H.map(v=>Math.sqrt(abs2(v)));
   $('ofNOut').textContent=p.N;$('ofLOut').textContent=p.L;$('ofSnrOut').textContent=p.snr+' dB';
   $('ofLambda').innerHTML='NN₀/E<sub>X</sub> = '+p.lambda.toFixed(4);
@@ -912,7 +967,7 @@ function drawOfdm(){
   $('ofTxCp').innerHTML='L<sub>c</sub> ≥ L = '+p.L;
   $('ofTxChan').textContent='memory L = '+p.L;
   $('ofRxEst').textContent='assumed perfect (Week 8: pilots)';
-  $('ofRxEq').textContent=ofEq==='zf'?'ZF: 1/Ĥ_k':'MMSE: Ĥ*/(|Ĥ|²+NN₀/E_X)';
+  $('ofRxEq').textContent='ZF or MMSE · one tap per bin';
   $('ofDenomCalc').innerHTML='SC-FDE: E|X[k]|² = N·E<sub>x</sub>, E|V[k]|² = N·N₀ → ratio N₀/E<sub>x</sub><br>OFDM: E|X<sub>k</sub>|² = E<sub>X</sub>, E|V<sub>k</sub>|² = N·N₀ → ratio NN₀/E<sub>X</sub><br>current value = '+p.lambda.toFixed(4)+' ('+p.snr+' dB average subcarrier SNR)';
 
   /* --- per-subcarrier SNR --- */
