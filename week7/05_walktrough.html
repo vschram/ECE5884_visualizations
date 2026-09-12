@@ -12,13 +12,15 @@
 .plot-formula{margin-top:8px;padding:8px 10px;overflow-wrap:anywhere;overflow-x:visible}
 .plot-card-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:8px}.plot-card-head .title{margin-bottom:0}.plot-card-head button{flex:0 0 auto;padding:6px 10px}
 .control-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px 14px;align-items:end}.control-grid .ctrl{min-width:0}.control-grid select{width:100%}
+.ctrl-help{margin-top:5px;color:var(--muted);font-size:.68rem;line-height:1.35}#motivation .control-grid{align-items:start}
 .summary-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(320px,.85fr);gap:10px;align-items:stretch;margin-top:12px}.summary-row .toolbar-metrics{grid-auto-flow:row;grid-template-columns:repeat(4,minmax(0,1fr))}.summary-row .note{display:block;margin:0;max-width:none}.summary-row .formula{display:block;margin:0;overflow-wrap:anywhere;overflow-x:visible;font-size:.74rem;line-height:1.4}.summary-row .formula div+div{margin-top:5px}
 .mode-row{margin-bottom:10px}.mode-row button{padding:6px 10px}
+.of-control-layout{display:grid;grid-template-columns:minmax(0,3fr) minmax(280px,2fr);gap:20px}.control-section{min-width:0;margin:0;padding:0;border:0}.control-section-title{width:100%;margin:0 0 9px;padding:0 0 6px;border-bottom:1px solid var(--border);color:var(--muted);font-size:.68rem;text-transform:uppercase;letter-spacing:.08em}.of-block-controls{grid-template-columns:repeat(3,minmax(0,1fr))}.of-probe-controls{grid-template-columns:repeat(2,minmax(0,1fr))}.of-summary{grid-template-columns:minmax(180px,.32fr) minmax(0,1fr)}.of-summary .toolbar-metrics{display:block}.of-summary .metric{height:100%;display:flex;flex-direction:column;justify-content:center}.of-summary .formula strong{color:var(--text)}.formula-head{display:flex;align-items:center;justify-content:space-between;gap:12px;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}.formula-head button{flex:0 0 auto;padding:6px 10px}
 .flow-caption{color:var(--muted);font-size:.72rem;margin:-6px 0 14px}
 #cpAssembly,#cpAbsorb{height:300px}#ofCompare{height:300px}
 #motMemoryPlot,#motComplexity,#motTaps,#tdeTaps,#tdeCascade,#tdeDelayCost,#tdeConst,#tdeCostLen,#cpLinCirc,#cpProduct,#cpToneErr,#cpOverhead,#cpConst,#scChannel,#scGain,#scNoise,#scConst,#scToneConst,#scEvmCurve,#ofToneConst,#ofSnrTones,#ofPapr,#ofEvm{height:265px}
-@media(max-width:900px){.toolbar-split{grid-template-columns:1fr}.toolbar-metrics{grid-auto-flow:row;grid-template-columns:repeat(3,minmax(0,1fr))}.metric-rail{grid-template-columns:repeat(3,minmax(0,1fr))}.metric-rail .formula,.metric-rail .note{grid-column:1/-1}.tabs{grid-template-columns:repeat(3,1fr)}.plots{grid-template-columns:1fr 1fr}.plots:not(.two) .card:last-child{grid-column:1/-1}.model-grid{grid-template-columns:1fr}.checklist{grid-template-columns:1fr 1fr}.control-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.summary-row{grid-template-columns:1fr}.summary-row .toolbar-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:620px){.metric-rail,.toolbar-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}body{padding:14px}.tabs{grid-template-columns:1fr 1fr}.panel-head{display:block}.plots,.two{grid-template-columns:1fr}.plots .card:last-child{grid-column:auto}.flow{display:grid;grid-template-columns:1fr 1fr}.arrow{display:none}.metrics,.checklist{grid-template-columns:1fr 1fr}canvas,.plots.two canvas{height:245px}#motMemoryPlot,#motComplexity,#motTaps,#tdeTaps,#tdeCascade,#tdeDelayCost,#tdeConst,#tdeCostLen,#cpLinCirc,#cpProduct,#cpToneErr,#cpOverhead,#cpConst,#scChannel,#scGain,#scNoise,#scConst,#scToneConst,#scEvmCurve,#ofToneConst,#ofSnrTones,#ofPapr,#ofEvm{height:262px}}
+@media(max-width:900px){.toolbar-split{grid-template-columns:1fr}.toolbar-metrics{grid-auto-flow:row;grid-template-columns:repeat(3,minmax(0,1fr))}.metric-rail{grid-template-columns:repeat(3,minmax(0,1fr))}.metric-rail .formula,.metric-rail .note{grid-column:1/-1}.tabs{grid-template-columns:repeat(3,1fr)}.plots{grid-template-columns:1fr 1fr}.plots:not(.two) .card:last-child{grid-column:1/-1}.model-grid{grid-template-columns:1fr}.checklist{grid-template-columns:1fr 1fr}.control-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.summary-row{grid-template-columns:1fr}.summary-row .toolbar-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.of-control-layout{grid-template-columns:1fr}.of-block-controls{grid-template-columns:repeat(3,minmax(0,1fr))}.of-probe-controls{grid-template-columns:repeat(2,minmax(0,1fr))}.of-summary{grid-template-columns:minmax(180px,.32fr) minmax(0,1fr)}}
+@media(max-width:620px){.metric-rail,.toolbar-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}body{padding:14px}.tabs{grid-template-columns:1fr 1fr}.panel-head{display:block}.plots,.two{grid-template-columns:1fr}.plots .card:last-child{grid-column:auto}.flow{display:grid;grid-template-columns:1fr 1fr}.arrow{display:none}.metrics,.checklist{grid-template-columns:1fr 1fr}.of-block-controls,.of-probe-controls{grid-template-columns:repeat(2,minmax(0,1fr))}.of-summary{grid-template-columns:1fr}canvas,.plots.two canvas{height:245px}#motMemoryPlot,#motComplexity,#motTaps,#tdeTaps,#tdeCascade,#tdeDelayCost,#tdeConst,#tdeCostLen,#cpLinCirc,#cpProduct,#cpToneErr,#cpOverhead,#cpConst,#scChannel,#scGain,#scNoise,#scConst,#scToneConst,#scEvmCurve,#ofToneConst,#ofSnrTones,#ofPapr,#ofEvm{height:262px}}
 @media(max-width:390px){.tabs,.metrics,.checklist,.flow,.control-grid{grid-template-columns:1fr}.ctrl{min-width:100%}.ctrl label{flex-wrap:wrap}}
 </style>
 </head>
@@ -37,26 +39,26 @@
 <main>
 <!-- ============================ 1 · MOTIVATION ============================ -->
 <section class="panel" id="motivation" role="tabpanel" aria-labelledby="tab-motivation">
-  <div class="panel-head"><div><div class="eyebrow">Why move to the frequency domain?</div><h2 id="motHeading">Channel memory grows with symbol rate; time-domain equalizer cost grows with it</h2></div><div class="message">For a fixed maximum excess delay τ<sub>max</sub>, the discrete channel memory is L ≈ ⌈R<sub>s</sub>τ<sub>max</sub>⌉. Filtering costs O(L<sub>f</sub>) per symbol and a dense design costs O(L<sub>f</sub>³). Block FFT processing costs O(N log N) per block and stops tracking L once N is fixed.</div></div>
+  <div class="panel-head"><div><div class="eyebrow">Why move to the frequency domain?</div><h2 id="motHeading">Channel memory grows with symbol rate; time-domain equalizer cost grows with it</h2></div><div class="message">For a fixed maximum excess delay τ<sub>max</sub>, the discrete channel memory is L ≈ ⌈R<sub>s</sub>τ<sub>max</sub>⌉. Filtering costs O(L<sub>f</sub>) per symbol and a dense design costs O(L<sub>f</sub>³). A complete SC-FDE receiver block uses an FFT, N per-bin equalizer multiplications, and an IFFT; its cost stops tracking L once N is fixed.</div></div>
   <div class="sticky-bar"><div class="toolbar"><div class="control-grid">
-    <div class="ctrl"><label for="motTau"><span>Max excess delay τ<sub>max</sub></span> <strong id="motTauOut">10 µs</strong></label><input id="motTau" type="range" min="0.5" max="25" value="10" step="0.5"></div>
+    <div class="ctrl"><label for="motTau"><span>Max excess delay τ<sub>max</sub></span> <strong id="motTauOut">10 µs</strong></label><input id="motTau" type="range" min="0.5" max="25" value="10" step="0.5" aria-describedby="motTauHelp"><div class="ctrl-help" id="motTauHelp">Time from the first significant arriving path to the last. It measures multipath spread—not the total transmitter-to-receiver travel time.</div></div>
     <div class="ctrl"><label for="motRs"><span>Symbol rate R<sub>s</sub></span> <strong id="motRsOut">100 Msym/s</strong></label><input id="motRs" type="range" min="5" max="9" value="8" step="0.05"></div>
     <div class="ctrl"><label for="motAlpha"><span>Equalizer over-length L<sub>f</sub>/L</span> <strong id="motAlphaOut">1.50×</strong></label><input id="motAlpha" type="range" min="1" max="2.5" value="1.5" step="0.05"></div>
     <div class="ctrl"><label for="motN">FFT block size N <strong id="motNOut">256</strong></label><input id="motN" type="range" min="4" max="12" value="8" step="1"></div>
   </div><div class="summary-row"><div class="toolbar-metrics">
-    <div class="metric"><div class="name">Channel memory L</div><div class="value" id="motMemory">—</div><div class="small">L = ⌈R<sub>s</sub>τ<sub>max</sub>⌉ symbols</div></div>
-    <div class="metric"><div class="name">TDE dense design</div><div class="value" id="motTdeCost">—</div><div class="small">≈ L<sub>f</sub>³ operations</div></div>
-    <div class="metric"><div class="name">FDE per block</div><div class="value" id="motFdeCost">—</div><div class="small">≈ N log₂N + N multiplies</div></div>
-    <div class="metric"><div class="name">Per-symbol multiplies</div><div class="value" id="motPerSym">—</div><div class="small">TDE versus FDE</div></div>
+    <div class="metric"><div class="name">Channel memory L</div><div class="value" id="motMemory">—</div><div class="small">L = ⌈R<sub>s</sub>τ<sub>max</sub>⌉ symbols</div><button type="button" id="motMemoryHelp" aria-label="Show channel-memory calculation">Show calculation</button></div>
+    <div class="metric"><div class="name">TDE dense design</div><div class="value" id="motTdeCost">—</div><div class="small">dense-solve scaling: O(L<sub>f</sub>³)</div><button type="button" id="motTdeHelp" aria-label="Show time-domain equalizer design calculation">Show calculation</button></div>
+    <div class="metric"><div class="name">SC-FDE per block</div><div class="value" id="motFdeCost">—</div><div class="small">≈ 2N log₂N + N multiplies</div><button type="button" id="motFdeHelp" aria-label="Show SC-FDE block calculation">Show calculation</button></div>
+    <div class="metric"><div class="name">Average receiver cost</div><div class="value" id="motPerSym">—</div><div class="small">TDE vs SC-FDE multiplies per useful data symbol</div><button type="button" id="motPerSymHelp" aria-label="Show average receiver-cost calculation">Show calculation</button></div>
   </div><div class="note" id="motNote" aria-live="polite"></div></div></div></div>
 
   <div class="flow" aria-label="Post-synchronization receiver chain" aria-live="polite"><div class="flow-step" data-state="ready"><strong>RF / ADC</strong><span id="motFlowRf">multipath + AWGN</span></div><div class="arrow">→</div><div class="flow-step" data-state="ready"><strong>Synchronize</strong><span>timing + CFO corrected (Week 5)</span></div><div class="arrow">→</div><div class="flow-step" data-state="required"><strong>Estimate h</strong><span id="motFlowEstimate">—</span></div><div class="arrow">→</div><div class="flow-step" id="motFlowEqStep" data-state="required"><strong>Equalize (TDE)</strong><span id="motFlowEqualize">—</span></div><div class="arrow">→</div><div class="flow-step" data-state="ready"><strong>Detect</strong><span>per-symbol decisions</span></div></div>
-  <div class="flow" aria-label="Alternative frequency-domain equalization path"><div class="flow-step" data-state="ready"><strong>Frame sync</strong><span>find block start</span></div><div class="arrow">→</div><div class="flow-step" data-state="ready"><strong>Remove CP</strong><span>drop L<sub>c</sub> samples</span></div><div class="arrow">→</div><div class="flow-step" data-state="ready"><strong>FFT</strong><span id="motFlowFft">N-point</span></div><div class="arrow">→</div><div class="flow-step" data-state="ready"><strong>Per-bin EQ</strong><span id="motFlowTone">N complex multiplies</span></div><div class="arrow">→</div><div class="flow-step" data-state="ready"><strong>IFFT → detect</strong><span>SC-FDE closes with an IFFT</span></div></div>
-  <p class="flow-caption">Top row: the Week 6 time-domain chain. Bottom row: the block frequency-domain path this week replaces it with.</p>
+  <div class="flow" aria-label="SC-FDE receiver chain including shared front-end and synchronization stages"><div class="flow-step" data-state="ready"><strong>RF / ADC</strong><span>multipath + AWGN</span></div><div class="arrow">→</div><div class="flow-step" data-state="ready"><strong>Preamble sync</strong><span>frame timing + CFO corrected</span></div><div class="arrow">→</div><div class="flow-step" data-state="required"><strong>Estimate h</strong><span id="motFlowEstimateFde">—</span></div><div class="arrow">→</div><div class="flow-step" data-state="ready"><strong>Remove CP</strong><span>use synchronized block boundary</span></div><div class="arrow">→</div><div class="flow-step" data-state="ready"><strong>FFT</strong><span id="motFlowFft">N-point</span></div><div class="arrow">→</div><div class="flow-step" data-state="ready"><strong>Per-bin EQ</strong><span id="motFlowTone">N complex multiplies</span></div><div class="arrow">→</div><div class="flow-step" data-state="ready"><strong>IFFT → detect</strong><span>required for SC-FDE</span></div></div>
+  <p class="flow-caption">Both paths require RF/ADC, preamble-based frame timing, CFO correction, and channel estimation. They diverge only at equalization: TDE filters the stream directly; SC-FDE uses the synchronized block boundary, removes the CP, and equalizes through an FFT and per-bin multiplications.</p>
 
   <div class="plots">
-    <div class="card"><div class="title">Channel memory and design cost versus symbol rate</div><canvas id="motMemoryPlot" role="img" aria-label="Channel memory, time-domain equalizer design cost and block FFT cost against symbol rate on logarithmic axes"></canvas><div class="legend"><span><i class="sw blue"></i>Channel memory L</span><span><i class="sw orange"></i>TDE design L<sub>f</sub>³</span><span><i class="sw purple"></i>FDE per block N log₂N</span><span><i class="sw green"></i>Your R<sub>s</sub></span></div><ul class="bullets" id="motMemoryNote"></ul></div>
-    <div class="card"><div class="title">Multiplies per useful symbol</div><canvas id="motComplexity" role="img" aria-label="Per-symbol multiply count for time-domain and frequency-domain equalization against symbol rate"></canvas><div class="legend"><span><i class="sw orange"></i>TDE: L<sub>f</sub></span><span><i class="sw purple"></i>FDE: log₂N + 1</span><span><i class="sw green"></i>Your R<sub>s</sub></span><span><i class="sw" style="background:var(--red)"></i>Crossover</span></div><ul class="bullets" id="motComplexityNote"></ul></div>
+    <div class="card"><div class="title">Channel memory and design cost versus symbol rate</div><canvas id="motMemoryPlot" role="img" aria-label="Channel memory, time-domain equalizer design-cost proxy and complete SC-FDE receiver-block cost against symbol rate on logarithmic axes"></canvas><div class="legend"><span><i class="sw blue"></i>Channel memory L</span><span><i class="sw orange"></i>TDE design proxy L<sub>f</sub>³</span><span><i class="sw purple"></i>SC-FDE block 2N log₂N + N</span><span><i class="sw green"></i>Your R<sub>s</sub></span></div><ul class="bullets" id="motMemoryNote"></ul></div>
+    <div class="card"><div class="title">Average receiver cost per useful data symbol</div><canvas id="motComplexity" role="img" aria-label="Average receiver multiplications per useful data symbol for time-domain equalization and complete SC-FDE reception against symbol rate"></canvas><div class="legend"><span><i class="sw orange"></i>TDE: L<sub>f</sub></span><span><i class="sw purple"></i>SC-FDE: 2 log₂N + 1</span><span><i class="sw green"></i>Your R<sub>s</sub></span><span><i class="sw" style="background:var(--red)"></i>Crossover</span></div><ul class="bullets" id="motComplexityNote"></ul></div>
     <div class="card"><div class="title" id="motTapsTitle">Sampled channel impulse response</div><canvas id="motTaps" role="img" aria-label="Magnitude of the sampled channel taps for the current symbol rate and delay spread"></canvas><div class="legend"><span><i class="sw blue"></i>|h[ℓ]|</span></div><ul class="bullets" id="motTapsNote"></ul></div>
   </div>
 </section>
@@ -65,10 +67,10 @@
 <section class="panel" id="tde" role="tabpanel" aria-labelledby="tab-tde" hidden>
   <div class="panel-head"><div><div class="eyebrow">Bridge · LMMSE time-domain equalization</div><h2>One matrix inverse buys a delayed impulse, and its cost is cubic in the filter length</h2></div><div class="message">Stacking L<sub>f</sub> received samples gives y<sub>n</sub> = Hx<sub>n</sub> + v<sub>n</sub>. The LMMSE equalizer f = (HᴴH + N₀/E<sub>x</sub>·I)⁻¹Hᴴe<sub>nd</sub> drives the cascade Hf toward a unit impulse at the decision delay n<sub>d</sub>. This is the regularized inverse that reappears per bin next.</div></div>
   <div class="sticky-bar"><div class="toolbar">
-    <div class="mode-buttons mode-row"><button type="button" data-tde-model="worked" aria-pressed="true">Worked example h = [0.5, j0.5, 0.4]</button><button type="button" data-tde-model="notch" aria-pressed="false">Deep-null h = [1, −0.9]</button><button type="button" data-tde-model="long" aria-pressed="false">Longer 6-tap channel</button></div>
+    <div class="mode-buttons mode-row"><button type="button" data-tde-model="worked" aria-pressed="true">Worked example h = [1, j0.5]</button><button type="button" data-tde-model="notch" aria-pressed="false">Deep-null h = [1, −0.9]</button><button type="button" data-tde-model="long" aria-pressed="false">Longer 6-tap channel</button></div>
     <div class="control-grid">
-    <div class="ctrl"><label for="tdeLf"><span>Equalizer length L<sub>f</sub></span> <strong id="tdeLfOut">4 taps</strong></label><input id="tdeLf" type="range" min="2" max="13" value="4" step="1"></div>
-    <div class="ctrl"><label for="tdeDelay"><span>Decision delay n<sub>d</sub></span> <strong id="tdeDelayOut">2</strong></label><input id="tdeDelay" type="range" min="0" max="5" value="2" step="1"></div>
+    <div class="ctrl"><label for="tdeLf"><span>Equalizer length L<sub>f</sub></span> <strong id="tdeLfOut">2 taps</strong></label><input id="tdeLf" type="range" min="2" max="13" value="2" step="1"></div>
+    <div class="ctrl"><label for="tdeDelay"><span>Decision delay n<sub>d</sub></span> <strong id="tdeDelayOut">1</strong></label><input id="tdeDelay" type="range" min="0" max="2" value="1" step="1"></div>
     <div class="ctrl"><label for="tdeSnr"><span>E<sub>x</sub>/N₀</span> <strong id="tdeSnrOut">10 dB</strong></label><input id="tdeSnr" type="range" min="-5" max="30" value="10" step="1"></div>
     <div class="ctrl"><label for="tdeReg">Regularization <strong id="tdeRegOut">LMMSE</strong></label><select id="tdeReg"><option value="lmmse" selected>LMMSE: λ = N₀/Eₓ</option><option value="ls">LS / approximate ZF: λ = 0</option></select></div>
     </div>
@@ -76,7 +78,7 @@
       <div class="metric"><div class="name">Matrix H</div><div class="value" id="tdeShape">—</div><div class="small">(L<sub>f</sub>+L) × L<sub>f</sub> convmtx</div></div>
       <div class="metric"><div class="name">Cascade error</div><div class="value" id="tdeResid">—</div><div class="small">‖Hf − e<sub>nd</sub>‖² against the target</div></div>
       <div class="metric"><div class="name">Noise gain</div><div class="value" id="tdeNoiseGain">—</div><div class="small">‖f‖² multiplies AWGN power</div></div>
-      <div class="metric"><div class="name">Dense design cost</div><div class="value" id="tdeCost">—</div><div class="small">≈ L<sub>f</sub>³ operations</div></div>
+      <div class="metric"><div class="name">Dense design cost</div><div class="value" id="tdeCost">—</div><div class="small">scaling proxy L<sub>f</sub>³; solve is O(L<sub>f</sub>³)</div></div>
     </div><div class="formula"><div>f<sub>nd</sub> = (HᴴH + N₀/E<sub>x</sub> I)⁻¹ Hᴴe<sub>nd</sub></div><div>x̂[n−n<sub>d</sub>] = Σ<sub>k</sub> f<sub>nd</sub>[k] y[n−k]</div><div id="tdeLambda">λ = N₀/E<sub>x</sub> = 0.100</div></div></div>
   </div></div>
 
@@ -85,7 +87,7 @@
     <div class="card"><div class="title">Effective channel Hf against the target impulse</div><canvas id="tdeCascade" role="img" aria-label="Magnitude of the effective channel after equalization compared with a delayed unit impulse"></canvas><div class="legend"><span><i class="sw blue"></i>Main cursor c[n<sub>d</sub>]</span><span><i class="sw orange"></i>Residual ISI</span><span><i class="sw green"></i>Target δ[m−n<sub>d</sub>]</span></div><ul class="bullets" id="tdeCascadeNote"></ul></div>
     <div class="card"><div class="title">Cascade error across decision delays</div><canvas id="tdeDelayCost" role="img" aria-label="Cascade error against decision delay for the selected and a longer equalizer"></canvas><div class="legend"><span><i class="sw blue"></i>Selected L<sub>f</sub></span><span><i class="sw" style="background:var(--cyan)"></i>Dashed — L<sub>f</sub> = 13</span><span><i class="sw" style="background:var(--red)"></i>Best delay</span><span><i class="sw green"></i>Your delay</span></div><ul class="bullets" id="tdeDelayNote"></ul></div>
     <div class="card"><div class="title">Constellation before and after time-domain equalization</div><canvas id="tdeConst" role="img" aria-label="QPSK constellation at the channel output and after the LMMSE time-domain equalizer"></canvas><div class="legend"><span><i class="sw orange"></i>Channel output y[n]</span><span><i class="sw blue"></i>Equalized x̂[n−n<sub>d</sub>]</span><span><i class="sw" style="background:var(--red)"></i>Ideal QPSK</span></div><ul class="bullets" id="tdeConstNote"></ul></div>
-    <div class="card"><div class="title">Cost and residual error versus equalizer length</div><canvas id="tdeCostLen" role="img" aria-label="Dense design cost and best-delay cascade error against equalizer length"></canvas><div class="legend"><span><i class="sw orange"></i>Design cost L<sub>f</sub>³</span><span><i class="sw blue"></i>Best-delay cascade error</span><span><i class="sw green"></i>Your L<sub>f</sub></span></div><ul class="bullets" id="tdeCostNote"></ul></div>
+    <div class="card"><div class="title">Cost and residual error versus equalizer length</div><canvas id="tdeCostLen" role="img" aria-label="Dense design-cost proxy and best-delay cascade error against equalizer length"></canvas><div class="legend"><span><i class="sw orange"></i>Design scaling proxy L<sub>f</sub>³</span><span><i class="sw blue"></i>Best-delay cascade error</span><span><i class="sw green"></i>Your L<sub>f</sub></span></div><ul class="bullets" id="tdeCostNote"></ul></div>
   </div>
 
   <div class="card" style="margin-top:14px"><div class="title" id="tdeMatrixTitle">Convolution matrix from the channel taps</div><div class="matrix-wrap" id="tdeMatrix"></div><ul class="bullets" id="tdeMatrixNote"></ul></div>
@@ -108,9 +110,11 @@
 
   <div class="flow" aria-label="Cyclic prefix block processing chain" aria-live="polite"><div class="flow-step" data-state="ready"><strong>Data block</strong><span id="cpFlowData">N symbols</span></div><div class="arrow">→</div><div class="flow-step" data-state="ready"><strong>Prepend CP</strong><span id="cpFlowCp">copy last L<sub>c</sub></span></div><div class="arrow">→</div><div class="flow-step" data-state="ready"><strong>Linear channel</strong><span id="cpFlowChan">memory L</span></div><div class="arrow">→</div><div class="flow-step" id="cpFlowDropStep" data-state="ready"><strong>Discard L<sub>c</sub></strong><span id="cpFlowDrop">—</span></div><div class="arrow">→</div><div class="flow-step" id="cpFlowFftStep" data-state="ready"><strong>FFT</strong><span id="cpFlowFft">—</span></div></div>
 
+  <div class="note"><strong>The cyclic prefix is not the preamble.</strong> A preamble is a known sequence sent at the start of a frame for detection, synchronization, and channel estimation. A cyclic prefix is a copy of each data block’s own last L<sub>c</sub> samples, attached to every SC-FDE or OFDM block and discarded before its FFT: <strong>[preamble] [CP₁ | data block₁] [CP₂ | data block₂] …</strong></div>
+
   <div class="plots two">
     <div class="card"><div class="title">Assembling the transmitted block: prefix then data</div><canvas id="cpAssembly" role="img" aria-label="Timeline showing the last L c data symbols copied to the front of the block to form the cyclic prefix"></canvas><ul class="bullets" id="cpAssemblyNote"></ul></div>
-    <div class="card"><div class="title">Why the prefix works: the channel spread lands on the CP</div><canvas id="cpAbsorb" role="img" aria-label="Transmitted block, channel spreading and the received block with the first L c samples discarded"></canvas><ul class="bullets" id="cpAbsorbNote"></ul></div>
+    <div class="card"><div class="title">Where previous-block interference lands</div><canvas id="cpAbsorb" role="img" aria-label="Aligned transmitted stream, previous-block interference at the channel output, and receiver windows showing the discarded cyclic prefix and useful FFT samples"></canvas><ul class="bullets" id="cpAbsorbNote"></ul></div>
   </div>
 
   <div class="plots" style="margin-top:14px">
@@ -162,16 +166,20 @@
   <div class="panel-head"><div><div class="eyebrow">OFDM equalization</div><h2>The same per-bin core, but each subcarrier now carries its own QAM symbol</h2></div><div class="message"><strong>The channel is assumed known here. Estimating it from comb pilots, and what pilot spacing costs, is Week 8 &mdash; see the Week 8 guided walkthrough.</strong> The IFFT at the transmitter is what separates OFDM from SC-FDE. The CP still gives the exact per-subcarrier model; narrowband flatness is a <em>separate</em> condition that only matters for interpolating Ĥ[k] between pilots. The MMSE denominator picks up a factor N because X<sub>k</sub> is a per-subcarrier symbol under the non-unitary DFT.</div></div>
   <div class="sticky-bar"><div class="toolbar">
     <div class="mode-buttons mode-row"><button type="button" data-of-eq="mmse" aria-pressed="true">MMSE per subcarrier</button><button type="button" data-of-eq="zf" aria-pressed="false">Zero forcing per subcarrier</button></div>
-    <div class="control-grid">
-    <div class="ctrl"><label for="ofN">Subcarriers N <strong id="ofNOut">64</strong></label><input id="ofN" type="range" min="4" max="8" value="6" step="1"></div>
-    <div class="ctrl"><label for="ofL">Channel memory L <strong id="ofLOut">5</strong></label><input id="ofL" type="range" min="1" max="20" value="5" step="1"></div>
-    <div class="ctrl"><label for="ofSnr">Average subcarrier SNR <strong id="ofSnrOut">15 dB</strong></label><input id="ofSnr" type="range" min="-5" max="30" value="15" step="1"></div>
-    <div class="ctrl"><label for="ofTone">Selected subcarrier k <strong id="ofToneOut">16</strong></label><input id="ofTone" type="range" min="0" max="63" value="16" step="1"></div>
-    <div class="ctrl"><label for="ofMod">Subcarrier constellation</label><select id="ofMod"><option value="qpsk" selected>QPSK</option><option value="qam16">16-QAM</option></select></div>
+    <div class="of-control-layout">
+      <fieldset class="control-section"><legend class="control-section-title">Whole OFDM block and channel</legend><div class="control-grid of-block-controls">
+        <div class="ctrl"><label for="ofN">Subcarriers N <strong id="ofNOut">64</strong></label><input id="ofN" type="range" min="4" max="8" value="6" step="1"></div>
+        <div class="ctrl"><label for="ofL">Channel memory L <strong id="ofLOut">5</strong></label><input id="ofL" type="range" min="1" max="20" value="5" step="1"></div>
+        <div class="ctrl"><label for="ofSnr">Average subcarrier SNR <strong id="ofSnrOut">15 dB</strong></label><input id="ofSnr" type="range" min="-5" max="30" value="15" step="1"></div>
+      </div></fieldset>
+      <fieldset class="control-section"><legend class="control-section-title">Selected-subcarrier probe</legend><div class="control-grid of-probe-controls">
+        <div class="ctrl"><label for="ofTone">Subcarrier k <strong id="ofToneOut">16</strong></label><input id="ofTone" type="range" min="0" max="63" value="16" step="1"></div>
+        <div class="ctrl"><label for="ofMod">Constellation</label><select id="ofMod"><option value="qpsk" selected>QPSK</option><option value="qam16">16-QAM</option></select></div>
+      </div></fieldset>
     </div>
-    <div class="summary-row"><div class="toolbar-metrics">
-      <div class="metric"><div class="name">PAPR at 0.1 %</div><div class="value" id="ofPaprVal">—</div><div class="small">OFDM versus SC-FDE</div><button type="button" id="ofDenomHelp">Why NN₀/E<sub>X</sub>?</button></div>
-    </div><div class="formula"><div>X̂<sub>ZF,k</sub> = Y<sub>k</sub> / Ĥ<sub>k</sub></div><div>X̂<sub>MMSE,k</sub> = Ĥ*<sub>k</sub> Y<sub>k</sub> / (|Ĥ<sub>k</sub>|² + NN₀/E<sub>X</sub>)</div><div id="ofLambda">NN₀/E<sub>X</sub> = 0.0316</div></div></div>
+    <div class="summary-row of-summary"><div class="toolbar-metrics">
+      <div class="metric"><div class="name">PAPR at 0.1 %</div><div class="value" id="ofPaprVal">—</div><div class="small">OFDM versus SC-FDE</div></div>
+    </div><div class="formula"><div class="formula-head"><strong>Per-subcarrier equalizer</strong><button type="button" id="ofDenomHelp">Why NN₀/E<sub>X</sub>?</button></div><div>X̂<sub>ZF,k</sub> = Y<sub>k</sub> / Ĥ<sub>k</sub></div><div>X̂<sub>MMSE,k</sub> = Ĥ*<sub>k</sub> Y<sub>k</sub> / (|Ĥ<sub>k</sub>|² + NN₀/E<sub>X</sub>)</div><div id="ofLambda">NN₀/E<sub>X</sub> = 0.0316</div></div></div>
   </div></div>
 
   <div class="flow" aria-label="OFDM transmitter chain"><div class="flow-step" data-state="ready"><strong>Map to X<sub>k</sub></strong><span>QAM per subcarrier</span></div><div class="arrow">→</div><div class="flow-step" data-state="required"><strong>IFFT</strong><span id="ofTxIfft">N-point, required</span></div><div class="arrow">→</div><div class="flow-step" data-state="ready"><strong>Add CP</strong><span id="ofTxCp">L<sub>c</sub> ≥ L</span></div><div class="arrow">→</div><div class="flow-step" data-state="ready"><strong>Pulse shape / RF</strong><span id="ofTxPapr">high PAPR</span></div><div class="arrow">→</div><div class="flow-step" data-state="warning"><strong>Channel</strong><span id="ofTxChan">memory L</span></div></div>
@@ -199,6 +207,7 @@
 </section>
 </main>
 
+<dialog class="gain-dialog" id="motCalcDialog" aria-labelledby="motCalcTitle"><h3 id="motCalcTitle">Calculation</h3><div class="formula" id="motCalcBody"></div><p class="message" id="motCalcExplain"></p><button type="button" id="motCalcClose">Close</button></dialog>
 <dialog class="gain-dialog" id="scZfDialog" aria-labelledby="scZfDialogTitle"><h3 id="scZfDialogTitle">Worst zero-forcing gain</h3><div class="formula" id="scZfCalc"></div><p class="message">Zero forcing asks for 1/H[k] in every bin, so its largest gain sits exactly where the channel is weakest. That gain multiplies the noise in that bin by the same factor, and its square multiplies the noise power. Nothing downstream can recover the SNR lost in the fade.</p><button type="button" id="scZfClose">Close</button></dialog>
 <dialog class="gain-dialog" id="scMmseDialog" aria-labelledby="scMmseDialogTitle"><h3 id="scMmseDialogTitle">Worst MMSE gain</h3><div class="formula" id="scMmseCalc"></div><p class="message">The MMSE weight |H|/(|H|²+λ) is maximized at |H| = √λ, where it equals 1/(2√λ). Whatever the channel does, the λ in the denominator takes over once |H|² falls below it, so the gain is bounded by the noise level rather than by the depth of the null. The price is that weak bins are left partially unequalized.</p><button type="button" id="scMmseClose">Close</button></dialog>
 <dialog class="gain-dialog" id="ofDenomDialog" aria-labelledby="ofDenomDialogTitle"><h3 id="ofDenomDialogTitle">Why SC-FDE uses N₀/E<sub>x</sub> and OFDM uses NN₀/E<sub>X</sub></h3><div class="formula" id="ofDenomCalc"></div><p class="message">Both denominators are the same thing — the inverse per-subcarrier SNR — written for different symbol mappings. In SC-FDE, X[k] is the DFT of a block of time-domain symbols of energy E<sub>x</sub>, so its energy picks up the same factor N that the noise does and the N cancels. In OFDM, X<sub>k</sub> <em>is</em> the transmitted symbol on subcarrier k with energy E<sub>X</sub>, while the noise still gains N from the non-unitary DFT, so the factor survives. With a unitary DFT it disappears from both.</p><button type="button" id="ofDenomClose">Close</button></dialog>
@@ -263,12 +272,13 @@ function motParams(){const tau=+$('motTau').value,rsExp=+$('motRs').value,Rs=Mat
 function drawMotivation(){
   const p=motParams();
   $('motTauOut').textContent=p.tau+' µs';$('motRsOut').textContent=fmtRate(p.Rs);$('motNOut').textContent=p.N;$('motAlphaOut').textContent=p.alpha.toFixed(2)+'×';
-  const tdeDesign=Math.pow(p.Lf,3),fdeBlock=p.N*Math.log2(p.N)+p.N,tdePer=p.Lf,fdePer=Math.log2(p.N)+1;
+  const tdeDesign=Math.pow(p.Lf,3),fdeBlock=2*p.N*Math.log2(p.N)+p.N,tdePer=p.Lf,fdePer=2*Math.log2(p.N)+1;
   $('motMemory').textContent=fmtCount(p.L)+' symbols';
   $('motTdeCost').textContent=fmtCount(tdeDesign);
   $('motFdeCost').textContent=fmtCount(fdeBlock);
   $('motPerSym').textContent=fmtCount(tdePer)+' vs '+fdePer.toFixed(0);
   $('motFlowEstimate').textContent=fmtCount(p.L+1)+' complex taps';
+  $('motFlowEstimateFde').textContent=fmtCount(p.L+1)+' complex taps';
   $('motFlowFft').textContent=p.N+'-point FFT';
   $('motFlowTone').textContent=p.N+' complex multiplies';
   const heavy=p.Lf>32;
@@ -286,29 +296,33 @@ function drawMotivation(){
   line(z,[[xmin,Math.log10(fdeBlock)],[xmax,Math.log10(fdeBlock)]],css('--purple'),2.4,[7,5]);
   z.c.save();z.c.strokeStyle=css('--muted');z.c.lineWidth=1;z.c.setLineDash([4,4]);z.c.beginPath();z.c.moveTo(z.X(p.rsExp),z.Y(ymin));z.c.lineTo(z.X(p.rsExp),z.Y(ymax));z.c.stroke();z.c.restore();
   dot(z,p.rsExp,clip(Math.log10(p.L)),css('--green'),6);dot(z,p.rsExp,clip(Math.log10(tdeDesign)),css('--green'),6);
-  plotLabel(z,z.X(p.rsExp),z.Y(clip(Math.log10(tdeDesign)))-9,'L = '+fmtCount(p.L)+', design ≈ '+fmtCount(tdeDesign),css('--green'));
+  plotLabel(z,z.X(p.rsExp),z.Y(clip(Math.log10(p.L)))-8,'L = '+fmtCount(p.L)+' symbols',css('--green'));
+  plotLabel(z,z.X(p.rsExp),z.Y(clip(Math.log10(tdeDesign)))-9,'design ≈ '+fmtCount(tdeDesign)+' operations',css('--green'));
   const equalX=Math.log10(Math.pow(fdeBlock,1/3)/(p.alpha)*1e6/p.tau);
   bullets($('motMemoryNote'),[
     'A tenfold increase in symbol rate multiplies the channel memory by ten and the dense design cost by one thousand: the orange curve has three times the slope of the blue one.',
-    'The FFT cost is flat because N is chosen by the designer, not by the channel. At N = '+p.N+' one block costs about '+fmtCount(fdeBlock)+' complex multiplies whatever L does.',
-    'Reading off R'+'ₛ = '+fmtRate(p.Rs)+': L = '+fmtCount(p.L)+' taps, so a dense L'+'_f = '+fmtCount(p.Lf)+' design costs roughly '+fmtCount(tdeDesign)+' operations against '+fmtCount(fdeBlock)+' for the block FFT.'
+    'The SC-FDE cost is flat because N is chosen by the designer, not by the channel. It counts one N-point FFT, N per-bin equalizer multiplications, and one N-point IFFT: 2N log₂N + N ≈ '+fmtCount(fdeBlock)+' complex multiplies at N = '+p.N+'.',
+    'Reading off R'+'ₛ = '+fmtRate(p.Rs)+': the channel memory is L = '+fmtCount(p.L)+' symbols ('+fmtCount(p.L+1)+' taps), so a dense L'+'_f = '+fmtCount(p.Lf)+' design costs roughly '+fmtCount(tdeDesign)+' operations. For comparison, complete SC-FDE reception costs about '+fmtCount(fdeBlock)+' operations per block; an OFDM receiver omits the final IFFT and would cost about '+fmtCount(p.N*Math.log2(p.N)+p.N)+'.'
   ]);
 
   /* --- per-symbol complexity --- */
   const y2max=5;
-  z=axes($('motComplexity'),xmin,xmax,0,y2max,'Symbol rate Rₛ (sym/s)','Multiplies per useful symbol',{xticks:4,yticks:5,yfmt:decade,xfmt:decade});
+  z=axes($('motComplexity'),xmin,xmax,0,y2max,'Symbol rate Rₛ (sym/s)','Multiplies / useful symbol',{xticks:4,yticks:5,yfmt:decade,xfmt:decade});
   const tdeCurve=[],fdeLog=Math.log10(fdePer);
   for(let x=xmin;x<=xmax+1e-9;x+=0.05){const v=Math.log10(Math.max(1,p.alpha*Lof(x)));if(v<=y2max)tdeCurve.push([x,v])}
   line(z,tdeCurve,css('--orange'),2.4);
   line(z,[[xmin,fdeLog],[xmax,fdeLog]],css('--purple'),2.4,[7,5]);
   const crossRs=fdePer/(p.alpha*p.tau*1e-6),crossX=Math.log10(Math.max(1,crossRs));
-  if(crossX>xmin&&crossX<xmax){z.c.save();z.c.strokeStyle=css('--red');z.c.lineWidth=2;z.c.beginPath();z.c.moveTo(z.X(crossX),z.Y(0));z.c.lineTo(z.X(crossX),z.Y(y2max));z.c.stroke();z.c.restore();plotLabel(z,z.X(crossX),z.Y(y2max)+6,'FDE cheaper above '+fmtRate(Math.pow(10,crossX)),css('--red'),'top')}
+  if(crossX>xmin&&crossX<xmax){z.c.save();z.c.strokeStyle=css('--red');z.c.lineWidth=2;z.c.beginPath();z.c.moveTo(z.X(crossX),z.Y(0));z.c.lineTo(z.X(crossX),z.Y(y2max));z.c.stroke();z.c.restore();plotLabel(z,z.X(crossX),z.Y(y2max)+6,'SC-FDE cheaper above '+fmtRate(Math.pow(10,crossX)),css('--red'),'top')}
   dot(z,p.rsExp,Math.min(y2max,Math.log10(tdePer)),css('--green'),6);
-  plotLabel(z,z.X(p.rsExp),z.Y(Math.min(y2max,Math.log10(tdePer)))-9,fmtCount(tdePer)+' vs '+fdePer.toFixed(0),css('--green'));
+  dot(z,p.rsExp,fdeLog,css('--green'),6);
+  plotLabel(z,z.X(p.rsExp),z.Y(Math.min(y2max,Math.log10(tdePer)))+8,'TDE: '+fmtCount(tdePer)+'/symbol',css('--orange'),'top');
+  plotLabel(z,z.X(p.rsExp),z.Y(fdeLog)-8,'SC-FDE: '+fmtCount(fdeBlock)+'/block ÷ '+p.N+' = '+fdePer.toFixed(0)+'/symbol',css('--purple'));
   bullets($('motComplexityNote'),[
-    'Filtering costs L'+'_f = '+fmtCount(tdePer)+' multiplies per symbol; the two FFTs plus the per-bin multiply cost about log₂N + 1 = '+fdePer.toFixed(0)+' per useful symbol.',
-    'The FDE line is flat in R'+'ₛ. That is the whole argument for block processing: the transform cost is set by N, and the channel only has to fit inside the cyclic prefix.',
-    'This counts multiplies only. FDE also pays the CP overhead in bandwidth and a block of latency, which the next tab prices.'
+    'A block groups N = '+p.N+' useful data symbols. The transmitter prepends L_c repeated samples, so N + L_c samples are sent; the receiver discards the prefix and jointly processes the remaining N useful symbols.',
+    'TDE filtering costs L'+'_f = '+fmtCount(tdePer)+' multiplies for every symbol. SC-FDE costs '+fmtCount(fdeBlock)+' multiplies for the whole block, so its average is '+fmtCount(fdeBlock)+' ÷ '+p.N+' = '+fdePer.toFixed(0)+' multiplies per useful data symbol.',
+    'Do not confuse processing with design: L'+'_f³ ≈ '+fmtCount(tdeDesign)+' is the one-time cost of calculating the TDE coefficients; L'+'_f = '+fmtCount(tdePer)+' is the ongoing cost of applying them to each symbol.',
+    'These are approximate complex-multiplication counts. SC-FDE also pays cyclic-prefix bandwidth overhead and one block of latency.'
   ]);
 
   /* --- sampled impulse response --- */
@@ -322,16 +336,43 @@ function drawMotivation(){
     'Sampling faster does not change the physics; it only spreads the same energy over more taps.'
   ]);
   const feasible=p.Lf<=32;
-  $('motNote').innerHTML='<strong>'+(feasible?'Time-domain equalization is still reasonable here.':'This is where the frequency domain takes over.')+'</strong> With τ<sub>max</sub> = '+p.tau+' µs at '+fmtRate(p.Rs)+', the channel memory is L = '+fmtCount(p.L)+' and a practical equalizer needs L<sub>f</sub> ≈ '+fmtCount(p.Lf)+' taps: '+fmtCount(tdePer)+' multiplies per symbol and about '+fmtCount(tdeDesign)+' operations to design. A block of N = '+p.N+' costs '+fmtCount(fdeBlock)+' multiplies once, or '+fdePer.toFixed(0)+' per useful symbol, and pays '+(100/(1+p.N/Math.max(p.L,1))).toFixed(1)+'% overhead if the prefix is set to L<sub>c</sub> = L.';
+  $('motNote').innerHTML='<strong>'+(feasible?'Time-domain equalization is still reasonable here.':'This is where the frequency domain takes over.')+'</strong> With τ<sub>max</sub> = '+p.tau+' µs at '+fmtRate(p.Rs)+', the channel memory is L = '+fmtCount(p.L)+' symbols ('+fmtCount(p.L+1)+' taps) and a practical equalizer needs L<sub>f</sub> ≈ '+fmtCount(p.Lf)+' taps: '+fmtCount(tdePer)+' multiplies per symbol and about '+fmtCount(tdeDesign)+' operations to design. Complete SC-FDE reception for N = '+p.N+' costs about '+fmtCount(fdeBlock)+' multiplies per block, or '+fdePer.toFixed(0)+' per useful symbol, and pays '+(100/(1+p.N/Math.max(p.L,1))).toFixed(1)+'% overhead if the prefix is set to L<sub>c</sub> = L.';
 }
 ['motTau','motRs','motAlpha','motN'].forEach(id=>$(id).addEventListener('input',drawMotivation));
+function openMotCalc(kind){
+  const p=motParams(),tdeDesign=Math.pow(p.Lf,3),fft=p.N*Math.log2(p.N),fdeBlock=2*fft+p.N,fdePer=fdeBlock/p.N;
+  if(kind==='memory'){
+    $('motCalcTitle').textContent='Channel memory L';
+    $('motCalcBody').innerHTML='<div>τ<sub>max</sub> = '+p.tau+' µs = '+p.tau+'×10<sup>−6</sup> s</div><div>R<sub>s</sub>τ<sub>max</sub> = '+Math.round(p.Rs).toLocaleString()+'×'+p.tau+'×10<sup>−6</sup> = '+(p.Rs*p.tau*1e-6).toFixed(3)+'</div><div>L = ⌈R<sub>s</sub>τ<sub>max</sub>⌉ = '+p.L+' symbols</div><div>channel length = L + 1 = '+(p.L+1)+' taps</div>';
+    $('motCalcExplain').textContent='L is the channel memory: the largest discrete delay index. A channel with memory L therefore has taps h[0] through h[L], giving L + 1 taps in total.';
+  }else if(kind==='tde'){
+    const trailingUpdates=(p.Lf-1)*p.Lf*(2*p.Lf-1)/6;
+    $('motCalcTitle').textContent='TDE dense-design cost';
+    $('motCalcBody').innerHTML='<div>(HᴴH + λI)f = Hᴴe<sub>nd</sub></div><div>matrix size: L<sub>f</sub> × L<sub>f</sub> = '+p.Lf+' × '+p.Lf+'</div><div>at each elimination stage, updating the remaining m × m matrix costs ∝ m<sup>2</sup></div><div>total ∝ Σ<sub>m=1</sub><sup>L<sub>f</sub>−1</sup> m<sup>2</sup> = (L<sub>f</sub>−1)L<sub>f</sub>(2L<sub>f</sub>−1)/6</div><div>for L<sub>f</sub> = '+p.Lf+': Σm<sup>2</sup> = '+trailingUpdates.toLocaleString()+'</div><div>leading term ≈ L<sub>f</sub><sup>3</sup>/3, so the scaling is O(L<sub>f</sub><sup>3</sup>)</div><div>plotting proxy: L<sub>f</sub><sup>3</sup> = '+tdeDesign.toLocaleString()+'</div>';
+    $('motCalcExplain').textContent='The exponent 3 comes from repeating a two-dimensional O(m²) trailing-matrix update through O(L_f) elimination stages. Exact constants depend on the solver and on how complex arithmetic is counted. The dashboard therefore uses L_f³ only as a common scaling proxy; the displayed value is not a literal instruction count.';
+  }else if(kind==='average'){
+    $('motCalcTitle').textContent='Average receiver cost per useful symbol';
+    $('motCalcBody').innerHTML='<div><strong>TDE:</strong> one L<sub>f</sub>-tap filter output per symbol</div><div>L<sub>f</sub> = '+p.Lf+' multiplies per useful symbol</div><div><strong>SC-FDE:</strong> '+fdeBlock.toLocaleString()+' multiplies per block ÷ '+p.N+' useful symbols</div><div>(2N log₂N + N)/N = 2 log₂N + 1</div><div>2×'+Math.log2(p.N)+' + 1 = '+fdePer.toFixed(0)+' multiplies per useful symbol</div><div><strong>comparison: '+p.Lf+' vs '+fdePer.toFixed(0)+'</strong></div>';
+    $('motCalcExplain').textContent='“Average” means the block-processing cost is shared across the N useful data symbols recovered from that block. The cyclic prefix is transmission overhead and is discarded before the N-point FFT; it does not add useful symbols. This comparison covers equalizer processing only, not the occasional TDE design solve or the front-end, synchronization, and channel-estimation work shared by both paths.';
+  }else{
+    $('motCalcTitle').textContent='SC-FDE receiver cost per block';
+    $('motCalcBody').innerHTML='<div>FFT: N log₂N = '+p.N+'×'+Math.log2(p.N)+' = '+fft.toLocaleString()+'</div><div>per-bin equalizer: N = '+p.N+'</div><div>IFFT: N log₂N = '+fft.toLocaleString()+'</div><div>total ≈ 2N log₂N + N = '+fdeBlock.toLocaleString()+' multiplies</div><div>average per useful symbol = '+fdeBlock.toLocaleString()+' / '+p.N+' = '+(fdeBlock/p.N).toFixed(0)+'</div>';
+    $('motCalcExplain').textContent='One SC-FDE block contains N useful data symbols. The receiver removes the cyclic prefix, transforms those N samples, applies one equalizer multiplication in every bin, and returns through an IFFT. An OFDM receiver detects after the per-subcarrier equalizer and therefore omits this final IFFT.';
+  }
+  $('motCalcDialog').showModal();
+}
+$('motMemoryHelp').addEventListener('click',()=>openMotCalc('memory'));
+$('motTdeHelp').addEventListener('click',()=>openMotCalc('tde'));
+$('motFdeHelp').addEventListener('click',()=>openMotCalc('fde'));
+$('motPerSymHelp').addEventListener('click',()=>openMotCalc('average'));
+$('motCalcClose').addEventListener('click',()=>$('motCalcDialog').close());
 
 /* ==================================================================
    2 · LMMSE TIME-DOMAIN BRIDGE
    ================================================================== */
 let tdeModel='worked';
 const tdeChannels={
-  worked:()=>[C(0.5,0),C(0,0.5),C(0.4,0)],
+  worked:()=>[C(1,0),C(0,0.5)],
   notch:()=>{const h=[C(1,0),C(-0.9,0)],e=h.reduce((s,v)=>s+abs2(v),0),g=1/Math.sqrt(e);return h.map(v=>scale(v,g))},
   long:()=>pdpChannel(5,3311)
 };
@@ -455,7 +496,7 @@ $('tdeReg').addEventListener('change',drawTde);
 /* ==================================================================
    3 · CYCLIC PREFIX AND CIRCULAR CONVOLUTION
    ================================================================== */
-function cpParams(){const N=Math.pow(2,+$('cpN').value),Lc=+$('cpLc').value,L=+$('cpL').value,snr=+$('cpSnr').value;return{N,Lc,L,snr,N0:Math.pow(10,-snr/10)}}
+function cpParams(){const N=Math.pow(2,+$('cpN').value),lc=$('cpLc');lc.max=N;const Lc=Math.min(N,+lc.value);if(+lc.value!==Lc)lc.value=Lc;const L=+$('cpL').value,snr=+$('cpSnr').value;return{N,Lc,L,snr,N0:Math.pow(10,-snr/10)}}
 function cpSimulate(p,withNoise,seed){
   const r=rng(seed||7701),h=pdpChannel(p.L,5501),
     x0=qpskBlock(p.N,r),x1=qpskBlock(p.N,r),
@@ -574,17 +615,22 @@ function drawCp(){
     :'With L_c = '+p.Lc+' < L = '+p.L+', the tail of the previous block reaches '+(p.L-p.Lc)+' samples into the useful window. That is inter-block interference: it survives the FFT, contaminates every bin, and sets an error floor no equalizer can lower.');
 }
 function panelCanvas(cv){const z=resizeCanvas(cv);z.c.clearRect(0,0,z.w,z.h);z.c.font='11px system-ui';return z}
-function labelledBlock(z,x,y,w,h,fill,stroke,label,sub){z.c.save();z.c.globalAlpha=.18;z.c.fillStyle=fill;z.c.fillRect(x,y,w,h);z.c.restore();z.c.strokeStyle=stroke;z.c.lineWidth=1.6;z.c.strokeRect(x,y,w,h);if(label&&w>26){z.c.fillStyle=stroke;z.c.textAlign='center';z.c.textBaseline='middle';z.c.fillText(label,x+w/2,y+h/2-(sub?6:0));if(sub){z.c.fillStyle=css('--muted');z.c.font='10px system-ui';z.c.fillText(sub,x+w/2,y+h/2+8);z.c.font='11px system-ui'}}}
-function brace(z,x1,x2,y,text,color){z.c.save();z.c.strokeStyle=color;z.c.lineWidth=1.4;z.c.beginPath();z.c.moveTo(x1,y-5);z.c.lineTo(x1,y);z.c.lineTo(x2,y);z.c.lineTo(x2,y-5);z.c.stroke();z.c.fillStyle=color;z.c.textAlign='center';z.c.textBaseline='top';z.c.fillText(text,(x1+x2)/2,y+3);z.c.restore()}
+function labelledBlock(z,x,y,w,h,fill,stroke,label,sub){z.c.save();z.c.globalAlpha=.18;z.c.fillStyle=fill;z.c.fillRect(x,y,w,h);z.c.globalAlpha=1;z.c.strokeStyle=stroke;z.c.lineWidth=1.6;z.c.strokeRect(x,y,w,h);if(label&&w>26){z.c.fillStyle=stroke;z.c.textAlign='center';z.c.textBaseline='middle';z.c.fillText(label,x+w/2,y+h/2-(sub?6:0));if(sub){z.c.fillStyle=css('--muted');z.c.font='10px system-ui';z.c.fillText(sub,x+w/2,y+h/2+8)}}z.c.restore()}
+function brace(z,x1,x2,y,text,color){z.c.save();z.c.strokeStyle=color;z.c.lineWidth=1.4;z.c.beginPath();z.c.moveTo(x1,y-5);z.c.lineTo(x1,y);z.c.lineTo(x2,y);z.c.lineTo(x2,y-5);z.c.stroke();z.c.fillStyle=color;z.c.textAlign='center';z.c.textBaseline='top';const tw=z.c.measureText(text).width,half=tw/2,cx=Math.max(half+4,Math.min(z.w-half-4,(x1+x2)/2));z.c.fillText(text,cx,y+3);z.c.restore()}
 function arrowCurve(z,x1,y1,x2,y2,color,text){z.c.save();z.c.strokeStyle=color;z.c.lineWidth=1.8;z.c.beginPath();z.c.moveTo(x1,y1);z.c.bezierCurveTo(x1,y1-34,x2,y2-34,x2,y2);z.c.stroke();const ang=Math.PI/2;z.c.fillStyle=color;z.c.beginPath();z.c.moveTo(x2,y2);z.c.lineTo(x2-5,y2-9);z.c.lineTo(x2+5,y2-9);z.c.closePath();z.c.fill();if(text){z.c.textAlign='center';z.c.textBaseline='bottom';z.c.fillText(text,(x1+x2)/2,Math.min(y1,y2)-26)}z.c.restore()}
 function drawCpAssembly(p){
-  const z=panelCanvas($('cpAssembly')),pad=18,W=z.w-2*pad,unit=W/(p.N+p.Lc),rowH=40,y1=68,y2=176;
+  const z=panelCanvas($('cpAssembly')),pad=18,W=z.w-2*pad,unit=W/(p.N+p.Lc),rowH=40,y1=68,y2=176,dataX=pad+p.Lc*unit;
   z.c.fillStyle=css('--muted');z.c.textAlign='left';z.c.textBaseline='top';
-  z.c.fillText('Data block x[0] … x[N−1]',pad,y1-22);
-  labelledBlock(z,pad,y1,p.N*unit,rowH,css('--blue'),css('--blue'),'x[0] … x[N−1]','N = '+p.N+' symbols');
-  const tailW=Math.min(p.Lc,p.N)*unit,tailX=pad+p.N*unit-tailW;
-  if(p.Lc>0)labelledBlock(z,tailX,y1,tailW,rowH,css('--orange'),css('--orange'),p.Lc>=3?'last L_c':'',null);
-  brace(z,tailX,pad+p.N*unit,y1+rowH+4,p.Lc>0?'copy these '+p.Lc:'nothing copied',css('--orange'));
+  z.c.fillText('Original data block x[0] … x[N−1]',dataX,y1-22);
+  const tailCoversCentre=p.Lc>=p.N/2;
+  labelledBlock(z,dataX,y1,p.N*unit,rowH,css('--blue'),css('--blue'),tailCoversCentre?'':'x[0] … x[N−1]',tailCoversCentre?null:'N = '+p.N+' symbols');
+  const tailW=p.Lc*unit,tailX=dataX+p.N*unit-tailW;
+  if(p.Lc>0){
+    labelledBlock(z,tailX,y1,tailW,rowH,css('--orange'),css('--orange'),p.Lc===p.N?'all N samples copied':(p.Lc>=3?'last L_c':''),null);
+    brace(z,tailX,dataX+p.N*unit,y1+rowH+4,'copy L_c = '+p.Lc,css('--orange'));
+  }else{
+    z.c.fillStyle=css('--orange');z.c.textAlign='left';z.c.textBaseline='top';z.c.fillText('L_c = 0: no samples copied',dataX,y1+rowH+10);
+  }
   z.c.fillStyle=css('--muted');z.c.textAlign='left';z.c.textBaseline='top';
   z.c.fillText('Transmitted block w[n] = [CP, x], length N + L_c = '+(p.N+p.Lc),pad,y2-22);
   if(p.Lc>0)labelledBlock(z,pad,y2,p.Lc*unit,rowH,css('--orange'),css('--orange'),p.Lc>=3?'CP':'',p.Lc>=5?'L_c = '+p.Lc:null);
@@ -593,35 +639,42 @@ function drawCpAssembly(p){
   brace(z,pad,pad+(p.N+p.Lc)*unit,y2+rowH+4,'N + L_c = '+(p.N+p.Lc)+' transmitted symbols · η_CP = '+(100*p.N/(p.N+p.Lc)).toFixed(1)+'%',css('--muted'));
   bullets($('cpAssemblyNote'),[
     'w[n] = x[n+N−L_c] for n < L_c and x[n−L_c] afterwards — a plain copy, no new information.',
+    'The upper data box is aligned with the same N data samples in the transmitted block below; the orange tail is copied into the prefix position on the left.',
     'Because the prefix repeats the block’s own tail, a delayed copy arriving inside the useful window looks like a wrapped index rather than a symbol from somewhere else. That wrap is what turns linear convolution into circular.',
     'The transmitter pays for it in bandwidth: '+(100*p.Lc/(p.N+p.Lc)).toFixed(1)+'% of the symbols sent carry nothing new.'
   ]);
 }
 function drawCpAbsorb(p,s){
-  const z=panelCanvas($('cpAbsorb')),pad=18,W=z.w-2*pad,total=p.N+p.Lc+Math.max(p.L,1),unit=W/total,rowH=36,yT=60,yR=178;
-  const ok=p.Lc>=p.L;
+  const z=panelCanvas($('cpAbsorb')),pad=18,W=z.w-2*pad,rowH=30,yT=42,yS=112,yR=190,
+    prevW=Math.min(92,Math.max(62,W*.19)),blockX=pad+prevW,blockW=W-prevW,
+    unit=blockW/(p.N+p.Lc),fftX=blockX+p.Lc*unit,endX=blockX+(p.Lc+p.N)*unit,
+    reachX=Math.min(endX,blockX+p.L*unit),ok=p.Lc>=p.L;
   z.c.fillStyle=css('--muted');z.c.textAlign='left';z.c.textBaseline='top';
-  z.c.fillText('Transmitted w[n]',pad,yT-20);
-  if(p.Lc>0)labelledBlock(z,pad,yT,p.Lc*unit,rowH,css('--orange'),css('--orange'),p.Lc>=3?'CP':'',null);
-  labelledBlock(z,pad+p.Lc*unit,yT,p.N*unit,rowH,css('--blue'),css('--blue'),'data','N = '+p.N);
-  /* channel spreading arrows */
-  z.c.save();z.c.strokeStyle=css('--muted');z.c.setLineDash([3,3]);z.c.lineWidth=1.2;
-  for(let i=0;i<=4;i++){const x=pad+(p.Lc+i*p.N/4)*unit;z.c.beginPath();z.c.moveTo(x,yT+rowH+4);z.c.lineTo(x+p.L*unit,yR-6);z.c.stroke()}
-  z.c.restore();
-  z.c.fillStyle=css('--muted');z.c.textAlign='center';z.c.textBaseline='middle';
-  z.c.fillText('channel memory L = '+p.L+' shifts every path right',pad+W/2,(yT+rowH+yR)/2);
-  z.c.textAlign='left';z.c.textBaseline='top';
-  z.c.fillText('Received r[n], first L_c samples discarded',pad,yR-20);
-  if(p.Lc>0){labelledBlock(z,pad,yR,p.Lc*unit,rowH,css('--red'),css('--red'),'',null);
-    z.c.save();z.c.strokeStyle=css('--red');z.c.lineWidth=1.4;z.c.beginPath();z.c.moveTo(pad,yR);z.c.lineTo(pad+p.Lc*unit,yR+rowH);z.c.moveTo(pad,yR+rowH);z.c.lineTo(pad+p.Lc*unit,yR);z.c.stroke();z.c.restore()}
-  labelledBlock(z,pad+p.Lc*unit,yR,p.N*unit,rowH,ok?css('--green'):css('--red'),ok?css('--green'):css('--red'),ok?'useful: y = h ⊛ x + v':'contaminated block','N = '+p.N+' samples → FFT');
-  if(!ok){const badW=Math.min(p.L-p.Lc,p.N)*unit;labelledBlock(z,pad+p.Lc*unit,yR,badW,rowH,css('--red'),css('--red'),'',null);
-    brace(z,pad+p.Lc*unit,pad+p.Lc*unit+badW,yR+rowH+4,(p.L-p.Lc)+' samples of inter-block interference',css('--red'))}
-  else brace(z,pad+p.Lc*unit,pad+(p.Lc+p.N)*unit,yR+rowH+4,'circular model exact',css('--green'));
+  z.c.fillText('1  Transmitted stream (time →)',pad,yT-20);
+  labelledBlock(z,pad,yT,prevW,rowH,css('--purple'),css('--purple'),'previous','block tail');
+  if(p.Lc>0)labelledBlock(z,blockX,yT,p.Lc*unit,rowH,css('--orange'),css('--orange'),p.Lc*unit>28?'CP':'',null);
+  labelledBlock(z,fftX,yT,p.N*unit,rowH,css('--blue'),css('--blue'),'current data','N = '+p.N);
+
+  z.c.fillStyle=css('--muted');z.c.fillText('2  Previous-block reach: L = '+p.L+' samples',pad,yS-20);
+  z.c.save();z.c.strokeStyle=css('--muted');z.c.lineWidth=1.2;z.c.strokeRect(blockX,yS,endX-blockX,rowH);z.c.restore();
+  if(p.L>0)labelledBlock(z,blockX,yS,Math.max(1,reachX-blockX),rowH,css('--red'),css('--red'),reachX-blockX>88?'previous-block response':'',reachX-blockX>88?'maximum reach':'' );
+  else{z.c.fillStyle=css('--green');z.c.fillText('No delayed spill when L = 0',blockX+6,yS+9)}
+
+  z.c.fillStyle=css('--muted');z.c.fillText('3  Discard L_c = '+p.Lc+'; FFT next N = '+p.N, pad,yR-20);
+  if(p.Lc>0){labelledBlock(z,blockX,yR,p.Lc*unit,rowH,css('--orange'),css('--orange'),p.Lc*unit>40?'discard CP':'',null);
+    z.c.save();z.c.strokeStyle=css('--red');z.c.lineWidth=1.4;z.c.beginPath();z.c.moveTo(blockX,yR);z.c.lineTo(fftX,yR+rowH);z.c.moveTo(blockX,yR+rowH);z.c.lineTo(fftX,yR);z.c.stroke();z.c.restore()}
+  labelledBlock(z,fftX,yR,p.N*unit,rowH,css('--green'),css('--green'),'useful FFT window','N = '+p.N);
+  if(!ok){const badX2=Math.min(reachX,endX);labelledBlock(z,fftX,yR,Math.max(1,badX2-fftX),rowH,css('--red'),css('--red'),'','');
+    brace(z,fftX,badX2,yR+rowH+4,(p.L-p.Lc)+' contaminated sample'+(p.L-p.Lc===1?'':'s'),css('--red'))}
+  else brace(z,fftX,endX,yR+rowH+4,'clean FFT window: circular model exact',css('--green'));
+
+  z.c.save();z.c.strokeStyle=css('--muted');z.c.globalAlpha=.55;z.c.lineWidth=1;z.c.beginPath();
+  z.c.moveTo(blockX,yT-3);z.c.lineTo(blockX,yR+rowH);z.c.moveTo(fftX,yT-3);z.c.lineTo(fftX,yR+rowH);z.c.stroke();z.c.restore();
   bullets($('cpAbsorbNote'),[
-    'The channel delays every path by up to L samples, so the response to the previous block reaches L samples into this one.',
-    ok?'Those L = '+p.L+' samples all land inside the L_c = '+p.Lc+' discarded prefix, so nothing from the previous block survives into the FFT window.'
-      :'With L_c = '+p.Lc+' < L = '+p.L+', '+(p.L-p.Lc)+' of them land inside the useful window and go straight into the FFT.',
+    'The top row is the continuous transmitted stream: the tail of the previous block is followed by this block’s CP and data.',
+    'The red strip in the middle row is not another block. It is the part of the current received interval that can still contain delayed energy from the previous block; channel memory L sets its maximum length.',
+    ok?'That red strip ends before the FFT boundary because L = '+p.L+' ≤ L_c = '+p.Lc+'. The receiver discards it with the prefix, leaving a clean N-sample FFT window.'
+      :'The red strip crosses the FFT boundary because L = '+p.L+' > L_c = '+p.Lc+'. The first '+(p.L-p.Lc)+' useful sample'+(p.L-p.Lc===1?' is':'s are')+' contaminated by the previous block.',
     'The condition is only L_c ≥ L. Nothing here asks the channel to be flat, short in an absolute sense, or slowly varying across frequency.'
   ]);
 }
