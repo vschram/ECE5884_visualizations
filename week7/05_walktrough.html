@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Week 7 Guided Walkthrough</title>
+<title>Week 8 Guided Walkthrough</title>
 <style>
 :root{--bg:#f7f8fb;--surface:#fff;--surface2:#eef2f7;--border:#dfe5ec;--text:#172033;--muted:#667085;--blue:#2563eb;--orange:#ea580c;--green:#059669;--red:#dc2626;--purple:#7c3aed;--cyan:#0891b2;--shadow:0 1px 2px rgba(16,24,40,.04)}
 @media(prefers-color-scheme:dark){:root{--bg:#0e1117;--surface:#171b24;--surface2:#222938;--border:#303949;--text:#e8edf5;--muted:#99a4b5;--shadow:none}}
@@ -25,10 +25,10 @@
 </style>
 </head>
 <body>
-<h1>Week 7 · Frequency-Domain Equalization (SC-FDE and OFDM)</h1>
+<h1>Week 8 · Frequency-Domain Equalization (SC-FDE and OFDM)</h1>
 <p class="sub">Follow one block of symbols from a channel too long for time-domain equalization, through the cyclic prefix that makes the block circular, to per-subcarrier equalization in SC-FDE and OFDM.</p>
 
-<nav class="tabs" role="tablist" aria-label="Week 7 topics">
+<nav class="tabs" role="tablist" aria-label="Week 8 topics">
   <button type="button" role="tab" id="tab-motivation" aria-controls="motivation" aria-selected="true">1 · Motivation</button>
   <button type="button" role="tab" id="tab-tde" aria-controls="tde" aria-selected="false">2 · LMMSE Time-Domain Bridge</button>
   <button type="button" role="tab" id="tab-cp" aria-controls="cp" aria-selected="false">3 · Cyclic Prefix &amp; Circular Convolution</button>
@@ -953,7 +953,7 @@ function drawOfTone(){
   bullets($('ofToneConstNote'),[
     'Subcarrier k = '+k+' carries its own '+(mod==='qam16'?'16-QAM':'QPSK')+' symbol Xₖ, and the channel hands it |Hₖ| = '+st.hMag.toFixed(3)+' at ∠Hₖ = '+fmtDeg(st.hDeg)+'. The dashed orange circles are the ideal points after that rotation and scaling.',
     'Drag k across the block: every subcarrier sits at a different point of the same H(f), so the constellation turns and breathes subcarrier by subcarrier. That is the picture per-subcarrier equalization exists to undo.',
-    'With Ĥₖ assumed perfect (Week 7 preview) the residual gain is GₖHₖ = '+st.ghMag.toFixed(3)+' ∠'+fmtDeg(st.ghDeg)+' — rotation fully removed'+(ofEq==='mmse'?', with the MMSE shrinkage left in on purpose.':'.')+' Comb-pilot estimation of Ĥₖ is developed in the Week 8 walkthrough.',
+    'With Ĥₖ assumed perfect (Week 8 preview) the residual gain is GₖHₖ = '+st.ghMag.toFixed(3)+' ∠'+fmtDeg(st.ghDeg)+' — rotation fully removed'+(ofEq==='mmse'?', with the MMSE shrinkage left in on purpose.':'.')+' Comb-pilot estimation of Ĥₖ is developed in the Week 8 walkthrough.',
     mod==='qam16'?'16-QAM is where a faded subcarrier hurts: its rings are '+(2/Math.sqrt(10)).toFixed(2)+' apart against QPSK’s '+(2/Math.sqrt(2)).toFixed(2)+', so the same |Hₖ| and the same noise now push the inner ring into its neighbours’ decision regions. Measured EVM '+(100*st.evm).toFixed(1)+'%.'
       :'Measured EVM '+(100*st.evm).toFixed(1)+'% with the '+name+' equalizer. Switch to 16-QAM to see why deep subcarriers need coding across subcarriers: the same fade QPSK shrugs off closes the 16-QAM rings.'
   ]);
@@ -1036,7 +1036,7 @@ function drawOfEvm(p,H,mag){
   dot(z,xs[i0],clip(ofEq==='zf'?zfP[i0]:mmP[i0]),css('--green'),6);
   plotLabel(z,z.X(xs[i0]),z.Y(clip(Math.max(zfP[i0],mmP[i0])))-9,p.snr+' dB',css('--green'));
   bullets($('ofEvmNote'),[
-    'Perfect channel knowledge is assumed here — the Week 7 OFDM preview. Comb-pilot estimation and the NMSE-versus-P curve live in the Week 8 guided walkthrough.',
+    'Perfect channel knowledge is assumed here — the Week 8 OFDM preview. Comb-pilot estimation and the NMSE-versus-P curve live in the Week 8 guided walkthrough.',
     'ZF stays above MMSE throughout because the channel has deep fades: at '+p.snr+' dB the measured gap is '+(zfP[i0]/Math.max(mmP[i0],1e-12)).toFixed(1)+'×.',
     'Monte Carlo over 10 blocks per point, so a little scatter in the curves is expected.'
   ]);
