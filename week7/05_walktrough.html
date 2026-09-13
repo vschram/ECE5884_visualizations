@@ -33,7 +33,7 @@
   <button type="button" role="tab" id="tab-tde" aria-controls="tde" aria-selected="false">2 · LMMSE Time-Domain Bridge</button>
   <button type="button" role="tab" id="tab-cp" aria-controls="cp" aria-selected="false">3 · Cyclic Prefix &amp; Circular Convolution</button>
   <button type="button" role="tab" id="tab-scfde" aria-controls="scfde" aria-selected="false">4 · SC-FDE Transceiver</button>
-  <button type="button" role="tab" id="tab-ofdm" aria-controls="ofdm" aria-selected="false">5 · OFDM Equalization</button>
+  <button type="button" role="tab" id="tab-ofdm" aria-controls="ofdm" aria-selected="false">5 · Preview OFDM</button>
 </nav>
 
 <main>
@@ -165,7 +165,7 @@
 
 <!-- ============================ 5 · OFDM ============================ -->
 <section class="panel" id="ofdm" role="tabpanel" aria-labelledby="tab-ofdm" hidden>
-  <div class="panel-head"><div><div class="eyebrow">OFDM equalization</div><h2>The same per-bin core, but each subcarrier now carries its own QAM symbol</h2></div><div class="message"><strong>The channel is assumed known here. Estimating it from comb pilots, and what pilot spacing costs, is Week 8 &mdash; see the Week 8 guided walkthrough.</strong> The IFFT at the transmitter is what separates OFDM from SC-FDE. The CP still gives the exact per-subcarrier model; narrowband flatness is a <em>separate</em> condition that only matters for interpolating Ĥ[k] between pilots. The MMSE denominator picks up a factor N because X<sub>k</sub> is a per-subcarrier symbol under the non-unitary DFT.</div></div>
+  <div class="panel-head"><div><div class="eyebrow">Preview OFDM</div><h2>The same per-bin core, but each subcarrier now carries its own QAM symbol</h2></div><div class="message">The IFFT at the transmitter is what separates OFDM from SC-FDE. The CP still gives the exact per-subcarrier model; narrowband flatness is a <em>separate</em> condition that only matters for interpolating Ĥ[k] between pilots. The MMSE denominator picks up a factor N because X<sub>k</sub> is a per-subcarrier symbol under the non-unitary DFT.</div></div>
   <div class="sticky-bar"><div class="toolbar">
     <div class="of-control-layout">
       <fieldset class="control-section"><legend class="control-section-title">Whole OFDM block and channel</legend><div class="control-grid of-block-controls">
