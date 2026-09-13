@@ -57,8 +57,8 @@
   <p class="flow-caption">Both paths require RF/ADC, preamble-based frame timing, CFO correction, and channel estimation. They diverge only at equalization: TDE filters the stream directly; SC-FDE uses the synchronized block boundary, removes the CP, and equalizes through an FFT and per-bin multiplications.</p>
 
   <div class="plots">
-    <div class="card"><div class="title">Channel memory and design cost versus symbol rate</div><canvas id="motMemoryPlot" role="img" aria-label="Channel memory, time-domain equalizer design-cost proxy and complete SC-FDE receiver-block cost against symbol rate on logarithmic axes"></canvas><div class="legend"><span><i class="sw blue"></i>Channel memory L</span><span><i class="sw orange"></i>TDE design proxy L<sub>f</sub>³</span><span><i class="sw purple"></i>SC-FDE block 2N log₂N + N</span><span><i class="sw green"></i>Your R<sub>s</sub></span></div><ul class="bullets" id="motMemoryNote"></ul></div>
-    <div class="card"><div class="title">Average receiver cost per useful data symbol</div><canvas id="motComplexity" role="img" aria-label="Average receiver multiplications per useful data symbol for time-domain equalization and complete SC-FDE reception against symbol rate"></canvas><div class="legend"><span><i class="sw orange"></i>TDE: L<sub>f</sub></span><span><i class="sw purple"></i>SC-FDE: 2 log₂N + 1</span><span><i class="sw green"></i>Your R<sub>s</sub></span><span><i class="sw" style="background:var(--red)"></i>Crossover</span></div><ul class="bullets" id="motComplexityNote"></ul></div>
+    <div class="card"><div class="title">Channel memory (symbols) and computational cost (operations)</div><canvas id="motMemoryPlot" role="img" aria-label="Channel memory in symbols, time-domain equalizer design operations, and complete SC-FDE receiver operations per block against symbol rate on logarithmic axes"></canvas><div class="legend"><span><i class="sw blue"></i>Channel memory L (symbols)</span><span><i class="sw orange"></i>TDE design L<sub>f</sub>³ (operations)</span><span><i class="sw purple"></i>SC-FDE block (operations)</span><span><i class="sw green"></i>Your R<sub>s</sub></span></div><ul class="bullets" id="motMemoryNote"></ul></div>
+    <div class="card"><div class="title">Average receiver cost per useful data symbol</div><canvas id="motComplexity" role="img" aria-label="Average complex multiplications per useful data symbol for time-domain equalization and complete SC-FDE reception against symbol rate on logarithmic axes"></canvas><div class="legend"><span><i class="sw orange"></i>TDE: L<sub>f</sub> complex multiplies/symbol</span><span><i class="sw purple"></i>SC-FDE: 2 log₂N + 1 complex multiplies/symbol</span><span><i class="sw green"></i>Your R<sub>s</sub></span><span><i class="sw" style="background:var(--red)"></i>Crossover</span></div><ul class="bullets" id="motComplexityNote"></ul></div>
     <div class="card"><div class="title" id="motTapsTitle">Sampled channel impulse response</div><canvas id="motTaps" role="img" aria-label="Magnitude of the sampled channel taps for the current symbol rate and delay spread"></canvas><div class="legend"><span><i class="sw blue"></i>|h[ℓ]|</span></div><ul class="bullets" id="motTapsNote"></ul></div>
   </div>
 </section>
@@ -290,7 +290,7 @@ function drawMotivation(){
 
   /* --- figure: channel memory and design cost versus symbol rate (deck: tde_vs_fde_complexity) --- */
   const xmin=5,xmax=9,ymin=0,ymax=10;
-  let z=axes($('motMemoryPlot'),xmin,xmax,ymin,ymax,'Symbol rate Rₛ (sym/s)','Count (log scale)',{xticks:4,yticks:5,yfmt:decade,xfmt:decade});
+  let z=axes($('motMemoryPlot'),xmin,xmax,ymin,ymax,'Symbol rate Rₛ (sym/s)','Symbols or operations (log scale)',{xticks:4,yticks:5,yfmt:decade,xfmt:decade});
   const Lof=x=>Math.max(1,Math.pow(10,x)*p.tau*1e-6),clip=v=>Math.min(ymax,Math.max(ymin,v)),curve=f=>{const q=[];for(let x=xmin;x<=xmax+1e-9;x+=0.05){const v=Math.log10(f(x));if(v>=ymin&&v<=ymax)q.push([x,v])}return q};
   line(z,curve(Lof),css('--blue'),2.4);
   line(z,curve(x=>Math.pow(Math.max(1,p.alpha*Lof(x)),3)),css('--orange'),2.4);
@@ -301,6 +301,7 @@ function drawMotivation(){
   plotLabel(z,z.X(p.rsExp),z.Y(clip(Math.log10(tdeDesign)))-9,'design ≈ '+fmtCount(tdeDesign)+' operations',css('--green'));
   const equalX=Math.log10(Math.pow(fdeBlock,1/3)/(p.alpha)*1e6/p.tau);
   bullets($('motMemoryNote'),[
+    'The blue curve is measured in channel-memory symbols. The orange and purple curves are approximate operation counts. They share a logarithmic axis only so their growth can be compared; they are not the same physical unit.',
     'A tenfold increase in symbol rate multiplies the channel memory by ten and the dense design cost by one thousand: the orange curve has three times the slope of the blue one.',
     'The SC-FDE cost is flat because N is chosen by the designer, not by the channel. It counts one N-point FFT, N per-bin equalizer multiplications, and one N-point IFFT: 2N log₂N + N ≈ '+fmtCount(fdeBlock)+' complex multiplies at N = '+p.N+'.',
     'Reading off R'+'ₛ = '+fmtRate(p.Rs)+': the channel memory is L = '+fmtCount(p.L)+' symbols ('+fmtCount(p.L+1)+' taps), so a dense L'+'_f = '+fmtCount(p.Lf)+' design costs roughly '+fmtCount(tdeDesign)+' operations. For comparison, complete SC-FDE reception costs about '+fmtCount(fdeBlock)+' operations per block; an OFDM receiver omits the final IFFT and would cost about '+fmtCount(p.N*Math.log2(p.N)+p.N)+'.'
@@ -308,7 +309,7 @@ function drawMotivation(){
 
   /* --- per-symbol complexity --- */
   const y2max=5;
-  z=axes($('motComplexity'),xmin,xmax,0,y2max,'Symbol rate Rₛ (sym/s)','Multiplies / useful symbol',{xticks:4,yticks:5,yfmt:decade,xfmt:decade});
+  z=axes($('motComplexity'),xmin,xmax,0,y2max,'Symbol rate Rₛ (sym/s)','Complex multiplies per useful symbol (log scale)',{xticks:4,yticks:5,yfmt:decade,xfmt:decade});
   const tdeCurve=[],fdeLog=Math.log10(fdePer);
   for(let x=xmin;x<=xmax+1e-9;x+=0.05){const v=Math.log10(Math.max(1,p.alpha*Lof(x)));if(v<=y2max)tdeCurve.push([x,v])}
   line(z,tdeCurve,css('--orange'),2.4);
