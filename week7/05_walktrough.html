@@ -194,7 +194,7 @@
   <div class="plots" style="margin-top:14px">
     <div class="card"><div class="title">Per-subcarrier SNR |H<sub>k</sub>|²E<sub>X</sub>/(NN₀)</div><canvas id="ofSnrTones" role="img" aria-label="Per subcarrier signal-to-noise ratio in decibels with deep fades highlighted"></canvas><div class="legend"><span><i class="sw blue"></i>Per-subcarrier SNR</span><span><i class="sw green"></i>Average</span><span><i class="sw" style="background:var(--red)"></i>Below 0 dB</span></div><ul class="bullets" id="ofSnrNote"></ul></div>
     <div class="card"><div class="title">Subcarrier k: the constellation faded by H<sub>k</sub></div><canvas id="ofToneConst" role="img" aria-label="Constellation carried by the selected subcarrier, faded by the channel and after per-subcarrier equalization, against ideal reference circles"></canvas><div class="legend"><span><i class="sw" style="background:var(--red)"></i>Ideal (circles)</span><span><i class="sw orange"></i>Faded by H<sub>k</sub></span><span><i class="sw blue"></i>After G<sub>k</sub></span></div><ul class="bullets" id="ofToneConstNote"></ul></div>
-    <div class="card"><div class="title">PAPR: OFDM versus single carrier</div><canvas id="ofPapr" role="img" aria-label="Complementary cumulative distribution of peak to average power ratio for OFDM, with the single-carrier constant-modulus reference shown as a step at zero decibels"></canvas><div class="legend"><span><i class="sw purple"></i>OFDM (IFFT of QPSK subcarriers)</span><span><i class="sw blue"></i>Single carrier / SC-FDE (constant modulus)</span></div><ul class="bullets" id="ofPaprNote"></ul></div>
+    <div class="card"><div class="title">Block PAPR distribution</div><canvas id="ofPapr" role="img" aria-label="Distribution of peak to average power ratio across simulated OFDM and single-carrier blocks, with their zero point one percent values marked"></canvas><div class="legend"><span><i class="sw purple"></i>OFDM blocks</span><span><i class="sw blue"></i>Single-carrier / SC-FDE blocks</span><span><i class="sw green"></i>0.1% value</span></div><ul class="bullets" id="ofPaprNote"></ul></div>
     <div class="card"><div class="title">Symbol error power versus SNR</div><canvas id="ofEvm" role="img" aria-label="Normalized symbol error power against signal to noise ratio for zero forcing and MMSE with perfect channel knowledge"></canvas><div class="legend"><span><i class="sw orange"></i>ZF</span><span><i class="sw purple"></i>MMSE</span><span><i class="sw green"></i>Your SNR</span></div><ul class="bullets" id="ofEvmNote"></ul></div>
   </div>
 
@@ -1001,21 +1001,28 @@ function drawOfPapr(p){
     ofdmP.push(10*Math.log10(pk/(mn/p.N)));
     const s=qpskBlock(p.N,rr);let pk2=0,mn2=0;s.forEach(v=>{const q=abs2(v);pk2=Math.max(pk2,q);mn2+=q});
     scP.push(10*Math.log10(pk2/(mn2/p.N)))}
-  const ccdf=(arr,x)=>arr.filter(v=>v>x).length/arr.length;
-  const xmax=Math.max(12,Math.ceil(Math.max(...ofdmP))),z=axes($('ofPapr'),0,xmax,-3,0,'PAPR threshold (dB)','P(PAPR > threshold)',{xticks:6,yticks:3,yfmt:decade});
-  const build=arr=>{const q=[];for(let x=0;x<=xmax;x+=0.15){const v=ccdf(arr,x);if(v>0)q.push([x,Math.max(-3,Math.log10(v))]);else break}return q};
-  /* Constant-modulus QPSK has PAPR = 0 dB for every block, so its CCDF is a
-     vertical step at the left boundary rather than an ordinary curve. */
-  line(z,[[0,0],[0,-3]],css('--blue'),3.2);
-  dot(z,0,-3,css('--blue'),4);
-  plotLabel(z,z.X(0),z.Y(-.18),'Single carrier: 0 dB',css('--blue'),'top');
-  line(z,build(ofdmP),css('--purple'),2.4);
   const pct=arr=>{const s=arr.slice().sort((a,b)=>a-b);return s[Math.min(s.length-1,Math.floor(0.999*s.length))]};
-  const o999=pct(ofdmP),s999=pct(scP);
+  const o999=pct(ofdmP),s999=Math.max(0,pct(scP)),xmax=Math.max(12,Math.ceil(Math.max(...ofdmP))),z=panelCanvas($('ofPapr')),
+    m={l:82,r:16,t:24,b:39},X=x=>m.l+(x+.5)/(xmax+.5)*(z.w-m.l-m.r),yOf=m.t+(z.h-m.t-m.b)*.30,ySc=m.t+(z.h-m.t-m.b)*.72;
+  z.c.font='11px system-ui';z.c.lineWidth=1;
+  for(let i=0;i<=6;i++){
+    const x=xmax*i/6,px=X(x);z.c.strokeStyle=css('--border');z.c.beginPath();z.c.moveTo(px,m.t);z.c.lineTo(px,z.h-m.b);z.c.stroke();
+    z.c.fillStyle=css('--muted');z.c.textAlign='center';z.c.textBaseline='top';z.c.fillText(Number.isInteger(x)?x:x.toFixed(1),px,z.h-m.b+6)}
+  [yOf,ySc].forEach(y=>{z.c.strokeStyle=css('--border');z.c.beginPath();z.c.moveTo(m.l,y);z.c.lineTo(z.w-m.r,y);z.c.stroke()});
+  z.c.strokeStyle=css('--text');z.c.strokeRect(m.l,m.t,z.w-m.l-m.r,z.h-m.t-m.b);
+  z.c.fillStyle=css('--text');z.c.textAlign='center';z.c.textBaseline='bottom';z.c.fillText('Block PAPR (dB)',(m.l+z.w-m.r)/2,z.h-1);
+  z.c.textAlign='right';z.c.textBaseline='middle';z.c.fillText('OFDM',m.l-9,yOf);z.c.fillText('Single carrier',m.l-9,ySc);
+  z.c.save();z.c.fillStyle=css('--purple');z.c.globalAlpha=.34;
+  ofdmP.forEach((v,i)=>{const jitter=((i*37)%29-14)/14*15;z.c.beginPath();z.c.arc(X(v),yOf+jitter,2.2,0,Math.PI*2);z.c.fill()});z.c.restore();
+  z.c.save();z.c.fillStyle=css('--blue');z.c.globalAlpha=.42;
+  scP.forEach((v,i)=>{const jitter=((i*19)%31-15)/15*15;z.c.beginPath();z.c.arc(X(Math.max(0,v)),ySc+jitter,2.2,0,Math.PI*2);z.c.fill()});z.c.restore();
+  const marker=(x,y,label)=>{const px=X(x),r=6;z.c.save();z.c.fillStyle=css('--green');z.c.translate(px,y);z.c.rotate(Math.PI/4);z.c.fillRect(-r/2,-r/2,r,r);z.c.restore();z.c.fillStyle=css('--green');z.c.textAlign=px>z.w-120?'right':'left';z.c.textBaseline='bottom';z.c.fillText(label,px+(px>z.w-120?-8:8),y-8)};
+  marker(o999,yOf,'0.1%: '+o999.toFixed(1)+' dB');
+  marker(s999,ySc,'0.1%: '+s999.toFixed(1)+' dB');
   $('ofPaprVal').textContent=o999.toFixed(1)+' vs '+Math.max(0,s999).toFixed(1)+' dB';
   bullets($('ofPaprNote'),[
     'At the 0.1% level: OFDM '+o999.toFixed(1)+' dB against '+Math.max(0,s999).toFixed(1)+' dB for the single-carrier block — the IFFT superposes '+p.N+' independent subcarriers, and occasionally they add up.',
-    'The blue vertical line at 0 dB is the single-carrier CCDF: QPSK in the time domain has constant modulus, so every symbol-rate block has exactly 0 dB PAPR.',
+    'Each dot is one simulated block. The blue single-carrier blocks all pile up at 0 dB because time-domain QPSK has constant modulus; the purple OFDM blocks spread to larger peaks.',
     'Measured at symbol rate without pulse shaping, so both figures understate the true continuous-time PAPR. The gap between the two architectures is the point, not the absolute numbers.'
   ]);
 }
