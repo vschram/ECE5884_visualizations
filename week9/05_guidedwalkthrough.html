@@ -193,7 +193,7 @@ schedule users onto OFDMA resource blocks, and use DFT-spreading (SC-FDMA) to lo
     <div class="card"><div class="title">Rate per user under each allocation rule</div><canvas id="ofRates" role="img" aria-label="Stacked bars of each user's rate under equal, best-SNR and relatively-strong allocation, with Jain fairness"></canvas><div class="legend" id="ofRatesLegend"></div><ul class="bullets" id="ofRatesNote"></ul></div>
   </div>
   <div class="plots two" style="margin-top:14px">
-    <div class="card"><div class="title">N = 64 worked example: fftshift order against raw DFT-bin order</div><canvas id="ofIdx" role="img" aria-label="The 64 subcarriers of the worked example, coloured by role, in fftshift order and in raw DFT-bin order"></canvas><div class="legend"><span><i class="sw grey"></i>Edge guard</span><span><i class="sw blue"></i>User 1</span><span><i class="sw orange"></i>User 2</span></div><ul class="bullets" id="ofIdxNote"></ul></div>
+    <div class="card"><div class="title">N = 64 worked example: fftshift order against raw DFT-bin order</div><canvas id="ofIdx" role="img" aria-label="The 64 subcarriers of the worked example, coloured by role, in fftshift order and in raw DFT-bin order"></canvas><div class="legend"><span><i class="sw grey"></i>Edge guard</span><span><i class="sw blue"></i>User 1</span><span><i class="sw red"></i>DC (unused)</span><span><i class="sw orange"></i>User 2</span></div><ul class="bullets" id="ofIdxNote"></ul></div>
     <div class="card"><div class="title">Uplink: User 1's power in each FFT bin</div><canvas id="ofAsync" role="img" aria-label="Power of User 1 after the base-station FFT in its own subcarriers and leaking into User 2's subcarriers"></canvas><div class="legend"><span><i class="sw blue"></i>User 1 in its own bins</span><span><i class="sw red"></i>User 1 leaking into User 2's bins</span><span><i class="sw orange"></i>User 2's signal</span></div><ul class="bullets" id="ofAsyncNote"></ul></div>
   </div>
 </section>
@@ -718,31 +718,31 @@ function drawOfdma(){
   ]);
 
   /* --- N = 64 index example --- */
-  z=panelCanvas($('ofIdx'));const padX=16,cw=(z.w-2*padX)/64,roleOf=i=>i<12||i>51?'g':i<32?'u1':'u2',colOf=r=>r==='g'?css('--muted'):r==='u1'?css('--blue'):css('--orange');
-  const rows=[{y:30,label:'fftshift order (frequency-sorted: negative edge → DC → positive edge)',idx:i=>i,ticks:[0,12,32,52,63]},{y:128,label:'raw DFT-bin order (what the IFFT input array looks like)',idx:b=>{const f=b<32?b:b-64;return f+32},ticks:[0,20,32,44,63]}];
+  z=panelCanvas($('ofIdx'));const padX=16,cw=(z.w-2*padX)/64,roleOf=i=>i<12||i>52?'g':i<32?'u1':i===32?'dc':'u2',colOf=r=>r==='g'?css('--muted'):r==='u1'?css('--blue'):r==='dc'?css('--red'):css('--orange');
+  const rows=[{y:30,label:'fftshift order (frequency-sorted: negative edge → DC → positive edge)',idx:i=>i,ticks:[0,12,32,53,63]},{y:128,label:'raw DFT-bin order (what the IFFT input array looks like)',idx:b=>{const f=b<32?b:b-64;return f+32},ticks:[0,21,44,63]}];
   rows.forEach(row=>{z.c.fillStyle=css('--text');z.c.font='11px system-ui';z.c.textAlign='left';z.c.textBaseline='bottom';z.c.fillText(row.label,padX,row.y-6);
     for(let b=0;b<64;b++){const role=roleOf(row.idx(b));z.c.globalAlpha=role==='g'?.3:.85;z.c.fillStyle=colOf(role);z.c.fillRect(padX+b*cw+.5,row.y,cw-1,34);z.c.globalAlpha=1}
     z.c.fillStyle=css('--muted');z.c.font='10px system-ui';z.c.textAlign='center';z.c.textBaseline='top';row.ticks.forEach(t=>z.c.fillText(String(t),padX+(t+.5)*cw,row.y+38))});
   z.c.fillStyle=css('--text');z.c.font='10px system-ui';z.c.textAlign='center';z.c.textBaseline='middle';
-  [[6,'guard 12'],[22,'User 1: 20'],[42,'User 2: 20'],[58,'guard 12']].forEach(([c,t])=>{if(cw*10>z.c.measureText(t).width)z.c.fillText(t,padX+c*cw,rows[0].y+17)});
-  [[10,'User 2'],[32,'guards 20–43'],[54,'User 1']].forEach(([c,t])=>{if(cw*14>z.c.measureText(t).width)z.c.fillText(t,padX+c*cw,rows[1].y+17)});
+  [[6,'guard 12'],[22,'User 1: 20'],[43,'User 2: 20'],[58.5,'guard 11']].forEach(([c,t])=>{if(cw*10>z.c.measureText(t).width)z.c.fillText(t,padX+c*cw,rows[0].y+17)});
+  [[10.5,'User 2'],[32.5,'guards 21–43'],[54,'User 1']].forEach(([c,t])=>{if(cw*14>z.c.measureText(t).width)z.c.fillText(t,padX+c*cw,rows[1].y+17)});
   bullets($('ofIdxNote'),[
-    '64 = 12 + 20 + 20 + 12. In fftshift order User 1 has subcarriers 12–31 and User 2 has 32–51, back to back with no gap, and the edge guard ends at 63, not 64.',
-    'The same allocation in raw DFT-bin order reads User 2 = bins 0–19, guard = 20–43, User 1 = 44–63. The guard bands are adjacent in the middle of the array, because raw indexing is circular and bin 63 is next to bin 0 in frequency.',
-    'No guard is needed between the users: both come out of the same base-station IFFT, so they stay orthogonal. The edge guards only limit out-of-band emission.'
+    '64 = 12 + 20 + 1 + 20 + 11. The DC subcarrier (red, fftshift index 32) is left unused, as in the LTE downlink. User 1 has 12–31 and User 2 has 33–52, either side of DC; the edge guards are 12 and 11 bins because an even FFT has one more negative frequency than positive.',
+    'The same allocation in raw DFT-bin order reads DC = bin 0, User 2 = bins 1–20, guard = 21–43, User 1 = 44–63. The guard bands meet in the middle of the array, because raw indexing is circular and bin 63 is next to bin 0 in frequency.',
+    'No guard is needed between the users: both come out of the same base-station IFFT, so they stay orthogonal. The DC null separates them only because of where DC falls; the edge guards only limit out-of-band emission.'
   ]);
 
   /* --- uplink asynchrony --- */
   const key=p.to+'|'+p.cfo;if(!ofAsyncCache||ofAsyncCache.key!==key)ofAsyncCache={key,P:asyncLeak(p.to,p.cfo)};
   const Pb=ofAsyncCache.P,dbAt=i=>Math.max(-60,toDb(Pb[(i+32)%64]));
-  z=ax($('ofAsync'),10,54,-60,5,'Subcarrier (fftshift index)','Power rel. one symbol (dB)',{xticks:4,yticks:5,xfmt:v=>String(Math.round(v))});
-  band(z,31.5,51.5,css('--orange'),'User 2',.06);band(z,11.5,31.5,css('--blue'),'User 1',.06);
-  line(z,[[31.5,-60],[31.5,5]],css('--muted'),1.2,[3,3]);
-  line(z,[[31.5,0],[51.5,0]],css('--orange'),2.2);
-  const own=[],leak=[];for(let i=12;i<=31;i++)own.push([i,dbAt(i)]);for(let i=32;i<=51;i++)leak.push([i,dbAt(i)]);
+  z=ax($('ofAsync'),10,55,-60,5,'Subcarrier (fftshift index)','Power rel. one symbol (dB)',{xticks:5,yticks:5,xfmt:v=>String(Math.round(v))});
+  band(z,32.5,52.5,css('--orange'),'User 2',.06);band(z,11.5,31.5,css('--blue'),'User 1',.06);
+  line(z,[[32,-60],[32,5]],css('--muted'),1.2,[3,3]);
+  line(z,[[32.5,0],[52.5,0]],css('--orange'),2.2);
+  const own=[],leak=[];for(let i=12;i<=31;i++)own.push([i,dbAt(i)]);for(let i=33;i<=52;i++)leak.push([i,dbAt(i)]);
   line(z,own,css('--blue'),2.2);line(z,leak,css('--red'),2.2);
   leak.forEach(([i,v])=>dot(z,i,v,css('--red'),2.4));
-  const sir0=-dbAt(32),inCp=p.to<=16&&p.cfo===0;
+  const sir0=-dbAt(33),inCp=p.to<=16&&p.cfo===0;
   $('ofSir').textContent=sir0>=59.9?'> 60 dB':fmtDb(sir0);
   bullets($('ofAsyncNote'),[
     inCp?'δ = '+p.to+' ≤ L<sub>c</sub> = 16 and no CFO: the delay stays inside the CP, so it only rotates User 1\'s subcarriers in phase and leaves nothing in User 2\'s bins. The FFT still separates adjacent users.':'With δ = '+p.to+' samples'+(p.to>16?' ('+(p.to-16)+' beyond the CP)':'')+' and ε = '+p.cfo.toFixed(2)+', User 1 leaks into User 2\'s bins: '+(sir0>=59.9?'more than 60':sir0.toFixed(1))+' dB below User 2\'s signal on its first subcarrier, falling off with distance from the boundary.',
