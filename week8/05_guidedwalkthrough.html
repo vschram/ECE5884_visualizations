@@ -12,13 +12,14 @@
 .plot-formula{margin-top:8px;padding:8px 10px;overflow-wrap:anywhere;overflow-x:visible}
 .plot-card-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:8px}.plot-card-head .title{margin-bottom:0}.plot-card-head button{flex:0 0 auto;padding:6px 10px}
 .control-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px 14px;align-items:end}.control-grid .ctrl{min-width:0}.control-grid select{width:100%}
-.summary-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(320px,.85fr);gap:10px;align-items:stretch;margin-top:12px}.summary-row .toolbar-metrics{grid-auto-flow:row;grid-template-columns:repeat(4,minmax(0,1fr))}.summary-row .note{display:block;margin:0;max-width:none}.summary-row .formula{display:block;margin:0;overflow-wrap:anywhere;overflow-x:visible;font-size:.74rem;line-height:1.4}.summary-row .formula div+div{margin-top:5px}
+.summary-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(320px,.85fr);gap:10px;align-items:stretch;margin-top:12px}.summary-row .toolbar-metrics{grid-auto-flow:row;grid-template-columns:repeat(5,minmax(0,1fr))}.summary-row .note{display:block;margin:0;max-width:none}.summary-row .formula{display:block;margin:0;overflow-wrap:anywhere;overflow-x:visible;font-size:.74rem;line-height:1.4}.summary-row .formula div+div{margin-top:5px}
 .mode-row{margin-bottom:10px}.mode-row button{padding:6px 10px}
 .flow-caption{color:var(--muted);font-size:.72rem;margin:-6px 0 14px}
 #cpAssembly,#cpAbsorb{height:300px}#ofGrid{height:290px}#ofCompare{height:300px}
-#whMem,#whCost,#whFlat,#ifOne,#ifSum,#ifStems,#ifPapr,#orBasis,#orSpec,#orBins,#motMemoryPlot,#motComplexity,#motTaps,#tdeTaps,#tdeCascade,#tdeDelayCost,#tdeConst,#tdeCostLen,#cpLinCirc,#cpProduct,#cpToneErr,#cpOverhead,#cpConst,#scChannel,#scGain,#scNoise,#scConst,#scToneConst,#scEvmCurve,#ofChannelPilots,#ofToneConst,#ofSnrTones,#ofPilotSweep,#ofPapr,#ofEvm{height:265px}
+#whMem,#whCost,#whFlat,#ifOne,#ifSum,#ifStems,#ifPapr,#orBasis,#orSpec,#orBins,#motMemoryPlot,#motComplexity,#motTaps,#tdeTaps,#tdeCascade,#tdeDelayCost,#tdeConst,#tdeCostLen,#cpOverhead,#cpConst,#scChannel,#scGain,#scNoise,#scConst,#scToneConst,#scEvmCurve,#ofChannelPilots,#ofToneConst,#ofSnrTones,#ofPilotSweep,#ofPapr,#ofEvm{height:265px}
+.lab-metric .value{font-size:.82rem}.lab-metric button{width:100%}.lab-shell{margin:14px 0;min-width:0}.lab-shell[hidden]{display:none}.lab-frame{display:block;width:100%;min-height:760px;border:1px solid var(--border);border-radius:12px;background:var(--surface)}
 @media(max-width:900px){.toolbar-split{grid-template-columns:1fr}.toolbar-metrics{grid-auto-flow:row;grid-template-columns:repeat(3,minmax(0,1fr))}.metric-rail{grid-template-columns:repeat(3,minmax(0,1fr))}.metric-rail .formula,.metric-rail .note{grid-column:1/-1}.tabs{grid-template-columns:repeat(3,1fr)}.plots{grid-template-columns:1fr 1fr}.plots:not(.two) .card:last-child{grid-column:1/-1}.model-grid{grid-template-columns:1fr}.checklist{grid-template-columns:1fr 1fr}.control-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.summary-row{grid-template-columns:1fr}.summary-row .toolbar-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:620px){.metric-rail,.toolbar-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}body{padding:14px}.tabs{grid-template-columns:1fr 1fr}.panel-head{display:block}.plots,.two{grid-template-columns:1fr}.plots .card:last-child{grid-column:auto}.flow{display:grid;grid-template-columns:1fr 1fr}.arrow{display:none}.metrics,.checklist{grid-template-columns:1fr 1fr}canvas,.plots.two canvas{height:245px}#whMem,#whCost,#whFlat,#ifOne,#ifSum,#ifStems,#ifPapr,#orBasis,#orSpec,#orBins,#motMemoryPlot,#motComplexity,#motTaps,#tdeTaps,#tdeCascade,#tdeDelayCost,#tdeConst,#tdeCostLen,#cpLinCirc,#cpProduct,#cpToneErr,#cpOverhead,#cpConst,#scChannel,#scGain,#scNoise,#scConst,#scToneConst,#scEvmCurve,#ofChannelPilots,#ofToneConst,#ofSnrTones,#ofPilotSweep,#ofPapr,#ofEvm{height:262px}}
+@media(max-width:620px){.metric-rail,.toolbar-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}body{padding:14px}.tabs{grid-template-columns:1fr 1fr}.panel-head{display:block}.plots,.two{grid-template-columns:1fr}.plots .card:last-child{grid-column:auto}.flow{display:grid;grid-template-columns:1fr 1fr}.arrow{display:none}.metrics,.checklist{grid-template-columns:1fr 1fr}canvas,.plots.two canvas{height:245px}#whMem,#whCost,#whFlat,#ifOne,#ifSum,#ifStems,#ifPapr,#orBasis,#orSpec,#orBins,#motMemoryPlot,#motComplexity,#motTaps,#tdeTaps,#tdeCascade,#tdeDelayCost,#tdeConst,#tdeCostLen,#cpOverhead,#cpConst,#scChannel,#scGain,#scNoise,#scConst,#scToneConst,#scEvmCurve,#ofChannelPilots,#ofToneConst,#ofSnrTones,#ofPilotSweep,#ofPapr,#ofEvm{height:262px}}
 @media(max-width:390px){.tabs,.metrics,.checklist,.flow,.control-grid{grid-template-columns:1fr}.ctrl{min-width:100%}.ctrl label{flex-wrap:wrap}}
 </style>
 </head>
@@ -77,8 +78,11 @@ channel from pilots.</p>
       <div class="metric"><div class="name">Peak-to-average</div><div class="value" id="ifPaprVal">&mdash;</div><div class="small">of the current waveform</div></div>
       <div class="metric"><div class="name">Block energy check</div><div class="value" id="ifParseval">&mdash;</div><div class="small">N&sum;|x[n]|&sup2; vs &sum;|X<sub>k</sub>|&sup2;</div></div>
       <div class="metric"><div class="name">DC subcarrier</div><div class="value" id="ifDc">&mdash;</div><div class="small">k = 0 is usually nulled</div></div>
+      <div class="metric lab-metric"><div class="name">Interactive lab</div><div class="value">IFFT Builder</div><button type="button" class="lab-toggle" aria-controls="lab-ifft" aria-expanded="false">Open lab</button></div>
     </div><div class="formula"><div>x[n] = (1/N) &sum;<sub>k</sub> X<sub>k</sub> e<sup>j2&pi;kn/N</sup></div><div id="ifOneFormula">highlighted term: &mdash;</div></div></div>
   </div></div>
+
+  <div class="lab-shell" id="lab-ifft" hidden><iframe class="lab-frame" loading="lazy" title="OFDM IFFT Builder interactive lab" src="01_ofdm_ifft_builder.html"></iframe></div>
 
   <div class="plots">
     <div class="card"><div class="title">Subcarrier k on its own</div><canvas id="ifOne" role="img" aria-label="Real and imaginary parts of the single highlighted subcarrier across the block"></canvas><div class="legend"><span><i class="sw blue"></i>real</span><span><i class="sw orange"></i>imaginary</span></div><ul class="bullets" id="ifOneNote"></ul></div>
@@ -103,8 +107,11 @@ channel from pilots.</p>
       <div class="metric"><div class="name">Wanted subcarrier power</div><div class="value" id="orWanted">&mdash;</div><div class="small">fraction landing in bin k</div></div>
       <div class="metric"><div class="name">Leaked power</div><div class="value" id="orIci">&mdash;</div><div class="small">ICI into the other bins</div></div>
       <div class="metric"><div class="name">SIR from ICI</div><div class="value" id="orSir">&mdash;</div><div class="small">wanted / leaked</div></div>
+      <div class="metric lab-metric"><div class="name">Interactive lab</div><div class="value">Orthogonality</div><button type="button" class="lab-toggle" aria-controls="lab-ortho" aria-expanded="false">Open lab</button></div>
     </div><div class="formula"><div>&sum;<sub>n=0</sub><sup>N&minus;1</sup> e<sup>j2&pi;(k&minus;m)n/N</sup> = N if k = m, else 0</div><div id="orNote">&epsilon; = 0: exactly orthogonal</div></div></div>
   </div></div>
+
+  <div class="lab-shell" id="lab-ortho" hidden><iframe class="lab-frame" loading="lazy" title="OFDM Orthogonality Explorer interactive lab" src="02_ofdm_orthogonality_explorer.html"></iframe></div>
 
   <div class="plots">
     <div class="card"><div class="title">Subcarrier k against receiver basis m, term by term</div><canvas id="orBasis" role="img" aria-label="Real part of the product of the transmitted subcarrier and the conjugated receiver basis, with its running sum"></canvas><div class="legend"><span><i class="sw blue"></i>term n</span><span><i class="sw orange"></i>running sum</span></div><ul class="bullets" id="orBasisNote"></ul></div>
@@ -126,7 +133,10 @@ channel from pilots.</p>
     <div class="metric"><div class="name">CP efficiency</div><div class="value" id="cpEta">—</div><div class="small">η<sub>CP</sub> = N / (N + L<sub>c</sub>)</div></div>
     <div class="metric"><div class="name">Overhead</div><div class="value" id="cpOver">—</div><div class="small">L<sub>c</sub> / (N + L<sub>c</sub>)</div></div>
     <div class="metric"><div class="name">Circular-model error</div><div class="value" id="cpErr">—</div><div class="small">‖y − h⊛x‖² / ‖h⊛x‖², AWGN off</div></div>
+    <div class="metric lab-metric"><div class="name">Interactive lab</div><div class="value">CP &amp; Multipath</div><button type="button" class="lab-toggle" aria-controls="lab-cp" aria-expanded="false">Open lab</button></div>
   </div><div class="note" id="cpNote" aria-live="polite"></div></div></div></div>
+
+  <div class="lab-shell" id="lab-cp" hidden><iframe class="lab-frame" loading="lazy" title="OFDM Cyclic Prefix and Multipath interactive lab" src="03_ofdm_cyclic_prefix_multipath.html"></iframe></div>
 
   <div class="flow" aria-label="Cyclic prefix block processing chain" aria-live="polite"><div class="flow-step" data-state="ready"><strong>Data block</strong><span id="cpFlowData">N symbols</span></div><div class="arrow">→</div><div class="flow-step" data-state="ready"><strong>Prepend CP</strong><span id="cpFlowCp">copy last L<sub>c</sub></span></div><div class="arrow">→</div><div class="flow-step" data-state="ready"><strong>Linear channel</strong><span id="cpFlowChan">memory L</span></div><div class="arrow">→</div><div class="flow-step" id="cpFlowDropStep" data-state="ready"><strong>Discard L<sub>c</sub></strong><span id="cpFlowDrop">—</span></div><div class="arrow">→</div><div class="flow-step" id="cpFlowFftStep" data-state="ready"><strong>FFT</strong><span id="cpFlowFft">—</span></div></div>
 
@@ -135,10 +145,7 @@ channel from pilots.</p>
     <div class="card"><div class="title">Why the prefix works: the channel spread lands on the CP</div><canvas id="cpAbsorb" role="img" aria-label="Transmitted block, channel spreading and the received block with the first L c samples discarded"></canvas><ul class="bullets" id="cpAbsorbNote"></ul></div>
   </div>
 
-  <div class="plots" style="margin-top:14px">
-    <div class="card"><div class="title">Linear received stream versus circular model · AWGN omitted</div><canvas id="cpLinCirc" role="img" aria-label="Real part of the received stream around one block compared with the circular convolution of the channel and data block"></canvas><div class="legend"><span><i class="sw blue"></i>Re{received y}</span><span><i class="sw orange"></i>Re{h ⊛ x}</span><span><i class="sw" style="background:var(--red)"></i>Discarded CP window</span></div><ul class="bullets" id="cpLinCircNote"></ul></div>
-    <div class="card"><div class="title">DFT check: Y[k] against H[k]X[k]</div><canvas id="cpProduct" role="img" aria-label="Magnitude of the received block spectrum compared with the product of the channel and data spectra"></canvas><div class="legend"><span><i class="sw blue"></i>|Y[k]|</span><span><i class="sw orange"></i>|H[k]X[k]|</span></div><ul class="bullets" id="cpProductNote"></ul></div>
-    <div class="card"><div class="title">Per-bin model error |Y[k] − H[k]X[k]|²</div><canvas id="cpToneErr" role="img" aria-label="Normalized per-bin error between the received spectrum and the per-bin model"></canvas><div class="legend"><span><i class="sw blue"></i>Normalized bin error</span><span><i class="sw green"></i>Numerical floor</span></div><ul class="bullets" id="cpToneErrNote"></ul></div>
+  <div class="plots two" style="margin-top:14px">
     <div class="card"><div class="title">CP overhead versus block size</div><canvas id="cpOverhead" role="img" aria-label="Cyclic prefix overhead fraction against block size for several prefix lengths"></canvas><div class="legend"><span><i class="sw blue"></i>Your L<sub>c</sub></span><span><i class="sw" style="background:var(--cyan)"></i>L<sub>c</sub> = 4</span><span><i class="sw purple"></i>L<sub>c</sub> = 16</span><span><i class="sw green"></i>You are here</span></div><ul class="bullets" id="cpOverheadNote"></ul></div>
     <div class="card"><div class="title">Equalized block: what a short CP costs</div><canvas id="cpConst" role="img" aria-label="QPSK constellation after per-bin equalization and inverse FFT for the current cyclic prefix length"></canvas><div class="legend"><span><i class="sw orange"></i>Before equalization</span><span><i class="sw blue"></i>After per-bin MMSE + IFFT</span><span><i class="sw" style="background:var(--red)"></i>Ideal QPSK</span></div><ul class="bullets" id="cpConstNote"></ul></div>
   </div>
@@ -165,8 +172,11 @@ channel from pilots.</p>
       <div class="metric"><div class="name">Pilot overhead</div><div class="value" id="ofPilotOver">—</div><div class="small">1 / P of the subcarriers</div></div>
       <div class="metric"><div class="name">Channel estimate NMSE</div><div class="value" id="ofNmse">—</div><div class="small">Ĥ[k] from comb pilots + interpolation</div></div>
       <div class="metric"><div class="name">PAPR at 0.1 %</div><div class="value" id="ofPaprVal">—</div><div class="small">OFDM versus SC-FDE</div><button type="button" id="ofDenomHelp">Why NN₀/E<sub>X</sub>?</button></div>
+      <div class="metric lab-metric"><div class="name">Interactive lab</div><div class="value">ZF/MMSE</div><button type="button" class="lab-toggle" aria-controls="lab-eq" aria-expanded="false">Open lab</button></div>
     </div><div class="formula"><div>X̂<sub>ZF,k</sub> = Y<sub>k</sub> / Ĥ<sub>k</sub></div><div>X̂<sub>MMSE,k</sub> = Ĥ*<sub>k</sub> Y<sub>k</sub> / (|Ĥ<sub>k</sub>|² + NN₀/E<sub>X</sub>)</div><div id="ofLambda">NN₀/E<sub>X</sub> = 0.0316</div></div></div>
   </div></div>
+
+  <div class="lab-shell" id="lab-eq" hidden><iframe class="lab-frame" loading="lazy" title="OFDM ZF versus MMSE Equalisation interactive lab" src="04_ofdm_zf_mmse_equalizer.html"></iframe></div>
 
   <div class="flow" aria-label="OFDM transmitter chain"><div class="flow-step" data-state="ready"><strong>Map to X<sub>k</sub></strong><span>QAM per subcarrier</span></div><div class="arrow">→</div><div class="flow-step" data-state="required"><strong>IFFT</strong><span id="ofTxIfft">N-point, required</span></div><div class="arrow">→</div><div class="flow-step" data-state="ready"><strong>Add CP</strong><span id="ofTxCp">L<sub>c</sub> ≥ L</span></div><div class="arrow">→</div><div class="flow-step" data-state="ready"><strong>Pulse shape / RF</strong><span id="ofTxPapr">high PAPR</span></div><div class="arrow">→</div><div class="flow-step" data-state="warning"><strong>Channel</strong><span id="ofTxChan">memory L</span></div></div>
   <div class="flow" aria-label="OFDM receiver chain"><div class="flow-step" data-state="ready"><strong>Sync, remove CP</strong><span>keep N samples</span></div><div class="arrow">→</div><div class="flow-step" data-state="ready"><strong>FFT</strong><span id="ofRxFft">N-point</span></div><div class="arrow">→</div><div class="flow-step" data-state="required"><strong>Estimate Ĥ<sub>k</sub></strong><span id="ofRxEst">—</span></div><div class="arrow">→</div><div class="flow-step" data-state="required"><strong>Per-subcarrier G<sub>k</sub></strong><span id="ofRxEq">—</span></div><div class="arrow">→</div><div class="flow-step" data-state="ready"><strong>Demap</strong><span>no IFFT needed</span></div></div>
@@ -254,7 +264,10 @@ function dB(v){return(10*Math.log10(Math.max(v,1e-300))).toFixed(1)+' dB'}
 
 
 document.querySelectorAll('[role=tab]').forEach((b,i,all)=>b.addEventListener('click',()=>{all.forEach(x=>{const on=x===b;x.setAttribute('aria-selected',on);$(x.getAttribute('aria-controls')).hidden=!on});requestAnimationFrame(drawActive)}));
-function drawActive(){const id=document.querySelector('[role=tab][aria-selected=true]').getAttribute('aria-controls');({why:drawWhy,ifft:drawIfft,ortho:drawOrtho,cp:drawCp,ofdm:drawOfdm})[id]()}
+function sizeLabFrame(frame){try{frame.style.height='760px';frame.style.height=Math.max(760,frame.contentDocument.documentElement.scrollHeight,frame.contentDocument.body.scrollHeight)+'px'}catch(e){frame.style.height='1100px'}}
+document.querySelectorAll('.lab-frame').forEach(frame=>frame.addEventListener('load',()=>sizeLabFrame(frame)));
+document.querySelectorAll('.lab-toggle').forEach(button=>button.addEventListener('click',()=>{const shell=$(button.getAttribute('aria-controls')),open=shell.hidden;shell.hidden=!open;button.setAttribute('aria-expanded',open);button.textContent=open?'Close lab':'Open lab';if(open){const frame=shell.querySelector('.lab-frame');sizeLabFrame(frame);setTimeout(()=>sizeLabFrame(frame),60)}}));
+function drawActive(){const id=document.querySelector('[role=tab][aria-selected=true]').getAttribute('aria-controls'),panel=$(id),draw=({why:drawWhy,ifft:drawIfft,ortho:drawOrtho,cp:drawCp,ofdm:drawOfdm})[id];draw();panel.querySelectorAll('.lab-shell:not([hidden]) .lab-frame').forEach(sizeLabFrame)}
 
 /* ==================================================================
    1 · WHY MULTICARRIER
@@ -653,58 +666,8 @@ function drawCp(){
   drawCpAssembly(p);
   drawCpAbsorb(p,s);
 
-  /* --- linear stream versus circular model --- */
-  const span=p.Lc+p.N+p.L+2,x0i=-p.Lc-1;
-  const vals=[];for(let n=0;n<span;n++){const v=s.rx[s.start-p.Lc-1+n];if(v)vals.push(v.re)}
-  s.ideal.forEach(v=>vals.push(v.re));
-  const lim=Math.max(...vals.map(Math.abs),0.3)*1.2;
-  let z=axes($('cpLinCirc'),x0i,p.N+p.L,-lim,lim,'Sample index n within the block','Re{·}',{xticks:6,yticks:4});
-  isiBand(z,x0i,0,css('--red'),'discarded CP');
-  isiBand(z,p.N,p.N+p.L,css('--orange'),'next-block tail');
-  const linePts=[];for(let n=x0i;n<=p.N+p.L;n++){const v=s.rx[s.start+n];if(v)linePts.push([n,v.re])}
-  line(z,linePts,css('--blue'),2.2);
-  line(z,s.ideal.map((v,n)=>[n,v.re]),css('--orange'),2.2,[5,4]);
-  bullets($('cpLinCircNote'),[
-    ok?'Inside 0 ≤ n < N the two curves coincide exactly: after discarding the first L_c samples, the physical linear convolution is indistinguishable from h ⊛ x.'
-      :'The two curves separate over the first '+(p.L-p.Lc)+' samples of the block: the channel memory reaches past the prefix and drags the previous block in with it.',
-    'The shaded region on the left is the CP interval, where the response still mixes this block with the tail of the previous one. It is thrown away, which is exactly what makes the rest clean.',
-    'The linear response also spills past n = N − 1 into the next block; that tail lands in the next block’s prefix and is discarded there in turn.'
-  ]);
-
-  /* --- DFT product check (deck: dft_circular_convolution) --- */
-  const Y=fft(s.y,false),X=fft(s.x1,false),H=dftOf(s.h,p.N),
-    HX=H.map((v,k)=>mul(v,X[k])),
-    ym=Y.map(v=>Math.sqrt(abs2(v))),hxm=HX.map(v=>Math.sqrt(abs2(v))),
-    ptop=Math.max(...ym,...hxm,1e-6)*1.18;
-  z=axes($('cpProduct'),0,p.N-1,0,ptop,'Frequency bin k','Magnitude',{xticks:Math.min(8,p.N-1),yticks:4});
-  line(z,ym.map((v,k)=>[k,v]),css('--blue'),2.4);
-  line(z,hxm.map((v,k)=>[k,v]),css('--orange'),2.2,[5,4]);
-  bullets($('cpProductNote'),[
-    ok?'The two spectra lie on top of each other. Circular convolution in time really is multiplication bin by bin in frequency.'
-      :'The blue spectrum departs from the orange product in every bin, because the time-domain block is no longer a circular convolution at all.',
-    'This is the whole payoff: one complex multiply per bin replaces a convolution whose length is set by the channel.',
-    'Convention check: X[k] = Σ x[n]e^(−j2πkn/N) with the 1/N on the inverse, under which y = h ⊛ x ⟺ Y[k] = H[k]X[k].'
-  ]);
-
-  /* --- per-bin error --- */
-  const meanP=HX.reduce((a,v)=>a+abs2(v),0)/p.N,
-    errs=Y.map((v,k)=>abs2(sub(v,HX[k]))/Math.max(meanP,1e-15)),
-    hiE=Math.ceil(Math.log10(Math.max(...errs,1e-16))),loE=Math.max(-16,hiE-8);
-  z=axes($('cpToneErr'),0,p.N-1,loE,Math.max(hiE,loE+2),'Frequency bin k','Normalized |Y[k] − H[k]X[k]|²',{xticks:Math.min(8,p.N-1),yticks:Math.min(8,Math.max(2,Math.max(hiE,loE+2)-loE)),yfmt:decade});
-  const clipE=v=>Math.min(Math.max(hiE,loE+2),Math.max(loE,Math.log10(Math.max(v,1e-18))));
-  line(z,errs.map((v,k)=>[k,clipE(v)]),css('--blue'),2.2);
-  errs.forEach((v,k)=>{if(p.N<=64)dot(z,k,clipE(v),css('--blue'),2.6)});
-  if(ok)plotLabel(z,z.m.l,z.Y(loE+0.5),'floor is double-precision round-off, not a modelling error',css('--green'));
-  bullets($('cpToneErrNote'),[
-    p.s!==0?'The window starts '+Math.abs(p.s)+' sample'+(Math.abs(p.s)===1?'':'s')+' '+(p.s<0?'early':'late')+'. '+(ok?'That is still inside the L<sub>c</sub> − L = '+(p.Lc-p.L)+' sample margin, so the block is only rotated: in frequency that is a phase ramp e^(−j2πks/N) the channel estimate absorbs, and the per-subcarrier model stays exact.':'That is outside the margin, so the window straddles two OFDM symbols and the error below is real inter-block interference no phase correction can undo.'):null,
-    ok?'With L_c = '+p.Lc+' ≥ L = '+p.L+' the error is zero to the last bit of double precision — it is plotted on the axis floor because a logarithm of zero has nowhere else to go. The per-bin model is exact, not an approximation.'
-      :'With L_c = '+p.Lc+' < L = '+p.L+' the error is of order '+expo(rel)+' of the signal power, and it is spread over every bin — no per-bin equalizer can remove it.',
-    'AWGN is switched off for this panel, so everything you see is model mismatch.',
-    'The exactness does not require |H[k]| to be flat across k. Flatness is a separate question that only arises when interpolating Ĥ[k] between pilots.'
-  ]);
-
   /* --- overhead versus block size --- */
-  z=axes($('cpOverhead'),3,10,0,0.75,'Block size N','CP overhead L_c/(N+L_c)',{xticks:7,yticks:5,xfmt:v=>String(Math.pow(2,Math.round(v)))});
+  let z=axes($('cpOverhead'),3,10,0,0.75,'Block size N','CP overhead L_c/(N+L_c)',{xticks:7,yticks:5,xfmt:v=>String(Math.pow(2,Math.round(v)))});
   const ovCurve=Lc=>{const q=[];for(let e=3;e<=10;e+=0.1){const n=Math.pow(2,e);q.push([e,Lc/(n+Lc)])}return q};
   line(z,ovCurve(4),css('--cyan'),1.8,[6,4]);
   line(z,ovCurve(16),css('--purple'),1.8,[6,4]);
