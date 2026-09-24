@@ -16,11 +16,11 @@
 .mode-row{margin-bottom:10px}.mode-row button{padding:6px 10px}
 .flow-caption{color:var(--muted);font-size:.72rem;margin:-6px 0 14px}
 #cpAssembly,#cpAbsorb{height:300px}#ofGrid{height:290px}#ofCompare{height:300px}
-#whMem,#whCost,#whFlat,#ifOne,#ifSum,#ifStems,#ifPapr,#orBasis,#orSpec,#orBins,#motMemoryPlot,#motComplexity,#motTaps,#tdeTaps,#tdeCascade,#tdeDelayCost,#tdeConst,#tdeCostLen,#cpOverhead,#cpConst,#scChannel,#scGain,#scNoise,#scConst,#scToneConst,#scEvmCurve,#ofChannelPilots,#ofToneConst,#ofSnrTones,#ofPilotSweep,#ofPapr,#ofEvm{height:265px}
+#whMem,#whCost,#whFlat,#ifOne,#ifSum,#ifStems,#orBasis,#orSpec,#orBins,#motMemoryPlot,#motComplexity,#motTaps,#tdeTaps,#tdeCascade,#tdeDelayCost,#tdeConst,#tdeCostLen,#cpOverhead,#cpConst,#scChannel,#scGain,#scNoise,#scConst,#scToneConst,#scEvmCurve,#ofChannelPilots,#ofToneConst,#ofSnrTones,#ofPilotSweep,#ofEvm{height:265px}
 .lab-metric .value{font-size:.82rem}.lab-metric button{width:100%}.lab-shell{margin:14px 0;min-width:0}.lab-shell[hidden]{display:none}.lab-frame{display:block;width:100%;min-height:760px;border:1px solid var(--border);border-radius:12px;background:var(--surface)}
 .panel.lab-open>.panel-head .message{display:none}.panel.lab-open>.sticky-bar .toolbar{padding:8px 10px}.panel.lab-open>.sticky-bar .mode-row,.panel.lab-open>.sticky-bar .control-grid,.panel.lab-open>.sticky-bar .summary-row>.formula,.panel.lab-open>.sticky-bar .summary-row>.note,.panel.lab-open>.sticky-bar .toolbar-metrics>.metric:not(.lab-metric){display:none}.panel.lab-open>.sticky-bar .summary-row{display:block;margin:0}.panel.lab-open>.sticky-bar .toolbar-metrics{display:grid;grid-template-columns:minmax(220px,360px)}.panel.lab-open>.sticky-bar .lab-metric{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:4px 12px;text-align:left}.panel.lab-open>.sticky-bar .lab-metric .name{grid-column:1}.panel.lab-open>.sticky-bar .lab-metric .value{grid-column:1}.panel.lab-open>.sticky-bar .lab-metric button{grid-column:2;grid-row:1/3;width:auto;margin:0}
 @media(max-width:900px){.toolbar-split{grid-template-columns:1fr}.toolbar-metrics{grid-auto-flow:row;grid-template-columns:repeat(3,minmax(0,1fr))}.metric-rail{grid-template-columns:repeat(3,minmax(0,1fr))}.metric-rail .formula,.metric-rail .note{grid-column:1/-1}.tabs{grid-template-columns:repeat(3,1fr)}.plots{grid-template-columns:1fr 1fr}.plots:not(.two) .card:last-child{grid-column:1/-1}.model-grid{grid-template-columns:1fr}.checklist{grid-template-columns:1fr 1fr}.control-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.summary-row{grid-template-columns:1fr}.summary-row .toolbar-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:620px){.metric-rail,.toolbar-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}body{padding:14px}.tabs{grid-template-columns:1fr 1fr}.panel-head{display:block}.plots,.two{grid-template-columns:1fr}.plots .card:last-child{grid-column:auto}.flow{display:grid;grid-template-columns:1fr 1fr}.arrow{display:none}.metrics,.checklist{grid-template-columns:1fr 1fr}canvas,.plots.two canvas{height:245px}#whMem,#whCost,#whFlat,#ifOne,#ifSum,#ifStems,#ifPapr,#orBasis,#orSpec,#orBins,#motMemoryPlot,#motComplexity,#motTaps,#tdeTaps,#tdeCascade,#tdeDelayCost,#tdeConst,#tdeCostLen,#cpOverhead,#cpConst,#scChannel,#scGain,#scNoise,#scConst,#scToneConst,#scEvmCurve,#ofChannelPilots,#ofToneConst,#ofSnrTones,#ofPilotSweep,#ofPapr,#ofEvm{height:262px}}
+@media(max-width:620px){.metric-rail,.toolbar-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}body{padding:14px}.tabs{grid-template-columns:1fr 1fr}.panel-head{display:block}.plots,.two{grid-template-columns:1fr}.plots .card:last-child{grid-column:auto}.flow{display:grid;grid-template-columns:1fr 1fr}.arrow{display:none}.metrics,.checklist{grid-template-columns:1fr 1fr}canvas,.plots.two canvas{height:245px}#whMem,#whCost,#whFlat,#ifOne,#ifSum,#ifStems,#orBasis,#orSpec,#orBins,#motMemoryPlot,#motComplexity,#motTaps,#tdeTaps,#tdeCascade,#tdeDelayCost,#tdeConst,#tdeCostLen,#cpOverhead,#cpConst,#scChannel,#scGain,#scNoise,#scConst,#scToneConst,#scEvmCurve,#ofChannelPilots,#ofToneConst,#ofSnrTones,#ofPilotSweep,#ofEvm{height:262px}}
 @media(max-width:390px){.tabs,.metrics,.checklist,.flow,.control-grid{grid-template-columns:1fr}.ctrl{min-width:100%}.ctrl label{flex-wrap:wrap}}
 </style>
 </head>
@@ -65,7 +65,7 @@ channel from pilots.</p>
 </section>
 
 <section class="panel" id="ifft" role="tabpanel" aria-labelledby="tab-ifft" hidden>
-  <div class="panel-head"><div><div class="eyebrow">IFFT synthesis</div><h2>The IFFT is a bank of complex sinusoids, and each subcarrier is one of them scaled by its symbol</h2></div><div class="message">x[n] = (1/N) &sum;<sub>k</sub> X<sub>k</sub> e<sup>j2&pi;kn/N</sup>. Subcarrier k contributes exactly one sinusoid that completes k whole cycles across the block. Adding them is what produces the OFDM waveform &mdash; and what makes its peaks grow.</div></div>
+  <div class="panel-head"><div><div class="eyebrow">IFFT synthesis</div><h2>The IFFT is a bank of complex sinusoids, and each subcarrier is one of them scaled by its symbol</h2></div><div class="message">x[n] = (1/N) &sum;<sub>k</sub> X<sub>k</sub> e<sup>j2&pi;kn/N</sup>. Subcarrier k contributes exactly one sinusoid that completes k whole cycles across the block. Adding the active terms produces the N time-domain samples transmitted in one OFDM block.</div></div>
   <div class="sticky-bar"><div class="toolbar">
     <div class="mode-buttons mode-row"><button type="button" id="ifAll">All active</button><button type="button" id="ifRandom">Random set</button><button type="button" id="ifSingle">Highlighted only</button><button type="button" id="ifClear">Clear</button></div>
     <div class="control-grid">
@@ -76,20 +76,18 @@ channel from pilots.</p>
     </div>
     <div class="summary-row"><div class="toolbar-metrics">
       <div class="metric"><div class="name">Cycles per block</div><div class="value" id="ifCycles">&mdash;</div><div class="small">subcarrier k completes k cycles</div></div>
-      <div class="metric"><div class="name">Peak-to-average</div><div class="value" id="ifPaprVal">&mdash;</div><div class="small">of the current waveform</div></div>
       <div class="metric"><div class="name">Block energy check</div><div class="value" id="ifParseval">&mdash;</div><div class="small">N&sum;|x[n]|&sup2; vs &sum;|X<sub>k</sub>|&sup2;</div></div>
       <div class="metric"><div class="name">DC subcarrier</div><div class="value" id="ifDc">&mdash;</div><div class="small">k = 0 is usually nulled</div></div>
       <div class="metric lab-metric"><div class="name">Interactive lab</div><div class="value">IFFT Builder</div><button type="button" class="lab-toggle" aria-controls="lab-ifft" aria-expanded="false">Open lab</button></div>
     </div><div class="formula"><div>x[n] = (1/N) &sum;<sub>k</sub> X<sub>k</sub> e<sup>j2&pi;kn/N</sup></div><div id="ifOneFormula">highlighted term: &mdash;</div></div></div>
   </div></div>
 
-  <div class="lab-shell" id="lab-ifft" hidden><iframe class="lab-frame" loading="lazy" title="OFDM IFFT Builder interactive lab" src="01_ofdm_ifft_builder.html"></iframe></div>
+  <div class="lab-shell" id="lab-ifft" hidden><iframe class="lab-frame" loading="lazy" title="OFDM IFFT Builder interactive lab" src="01_ofdm_ifft_builder.html?v=20260924"></iframe></div>
 
   <div class="plots two">
     <div class="card"><div class="title">Subcarrier k on its own</div><canvas id="ifOne" role="img" aria-label="Real and imaginary parts of the single highlighted subcarrier across the block"></canvas><div class="legend"><span><i class="sw blue"></i>real</span><span><i class="sw orange"></i>imaginary</span></div><ul class="bullets" id="ifOneNote"></ul></div>
-    <div class="card"><div class="title">Adding the active subcarriers: x[n]</div><canvas id="ifSum" role="img" aria-label="Real part of the OFDM waveform as active subcarriers are summed, with the highlighted subcarrier shown separately"></canvas><div class="legend"><span><i class="sw blue"></i>x[n], all active</span><span><i class="sw green"></i>highlighted subcarrier</span><span><i class="sw" style="background:var(--red)"></i>peak</span></div><ul class="bullets" id="ifSumNote"></ul></div>
+    <div class="card"><div class="title">Adding the active subcarriers: x[n]</div><canvas id="ifSum" role="img" aria-label="Real part of the OFDM waveform as active subcarriers are summed, with the highlighted subcarrier shown separately"></canvas><div class="legend"><span><i class="sw blue"></i>x[n], all active</span><span><i class="sw green"></i>highlighted subcarrier</span></div><ul class="bullets" id="ifSumNote"></ul></div>
     <div class="card"><div class="title">IFFT input: |X<sub>k</sub>| across subcarriers &mdash; click to switch one on or off</div><canvas id="ifStems" role="img" aria-label="Stem plot of the symbol magnitude on each subcarrier, with inactive subcarriers and the highlighted one marked"></canvas><div class="legend"><span><i class="sw blue"></i>active</span><span><i class="sw green"></i>highlighted</span><span><i class="sw" style="background:var(--muted)"></i>off</span></div><ul class="bullets" id="ifStemsNote"></ul></div>
-    <div class="card"><div class="title">PAPR against the number of active subcarriers</div><canvas id="ifPapr" role="img" aria-label="Peak to average power ratio against the number of active subcarriers"></canvas><div class="legend"><span><i class="sw purple"></i>PAPR (dB)</span><span><i class="sw green"></i>your setting</span></div><ul class="bullets" id="ifPaprNote"></ul></div>
   </div>
 </section>
 
@@ -112,7 +110,7 @@ channel from pilots.</p>
     </div><div class="formula"><div>&sum;<sub>n=0</sub><sup>N&minus;1</sup> e<sup>j2&pi;(k&minus;m)n/N</sup> = N if k = m, else 0</div><div id="orNote">&epsilon; = 0: exactly orthogonal</div></div></div>
   </div></div>
 
-  <div class="lab-shell" id="lab-ortho" hidden><iframe class="lab-frame" loading="lazy" title="OFDM Orthogonality Explorer interactive lab" src="02_ofdm_orthogonality_explorer.html"></iframe></div>
+  <div class="lab-shell" id="lab-ortho" hidden><iframe class="lab-frame" loading="lazy" title="OFDM Orthogonality Explorer interactive lab" src="02_ofdm_orthogonality_explorer.html?v=20260924"></iframe></div>
 
   <div class="plots">
     <div class="card"><div class="title">Subcarrier k against receiver basis m, term by term</div><canvas id="orBasis" role="img" aria-label="Real part of the product of the transmitted subcarrier and the conjugated receiver basis, with its running sum"></canvas><div class="legend"><span><i class="sw blue"></i>term n</span><span><i class="sw orange"></i>running sum</span></div><ul class="bullets" id="orBasisNote"></ul></div>
@@ -122,13 +120,12 @@ channel from pilots.</p>
 </section>
 
 <section class="panel" id="cp" role="tabpanel" aria-labelledby="tab-cp" hidden>
-  <div class="panel-head"><div><div class="eyebrow">From linear convolution to circular convolution</div><h2>Multipath breaks the per-subcarrier model, and the cyclic prefix is what repairs it</h2></div><div class="message">The physical channel performs linear convolution. Copying the last L<sub>c</sub> symbols of a block to its front, then discarding the first L<sub>c</sub> received samples, makes the useful N samples identical to a length-N circular convolution — exactly, provided L<sub>c</sub> ≥ L and timing is correct.</div></div>
+  <div class="panel-head"><div><div class="eyebrow">From linear convolution to circular convolution</div><h2>Multipath breaks the per-subcarrier model, and the cyclic prefix is what repairs it</h2></div><div class="message">The physical channel performs linear convolution. Copying the last L<sub>c</sub> symbols of a block to its front, then discarding the first L<sub>c</sub> received samples, makes the following N useful samples identical to a length-N circular convolution — exactly, provided L<sub>c</sub> ≥ L.</div></div>
   <div class="sticky-bar"><div class="toolbar"><div class="control-grid">
     <div class="ctrl"><label for="cpN">Block size N <strong id="cpNOut">32</strong></label><input id="cpN" type="range" min="3" max="8" value="5" step="1"></div>
     <div class="ctrl"><label for="cpLc"><span>Cyclic prefix L<sub>c</sub></span> <strong id="cpLcOut">4</strong></label><input id="cpLc" type="range" min="0" max="20" value="4" step="1"></div>
     <div class="ctrl"><label for="cpL">Channel memory L <strong id="cpLOut">3</strong></label><input id="cpL" type="range" min="0" max="16" value="3" step="1"></div>
     <div class="ctrl"><label for="cpSnr"><span>E<sub>x</sub>/N₀</span> <strong id="cpSnrOut">18 dB</strong></label><input id="cpSnr" type="range" min="0" max="30" value="18" step="1"></div>
-    <div class="ctrl"><label for="cpS"><span>FFT window offset s</span> <strong id="cpSOut">0 samples</strong></label><input id="cpS" type="range" min="-8" max="8" value="0" step="1"></div>
   </div><div class="summary-row"><div class="toolbar-metrics">
     <div class="metric"><div class="name">CP condition</div><div class="value" id="cpCond">—</div><div class="small">requires L<sub>c</sub> ≥ L</div></div>
     <div class="metric"><div class="name">CP efficiency</div><div class="value" id="cpEta">—</div><div class="small">η<sub>CP</sub> = N / (N + L<sub>c</sub>)</div></div>
@@ -137,7 +134,7 @@ channel from pilots.</p>
     <div class="metric lab-metric"><div class="name">Interactive lab</div><div class="value">CP &amp; Multipath</div><button type="button" class="lab-toggle" aria-controls="lab-cp" aria-expanded="false">Open lab</button></div>
   </div><div class="note" id="cpNote" aria-live="polite"></div></div></div></div>
 
-  <div class="lab-shell" id="lab-cp" hidden><iframe class="lab-frame" loading="lazy" title="OFDM Cyclic Prefix and Multipath interactive lab" src="03_ofdm_cyclic_prefix_multipath.html"></iframe></div>
+  <div class="lab-shell" id="lab-cp" hidden><iframe class="lab-frame" loading="lazy" title="OFDM Cyclic Prefix and Multipath interactive lab" src="03_ofdm_cyclic_prefix_multipath.html?v=20260924"></iframe></div>
 
   <div class="flow" aria-label="Cyclic prefix block processing chain" aria-live="polite"><div class="flow-step" data-state="ready"><strong>Data block</strong><span id="cpFlowData">N symbols</span></div><div class="arrow">→</div><div class="flow-step" data-state="ready"><strong>Prepend CP</strong><span id="cpFlowCp">copy last L<sub>c</sub></span></div><div class="arrow">→</div><div class="flow-step" data-state="ready"><strong>Linear channel</strong><span id="cpFlowChan">memory L</span></div><div class="arrow">→</div><div class="flow-step" id="cpFlowDropStep" data-state="ready"><strong>Discard L<sub>c</sub></strong><span id="cpFlowDrop">—</span></div><div class="arrow">→</div><div class="flow-step" id="cpFlowFftStep" data-state="ready"><strong>FFT</strong><span id="cpFlowFft">—</span></div></div>
 
@@ -171,20 +168,19 @@ channel from pilots.</p>
       <div class="metric"><div class="name">Flatness ratio</div><div class="value" id="ofFlat">—</div><div class="small">Δf / B<sub>coh</sub>, B<sub>coh</sub> ≈ 1/(5τ<sub>rms</sub>)</div></div>
       <div class="metric"><div class="name">Pilot overhead</div><div class="value" id="ofPilotOver">—</div><div class="small">1 / P of the subcarriers</div></div>
       <div class="metric"><div class="name">Channel estimate NMSE</div><div class="value" id="ofNmse">—</div><div class="small">Ĥ[k] from comb pilots + interpolation</div></div>
-      <div class="metric"><div class="name">PAPR at 0.1 %</div><div class="value" id="ofPaprVal">—</div><div class="small">OFDM versus SC-FDE</div><button type="button" id="ofDenomHelp">Why NN₀/E<sub>X</sub>?</button></div>
       <div class="metric lab-metric"><div class="name">Interactive lab</div><div class="value">ZF/MMSE</div><button type="button" class="lab-toggle" aria-controls="lab-eq" aria-expanded="false">Open lab</button></div>
-    </div><div class="formula"><div>X̂<sub>ZF,k</sub> = Y<sub>k</sub> / Ĥ<sub>k</sub></div><div>X̂<sub>MMSE,k</sub> = Ĥ*<sub>k</sub> Y<sub>k</sub> / (|Ĥ<sub>k</sub>|² + NN₀/E<sub>X</sub>)</div><div id="ofLambda">NN₀/E<sub>X</sub> = 0.0316</div></div></div>
+    </div><div class="formula"><div>X̂<sub>ZF,k</sub> = Y<sub>k</sub> / Ĥ<sub>k</sub></div><div>X̂<sub>MMSE,k</sub> = Ĥ*<sub>k</sub> Y<sub>k</sub> / (|Ĥ<sub>k</sub>|² + NN₀/E<sub>X</sub>)</div><div id="ofLambda">NN₀/E<sub>X</sub> = 0.0316</div><button type="button" id="ofDenomHelp">Why NN₀/E<sub>X</sub>?</button></div></div>
   </div></div>
 
-  <div class="lab-shell" id="lab-eq" hidden><iframe class="lab-frame" loading="lazy" title="OFDM ZF versus MMSE Equalisation interactive lab" src="04_ofdm_zf_mmse_equalizer.html"></iframe></div>
+  <div class="lab-shell" id="lab-eq" hidden><iframe class="lab-frame" loading="lazy" title="OFDM ZF versus MMSE Equalisation interactive lab" src="04_ofdm_zf_mmse_equalizer.html?v=20260924"></iframe></div>
 
-  <div class="flow" aria-label="OFDM transmitter chain"><div class="flow-step" data-state="ready"><strong>Map to X<sub>k</sub></strong><span>QAM per subcarrier</span></div><div class="arrow">→</div><div class="flow-step" data-state="required"><strong>IFFT</strong><span id="ofTxIfft">N-point, required</span></div><div class="arrow">→</div><div class="flow-step" data-state="ready"><strong>Add CP</strong><span id="ofTxCp">L<sub>c</sub> ≥ L</span></div><div class="arrow">→</div><div class="flow-step" data-state="ready"><strong>Pulse shape / RF</strong><span id="ofTxPapr">high PAPR</span></div><div class="arrow">→</div><div class="flow-step" data-state="warning"><strong>Channel</strong><span id="ofTxChan">memory L</span></div></div>
+  <div class="flow" aria-label="OFDM transmitter chain"><div class="flow-step" data-state="ready"><strong>Map to X<sub>k</sub></strong><span>QAM per subcarrier</span></div><div class="arrow">→</div><div class="flow-step" data-state="required"><strong>IFFT</strong><span id="ofTxIfft">N-point, required</span></div><div class="arrow">→</div><div class="flow-step" data-state="ready"><strong>Add CP</strong><span id="ofTxCp">L<sub>c</sub> ≥ L</span></div><div class="arrow">→</div><div class="flow-step" data-state="warning"><strong>Channel</strong><span id="ofTxChan">memory L</span></div></div>
   <div class="flow" aria-label="OFDM receiver chain"><div class="flow-step" data-state="ready"><strong>Sync, remove CP</strong><span>keep N samples</span></div><div class="arrow">→</div><div class="flow-step" data-state="ready"><strong>FFT</strong><span id="ofRxFft">N-point</span></div><div class="arrow">→</div><div class="flow-step" data-state="required"><strong>Estimate Ĥ<sub>k</sub></strong><span id="ofRxEst">—</span></div><div class="arrow">→</div><div class="flow-step" data-state="required"><strong>Per-subcarrier G<sub>k</sub></strong><span id="ofRxEq">—</span></div><div class="arrow">→</div><div class="flow-step" data-state="ready"><strong>Demap</strong><span>no IFFT needed</span></div></div>
   <p class="flow-caption">The receiver after the FFT is identical to SC-FDE. The architectures differ before the IFFT/FFT and in how symbols are assigned to subcarriers.</p>
 
   <div class="plots two">
     <div class="card"><div class="title">Subcarrier grid: comb pilots across OFDM symbols</div><canvas id="ofGrid" role="img" aria-label="Time frequency grid of subcarriers against OFDM symbols showing comb pilot placement"></canvas><ul class="bullets" id="ofGridNote"></ul></div>
-    <div class="card"><div class="title">Architecture comparison at the current settings</div><canvas id="ofCompare" role="img" aria-label="Bar chart comparing time-domain equalization, SC-FDE and OFDM on complexity, latency, overhead and null sensitivity"></canvas><div class="legend"><span><i class="sw orange"></i>TDE</span><span><i class="sw blue"></i>SC-FDE</span><span><i class="sw purple"></i>OFDM</span></div><ul class="bullets" id="ofCompareNote"></ul></div>
+    <div class="card"><div class="title">Architecture comparison at the current settings</div><canvas id="ofCompare" role="img" aria-label="Bar chart comparing time-domain equalization, SC-FDE and OFDM on complexity, latency and cyclic-prefix overhead"></canvas><div class="legend"><span><i class="sw orange"></i>TDE</span><span><i class="sw blue"></i>SC-FDE</span><span><i class="sw purple"></i>OFDM</span></div><ul class="bullets" id="ofCompareNote"></ul></div>
   </div>
 
   <div class="plots" style="margin-top:14px">
@@ -192,7 +188,6 @@ channel from pilots.</p>
     <div class="card"><div class="title">Per-subcarrier SNR |H<sub>k</sub>|²E<sub>X</sub>/(NN₀)</div><canvas id="ofSnrTones" role="img" aria-label="Per subcarrier signal-to-noise ratio in decibels with deep fades highlighted"></canvas><div class="legend"><span><i class="sw blue"></i>Per-subcarrier SNR</span><span><i class="sw green"></i>Average</span><span><i class="sw" style="background:var(--red)"></i>Below 0 dB</span></div><ul class="bullets" id="ofSnrNote"></ul></div>
     <div class="card"><div class="title">Subcarrier k: the constellation faded by H<sub>k</sub></div><canvas id="ofToneConst" role="img" aria-label="Constellation carried by the selected subcarrier, faded by the channel and after per-subcarrier equalization, against ideal reference circles"></canvas><div class="legend"><span><i class="sw" style="background:var(--red)"></i>Ideal (circles)</span><span><i class="sw orange"></i>Faded by H<sub>k</sub></span><span><i class="sw blue"></i>After G<sub>k</sub></span></div><ul class="bullets" id="ofToneConstNote"></ul></div>
     <div class="card"><div class="title">Estimation NMSE versus pilot spacing</div><canvas id="ofPilotSweep" role="img" aria-label="Channel estimation normalized mean square error against comb pilot spacing with the sampling limit marked"></canvas><div class="legend"><span><i class="sw blue"></i>NMSE(P)</span><span><i class="sw" style="background:var(--red)"></i>Sampling limit P = N/(L+1)</span><span><i class="sw green"></i>Your P</span></div><ul class="bullets" id="ofPilotNote"></ul></div>
-    <div class="card"><div class="title">PAPR: OFDM versus single carrier</div><canvas id="ofPapr" role="img" aria-label="Complementary cumulative distribution of peak to average power ratio for OFDM and single-carrier blocks"></canvas><div class="legend"><span><i class="sw purple"></i>OFDM (IFFT of QPSK subcarriers)</span><span><i class="sw blue"></i>SC-FDE (QPSK in time)</span></div><ul class="bullets" id="ofPaprNote"></ul></div>
     <div class="card"><div class="title">Symbol error power versus SNR</div><canvas id="ofEvm" role="img" aria-label="Normalized symbol error power against signal to noise ratio for zero forcing and MMSE with estimated and perfect channel knowledge"></canvas><div class="legend"><span><i class="sw orange"></i>ZF</span><span><i class="sw purple"></i>MMSE</span><span><i class="sw" style="background:var(--cyan)"></i>Dashed — perfect Ĥ</span><span><i class="sw green"></i>Your SNR</span></div><ul class="bullets" id="ofEvmNote"></ul></div>
   </div>
 
@@ -201,7 +196,6 @@ channel from pilots.</p>
     <div class="check"><strong>Block size N</strong><span>Larger N amortizes the CP but adds latency and assumes the channel is static over N + L<sub>c</sub> symbols.</span></div>
     <div class="check"><strong>Pilot spacing P</strong><span>Must satisfy P ≤ N/(L+1) to sample H[k] adequately; beyond that, interpolation aliases.</span></div>
     <div class="check"><strong>Deep fades</strong><span>ZF inverts them and amplifies noise. MMSE, coding across subcarriers, and frequency diversity are the standard answers.</span></div>
-    <div class="check"><strong>PAPR</strong><span>OFDM superposes N subcarriers and needs power-amplifier back-off; SC-FDE and DFT-spread OFDM keep a single-carrier envelope.</span></div>
     <div class="check"><strong>Carrier frequency offset</strong><span>Residual CFO destroys subcarrier orthogonality in OFDM and needs extra synchronization (Heath Sec. 5.4.4).</span></div>
   </div>
 </section>
@@ -372,11 +366,8 @@ function drawIfft(){
   $('ifNOut').textContent=p.N;$('ifActOut').textContent=p.act+' on';$('ifKOut').textContent=p.k;
   const Xz=X.map((v,i)=>active[i]?v:C());
   const x=fft(Xz,true);
-  const peak=Math.max(...x.map(v=>abs2(v))),avg=x.reduce((a,v)=>a+abs2(v),0)/p.N,
-    papr=10*Math.log10(peak/Math.max(avg,1e-18));
   const eT=p.N*x.reduce((a,v)=>a+abs2(v),0),eF=Xz.reduce((a,v)=>a+abs2(v),0);
   $('ifCycles').textContent=p.k+(p.k===1?' cycle':' cycles');
-  $('ifPaprVal').textContent=papr.toFixed(2)+' dB';
   $('ifParseval').textContent=(eT/Math.max(eF,1e-18)).toFixed(3);
   $('ifDc').textContent=active[0]?'active':'nulled';
   const kOn=active[p.k];
@@ -399,18 +390,15 @@ function drawIfft(){
   ]);
 
   /* --- the sum --- */
-  const lim=Math.max(1e-3,...x.map(v=>Math.max(Math.abs(v.re),Math.abs(v.im))))*1.2,
-    pk=x.reduce((b,v,n)=>abs2(v)>abs2(x[b])?n:b,0);
+  const lim=Math.max(1e-3,...x.map(v=>Math.max(Math.abs(v.re),Math.abs(v.im))))*1.2;
   z=axes($('ifSum'),0,p.N-1,-lim,lim,'sample n','Re x[n]',{xticks:Math.min(8,p.N-1),yticks:4});
   line(z,[[0,0],[p.N-1,0]],css('--border'),1.2);
   line(z,one.map((v,n)=>[n,v.re]),css('--green'),1.8,[4,4]);
   line(z,x.map((v,n)=>[n,v.re]),css('--blue'),2.6);
-  dot(z,pk,x[pk].re,css('--red'),5);
-  plotLabel(z,z.X(pk),z.Y(x[pk].re)-8,'peak at n = '+pk,css('--red'));
   bullets($('ifSumNote'),[
     'x[n] is the sum of '+p.act+' such sinusoids. Individual samples are not constellation points — they are superpositions, which is why detecting OFDM in the time domain is hopeless.',
     'The dashed green curve is the highlighted subcarrier on its own. It is one small component of a waveform that looks like noise once enough subcarriers are added.',
-    'PAPR here is '+papr.toFixed(2)+' dB. With one subcarrier the envelope is constant; the peaks appear only when many subcarriers happen to align in phase.'
+    'The receiver applies the FFT to this complete N-sample block to recover the separate subcarrier symbols X[k].'
   ]);
 
   /* --- IFFT input stems --- */
@@ -428,24 +416,6 @@ function drawIfft(){
       :'QPSK puts every symbol on one amplitude ring, so all the active stems are the same height. Switch to 16-QAM to see the magnitudes spread.'
   ]);
 
-  /* --- PAPR against active count --- */
-  const order=[...ifActive].sort((a,b)=>a-b),xs=[],ys=[];
-  for(let a=1;a<=order.length;a++){
-    const on=new Set(order.slice(0,a)),
-      Xa=X.map((v,i)=>on.has(i)?v:C()),xa=fft(Xa,true),
-      pkA=Math.max(...xa.map(v=>abs2(v))),avA=xa.reduce((s,v)=>s+abs2(v),0)/p.N;
-    xs.push(a);ys.push(10*Math.log10(pkA/Math.max(avA,1e-18)));}
-  if(!xs.length){xs.push(0);ys.push(0)}
-  const hiP=Math.ceil(Math.max(...ys))+1;
-  z=axes($('ifPapr'),1,Math.max(2,order.length),0,Math.max(3,hiP),'active subcarriers','PAPR (dB)',{xticks:Math.min(8,Math.max(2,order.length-1)),yticks:4});
-  line(z,xs.map((a,i)=>[a,ys[i]]),css('--purple'),2.4);
-  if(order.length){dot(z,order.length,ys[ys.length-1],css('--green'),5.5);
-    plotLabel(z,z.X(order.length),z.Y(ys[ys.length-1])-8,ys[ys.length-1].toFixed(1)+' dB',css('--green'));}
-  bullets($('ifPaprNote'),[
-    'With one active subcarrier the waveform is a pure sinusoid and the PAPR is near 0 dB. Adding subcarriers lets their phases occasionally line up, and the peaks grow.',
-    'This is the cost side of OFDM: the power amplifier has to stay linear up to those peaks, so it runs backed off from its efficient operating point.',
-    'The curve is one realization, not an average — change the constellation and it moves. Week 9 does this properly with a CCDF over many blocks, and covers what to do about it.'
-  ]);
 }
 $('ifAct').addEventListener('input',()=>{ifFirstM(Math.pow(2,+$('ifN').value),+$('ifAct').value);drawIfft()});
 ['ifN','ifK','ifMod'].forEach(id=>$(id).addEventListener('input',drawIfft));
@@ -621,10 +591,8 @@ function drawToneConst(cvId,o){
 /* ==================================================================
    3 · CYCLIC PREFIX AND CIRCULAR CONVOLUTION
    ================================================================== */
-function cpParams(){const N=Math.pow(2,+$('cpN').value),Lc=+$('cpLc').value,L=+$('cpL').value,snr=+$('cpSnr').value,
-    sEl=$('cpS'),s=Math.max(-Lc,Math.min(Lc,+sEl.value));
-  sEl.min=-Lc;sEl.max=Lc;if(+sEl.value!==s)sEl.value=s;
-  return{N,Lc,L,snr,s,N0:Math.pow(10,-snr/10)}}
+ function cpParams(){const N=Math.pow(2,+$('cpN').value),Lc=+$('cpLc').value,L=+$('cpL').value,snr=+$('cpSnr').value;
+   return{N,Lc,L,snr,N0:Math.pow(10,-snr/10)}}
 function cpSimulate(p,withNoise,seed){
   const r=rng(seed||7701),h=pdpChannel(p.L,5501),
     x0=qpskBlock(p.N,r),x1=qpskBlock(p.N,r),
@@ -632,23 +600,20 @@ function cpSimulate(p,withNoise,seed){
     stream=blk(x0).concat(blk(x1)),
     sd=Math.sqrt(p.N0/2),
     rx=stream.map((_,m)=>{let s=C();for(let l=0;l<h.length;l++){const u=stream[m-l];if(u)s=add(s,mul(h[l],u))}return withNoise?add(s,C(gauss(r)*sd,gauss(r)*sd)):s}),
-    start=p.N+2*p.Lc+p.s,
+    start=p.N+2*p.Lc,
     y=Array.from({length:p.N},(_,n)=>rx[start+n]||C()),
     full=circConv(h,x1,p.N),
-    ideal=Array.from({length:p.N},(_,n)=>full[((n+p.s)%p.N+p.N)%p.N]);
+    ideal=full;
   return{h,x1,stream,rx,y,ideal,start}}
 function drawCp(){
   const p=cpParams();
   $('cpNOut').textContent=p.N;$('cpLcOut').textContent=p.Lc;$('cpLOut').textContent=p.L;$('cpSnrOut').textContent=p.snr+' dB';
-  $('cpSOut').textContent=(p.s>0?'+':'')+p.s+(Math.abs(p.s)===1?' sample':' samples');
-  /* The window may start early into the CP, which is still safe while the
-     channel spread fits, or late into the data, which never is. */
-  const early=-p.s,ok=p.Lc>=p.L&&p.s<=0&&early<=p.Lc-p.L,eta=p.N/(p.N+p.Lc),over=p.Lc/(p.N+p.Lc);
+  const ok=p.Lc>=p.L,eta=p.N/(p.N+p.Lc),over=p.Lc/(p.N+p.Lc);
   const s=cpSimulate(p,false),
     num=s.y.reduce((a,v,n)=>a+abs2(sub(v,s.ideal[n])),0),
     den=s.ideal.reduce((a,v)=>a+abs2(v),0),
     rel=num/Math.max(den,1e-12);
-  $('cpCond').innerHTML=ok?'L<sub>c</sub> ≥ L ✓':(p.s>0?'window starts late ✗':(p.Lc<p.L?'L<sub>c</sub> &lt; L ✗':'window starts too early ✗'));
+  $('cpCond').innerHTML=ok?'L<sub>c</sub> ≥ L ✓':'L<sub>c</sub> &lt; L ✗';
   $('cpEta').textContent=(100*eta).toFixed(1)+'%';
   $('cpOver').textContent=(100*over).toFixed(1)+'%';
   $('cpErr').textContent=rel<1e-12?'0 (exact)':expo(rel);
@@ -662,7 +627,7 @@ function drawCp(){
 
   /* --- figure: cyclic prefix assembly --- */
   drawCpAssembly(p);
-  drawCpAbsorb(p,s);
+  drawCpAbsorb(p);
 
   /* --- overhead versus block size --- */
   let z=axes($('cpOverhead'),3,10,0,0.75,'Block size N','CP overhead L_c/(N+L_c)',{xticks:7,yticks:5,xfmt:v=>String(Math.pow(2,Math.round(v)))});
@@ -727,7 +692,7 @@ function drawCpAssembly(p){
     'The transmitter pays for it in bandwidth: '+(100*p.Lc/(p.N+p.Lc)).toFixed(1)+'% of the symbols sent carry nothing new.'
   ]);
 }
-function drawCpAbsorb(p,s){
+function drawCpAbsorb(p){
   const z=panelCanvas($('cpAbsorb')),pad=18,W=z.w-2*pad,rowH=30,yT=42,yS=112,yR=190,
     prevW=Math.min(92,Math.max(62,W*.19)),blockX=pad+prevW,blockW=W-prevW,
     unit=blockW/(p.N+p.Lc),fftX=blockX+p.Lc*unit,endX=blockX+(p.Lc+p.N)*unit,
@@ -761,7 +726,7 @@ function drawCpAbsorb(p,s){
     'The condition is only L_c ≥ L. Nothing here asks the channel to be flat, short in an absolute sense, or slowly varying across frequency.'
   ]);
 }
-['cpN','cpLc','cpL','cpSnr','cpS'].forEach(id=>$(id).addEventListener('input',drawCp));
+['cpN','cpLc','cpL','cpSnr'].forEach(id=>$(id).addEventListener('input',drawCp));
 
 /* ==================================================================
    5 · OFDM
@@ -905,9 +870,6 @@ function drawOfdm(){
     'Your P = '+p.P+' gives NMSE '+expo(nm[Math.max(idxP,0)])+' at '+(100/p.P).toFixed(1)+'% pilot overhead — on top of the CP overhead, which is separate.'
   ]);
 
-  /* --- PAPR --- */
-  drawOfPapr(p);
-
   /* --- error versus SNR with estimated and perfect channel --- */
   drawOfEvm(p,H,mag);
 
@@ -933,28 +895,6 @@ function drawOfGrid(p){
     'A block pilot (a whole training symbol) gives frame sync and an initial Ĥ[k] on every subcarrier; comb pilots then track it across later symbols.',
     'Showing '+subcarriers+' of '+p.N+' subcarriers over 8 OFDM symbols. Comb pilots occupy 1 subcarrier in '+p.P+', which is '+(100/p.P).toFixed(1)+'% of the grid here.',
     'Time-varying channels interpolate along both axes: across subcarriers within a symbol, and across symbols within the coherence time.'
-  ]);
-}
-function drawOfPapr(p){
-  const rr=rng(5150),blocks=260,ofdmP=[],scP=[];
-  for(let b=0;b<blocks;b++){
-    const X=qpskBlock(p.N,rr),x=fft(X,true);
-    let pk=0,mn=0;x.forEach(v=>{const q=abs2(v);pk=Math.max(pk,q);mn+=q});
-    ofdmP.push(10*Math.log10(pk/(mn/p.N)));
-    const s=qpskBlock(p.N,rr);let pk2=0,mn2=0;s.forEach(v=>{const q=abs2(v);pk2=Math.max(pk2,q);mn2+=q});
-    scP.push(10*Math.log10(pk2/(mn2/p.N)))}
-  const ccdf=(arr,x)=>arr.filter(v=>v>x).length/arr.length;
-  const xmax=Math.max(12,Math.ceil(Math.max(...ofdmP))),z=axes($('ofPapr'),0,xmax,-3,0,'PAPR threshold (dB)','P(PAPR > threshold)',{xticks:6,yticks:3,yfmt:decade});
-  const build=arr=>{const q=[];for(let x=0;x<=xmax;x+=0.15){const v=ccdf(arr,x);if(v>0)q.push([x,Math.max(-3,Math.log10(v))]);else break}return q};
-  line(z,build(scP),css('--blue'),2.4);
-  line(z,build(ofdmP),css('--purple'),2.4);
-  const pct=arr=>{const s=arr.slice().sort((a,b)=>a-b);return s[Math.min(s.length-1,Math.floor(0.999*s.length))]};
-  const o999=pct(ofdmP),s999=pct(scP);
-  $('ofPaprVal').textContent=o999.toFixed(1)+' vs '+Math.max(0,s999).toFixed(1)+' dB';
-  bullets($('ofPaprNote'),[
-    'At the 0.1% level: OFDM '+o999.toFixed(1)+' dB against '+Math.max(0,s999).toFixed(1)+' dB for the single-carrier block — the IFFT superposes '+p.N+' independent subcarriers, and occasionally they add up.',
-    'The single-carrier curve is nearly a step: QPSK in the time domain has constant modulus, so its symbol-rate PAPR is essentially 0 dB.',
-    'Measured at symbol rate without pulse shaping, so both figures understate the true continuous-time PAPR. The gap between the two architectures is the point, not the absolute numbers.'
   ]);
 }
 function drawOfEvm(p,H,mag){
@@ -993,8 +933,7 @@ function drawOfCompare(p){
     rows=[
       {name:'Multiplies / symbol',vals:[tdePer,fdePer,fdePer],fmt:v=>v.toFixed(0)},
       {name:'Latency (symbols)',vals:[Math.round(1.5*p.L),p.N+Lc,p.N+Lc],fmt:v=>v.toFixed(0)},
-      {name:'CP overhead',vals:[0,Lc/(p.N+Lc),Lc/(p.N+Lc)],fmt:v=>(100*v).toFixed(1)+'%'},
-      {name:'PAPR penalty',vals:[0.2,0.3,1],fmt:v=>v<.5?'low':'high'}
+      {name:'CP overhead',vals:[0,Lc/(p.N+Lc),Lc/(p.N+Lc)],fmt:v=>(100*v).toFixed(1)+'%'}
     ],
     pad=140,W=z.w-pad-20,rowH=(z.h-46)/rows.length,cols=[css('--orange'),css('--blue'),css('--purple')];
   z.c.textBaseline='middle';
@@ -1013,7 +952,7 @@ function drawOfCompare(p){
   bullets($('ofCompareNote'),[
     'At N = '+p.N+', L = '+p.L+' and L_c = L: TDE needs about '+tdePer+' multiplies per symbol against '+fdePer.toFixed(0)+' for either block architecture.',
     'TDE streams with only equalizer and decision delay; both block architectures wait a whole block of '+(p.N+Lc)+' symbols, and both pay the same '+(100*Lc/(p.N+Lc)).toFixed(1)+'% CP overhead.',
-    'SC-FDE and OFDM differ almost nowhere on this chart except PAPR — which is exactly why DFT-spread OFDM exists.'
+    'SC-FDE and OFDM share the same block latency and CP overhead here; their distinction is where the data symbols sit before the IFFT.'
   ]);
 }
 ['ofN','ofL','ofP','ofSnr','ofDepth','ofWidth','ofCentre'].forEach(id=>$(id).addEventListener('input',drawOfdm));
