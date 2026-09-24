@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Week 11 Guided Walkthrough</title>
+<style>
+:root{--bg:#f7f8fb;--surface:#fff;--surface2:#eef2f7;--border:#dfe5ec;--text:#172033;--muted:#667085;--blue:#2563eb;--orange:#ea580c;--green:#059669;--red:#dc2626;--purple:#7c3aed;--cyan:#0891b2;--amber:#ca8a04;--pink:#db2777;--shadow:0 1px 2px rgba(16,24,40,.04)}
+@media(prefers-color-scheme:dark){:root{--bg:#0e1117;--surface:#171b24;--surface2:#222938;--border:#303949;--text:#e8edf5;--muted:#99a4b5;--shadow:none}}
+*{box-sizing:border-box}html{color-scheme:light dark}body{margin:0 auto;max-width:1180px;padding:18px;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",sans-serif}h1{font-size:1.28rem;margin:0 0 4px}h2{font-size:1.05rem;margin:0 0 4px}h3{font-size:.83rem;margin:0 0 6px}.sub{margin:0 0 12px;color:var(--muted);font-size:.86rem;line-height:1.42}.tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-bottom:10px}.tabs button,button,select{border:1px solid var(--border);background:var(--surface2);color:var(--text);padding:7px 10px;border-radius:999px;cursor:pointer;font:inherit;font-size:.76rem}.tabs button{border-radius:9px;min-height:42px;line-height:1.2}.tabs button[aria-selected=true]{background:var(--blue);border-color:var(--blue);color:#fff}.tabs button:hover,button:hover{border-color:var(--blue)}button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--blue);outline-offset:2px}.panel[hidden]{display:none}.panel-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:8px}.eyebrow{font-size:.66rem;text-transform:uppercase;letter-spacing:.08em;color:var(--blue);margin-bottom:3px}.message{max-width:700px;color:var(--muted);font-size:.8rem;line-height:1.4}.toolbar,.card,.metric,.note,.formula,.flow-step{background:var(--surface);border:1px solid var(--border);border-radius:10px;box-shadow:var(--shadow)}.toolbar{padding:10px 12px;margin-bottom:10px}.sticky-bar{position:sticky;top:0;z-index:15;background:var(--bg);padding-top:4px;margin-bottom:10px}.sticky-bar .toolbar{margin-bottom:0}.ctrl{min-width:150px;flex:1}.ctrl label{display:flex;justify-content:space-between;gap:7px;color:var(--muted);font-size:.73rem;margin-bottom:3px}.ctrl strong{color:var(--text);white-space:nowrap}.ctrl input[type=range]{width:100%}.plots{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.two{grid-template-columns:repeat(2,minmax(0,1fr))}.card{padding:10px;min-width:0}.title{font-size:.68rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:6px}canvas{display:block;width:100%;height:265px}.metric{padding:8px 9px;text-align:center;min-width:0}.metric .name{font-size:.63rem;color:var(--muted);text-transform:uppercase;letter-spacing:.055em}.metric .value{font-size:.96rem;font-weight:700;margin-top:2px;overflow-wrap:anywhere}.metric .small{font-size:.68rem;color:var(--muted);margin-top:2px;line-height:1.28}.note,.formula{padding:9px 11px;margin-top:10px;font-size:.76rem;color:var(--muted);line-height:1.42}.formula{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;overflow-x:auto}.flow{display:flex;align-items:stretch;gap:5px;margin-bottom:10px}.flow-step{padding:8px 7px;flex:1;min-width:0;text-align:center}.flow-step strong{display:block;font-size:.73rem}.flow-step span{display:block;font-size:.66rem;color:var(--muted);margin-top:2px;line-height:1.25}.flow-step.hl{border-color:var(--orange);background:color-mix(in srgb,var(--orange) 9%,var(--surface))}.arrow{align-self:center;color:var(--muted)}.flow-caption{color:var(--muted);font-size:.72rem;margin:-6px 0 14px}.mode-buttons{display:flex;gap:6px;flex-wrap:wrap}.mode-buttons button[aria-pressed=true]{background:var(--blue);color:#fff;border-color:var(--blue)}.checklist{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:10px}.check{padding:9px 10px;border-left:3px solid var(--blue);background:var(--surface2);border-radius:0 8px 8px 0}.check strong{display:block;font-size:.74rem}.check span{display:block;color:var(--muted);font-size:.68rem;line-height:1.32;margin-top:2px}.legend{display:flex;gap:11px;flex-wrap:wrap;color:var(--muted);font-size:.7rem;margin-top:5px}.bullets{margin:6px 0 0;padding-left:16px;color:var(--muted);font-size:.73rem;line-height:1.38}.bullets li{margin-bottom:3px}.bullets li:last-child{margin-bottom:0}.bullets strong{color:var(--text)}.sw{display:inline-block;width:11px;height:3px;vertical-align:middle;margin-right:4px;border-radius:2px}.blue{background:var(--blue)}.orange{background:var(--orange)}.purple{background:var(--purple)}.green{background:var(--green)}.cyan{background:var(--cyan)}.red{background:var(--red)}.grey{background:var(--muted)}
+.toolbar-metrics{display:grid;grid-auto-flow:column;gap:9px}.toolbar-metrics .metric{padding:8px 11px;min-width:118px}.toolbar-metrics .metric .value{font-size:.92rem;margin-top:2px}.toolbar-metrics .metric .small{margin-top:2px}.metric button{margin-top:8px}
+.control-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:6px 11px;align-items:end}.control-grid .ctrl{min-width:0}.control-grid select{width:100%}
+.summary-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(275px,.72fr);gap:8px;align-items:stretch;margin-top:8px}.summary-row .toolbar-metrics{grid-auto-flow:row;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}.summary-row .toolbar-metrics .metric{min-width:0;padding:7px 8px}.summary-row .formula{display:block;margin:0;overflow-wrap:anywhere;overflow-x:visible;font-size:.71rem;line-height:1.34}.summary-row .formula div+div{margin-top:4px}
+.summary-row .toolbar-metrics.metrics-4{grid-template-columns:repeat(4,minmax(0,1fr))}.summary-row .toolbar-metrics.metrics-5{grid-template-columns:repeat(5,minmax(0,1fr))}.summary-row .toolbar-metrics.metrics-6{grid-template-columns:repeat(3,minmax(0,1fr))}
+.mode-row{margin-bottom:10px}.mode-row button{padding:6px 10px}
+.mode-buttons .preset{margin-left:auto;border-color:var(--purple);color:var(--purple);background:color-mix(in srgb,var(--purple) 7%,var(--surface))}.mode-buttons .preset:hover{border-color:var(--purple);background:color-mix(in srgb,var(--purple) 13%,var(--surface))}.mode-buttons .preset+.preset{margin-left:0}
+.control-sections{display:grid;grid-template-columns:1.15fr 1fr;gap:8px}.control-section{min-width:0;padding:8px 10px;border:1px solid var(--border);border-radius:9px;background:var(--surface2)}.control-section-title{margin-bottom:7px;color:var(--muted);font-size:.64rem;font-weight:700;text-transform:uppercase;letter-spacing:.065em}.control-section .control-grid{grid-template-columns:repeat(auto-fit,minmax(135px,1fr));gap:7px 10px}
+.lab-metric .value{font-size:.82rem}.lab-metric button{width:100%}.lab-shell{margin:14px 0;min-width:0}.lab-shell[hidden]{display:none}.lab-frame{display:block;width:100%;min-height:760px;border:1px solid var(--border);border-radius:12px;background:var(--surface)}
+.panel.lab-open>.panel-head .message{display:none}.panel.lab-open>.sticky-bar .toolbar{padding:8px 10px}.panel.lab-open>.sticky-bar .mode-row,.panel.lab-open>.sticky-bar .control-grid,.panel.lab-open>.sticky-bar .control-sections,.panel.lab-open>.sticky-bar .summary-row>.formula,.panel.lab-open>.sticky-bar .toolbar-metrics>.metric:not(.lab-metric){display:none}.panel.lab-open>.sticky-bar .summary-row{display:block;margin:0}.panel.lab-open>.sticky-bar .toolbar-metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,360px))}.panel.lab-open>.sticky-bar .lab-metric{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:4px 12px;text-align:left}.panel.lab-open>.sticky-bar .lab-metric .name{grid-column:1}.panel.lab-open>.sticky-bar .lab-metric .value{grid-column:1}.panel.lab-open>.sticky-bar .lab-metric button{grid-column:2;grid-row:1/3;width:auto;margin:0}
+.mat{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:.7rem;line-height:1.5;color:var(--text);background:var(--surface2);border-radius:8px;padding:7px 9px;overflow-x:auto;margin-top:6px}.mat .ok{color:var(--green);font-weight:700}.mat .bad{color:var(--red);font-weight:700}.mat-pair{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.tbl{width:100%;border-collapse:collapse;font-size:.72rem}.tbl th,.tbl td{border-bottom:1px solid var(--border);padding:6px 6px;text-align:left;vertical-align:top}.tbl th{color:var(--muted);font-weight:600;text-transform:uppercase;font-size:.62rem;letter-spacing:.05em}.tbl td.num{text-align:center;font-family:ui-monospace,SFMono-Regular,Consolas,monospace}
+.review details{border-top:1px solid var(--border);padding:6px 0}.review details:first-of-type{border-top:0}.review summary{cursor:pointer;font-size:.76rem;color:var(--text);line-height:1.35}.review p{margin:5px 0 0 14px;font-size:.73rem;color:var(--muted);line-height:1.42}
+@media(max-width:900px){.toolbar-metrics{grid-auto-flow:row;grid-template-columns:repeat(3,minmax(0,1fr))}.tabs{grid-template-columns:repeat(2,1fr)}.plots{grid-template-columns:1fr 1fr}.plots:not(.two) .card:last-child{grid-column:1/-1}.checklist{grid-template-columns:1fr 1fr}.control-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.control-sections{grid-template-columns:1fr}.summary-row{grid-template-columns:1fr}.summary-row .toolbar-metrics,.summary-row .toolbar-metrics.metrics-4,.summary-row .toolbar-metrics.metrics-5,.summary-row .toolbar-metrics.metrics-6{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:620px){.toolbar-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}body{padding:14px}.tabs{grid-template-columns:1fr 1fr}.panel-head{display:block}.plots,.two,.mat-pair{grid-template-columns:1fr}.plots .card:last-child{grid-column:auto}.flow{display:grid;grid-template-columns:1fr 1fr}.arrow{display:none}.checklist{grid-template-columns:1fr 1fr}.mode-buttons .preset{margin-left:0}.control-section .control-grid{grid-template-columns:1fr 1fr}canvas{height:262px}}
+@media(max-width:390px){.tabs,.checklist,.flow,.control-grid,.control-section .control-grid,.summary-row .toolbar-metrics,.summary-row .toolbar-metrics.metrics-4,.summary-row .toolbar-metrics.metrics-5,.summary-row .toolbar-metrics.metrics-6{grid-template-columns:1fr}.ctrl{min-width:100%}.ctrl label{flex-wrap:wrap}}
+</style>
+</head>
+<body>
+<h1>Week 11 · MIMO: MRT, Spatial Multiplexing, Linear Detection, and Eigenbeamforming</h1>
+<p class="sub">Follow the Week 11 slide sequence: co-phase the transmit antennas with MRT when the transmitter knows the channel,
+send several streams in the same band with spatial multiplexing, separate them at the receiver with ZF and MMSE detection,
+and, with channel knowledge at the transmitter, diagonalize the channel by SVD and send only as many streams as the singular values support.</p>
+
+<nav class="tabs" role="tablist" aria-label="Week 11 topics">
+  <button type="button" role="tab" id="tab-bf" aria-controls="bf" aria-selected="true">1 &middot; MRT and Transmit Beamforming</button>
+  <button type="button" role="tab" id="tab-sm" aria-controls="sm" aria-selected="false">2 &middot; Spatial Multiplexing</button>
+  <button type="button" role="tab" id="tab-de" aria-controls="de" aria-selected="false">3 &middot; MIMO Detection</button>
+  <button type="button" role="tab" id="tab-pc" aria-controls="pc" aria-selected="false">4 &middot; Linear Precoding and Eigenbeamforming</button>
+</nav>
+
+<main>
+
+<!-- ============================ 1 · MRT AND TRANSMIT BEAMFORMING ============================ -->
+<section class="panel" id="bf" role="tabpanel" aria-labelledby="tab-bf">
+  <div class="panel-head"><div><div class="eyebrow">Transmit beamforming with CSIT, MRT, limited feedback, and TDD reciprocity</div><h2>With the channel known at the transmitter, f = h*/&Vert;h&Vert; co-phases every antenna at the receiver, giving SNR GE<sub>x</sub>&Vert;h&Vert;&sup2;/N<sub>0</sub> and diversity order N<sub>t</sub></h2></div><div class="message">The same symbol s leaves every antenna weighted by f<sub>m</sub>, so the receiver sees one scalar channel h<sup>T</sup>f. For unit-norm f, Cauchy&ndash;Schwarz bounds |h<sup>T</sup>f|&sup2; by &Vert;h&Vert;&sup2;, with equality only for f &prop; h*. Reaching that bound needs channel state information at the transmitter (CSIT). The Week 10 Alamouti code needs no CSIT and pays 3 dB for it. In practice the CSIT comes either from a few feedback bits that index a codebook shared by both ends or, in TDD, from uplink sounding and reciprocity.</div></div>
+  <div class="sticky-bar"><div class="toolbar">
+    <div class="mode-buttons mode-row" id="bfModes"><button type="button" data-bf="mrt" aria-pressed="true">MRT (CSIT)</button><button type="button" data-bf="cb" aria-pressed="false">Codebook (B feedback bits)</button><button type="button" data-bf="eq" aria-pressed="false">No CSIT: equal weights</button><button type="button" data-bf="slip" aria-pressed="false">Slip: f = h/&Vert;h&Vert;</button><button type="button" id="bfNew">New channel</button><button type="button" class="preset" id="bfAla">Compare with Alamouti: N<sub>t</sub> = 2</button></div>
+    <div class="control-sections">
+      <div class="control-section"><div class="control-section-title">Link</div><div class="control-grid">
+        <div class="ctrl"><label for="bfNt"><span>Transmit antennas N<sub>t</sub></span> <strong id="bfNtOut">4</strong></label><input id="bfNt" type="range" min="1" max="8" value="4" step="1"></div>
+        <div class="ctrl"><label for="bfSnr"><span>GE<sub>x</sub>/N<sub>0</sub></span> <strong id="bfSnrOut">5 dB</strong></label><input id="bfSnr" type="range" min="-5" max="25" value="5" step="1"></div>
+        <div class="ctrl"><label for="bfTh"><span>Outage threshold &gamma;<sub>0</sub></span> <strong id="bfThOut">5 dB</strong></label><input id="bfTh" type="range" min="-5" max="15" value="5" step="1"></div>
+      </div></div>
+      <div class="control-section"><div class="control-section-title">Quality of the CSIT</div><div class="control-grid">
+        <div class="ctrl"><label for="bfBits"><span>Feedback bits B</span> <strong id="bfBitsOut">3</strong></label><input id="bfBits" type="range" min="1" max="6" value="3" step="1"></div>
+        <div class="ctrl"><label for="bfPh"><span>MRT phase error &sigma;<sub>&phi;</sub></span> <strong id="bfPhOut">0&deg;</strong></label><input id="bfPh" type="range" min="0" max="60" value="0" step="1"></div>
+      </div></div>
+    </div>
+    <div class="summary-row"><div class="toolbar-metrics metrics-4">
+      <div class="metric"><div class="name">&Vert;h&Vert;&sup2;, this channel</div><div class="value" id="bfNorm">&mdash;</div><div class="small" id="bfNormSmall">&mdash;</div></div>
+      <div class="metric"><div class="name">Received SNR</div><div class="value" id="bfSel">&mdash;</div><div class="small" id="bfSelSmall">&mdash;</div></div>
+      <div class="metric"><div class="name">MRT bound</div><div class="value" id="bfMrt">&mdash;</div><div class="small">GE<sub>x</sub>&Vert;h&Vert;&sup2;/N<sub>0</sub></div></div>
+      <div class="metric"><div class="name">Loss against MRT</div><div class="value" id="bfLoss">&mdash;</div><div class="small">|h<sup>T</sup>f|&sup2;/&Vert;h&Vert;&sup2;</div></div>
+      <div class="metric"><div class="name">CSIT needed</div><div class="value" id="bfFb">&mdash;</div><div class="small" id="bfFbSmall">&mdash;</div></div>
+      <div class="metric"><div class="name">Diversity order</div><div class="value" id="bfDiv">&mdash;</div><div class="small">i.i.d. Rayleigh</div></div>
+      <div class="metric"><div class="name">Outage at your SNR</div><div class="value" id="bfOutV">&mdash;</div><div class="small">P(SNR &lt; &gamma;<sub>0</sub>)</div></div>
+      <div class="metric lab-metric"><div class="name">Interactive lab</div><div class="value">MRT phasor alignment</div><button type="button" class="lab-toggle" aria-controls="lab-bf" aria-expanded="false">Open lab</button></div>
+    </div><div class="formula"><div>y = &radic;(GE<sub>x</sub>) h<sup>T</sup>f s + v, &Vert;f&Vert;&sup2; = 1</div><div>SNR(f) = GE<sub>x</sub>|h<sup>T</sup>f|&sup2;/N<sub>0</sub> &le; GE<sub>x</sub>&Vert;h&Vert;&sup2;/N<sub>0</sub></div><div>f<sub>MRT</sub> = h*/&Vert;h&Vert; (equality in Cauchy&ndash;Schwarz)</div><div>Codebook: k* = argmax<sub>k</sub> |h<sup>T</sup>f<sub>k</sub>|&sup2;, &lceil;log<sub>2</sub>K&rceil; bits fed back</div><div id="bfAlaLine">&mdash;</div></div></div>
+  </div></div>
+
+  <div class="lab-shell" id="lab-bf" hidden><iframe class="lab-frame" loading="lazy" title="MRT Phasor Alignment interactive lab" src="01_mrt_phasor_alignment.html?v=20260924"></iframe></div>
+
+  <div class="flow" aria-label="Closed-loop beamforming chain"><div class="flow-step"><strong>RX estimates h</strong><span>pilots, CSIR</span></div><div class="arrow">&rarr;</div><div class="flow-step hl"><strong>CSIT</strong><span id="bfFlowCsit">&mdash;</span></div><div class="arrow">&rarr;</div><div class="flow-step hl"><strong>TX weights</strong><span id="bfFlowF">&mdash;</span></div><div class="arrow">&rarr;</div><div class="flow-step"><strong>Channel</strong><span id="bfFlowEff">&mdash;</span></div><div class="arrow">&rarr;</div><div class="flow-step"><strong>Detect</strong><span>one stream, scalar decision</span></div></div>
+  <p class="flow-caption" id="bfFlowCap">&mdash;</p>
+
+  <div class="plots">
+    <div class="card"><div class="title">What the receiver sees: h<sub>m</sub>f<sub>m</sub> added head to tail</div><canvas id="bfPhasor" role="img" aria-label="Phasor chains of the per-antenna contributions for MRT, the codebook beam, equal weights and the missing-conjugate slip, with a circle of radius equal to the channel norm"></canvas><div class="legend"><span><i class="sw blue"></i>MRT</span><span><i class="sw purple"></i>Codebook</span><span><i class="sw orange"></i>Equal weights</span><span><i class="sw red"></i>No conjugate</span><span>Dashed circle: &Vert;h&Vert;</span></div><ul class="bullets" id="bfPhNote"></ul></div>
+    <div class="card"><div class="title">Outage probability against GE<sub>x</sub>/N<sub>0</sub></div><canvas id="bfOut" role="img" aria-label="Outage probability against SNR for a single antenna, orthogonal space-time coding without CSIT, the codebook beamformer and MRT"></canvas><div class="legend"><span><i class="sw grey"></i>Equal weights = SISO</span><span><i class="sw green"></i>Alamouti / OSTBC (no CSIT)</span><span><i class="sw purple"></i>Codebook, B bits</span><span><i class="sw blue"></i>MRT (dashed: phase error)</span></div><ul class="bullets" id="bfOutNote"></ul></div>
+    <div class="card"><div class="title">Limited feedback: average beamforming gain against B</div><canvas id="bfCb" role="img" aria-label="Average fraction of the channel norm captured by a random vector quantization codebook against the number of feedback bits, from theory and Monte Carlo"></canvas><div class="legend"><span><i class="sw purple"></i>RVQ, theory</span><span><i class="sw blue"></i>Dots: Monte Carlo</span><span><i class="sw green"></i>Your B</span><span><i class="sw grey"></i>No feedback: 1/N<sub>t</sub></span></div><ul class="bullets" id="bfCbNote"></ul></div>
+  </div>
+
+  <div class="checklist">
+    <div class="check"><strong>MRC duality</strong><span>With reciprocal channels, MRT with N<sub>t</sub> antennas and SIMO MRC with N<sub>r</sub> = N<sub>t</sub> give the same SNR, GE<sub>x</sub>&Vert;h&Vert;&sup2;/N<sub>0</sub>.</span></div>
+    <div class="check"><strong>TDD reciprocity</strong><span>The base station learns h from uplink sounding and reuses it on the downlink. Needs calibrated RF chains and a turnaround within the coherence time.</span></div>
+    <div class="check"><strong>Limited feedback</strong><span>The receiver sends only the index of the best codeword. Grassmannian packings maximize the minimum chordal distance between beams.</span></div>
+    <div class="check"><strong>In the standards</strong><span>LTE/NR report a PMI from a structured codebook; 802.11n/ac/ax feed back a compressed beamforming matrix as quantized angles.</span></div>
+  </div>
+</section>
+
+<!-- ============================ 2 · SPATIAL MULTIPLEXING ============================ -->
+<section class="panel" id="sm" role="tabpanel" aria-labelledby="tab-sm" hidden>
+  <div class="panel-head"><div><div class="eyebrow">V-BLAST, the MIMO signal model, channel rank, and multiplexing gain</div><h2>N<sub>t</sub> antennas send N<sub>t</sub> different symbols in the same band; every receive antenna hears all of them, and the singular values of H decide how many can be separated</h2></div><div class="message">A 1:N<sub>t</sub> serial-to-parallel converter gives each antenna its own stream, scaled by &radic;(E<sub>x</sub>/N<sub>t</sub>) so the total transmit energy stays E<sub>x</sub>. The receiver sees y = &radic;(GE<sub>x</sub>/N<sub>t</sub>) H s + v, where h<sub>i,m</sub> is the gain from transmit antenna m to receive antenna i. The channel mixes the streams (inter-stream interference). With H = U&Sigma;V<sup>H</sup>, at most rank(H) &le; min(N<sub>t</sub>, N<sub>r</sub>) streams can be recovered, and the condition number &sigma;<sub>1</sub>/&sigma;<sub>min</sub> measures how hard that is. The reward is a rate that grows by min(N<sub>t</sub>, N<sub>r</sub>) bit/s/Hz for every 3 dB.</div></div>
+  <div class="sticky-bar"><div class="toolbar">
+    <div class="mode-buttons mode-row"><button type="button" id="smNew">New channel</button><button type="button" class="preset" id="smH1">Deck H<sub>1</sub> = [1 0.5; 0.5 1]</button><button type="button" class="preset" id="smH2">Deck H<sub>2</sub> = [1 0.9; 0.9 1]</button></div>
+    <div class="control-sections">
+      <div class="control-section"><div class="control-section-title">Antennas and channel</div><div class="control-grid">
+        <div class="ctrl"><label for="smNt"><span>Transmit antennas N<sub>t</sub></span> <strong id="smNtOut">2</strong></label><input id="smNt" type="range" min="1" max="4" value="2" step="1"></div>
+        <div class="ctrl"><label for="smNr"><span>Receive antennas N<sub>r</sub></span> <strong id="smNrOut">2</strong></label><input id="smNr" type="range" min="1" max="4" value="2" step="1"></div>
+        <div class="ctrl"><label for="smCorr"><span>Antenna correlation r</span> <strong id="smCorrOut">0.00</strong></label><input id="smCorr" type="range" min="0" max="99" value="0" step="1"></div>
+      </div></div>
+      <div class="control-section"><div class="control-section-title">Link and view</div><div class="control-grid">
+        <div class="ctrl"><label for="smSnr"><span>GE<sub>x</sub>/N<sub>0</sub></span> <strong id="smSnrOut">15 dB</strong></label><input id="smSnr" type="range" min="-5" max="30" value="15" step="1"></div>
+        <div class="ctrl"><label for="smRx"><span>RX antenna shown</span> <strong id="smRxOut">1</strong></label><input id="smRx" type="range" min="1" max="4" value="1" step="1"></div>
+      </div></div>
+    </div>
+    <div class="summary-row"><div class="toolbar-metrics metrics-6">
+      <div class="metric"><div class="name">Streams</div><div class="value" id="smStreams">&mdash;</div><div class="small">min(N<sub>t</sub>, N<sub>r</sub>)</div></div>
+      <div class="metric"><div class="name">Energy per stream</div><div class="value" id="smPer">&mdash;</div><div class="small">E<sub>x</sub>/N<sub>t</sub>, relative to E<sub>x</sub></div></div>
+      <div class="metric"><div class="name">rank(H)</div><div class="value" id="smRank">&mdash;</div><div class="small">nonzero &sigma;<sub>j</sub></div></div>
+      <div class="metric"><div class="name">Condition number</div><div class="value" id="smCond">&mdash;</div><div class="small">&kappa; = &sigma;<sub>1</sub>/&sigma;<sub>min</sub></div></div>
+      <div class="metric"><div class="name">Rate, this channel</div><div class="value" id="smSe">&mdash;</div><div class="small">equal power, Gaussian inputs</div></div>
+      <div class="metric"><div class="name">SISO, same SNR</div><div class="value" id="smSiso">&mdash;</div><div class="small">log<sub>2</sub>(1 + GE<sub>x</sub>/N<sub>0</sub>), |h| = 1</div></div>
+    </div><div class="formula"><div>y<sub>i</sub>[n] = &radic;(GE<sub>x</sub>/N<sub>t</sub>) &Sigma;<sub>m</sub> h<sub>i,m</sub>s<sub>m</sub>[n] + v<sub>i</sub>[n]</div><div>y = &radic;(GE<sub>x</sub>/N<sub>t</sub>) H s + v, v ~ CN(0, N<sub>0</sub>I)</div><div>H = U&Sigma;V<sup>H</sup>, &sigma;<sub>1</sub> &ge; &sigma;<sub>2</sub> &ge; &hellip; &ge; 0, &Sigma;&sigma;<sub>j</sub>&sup2; = &Vert;H&Vert;<sub>F</sub>&sup2;</div><div>R = &Sigma;<sub>j</sub> log<sub>2</sub>(1 + GE<sub>x</sub>&sigma;<sub>j</sub>&sup2;/(N<sub>t</sub>N<sub>0</sub>)) (no CSIT, equal power)</div></div></div>
+  </div></div>
+
+  <div class="flow" aria-label="Spatial multiplexing transceiver"><div class="flow-step"><strong>QAM symbols</strong><span>one serial stream</span></div><div class="arrow">&rarr;</div><div class="flow-step hl"><strong>1:N<sub>t</sub> S/P</strong><span id="smFlowSp">&mdash;</span></div><div class="arrow">&rarr;</div><div class="flow-step"><strong>Scale</strong><span id="smFlowScale">&mdash;</span></div><div class="arrow">&rarr;</div><div class="flow-step hl"><strong>Channel H</strong><span id="smFlowH">&mdash;</span></div><div class="arrow">&rarr;</div><div class="flow-step"><strong>Detector</strong><span>ZF / MMSE / ML (Tab 3)</span></div><div class="arrow">&rarr;</div><div class="flow-step"><strong>N<sub>t</sub>:1 P/S</strong><span>back to one stream</span></div></div>
+  <p class="flow-caption">The total transmit energy is E<sub>x</sub> per channel use whatever N<sub>t</sub> is: adding antennas splits the energy; it does not add any.</p>
+
+  <div class="plots">
+    <div class="card"><div class="title">Singular values of this H</div><canvas id="smSv" role="img" aria-label="Bar chart of the singular values of the current channel matrix"></canvas><div class="mat" id="smMat"></div><ul class="bullets" id="smSvNote"></ul></div>
+    <div class="card"><div class="title" id="smMixTitle">What one receive antenna hears</div><canvas id="smMix" role="img" aria-label="Received constellation at one antenna: noiseless sums over all symbol combinations, noisy samples, and where stream 1 alone would land"></canvas><div class="legend"><span><i class="sw blue"></i>Noiseless &Sigma;<sub>m</sub> h<sub>i,m</sub>s<sub>m</sub></span><span><i class="sw grey"></i>With noise</span><span><i class="sw red"></i>Stream 1 alone</span></div><ul class="bullets" id="smMixNote"></ul></div>
+    <div class="card"><div class="title">How strong is each mode over fading?</div><canvas id="smEig" role="img" aria-label="Cumulative distribution over fading of each squared singular value, with the current channel marked"></canvas><div class="legend"><span><i class="sw blue"></i>&sigma;<sub>1</sub>&sup2;</span><span><i class="sw orange"></i>&sigma;<sub>2</sub>&sup2;</span><span><i class="sw green"></i>&sigma;<sub>3</sub>&sup2;</span><span><i class="sw purple"></i>&sigma;<sub>4</sub>&sup2;</span><span>Dots: this channel</span></div><ul class="bullets" id="smEigNote"></ul></div>
+  </div>
+  <div class="plots two" style="margin-top:14px">
+    <div class="card"><div class="title">Multiplexing gain is a slope: rate against SNR</div><canvas id="smSeP" role="img" aria-label="Spectral efficiency against SNR for SISO, the fading average of the MIMO channel and the current channel, with a reference slope of min(Nt,Nr) bits per 3 dB"></canvas><div class="legend"><span><i class="sw grey"></i>SISO, Rayleigh average</span><span><i class="sw blue"></i>MIMO, fading average</span><span><i class="sw purple"></i>This channel</span><span><i class="sw green"></i>min(N<sub>t</sub>,N<sub>r</sub>) bit/s/Hz per 3 dB</span></div><ul class="bullets" id="smSeNote"></ul></div>
+    <div class="card"><div class="title" id="smTblTitle">Rate&ndash;diversity landscape</div><table class="tbl" id="smTbl"></table><ul class="bullets" id="smTblNote"></ul></div>
+  </div>
+
+  <div class="checklist">
+    <div class="check"><strong>V-BLAST</strong><span>Independent data on each antenna, same band, same time. The receiver, not the transmitter, separates the streams.</span></div>
+    <div class="check"><strong>Power scaling</strong><span>&radic;(E<sub>x</sub>/N<sub>t</sub>) per stream keeps the total at E<sub>x</sub>: each stream starts 10log<sub>10</sub>N<sub>t</sub> dB below a single-antenna link.</span></div>
+    <div class="check"><strong>Rank and conditioning</strong><span>i.i.d. Rayleigh H has rank min(N<sub>t</sub>,N<sub>r</sub>) with probability 1, but a large &kappa; still makes a stream nearly useless.</span></div>
+    <div class="check"><strong>MIMO-OFDM</strong><span>Per subcarrier, Y[k] = H[k]X[k] + V[k]: everything on this tab applies tone by tone (Weeks 7&ndash;9).</span></div>
+  </div>
+</section>
+
+<!-- ============================ 3 · MIMO DETECTION ============================ -->
+<section class="panel" id="de" role="tabpanel" aria-labelledby="tab-de" hidden>
+  <div class="panel-head"><div><div class="eyebrow">Zero forcing, post-processing SNR, noise enhancement, MMSE, and ML</div><h2>ZF inverts the mixing exactly and pays in amplified noise; MMSE accepts a little interference to keep the noise down; ML is best but searches |C|<sup>N<sub>t</sub></sup> vectors</h2></div><div class="message">With perfect CSIR and N<sub>r</sub> &ge; N<sub>t</sub>, W<sub>ZF</sub> = (H<sup>H</sup>H)<sup>&minus;1</sup>H<sup>H</sup> removes every other stream, and the noise that is left has covariance N<sub>0</sub>(H<sup>H</sup>H)<sup>&minus;1</sup>. Stream j therefore sees &gamma;<sub>j</sub> = (GE<sub>x</sub>/N<sub>t</sub>)/(N<sub>0</sub>[(H<sup>H</sup>H)<sup>&minus;1</sup>]<sub>jj</sub>). When H is ill conditioned, that diagonal entry is large: this is noise enhancement. MMSE adds the regularization &lambda;I = (N<sub>t</sub>N<sub>0</sub>/GE<sub>x</sub>)I before inverting, as the Week 8 per-tone MMSE equalizer does. Over i.i.d. Rayleigh fading, ZF leaves each stream with diversity order N<sub>r</sub> &minus; N<sub>t</sub> + 1.</div></div>
+  <div class="sticky-bar"><div class="toolbar">
+    <div class="mode-buttons mode-row" id="deModes"><button type="button" data-de="zf" aria-pressed="true">ZF</button><button type="button" data-de="mmse" aria-pressed="false">MMSE</button><button type="button" id="deNew">New channel</button><button type="button" id="deNewNoise">New noise</button><button type="button" class="preset" id="deEx1">Exercise: H<sub>1</sub> at 10 dB</button><button type="button" class="preset" id="deEx2">Exercise: H<sub>2</sub> at 10 dB</button></div>
+    <div class="control-sections">
+      <div class="control-section"><div class="control-section-title">Channel</div><div class="control-grid">
+        <div class="ctrl"><label for="deCh">Channel matrix</label><select id="deCh"><option value="rand" selected>Random i.i.d. Rayleigh</option><option value="deck">Deck: [1 c; c 1]</option></select></div>
+        <div class="ctrl"><label for="deC"><span>Deck coupling c</span> <strong id="deCOut">0.90</strong></label><input id="deC" type="range" min="0" max="98" value="90" step="1"></div>
+        <div class="ctrl"><label for="deNt"><span>Streams N<sub>t</sub></span> <strong id="deNtOut">2</strong></label><input id="deNt" type="range" min="2" max="4" value="2" step="1"></div>
+        <div class="ctrl"><label for="deNr"><span>Receive antennas N<sub>r</sub></span> <strong id="deNrOut">2</strong></label><input id="deNr" type="range" min="2" max="6" value="2" step="1"></div>
+      </div></div>
+      <div class="control-section"><div class="control-section-title">Link</div><div class="control-grid">
+        <div class="ctrl"><label for="deSnr"><span>GE<sub>x</sub>/N<sub>0</sub></span> <strong id="deSnrOut">10 dB</strong></label><input id="deSnr" type="range" min="-5" max="35" value="10" step="1"></div>
+        <div class="ctrl"><label for="deMod">Constellation</label><select id="deMod"><option value="qpsk" selected>QPSK</option><option value="qam16">16-QAM</option></select></div>
+      </div></div>
+    </div>
+    <div class="summary-row"><div class="toolbar-metrics metrics-5">
+      <div class="metric"><div class="name">ZF, worst stream</div><div class="value" id="deZf">&mdash;</div><div class="small">&gamma;<sub>j</sub><sup>ZF</sup></div></div>
+      <div class="metric"><div class="name">MMSE, worst stream</div><div class="value" id="deMm">&mdash;</div><div class="small">&gamma;<sub>j</sub><sup>MMSE</sup> (SINR)</div></div>
+      <div class="metric"><div class="name">MMSE gain</div><div class="value" id="deGap">&mdash;</div><div class="small">worst stream, over ZF</div></div>
+      <div class="metric"><div class="name">ZF noise enhancement</div><div class="value" id="dePen">&mdash;</div><div class="small">&Vert;h<sub>j</sub>&Vert;&sup2;[(H<sup>H</sup>H)<sup>&minus;1</sup>]<sub>jj</sub>, worst j</div></div>
+      <div class="metric"><div class="name">Condition number</div><div class="value" id="deCond">&mdash;</div><div class="small">&kappa; = &sigma;<sub>1</sub>/&sigma;<sub>min</sub></div></div>
+      <div class="metric"><div class="name">[(H<sup>H</sup>H)<sup>&minus;1</sup>]<sub>jj</sub></div><div class="value" id="deInv">&mdash;</div><div class="small">one entry per stream</div></div>
+      <div class="metric"><div class="name">Searches per vector</div><div class="value" id="deCx">&mdash;</div><div class="small">ML |C|<sup>N<sub>t</sub></sup> against ZF N<sub>t</sub>|C|</div></div>
+      <div class="metric"><div class="name">Symbol errors</div><div class="value" id="deErr">&mdash;</div><div class="small" id="deErrSmall">of the plotted symbols</div></div>
+      <div class="metric lab-metric"><div class="name">Interactive lab</div><div class="value">ZF noise enhancement</div><button type="button" class="lab-toggle" aria-controls="lab-de-02" aria-expanded="false">Open lab</button></div>
+      <div class="metric lab-metric"><div class="name">Interactive lab</div><div class="value">MMSE versus ZF</div><button type="button" class="lab-toggle" aria-controls="lab-de-03" aria-expanded="false">Open lab</button></div>
+    </div><div class="formula"><div>W<sub>ZF</sub> = (H<sup>H</sup>H)<sup>&minus;1</sup>H<sup>H</sup>, &gamma;<sub>j</sub><sup>ZF</sup> = (GE<sub>x</sub>/N<sub>t</sub>)/(N<sub>0</sub>[(H<sup>H</sup>H)<sup>&minus;1</sup>]<sub>jj</sub>)</div><div>W<sub>MMSE</sub> = &radic;(N<sub>t</sub>/GE<sub>x</sub>)(H<sup>H</sup>H + &lambda;I)<sup>&minus;1</sup>H<sup>H</sup>, <span id="deLam">&lambda; = N<sub>t</sub>N<sub>0</sub>/(GE<sub>x</sub>)</span></div><div>&gamma;<sub>j</sub><sup>MMSE</sup> = &alpha;&sup2;|w<sub>j</sub><sup>H</sup>h<sub>j</sub>|&sup2; / (&alpha;&sup2;&Sigma;<sub>m&ne;j</sub>|w<sub>j</sub><sup>H</sup>h<sub>m</sub>|&sup2; + N<sub>0</sub>&Vert;w<sub>j</sub>&Vert;&sup2;), &alpha; = &radic;(GE<sub>x</sub>/N<sub>t</sub>)</div><div>ML: &#349; = argmin<sub>s&isin;C<sup>N<sub>t</sub></sup></sub> &Vert;y &minus; &alpha;Hs&Vert;&sup2;</div></div></div>
+  </div></div>
+
+  <div class="lab-shell" id="lab-de-02" hidden><iframe class="lab-frame" loading="lazy" title="ZF Noise Enhancement interactive lab" src="02_zf_noise_enhancement.html?v=20260924"></iframe></div>
+  <div class="lab-shell" id="lab-de-03" hidden><iframe class="lab-frame" loading="lazy" title="MMSE versus ZF interactive lab" src="03_mmse_vs_zf.html?v=20260924"></iframe></div>
+
+  <div class="flow" aria-label="Linear MIMO receiver"><div class="flow-step"><strong>N<sub>r</sub> antennas</strong><span>y = &alpha;Hs + v</span></div><div class="arrow">&rarr;</div><div class="flow-step"><strong>Estimate H</strong><span>CSIR, assumed perfect</span></div><div class="arrow">&rarr;</div><div class="flow-step hl"><strong id="deFlowName">ZF</strong><span id="deFlowRule">&mdash;</span></div><div class="arrow">&rarr;</div><div class="flow-step"><strong>N<sub>t</sub> outputs</strong><span id="deFlowOut">&mdash;</span></div><div class="arrow">&rarr;</div><div class="flow-step"><strong>Slice each stream</strong><span id="deFlowDet">&mdash;</span></div><div class="arrow">&rarr;</div><div class="flow-step"><strong>N<sub>t</sub>:1 P/S</strong><span>one serial stream</span></div></div>
+  <p class="flow-caption">ML skips the linear stage and searches all symbol vectors jointly. The linear detectors turn one N<sub>t</sub>-dimensional search into N<sub>t</sub> scalar decisions.</p>
+
+  <div class="plots">
+    <div class="card"><div class="title">Post-processing SNR of each stream, this channel</div><canvas id="deBars" role="img" aria-label="Grouped bars of the matched filter bound, ZF post-processing SNR and MMSE post-processing SINR for each stream in decibels"></canvas><div class="legend"><span><i class="sw grey"></i>Matched-filter bound &alpha;&sup2;&Vert;h<sub>j</sub>&Vert;&sup2;/N<sub>0</sub></span><span><i class="sw orange"></i>ZF</span><span><i class="sw purple"></i>MMSE</span></div><ul class="bullets" id="deBarsNote"></ul></div>
+    <div class="card"><div class="title" id="deConstTitle">Detector output for 150 symbol vectors</div><canvas id="deConst" role="img" aria-label="Constellation of the linear detector outputs for all streams, with symbol errors marked"></canvas><div class="legend"><span><i class="sw blue"></i>Stream 1</span><span><i class="sw orange"></i>Stream 2</span><span><i class="sw green"></i>Stream 3</span><span><i class="sw purple"></i>Stream 4</span><span><i class="sw red"></i>Symbol error</span></div><ul class="bullets" id="deConstNote"></ul></div>
+    <div class="card"><div class="title">ZF SNR and MMSE SINR against GE<sub>x</sub>/N<sub>0</sub></div><canvas id="deSweep" role="img" aria-label="Per-stream ZF post-processing SNR and MMSE post-processing SINR against SNR for the current channel"></canvas><div class="legend"><span>Solid: ZF</span><span>Dashed: MMSE</span><span>Colour: stream</span><span><i class="sw red"></i>Your SNR</span></div><ul class="bullets" id="deSweepNote"></ul></div>
+  </div>
+  <div class="plots two" style="margin-top:14px">
+    <div class="card"><div class="title">QPSK bit error rate over i.i.d. Rayleigh fading</div><canvas id="deBer" role="img" aria-label="Bit error rate against SNR for ZF from theory, the matched filter bound, and Monte Carlo results for ZF, MMSE and ML"></canvas><div class="legend"><span><i class="sw orange"></i>ZF, exact</span><span><i class="sw grey"></i>Matched-filter bound (order N<sub>r</sub>)</span><span>Dots: <i class="sw orange"></i>ZF <i class="sw purple"></i>MMSE <i class="sw blue"></i>ML (simulated)</span></div><ul class="bullets" id="deBerNote"></ul></div>
+    <div class="card"><div class="title">Detection complexity against the number of streams</div><canvas id="deCplx" role="img" aria-label="Number of candidate evaluations per received vector for ML and ZF detection against the number of streams, for QPSK and 16-QAM"></canvas><div class="legend"><span><i class="sw blue"></i>ML, QPSK</span><span><i class="sw purple"></i>ML, 16-QAM</span><span><i class="sw orange"></i>ZF/MMSE, 16-QAM</span><span><i class="sw green"></i>You are here</span></div><ul class="bullets" id="deCplxNote"></ul></div>
+  </div>
+
+  <div class="checklist">
+    <div class="check"><strong>ZF</strong><span>Nulls interference exactly; needs N<sub>r</sub> &ge; N<sub>t</sub> and full column rank; noise enhanced by [(H<sup>H</sup>H)<sup>&minus;1</sup>]<sub>jj</sub>.</span></div>
+    <div class="check"><strong>MMSE</strong><span>Tends to a scaled W<sub>ZF</sub> as N<sub>0</sub> &rarr; 0 and to the matched filter H<sup>H</sup> as N<sub>0</sub> &rarr; &infin;. Its output is biased: rescale before 16-QAM decisions.</span></div>
+    <div class="check"><strong>ML</strong><span>Optimal, full receive diversity, but &Oscr;(|C|<sup>N<sub>t</sub></sup>) per vector. Sphere decoding lowers the average cost only.</span></div>
+    <div class="check"><strong>CSIR</strong><span>All three assume H is known exactly at the receiver. Estimation error leaves residual interference even after ZF.</span></div>
+  </div>
+</section>
+
+<!-- ============================ 4 · LINEAR PRECODING AND EIGENBEAMFORMING ============================ -->
+<section class="panel" id="pc" role="tabpanel" aria-labelledby="tab-pc" hidden>
+  <div class="panel-head"><div><div class="eyebrow">Linear precoding, SVD eigenbeamforming, rank adaptation, and diversity</div><h2>With CSIT, F = V<sub>s</sub> and the combiner U<sub>s</sub><sup>H</sup> turn H into N<sub>s</sub> parallel scalar channels with gains &sigma;<sub>j</sub>, and the transmitter chooses N<sub>s</sub> from the singular values</h2></div><div class="message">A precoder F &isin; C<sup>N<sub>t</sub>&times;N<sub>s</sub></sup> maps N<sub>s</sub> streams onto the N<sub>t</sub> antennas, each carrying E<sub>x</sub>/N<sub>s</sub>. Choosing the right singular vectors, F = V<sub>s</sub>, gives HF = U<sub>s</sub>&Sigma;<sub>s</sub>. The receiver projects onto U<sub>s</sub><sup>H</sup>, which leaves the noise white and the streams decoupled: &gamma;<sub>j</sub> = GE<sub>x</sub>&sigma;<sub>j</sub>&sup2;/(N<sub>s</sub>N<sub>0</sub>) exactly. Weak modes waste power, so rank adaptation drops them. N<sub>s</sub> = 1 is MRT, with diversity order N<sub>t</sub>N<sub>r</sub>. Full rank gives the most streams at diversity order |N<sub>t</sub> &minus; N<sub>r</sub>| + 1.</div></div>
+  <div class="sticky-bar"><div class="toolbar">
+    <div class="mode-buttons mode-row"><button type="button" id="pcNew">New channel</button><button type="button" class="preset" id="pcEx1">Exercise: H<sub>1</sub> at 10 dB</button><button type="button" class="preset" id="pcEx2">Exercise: H<sub>2</sub> at 10 dB</button><button type="button" class="preset" id="pcRank">Slide figure: 4&times;4 with two strong modes</button></div>
+    <div class="control-sections">
+      <div class="control-section"><div class="control-section-title">Antennas and streams</div><div class="control-grid">
+        <div class="ctrl"><label for="pcNt"><span>Transmit antennas N<sub>t</sub></span> <strong id="pcNtOut">2</strong></label><input id="pcNt" type="range" min="1" max="4" value="2" step="1"></div>
+        <div class="ctrl"><label for="pcNr"><span>Receive antennas N<sub>r</sub></span> <strong id="pcNrOut">2</strong></label><input id="pcNr" type="range" min="1" max="4" value="2" step="1"></div>
+        <div class="ctrl"><label for="pcNs"><span>Streams N<sub>s</sub></span> <strong id="pcNsOut">2</strong></label><input id="pcNs" type="range" min="1" max="2" value="2" step="1"></div>
+      </div></div>
+      <div class="control-section"><div class="control-section-title">Link and fading</div><div class="control-grid">
+        <div class="ctrl"><label for="pcSnr"><span>GE<sub>x</sub>/N<sub>0</sub></span> <strong id="pcSnrOut">10 dB</strong></label><input id="pcSnr" type="range" min="-5" max="30" value="10" step="1"></div>
+        <div class="ctrl"><label for="pcCorr"><span>Antenna correlation r</span> <strong id="pcCorrOut">0.00</strong></label><input id="pcCorr" type="range" min="0" max="99" value="0" step="1"></div>
+        <div class="ctrl"><label for="pcTh"><span>Outage threshold &gamma;<sub>0</sub></span> <strong id="pcThOut">5 dB</strong></label><input id="pcTh" type="range" min="-5" max="15" value="5" step="1"></div>
+      </div></div>
+    </div>
+    <div class="summary-row"><div class="toolbar-metrics metrics-4">
+      <div class="metric"><div class="name">Singular values</div><div class="value" id="pcSig">&mdash;</div><div class="small" id="pcSigSmall">&mdash;</div></div>
+      <div class="metric"><div class="name">Stream SNRs</div><div class="value" id="pcGam">&mdash;</div><div class="small">GE<sub>x</sub>&sigma;<sub>j</sub>&sup2;/(N<sub>s</sub>N<sub>0</sub>)</div></div>
+      <div class="metric"><div class="name">Rate with your N<sub>s</sub></div><div class="value" id="pcSe">&mdash;</div><div class="small">&Sigma; log<sub>2</sub>(1 + &gamma;<sub>j</sub>)</div></div>
+      <div class="metric"><div class="name">Best N<sub>s</sub> here</div><div class="value" id="pcBest">&mdash;</div><div class="small" id="pcBestSmall">&mdash;</div></div>
+      <div class="metric"><div class="name">Open-loop ZF</div><div class="value" id="pcZf">&mdash;</div><div class="small">worst of N<sub>t</sub> streams, no CSIT</div></div>
+      <div class="metric"><div class="name">Diversity order</div><div class="value" id="pcDiv">&mdash;</div><div class="small">(N<sub>r</sub>&minus;N<sub>s</sub>+1)(N<sub>t</sub>&minus;N<sub>s</sub>+1)</div></div>
+      <div class="metric"><div class="name">N<sub>s</sub> = 1 check</div><div class="value" id="pcMrt">&mdash;</div><div class="small" id="pcMrtSmall">GE<sub>x</sub>&sigma;<sub>1</sub>&sup2;/N<sub>0</sub></div></div>
+      <div class="metric lab-metric"><div class="name">Interactive lab</div><div class="value">SVD eigenmodes</div><button type="button" class="lab-toggle" aria-controls="lab-pc" aria-expanded="false">Open lab</button></div>
+    </div><div class="formula"><div>y = &radic;(GE<sub>x</sub>/N<sub>s</sub>) HFs + v, &Vert;F&Vert;<sub>F</sub>&sup2; = N<sub>s</sub></div><div>H = U&Sigma;V<sup>H</sup>, F = V<sub>s</sub> = V<sub>[:,1:N<sub>s</sub>]</sub></div><div>&#7929; = U<sub>s</sub><sup>H</sup>y = &radic;(GE<sub>x</sub>/N<sub>s</sub>) &Sigma;<sub>s</sub>s + &#7805;, &#7805; ~ CN(0, N<sub>0</sub>I)</div><div>&gamma;<sub>j</sub> = GE<sub>x</sub>&sigma;<sub>j</sub>&sup2;/(N<sub>s</sub>N<sub>0</sub>)</div><div>d = (N<sub>r</sub> &minus; N<sub>s</sub> + 1)(N<sub>t</sub> &minus; N<sub>s</sub> + 1)</div></div></div>
+  </div></div>
+
+  <div class="lab-shell" id="lab-pc" hidden><iframe class="lab-frame" loading="lazy" title="SVD Eigenmodes and Rank Adaptation interactive lab" src="04_svd_eigenmodes.html?v=20260924"></iframe></div>
+
+  <div class="flow" aria-label="Eigenbeamforming transceiver"><div class="flow-step"><strong>N<sub>s</sub> streams</strong><span id="pcFlowS">&mdash;</span></div><div class="arrow">&rarr;</div><div class="flow-step hl"><strong>Precoder F = V<sub>s</sub></strong><span id="pcFlowF">&mdash;</span></div><div class="arrow">&rarr;</div><div class="flow-step"><strong>Channel H</strong><span id="pcFlowH">&mdash;</span></div><div class="arrow">&rarr;</div><div class="flow-step hl"><strong>Combiner U<sub>s</sub><sup>H</sup></strong><span>N<sub>r</sub> &rarr; N<sub>s</sub> outputs</span></div><div class="arrow">&rarr;</div><div class="flow-step"><strong>Parallel channels</strong><span id="pcFlowPar">&mdash;</span></div><div class="arrow">&rarr;</div><div class="flow-step"><strong>Detect</strong><span>scalar decisions</span></div></div>
+  <p class="flow-caption">The transmitter needs V<sub>s</sub>, and so CSIT. With limited feedback, the receiver instead recommends a precoder index from a shared codebook (the PMI in LTE/NR). In MIMO-OFDM all of this is done per subcarrier.</p>
+
+  <div class="plots">
+    <div class="card"><div class="title">Rank adaptation: SNR of every eigenmode</div><canvas id="pcBars" role="img" aria-label="Bars of the post-processing SNR on each eigenmode for the chosen number of streams, with unused modes greyed and reference lines for rank-one transmission and open-loop ZF"></canvas><div class="legend"><span><i class="sw blue"></i>Mode used</span><span><i class="sw grey"></i>Mode left idle</span><span><i class="sw green"></i>N<sub>s</sub> = 1 (MRT)</span><span><i class="sw orange"></i>Open-loop ZF, worst</span></div><ul class="bullets" id="pcBarsNote"></ul></div>
+    <div class="card"><div class="title">SVD decouples the streams</div><div class="mat-pair"><div class="mat" id="pcMatH"></div><div class="mat" id="pcMatD"></div></div><ul class="bullets" id="pcMatNote"></ul></div>
+    <div class="card"><div class="title">Rate with N<sub>s</sub> streams against SNR, this channel</div><canvas id="pcSeP" role="img" aria-label="Spectral efficiency against SNR for every possible number of streams on the current channel"></canvas><div class="legend"><span><i class="sw blue"></i>N<sub>s</sub> = 1</span><span><i class="sw orange"></i>N<sub>s</sub> = 2</span><span><i class="sw green"></i>N<sub>s</sub> = 3</span><span><i class="sw purple"></i>N<sub>s</sub> = 4</span><span><i class="sw red"></i>Your SNR</span></div><ul class="bullets" id="pcSeNote"></ul></div>
+  </div>
+  <div class="plots two" style="margin-top:14px">
+    <div class="card"><div class="title">Diversity: outage of the weakest stream over fading</div><canvas id="pcOut" role="img" aria-label="Outage probability of the weakest transmitted eigenmode against SNR for every number of streams over Rayleigh fading"></canvas><div class="legend"><span><i class="sw blue"></i>N<sub>s</sub> = 1</span><span><i class="sw orange"></i>N<sub>s</sub> = 2</span><span><i class="sw green"></i>N<sub>s</sub> = 3</span><span><i class="sw purple"></i>N<sub>s</sub> = 4</span><span><i class="sw red"></i>Your SNR</span></div><ul class="bullets" id="pcOutNote"></ul></div>
+    <div class="card review"><div class="title">Review questions from the deck</div>
+      <details><summary>1. Derive f<sub>MRT</sub> from the Cauchy&ndash;Schwarz inequality.</summary><p>|h<sup>T</sup>f|&sup2; = |(h*)<sup>H</sup>f|&sup2; &le; &Vert;h&Vert;&sup2;&Vert;f&Vert;&sup2; = &Vert;h&Vert;&sup2;, with equality if and only if f &prop; h*. With &Vert;f&Vert; = 1, f<sub>MRT</sub> = h*/&Vert;h&Vert; and SNR = GE<sub>x</sub>&Vert;h&Vert;&sup2;/N<sub>0</sub>. On Tab 1 the MRT chain always ends on the dashed circle.</p></details>
+      <details><summary>2. Why does equal-weight repetition from all transmit antennas give no transmit diversity, and how do MRT and Alamouti avoid this?</summary><p>The receiver sees h<sub>eff</sub> = &Sigma;h<sub>m</sub>/&radic;N<sub>t</sub>, which for i.i.d. CN(0,1) channels is again CN(0,1): a single Rayleigh channel, of order 1, and the paths can cancel. MRT uses CSIT to co-phase the paths; Alamouti spreads the symbols orthogonally over two slots so that the receiver collects &Vert;h&Vert;&sup2;. Compare the grey and green curves of Tab 1.</p></details>
+      <details><summary>3. For 2&times;2 ZF, compute [(H<sup>H</sup>H)<sup>&minus;1</sup>]<sub>jj</sub> for H<sub>1</sub> and H<sub>2</sub>.</summary><p>H<sub>1</sub><sup>H</sup>H<sub>1</sub> = [1.25 1; 1 1.25], determinant 0.5625, diagonal of the inverse 1.25/0.5625 = 2.22. H<sub>2</sub><sup>H</sup>H<sub>2</sub> = [1.81 1.8; 1.8 1.81], determinant 0.0361, diagonal 50.1. At GE<sub>x</sub>/N<sub>0</sub> = 10 dB this gives 3.5 dB and &minus;10.0 dB per stream. Use the exercise presets on Tab 3.</p></details>
+      <details><summary>4. Explain noise enhancement and how MMSE mitigates it.</summary><p>ZF leaves noise covariance N<sub>0</sub>(H<sup>H</sup>H)<sup>&minus;1</sup>, whose diagonal grows like 1/&sigma;<sub>min</sub>&sup2; when the columns of H are nearly parallel. MMSE inverts H<sup>H</sup>H + &lambda;I instead, which caps the gain on weak modes and trades a little residual interference for much less noise. The gap is largest at moderate SNR on ill-conditioned channels (Tab 3, third panel).</p></details>
+      <details><summary>5. How does eigenbeamforming decouple the MIMO streams?</summary><p>With F = V<sub>s</sub> and combiner U<sub>s</sub><sup>H</sup>, U<sub>s</sub><sup>H</sup>HV<sub>s</sub> = &Sigma;<sub>s</sub> is diagonal, and U<sub>s</sub><sup>H</sup>v is still white because U<sub>s</sub> has orthonormal columns. Stream j sees only &sigma;<sub>j</sub>: &gamma;<sub>j</sub> = GE<sub>x</sub>&sigma;<sub>j</sub>&sup2;/(N<sub>s</sub>N<sub>0</sub>). The second panel above shows the off-diagonal entries vanishing.</p></details>
+    </div>
+  </div>
+
+  <div class="checklist">
+    <div class="check"><strong>Reliability, one stream</strong><span>CSIT optional: Alamouti without it, MRT (N<sub>s</sub> = 1) with it. Diversity order N<sub>t</sub>N<sub>r</sub> for MRT.</span></div>
+    <div class="check"><strong>Peak rate, rich channel</strong><span>No CSIT: spatial multiplexing with ZF/MMSE detection, min(N<sub>t</sub>,N<sub>r</sub>) streams.</span></div>
+    <div class="check"><strong>Rate and reliability</strong><span>CSIT: eigenbeamforming with N<sub>s</sub> chosen from the singular values and the SNR.</span></div>
+    <div class="check"><strong>Practical CSIT</strong><span>Limited feedback: PMI or beamforming codebook indices approximate V<sub>s</sub> with a few bits.</span></div>
+  </div>
+</section>
+
+</main>
+
+<script>
+'use strict';
+const $=id=>document.getElementById(id);
+function css(name){return getComputedStyle(document.documentElement).getPropertyValue(name).trim()}
+function resizeCanvas(cv){const dpr=Math.min(window.devicePixelRatio||1,3),w=Math.max(1,cv.clientWidth||700),h=Math.max(1,cv.clientHeight||285);cv.width=Math.round(w*dpr);cv.height=Math.round(h*dpr);const c=cv.getContext('2d');c.setTransform(dpr,0,0,dpr,0,0);return{c,w,h}}
+function panelCanvas(cv){const z=resizeCanvas(cv);z.c.clearRect(0,0,z.w,z.h);z.c.font='11px system-ui';return z}
+function axes(cv,xmin,xmax,ymin,ymax,xlab,ylab,opt){const ntx=(opt&&(opt.xticks||opt.ticks))||4,nty=(opt&&(opt.yticks||opt.ticks))||4,yfmt=opt&&opt.yfmt,xfmt=opt&&opt.xfmt,z=resizeCanvas(cv),{c,w,h}=z,m={l:52,r:15,t:16,b:39},X=x=>m.l+(x-xmin)/(xmax-xmin)*(w-m.l-m.r),Y=y=>m.t+(ymax-y)/(ymax-ymin)*(h-m.t-m.b);c.clearRect(0,0,w,h);c.font='11px system-ui';c.strokeStyle=css('--border');c.fillStyle=css('--muted');c.lineWidth=1;for(let i=0;i<=ntx;i++){const x=xmin+(xmax-xmin)*i/ntx,px=X(x);c.beginPath();c.moveTo(px,m.t);c.lineTo(px,h-m.b);c.stroke();c.textAlign='center';c.textBaseline='top';c.fillText(xfmt?xfmt(x):(Number.isInteger(x)?x:x.toFixed(1)),px,h-m.b+6)}for(let i=0;i<=nty;i++){const y=ymin+(ymax-ymin)*i/nty,py=Y(y);c.beginPath();c.moveTo(m.l,py);c.lineTo(w-m.r,py);c.stroke();c.textAlign='right';c.textBaseline='middle';c.fillText(yfmt?yfmt(y):(Math.abs(y)<10?y.toFixed(1):y.toFixed(0)),m.l-6,py)}c.strokeStyle=css('--text');c.strokeRect(m.l,m.t,w-m.l-m.r,h-m.t-m.b);c.fillStyle=css('--text');c.textAlign='center';c.textBaseline='bottom';c.fillText(xlab,(m.l+w-m.r)/2,h-1);c.save();c.translate(12,(m.t+h-m.b)/2);c.rotate(-Math.PI/2);c.fillText(ylab,0,0);c.restore();return{...z,m,X,Y}}
+function ax(cv,xmin,xmax,ymin,ymax,xlab,ylab,opt){const z=axes(cv,xmin,xmax,ymin,ymax,xlab,ylab,opt);z.xmin=xmin;z.xmax=xmax;z.ymin=ymin;z.ymax=ymax;return z}
+function plotLabel(z,px,py,text,color,baseline){z.c.save();z.c.font='11px system-ui';z.c.fillStyle=color;z.c.textAlign='left';z.c.textBaseline=baseline||'bottom';const w=z.c.measureText(text).width,left=z.m.l+4,right=z.w-z.m.r-4;let x=px+9;if(x+w>right)x=px-9-w;x=Math.min(Math.max(x,left),Math.max(left,right-w));z.c.fillText(text,x,py);z.c.restore()}
+function line(z,pts,color,width=2,dash=[]){if(!pts.length)return;z.c.save();z.c.strokeStyle=color;z.c.lineWidth=width;z.c.setLineDash(dash);z.c.beginPath();pts.forEach((p,i)=>i?z.c.lineTo(z.X(p[0]),z.Y(p[1])):z.c.moveTo(z.X(p[0]),z.Y(p[1])));z.c.stroke();z.c.restore()}
+function box(z,x0,x1,y0,y1,color,alpha){const xa=z.X(x0),xb=Math.max(z.X(x1),xa+2),ya=z.Y(y1),yb=z.Y(y0);z.c.save();z.c.globalAlpha=alpha==null?1:alpha;z.c.fillStyle=color;z.c.fillRect(xa,ya,xb-xa,yb-ya);z.c.restore()}
+function hline(z,y,color,dash,width){line(z,[[z.xmin,y],[z.xmax,y]],color,width||1.4,dash||[5,4])}
+function vline(z,x,color,dash,width){line(z,[[x,z.ymin],[x,z.ymax]],color,width||1.4,dash||[5,4])}
+function dot(z,x,y,color,r=5){z.c.fillStyle=color;z.c.beginPath();z.c.arc(z.X(x),z.Y(y),r,0,Math.PI*2);z.c.fill()}
+function ring(z,x,y,color,r=6){z.c.save();z.c.strokeStyle=color;z.c.lineWidth=2;z.c.beginPath();z.c.arc(z.X(x),z.Y(y),r,0,Math.PI*2);z.c.stroke();z.c.restore()}
+function clipPlot(z){z.c.save();z.c.beginPath();z.c.rect(z.m.l,z.m.t,z.w-z.m.l-z.m.r,z.h-z.m.t-z.m.b);z.c.clip()}
+/* Log-probability curve, split where fn returns 0 so that no line is drawn to minus infinity. */
+function logCurve(z,xs,fn,color,width,dash){const floor=z.ymin-1;let seg=[];clipPlot(z);xs.forEach(x=>{const v=fn(x);if(!(v>0)){if(seg.length)line(z,seg,color,width,dash);seg=[];return}seg.push([x,Math.max(floor,Math.log10(v))])});if(seg.length)line(z,seg,color,width,dash);z.c.restore()}
+function range(a,b,step){const o=[];for(let x=a;x<=b+1e-9;x+=step)o.push(+x.toFixed(10));return o}
+function arrowPx(c,x0,y0,x1,y1,color,width,dash){c.save();c.strokeStyle=color;c.fillStyle=color;c.lineWidth=width;c.setLineDash(dash||[]);c.beginPath();c.moveTo(x0,y0);c.lineTo(x1,y1);c.stroke();c.setLineDash([]);const L=Math.hypot(x1-x0,y1-y0);if(L>5){const a=Math.atan2(y1-y0,x1-x0),s=Math.min(8,L*.45);c.beginPath();c.moveTo(x1,y1);c.lineTo(x1-s*Math.cos(a-.45),y1-s*Math.sin(a-.45));c.lineTo(x1-s*Math.cos(a+.45),y1-s*Math.sin(a+.45));c.closePath();c.fill()}c.restore()}
+/* Complex plane with equal aspect, fitted to the given points. */
+function cfit(cv,pts){const z=panelCanvas(cv),{c,w,h}=z,pad=22;let x0=-.15,x1=.15,y0=-.15,y1=.15;pts.forEach(p=>{x0=Math.min(x0,p.re);x1=Math.max(x1,p.re);y0=Math.min(y0,p.im);y1=Math.max(y1,p.im)});const mx=(x1-x0)*.06,my=(y1-y0)*.06;x0-=mx;x1+=mx;y0-=my;y1+=my;const s=Math.min((w-2*pad)/(x1-x0),(h-2*pad)/(y1-y0)),ox=pad+((w-2*pad)-(x1-x0)*s)/2-x0*s,oy=pad+((h-2*pad)-(y1-y0)*s)/2+y1*s;z.P=p=>[ox+p.re*s,oy-p.im*s];z.s=s;z.ox=ox;z.oy=oy;c.strokeStyle=css('--border');c.lineWidth=1;c.beginPath();c.moveTo(6,oy);c.lineTo(w-6,oy);c.moveTo(ox,6);c.lineTo(ox,h-6);c.stroke();c.fillStyle=css('--muted');c.font='10px system-ui';c.textAlign='left';c.textBaseline='alphabetic';c.fillText('Re',w-22,oy-5);c.fillText('Im',ox+5,14);return z}
+function constPlane(cv,lim){const z=panelCanvas(cv),{c,w,h}=z,side=Math.min(w-20,h-20),cx=w/2,cy=h/2,s=side/(2*lim);z.P=p=>[cx+p.re*s,cy-p.im*s];c.strokeStyle=css('--border');c.lineWidth=1;c.strokeRect(cx-side/2,cy-side/2,side,side);const step=lim>3?1:.5;for(let v=-Math.floor(lim/step)*step;v<=lim+1e-9;v+=step){c.globalAlpha=Math.abs(v)<1e-9?1:.45;c.beginPath();c.moveTo(cx+v*s,cy-side/2);c.lineTo(cx+v*s,cy+side/2);c.moveTo(cx-side/2,cy-v*s);c.lineTo(cx+side/2,cy-v*s);c.stroke()}c.globalAlpha=1;c.fillStyle=css('--muted');c.font='10px system-ui';c.fillText('±'+lim.toFixed(1),cx-side/2+4,cy-side/2+12);z.clip=()=>{c.save();c.beginPath();c.rect(cx-side/2,cy-side/2,side,side);c.clip()};return z}
+function xLabelAt(z,x,text){z.c.save();z.c.font='11px system-ui';z.c.fillStyle=css('--muted');z.c.textAlign='center';z.c.textBaseline='top';z.c.fillText(text,z.X(x),z.h-z.m.b+6);z.c.restore()}
+function textAt(z,x,y,text,color){z.c.save();z.c.font='11px system-ui';z.c.fillStyle=color;z.c.textAlign='center';z.c.textBaseline='bottom';z.c.fillText(text,z.X(x),z.Y(y)-3);z.c.restore()}
+
+/* ---- complex arithmetic ---- */
+function C(re=0,im=0){return{re,im}}
+function add(a,b){return C(a.re+b.re,a.im+b.im)}
+function sub(a,b){return C(a.re-b.re,a.im-b.im)}
+function mul(a,b){return C(a.re*b.re-a.im*b.im,a.re*b.im+a.im*b.re)}
+function scale(a,s){return C(a.re*s,a.im*s)}
+function abs2(a){return a.re*a.re+a.im*a.im}
+function conj(a){return C(a.re,-a.im)}
+function divc(a,b){return scale(mul(a,conj(b)),1/Math.max(abs2(b),1e-300))}
+function rot(a,deg){const t=deg*Math.PI/180;return mul(a,C(Math.cos(t),Math.sin(t)))}
+function rng(seed){return()=>{seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function gauss(r){let u=Math.max(r(),1e-9),v=r();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v)}
+function cn(r){return C(gauss(r)*Math.SQRT1_2,gauss(r)*Math.SQRT1_2)}
+const qpsk=[C(1,1),C(-1,1),C(-1,-1),C(1,-1)].map(z=>scale(z,Math.SQRT1_2));
+const qam16=(()=>{const p=[];for(const a of[-3,-1,1,3])for(const b of[-3,-1,1,3])p.push(scale(C(a,b),1/Math.sqrt(10)));return p})();
+function nearest(pts,z){let b=0,d=Infinity;pts.forEach((p,i)=>{const e=abs2(sub(p,z));if(e<d){d=e;b=i}});return b}
+
+/* ---- complex matrices (arrays of rows) ---- */
+function cmat(r,c){return Array.from({length:r},()=>Array.from({length:c},()=>C()))}
+function realMat(rows){return rows.map(r=>r.map(v=>C(v,0)))}
+function mmul(A,B){const r=A.length,n=B.length,c=B[0].length,O=cmat(r,c);for(let i=0;i<r;i++)for(let j=0;j<c;j++){let sr=0,si=0;for(let k=0;k<n;k++){const a=A[i][k],b=B[k][j];sr+=a.re*b.re-a.im*b.im;si+=a.re*b.im+a.im*b.re}O[i][j]=C(sr,si)}return O}
+function herm(A){const r=A.length,c=A[0].length,O=cmat(c,r);for(let i=0;i<r;i++)for(let j=0;j<c;j++)O[j][i]=conj(A[i][j]);return O}
+function mvec(A,x){return A.map(row=>{let sr=0,si=0;row.forEach((a,k)=>{sr+=a.re*x[k].re-a.im*x[k].im;si+=a.re*x[k].im+a.im*x[k].re});return C(sr,si)})}
+function minv(A){const n=A.length,M=A.map((row,i)=>row.map(v=>C(v.re,v.im)).concat(Array.from({length:n},(_,j)=>C(i===j?1:0,0))));for(let k=0;k<n;k++){let p=k;for(let i=k+1;i<n;i++)if(abs2(M[i][k])>abs2(M[p][k]))p=i;if(abs2(M[p][k])<1e-26)return null;[M[k],M[p]]=[M[p],M[k]];const piv=M[k][k];for(let j=0;j<2*n;j++)M[k][j]=divc(M[k][j],piv);for(let i=0;i<n;i++)if(i!==k){const f=M[i][k];if(f.re||f.im)for(let j=0;j<2*n;j++)M[i][j]=sub(M[i][j],mul(f,M[k][j]))}}return M.map(r=>r.slice(n))}
+function addDiag(A,l){return A.map((row,i)=>row.map((v,j)=>i===j?C(v.re+l,v.im):v))}
+function colOf(A,j){return A.map(r=>r[j])}
+function vnorm2(v){return v.reduce((s,x)=>s+abs2(x),0)}
+function dotH(u,v){let s=C();for(let k=0;k<u.length;k++)s=add(s,mul(conj(u[k]),v[k]));return s}
+/* Cholesky of a real correlation matrix; tolerates a singular matrix. */
+function cholesky(R){const n=R.length,L=R.map(()=>Array(n).fill(0));for(let j=0;j<n;j++){let s=R[j][j];for(let k=0;k<j;k++)s-=L[j][k]*L[j][k];const p=s>1e-12?Math.sqrt(s):0;L[j][j]=p;for(let i=j+1;i<n;i++){let t=R[i][j];for(let k=0;k<j;k++)t-=L[i][k]*L[j][k];L[i][j]=p>0?t/p:0}}return L}
+function expCorr(n,r){return Array.from({length:n},(_,i)=>Array.from({length:n},(_,j)=>Math.pow(r,Math.abs(i-j))))}
+/* Kronecker model H = Lr Hw Lt^T with exponential correlation r at both ends. */
+function kron(Hw,r){if(r<=0)return Hw;const Nr=Hw.length,Nt=Hw[0].length,Lr=cholesky(expCorr(Nr,r)),Lt=cholesky(expCorr(Nt,r));const A=Hw.map((_,i)=>Hw[0].map((_,j)=>{let s=C();for(let k=0;k<=i;k++)s=add(s,scale(Hw[k][j],Lr[i][k]));return s}));return A.map(row=>row.map((_,j)=>{let s=C();for(let k=0;k<=j;k++)s=add(s,scale(row[k],Lt[j][k]));return s}))}
+function randMat(r,Nr,Nt,rows,cols){const B=[];for(let i=0;i<rows;i++){B.push([]);for(let j=0;j<cols;j++)B[i].push(cn(r))}return B.slice(0,Nr).map(row=>row.slice(0,Nt))}
+/* Cyclic Jacobi for a real symmetric matrix. */
+function jacobi(A,wantVec){const n=A.length,a=A.map(r=>r.slice()),V=wantVec?a.map((_,i)=>a.map((_,j)=>i===j?1:0)):null;let scaleRef=0;for(let i=0;i<n;i++)scaleRef+=a[i][i]*a[i][i];for(let sweep=0;sweep<80;sweep++){let off=0;for(let i=0;i<n;i++)for(let j=i+1;j<n;j++)off+=a[i][j]*a[i][j];if(off<=1e-28*(scaleRef+1e-30))break;for(let p=0;p<n;p++)for(let q=p+1;q<n;q++){if(Math.abs(a[p][q])<1e-300)continue;const th=(a[q][q]-a[p][p])/(2*a[p][q]),t=Math.sign(th||1)/(Math.abs(th)+Math.sqrt(th*th+1)),c=1/Math.sqrt(t*t+1),s=t*c;for(let k=0;k<n;k++){const akp=a[k][p],akq=a[k][q];a[k][p]=c*akp-s*akq;a[k][q]=s*akp+c*akq}for(let k=0;k<n;k++){const apk=a[p][k],aqk=a[q][k];a[p][k]=c*apk-s*aqk;a[q][k]=s*apk+c*aqk}if(V)for(let k=0;k<n;k++){const vkp=V[k][p],vkq=V[k][q];V[k][p]=c*vkp-s*vkq;V[k][q]=s*vkp+c*vkq}}}return{vals:a.map((r,i)=>r[i]),V}}
+/* A Hermitian M acts on x + jy like the real matrix [Re -Im; Im Re] on [x; y]; every eigenvalue appears twice. */
+function embed(M){const n=M.length,R=Array.from({length:2*n},()=>Array(2*n).fill(0));for(let i=0;i<n;i++)for(let j=0;j<n;j++){const v=M[i][j];R[i][j]=v.re;R[i][j+n]=-v.im;R[i+n][j]=v.im;R[i+n][j+n]=v.re}return R}
+function hermEigVals(M){const n=M.length,{vals}=jacobi(embed(M),false);vals.sort((a,b)=>b-a);const out=[];for(let i=0;i<n;i++)out.push(Math.max(0,vals[2*i]));return out}
+function hermEig(M){const n=M.length,{vals,V}=jacobi(embed(M),true),idx=vals.map((_,i)=>i).sort((a,b)=>vals[b]-vals[a]),vecs=[],lam=[];for(const i of idx){if(vecs.length===n)break;let v=Array.from({length:n},(_,k)=>C(V[k][i],V[k+n][i]));for(const u of vecs){const d=dotH(u,v);v=v.map((x,k)=>sub(x,mul(d,u[k])))}const nn=Math.sqrt(vnorm2(v));if(nn<0.3)continue;vecs.push(v.map(x=>scale(x,1/nn)));lam.push(Math.max(0,vals[i]))}return{vals:lam,vecs}}
+/* Thin SVD from the eigenvectors of H^H H: V[j] is v_j, U[j] = H v_j / sigma_j. */
+function svdH(H){const Nr=H.length,Nt=H[0].length,m=Math.min(Nr,Nt),{vals,vecs}=hermEig(mmul(herm(H),H)),sig=vals.map(v=>Math.sqrt(v)),U=[];for(let j=0;j<m;j++){const hv=mvec(H,vecs[j]);U.push(sig[j]>1e-9?hv.map(x=>scale(x,1/sig[j])):hv)}return{sig:sig.slice(0,m),V:vecs,U}}
+function randUnitary(n,r){const A=[];for(let j=0;j<n;j++){let v=Array.from({length:n},()=>cn(r));for(const u of A){const d=dotH(u,v);v=v.map((x,k)=>sub(x,mul(d,u[k])))}const nn=Math.sqrt(vnorm2(v));A.push(v.map(x=>scale(x,1/nn)))}return A}
+/* Sorted eigenvalues of H^H H over fading draws, one ascending array per mode. */
+const eigCache={};
+function eigStats(Nt,Nr,r,K,seed){const key=[Nt,Nr,r,K,seed].join('|');if(eigCache[key])return eigCache[key];const m=Math.min(Nt,Nr),g=rng(seed+10*Nt+Nr),lam=Array.from({length:m},()=>new Float64Array(K));for(let k=0;k<K;k++){const Hw=randMat(g,Nr,Nt,Nr,Nt),H=kron(Hw,r),G=Nt<=Nr?mmul(herm(H),H):mmul(H,herm(H)),ev=hermEigVals(G);for(let j=0;j<m;j++)lam[j][k]=ev[j]}return eigCache[key]={lam,sorted:lam.map(a=>Float64Array.from(a).sort())}}
+
+/* ---- statistics ---- */
+function lnFact(n){let s=0;for(let i=2;i<=n;i++)s+=Math.log(i);return s}
+function binom(n,k){let r=1;for(let i=1;i<=k;i++)r=r*(n-k+i)/i;return r}
+function lgamma(x){const g=7,c=[0.99999999999980993,676.5203681218851,-1259.1392167224028,771.32342877765313,-176.61502916214059,12.507343278686905,-0.13857109526572012,9.9843695780195716e-6,1.5056327351493116e-7];if(x<0.5)return Math.log(Math.PI/Math.abs(Math.sin(Math.PI*x)))-lgamma(1-x);x-=1;let a=c[0];const t=x+g+0.5;for(let i=1;i<g+2;i++)a+=c[i]/(x+i);return 0.5*Math.log(2*Math.PI)+(x+0.5)*Math.log(t)-t+Math.log(a)}
+/* Pr(Gamma(n,1) < x); the series form keeps the small-x tail accurate. */
+function gammaCdf(n,x){if(x<=0)return 0;if(x<n){let term=1,sum=1;for(let k=1;k<500;k++){term*=x/(n+k);sum+=term;if(term<sum*1e-16)break}return Math.min(1,Math.exp(n*Math.log(x)-x-lnFact(n))*sum)}let s=0,t=1;for(let k=0;k<n;k++){if(k>0)t*=x/k;s+=t}return Math.max(0,1-Math.exp(-x)*s)}
+/* Coherent BPSK averaged over a Gamma(n) SNR with mean m per branch, written to avoid 1 - mu cancellation. */
+function halfOneMinusMu(m){const mu=Math.sqrt(m/(1+m));return(1/(1+m))/(1+mu)/2}
+function berMrc(n,m){if(m<=0)return .5;const a=halfOneMinusMu(m),b=1-a;let s=0;for(let k=0;k<n;k++)s+=binom(n-1+k,k)*Math.pow(b,k);return Math.min(.5,Math.pow(a,n)*s)}
+function cdfFrac(sorted,x){let lo=0,hi=sorted.length;while(lo<hi){const m=(lo+hi)>>1;if(sorted[m]<x)lo=m+1;else hi=m}return lo/sorted.length}
+function solveDb(fn,target,lo,hi){if(fn(hi)>target)return Infinity;if(fn(lo)<target)return -Infinity;for(let i=0;i<60;i++){const m=(lo+hi)/2;if(fn(m)>target)lo=m;else hi=m}return(lo+hi)/2}
+
+/* ---- formatting ---- */
+function bullets(el,items){el.innerHTML=items.filter(Boolean).map(t=>'<li>'+t+'</li>').join('')}
+function decade(v){const e=Math.round(v),d='⁰¹²³⁴⁵⁶⁷⁸⁹';return e===0?'1':'10'+(e<0?'⁻':'')+String(Math.abs(e)).split('').map(c=>d[+c]).join('')}
+function expo(v){return v.toExponential(1).replace('e-','×10⁻').replace('e+0','').replace('e+','×10^').replace(/⁻(\d+)/,(m,g)=>'⁻'+g.split('').map(c=>'⁰¹²³⁴⁵⁶⁷⁸⁹'[+c]).join(''))}
+function toDb(v){return 10*Math.log10(Math.max(v,1e-300))}
+function fromDb(d){return Math.pow(10,d/10)}
+function fmtDb(v){if(!isFinite(v))return v>0?'∞ dB':'−∞ dB';return(v<-0.05?'−':'')+Math.abs(v).toFixed(1)+' dB'}
+function fmtP(v){if(v<=0)return '< 3×10⁻⁴';if(v>=0.095)return v.toFixed(2);if(v>=1e-3)return v.toFixed(4).replace(/0+$/,'');return expo(v)}
+function fmtC(z,d){d=d==null?2:d;const re=Math.abs(z.re)<Math.pow(10,-d)/2?0:z.re,im=Math.abs(z.im)<Math.pow(10,-d)/2?0:z.im;return(re<0?'−':'')+Math.abs(re).toFixed(d)+(im<0?' − j':' + j')+Math.abs(im).toFixed(d)}
+function fmtN(v,d){return(v<0?'−':'')+Math.abs(v).toFixed(d==null?2:d)}
+function fmtCount(v){if(v>=1e9)return(v/1e9).toFixed(v>=1e10?0:1)+'G';if(v>=1e6)return(v/1e6).toFixed(v>=1e7?0:1)+'M';if(v>=1e3)return(v/1e3).toFixed(v>=1e4?0:1)+'k';return String(Math.round(v))}
+function sub1(i){return String(i).split('').map(c=>'₀₁₂₃₄₅₆₇₈₉'[+c]).join('')}
+const modeCols=['--blue','--orange','--green','--purple'];
+
+document.querySelectorAll('[role=tab]').forEach((b,i,all)=>b.addEventListener('click',()=>{all.forEach(x=>{const on=x===b;x.setAttribute('aria-selected',on);$(x.getAttribute('aria-controls')).hidden=!on});requestAnimationFrame(drawActive)}));
+function sizeLabFrame(frame){try{frame.style.height='760px';frame.style.height=Math.max(760,frame.contentDocument.documentElement.scrollHeight,frame.contentDocument.body.scrollHeight)+'px'}catch(e){frame.style.height='1100px'}}
+document.querySelectorAll('.lab-frame').forEach(frame=>frame.addEventListener('load',()=>sizeLabFrame(frame)));
+/* A tab may hold two labs; opening one closes the other. */
+document.querySelectorAll('.lab-toggle').forEach(button=>button.addEventListener('click',()=>{const panel=button.closest('.panel'),open=$(button.getAttribute('aria-controls')).hidden;panel.querySelectorAll('.lab-toggle').forEach(b=>{const on=open&&b===button;$(b.getAttribute('aria-controls')).hidden=!on;b.setAttribute('aria-expanded',String(on));b.textContent=on?'Close lab':'Open lab'});panel.classList.toggle('lab-open',open);if(open){const frame=$(button.getAttribute('aria-controls')).querySelector('.lab-frame');sizeLabFrame(frame);setTimeout(()=>sizeLabFrame(frame),60)}}));
+function drawActive(){const id=document.querySelector('[role=tab][aria-selected=true]').getAttribute('aria-controls'),panel=$(id),draw=({bf:drawBf,sm:drawSm,de:drawDe,pc:drawPc})[id];draw();panel.querySelectorAll('.lab-shell:not([hidden]) .lab-frame').forEach(sizeLabFrame)}
+function pressGroup(container,attr,value){container.querySelectorAll('['+attr+']').forEach(b=>b.setAttribute('aria-pressed',String(b.getAttribute(attr)===value)))}
+
+/* ==================================================================
+   1 · MRT AND TRANSMIT BEAMFORMING
+   ================================================================== */
+let bfSeed=0,bfMode='mrt';const bfMc={},BF_K=4000;
+const bfCol={mrt:'--blue',cb:'--purple',eq:'--orange',slip:'--red'},bfName={mrt:'MRT',cb:'Codebook',eq:'Equal weights',slip:'No conjugate'};
+function bfChannel(Nt){const r=rng(5100+bfSeed),h=[];for(let i=0;i<8;i++)h.push(cn(r));return h.slice(0,Nt)}
+function bfPhase(Nt,sig){const r=rng(5200+bfSeed),d=[];for(let i=0;i<8;i++)d.push(gauss(r)*sig);return d.slice(0,Nt)}
+/* Random vector quantization: K unit-norm vectors known to both ends. */
+function codebook(Nt,B){const K=1<<B,r=rng(9100+37*Nt+B),F=[];for(let k=0;k<K;k++){const f=[];for(let m=0;m<Nt;m++)f.push(cn(r));const n=Math.sqrt(vnorm2(f));F.push(f.map(x=>scale(x,1/n)))}return F}
+function bfGain(h,f){let re=0,im=0;for(let m=0;m<h.length;m++){const a=h[m],b=f[m];re+=a.re*b.re-a.im*b.im;im+=a.re*b.im+a.im*b.re}return re*re+im*im}
+function bfPick(h,F){let g=-1,k=0;F.forEach((f,i)=>{const v=bfGain(h,f);if(v>g){g=v;k=i}});return{k,g}}
+function bfMcSet(Nt){if(bfMc[Nt])return bfMc[Nt];const r=rng(6100+Nt),hs=[];for(let k=0;k<BF_K;k++){const h=[];for(let m=0;m<Nt;m++)h.push(cn(r));hs.push(h)}return bfMc[Nt]={hs,cb:{},ph:{},slip:null}}
+function bfCbStats(Nt,B){const S=bfMcSet(Nt);if(S.cb[B])return S.cb[B];const F=codebook(Nt,B),g=new Float64Array(BF_K);let frac=0;S.hs.forEach((h,k)=>{const v=bfPick(h,F).g;g[k]=v;frac+=v/vnorm2(h)});g.sort();return S.cb[B]={sorted:g,frac:frac/BF_K}}
+function bfPhStats(Nt,sig){const S=bfMcSet(Nt);if(S.ph[sig])return S.ph[sig];const r=rng(6300+Nt),g=new Float64Array(BF_K);S.hs.forEach((h,k)=>{const n=Math.sqrt(vnorm2(h));let re=0,im=0;h.forEach(x=>{const d=gauss(r)*sig*Math.PI/180,a=abs2(x)/n;re+=a*Math.cos(d);im+=a*Math.sin(d)});g[k]=re*re+im*im});g.sort();return S.ph[sig]=g}
+function bfSlipStats(Nt){const S=bfMcSet(Nt);if(S.slip)return S.slip;const g=new Float64Array(BF_K);S.hs.forEach((h,k)=>{let s=C();h.forEach(x=>s=add(s,mul(x,x)));g[k]=abs2(s)/vnorm2(h)});g.sort();return S.slip=g}
+/* Average fraction of ||h||^2 kept by an RVQ codebook: 1 - K B(K, Nt/(Nt-1)). */
+function rvqFrac(Nt,K){if(Nt<2)return 1;const a=Nt/(Nt-1);return 1-K*Math.exp(lgamma(K)+lgamma(a)-lgamma(K+a))}
+document.querySelectorAll('[data-bf]').forEach(b=>b.addEventListener('click',()=>{bfMode=b.dataset.bf;drawBf()}));
+$('bfNew').addEventListener('click',()=>{bfSeed++;drawBf()});
+$('bfAla').addEventListener('click',()=>{$('bfNt').value=2;$('bfPh').value=0;bfMode='mrt';drawBf()});
+['bfNt','bfSnr','bfBits','bfPh','bfTh'].forEach(id=>$(id).addEventListener('input',drawBf));
+function drawBf(){
+  const Nt=+$('bfNt').value,snr=+$('bfSnr').value,B=+$('bfBits').value,K=1<<B,sig=+$('bfPh').value,th=+$('bfTh').value,rho=fromDb(snr),g0=fromDb(th);
+  $('bfNtOut').textContent=Nt;$('bfSnrOut').textContent=snr+' dB';$('bfBitsOut').textContent=B+' (K = '+K+')';$('bfPhOut').textContent=sig+'°';$('bfThOut').textContent=th+' dB';
+  pressGroup($('bfModes'),'data-bf',bfMode);
+  const h=bfChannel(Nt),n2=vnorm2(h),n=Math.sqrt(n2),delta=bfPhase(Nt,sig),F=codebook(Nt,B),pick=bfPick(h,F);
+  const W={mrt:h.map((x,m)=>rot(scale(conj(x),1/n),delta[m])),cb:F[pick.k],eq:h.map(()=>C(1/Math.sqrt(Nt),0)),slip:h.map(x=>scale(x,1/n))};
+  const gain={};for(const k in W)gain[k]=bfGain(h,W[k]);
+  const sel=gain[bfMode],selSnr=rho*sel,mrtSnr=rho*n2;
+  const cbS=bfCbStats(Nt,B).sorted,phS=sig>0?bfPhStats(Nt,sig):null,slipS=bfSlipStats(Nt);
+  const outF={mrt:d=>phS?cdfFrac(phS,g0/fromDb(d)):gammaCdf(Nt,g0/fromDb(d)),cb:d=>cdfFrac(cbS,g0/fromDb(d)),eq:d=>-Math.expm1(-g0/fromDb(d)),slip:d=>cdfFrac(slipS,g0/fromDb(d))};
+  const div={mrt:sig>0?'≤ '+Nt:String(Nt),cb:String(Math.min(K,Nt)),eq:'1',slip:'1'}[bfMode];
+
+  $('bfNorm').textContent=fmtDb(toDb(n2));$('bfNormSmall').textContent='= '+n2.toFixed(2)+'; mean N_t = '+Nt;
+  $('bfSel').textContent=fmtDb(toDb(selSnr));$('bfSelSmall').innerHTML=bfName[bfMode]+': GE<sub>x</sub>|h<sup>T</sup>f|²/N<sub>0</sub>';
+  $('bfMrt').textContent=fmtDb(toDb(mrtSnr));
+  $('bfLoss').textContent=fmtDb(toDb(sel/n2));
+  const fb={mrt:[sig>0?'noisy h':'full h',sig>0?'phase error σ = '+sig+'° per antenna':'2N<sub>t</sub> reals, or TDD sounding'],cb:[B+' bits','index of one of '+K+' codewords'],eq:['none','open loop'],slip:['full h','but the conjugate is dropped']}[bfMode];
+  $('bfFb').textContent=fb[0];$('bfFbSmall').innerHTML=fb[1];
+  $('bfDiv').textContent=div;
+  $('bfOutV').textContent=fmtP(outF[bfMode](snr));
+  $('bfAlaLine').innerHTML=Nt===2?'Alamouti (N<sub>t</sub> = 2, no CSIT): GE<sub>x</sub>&Vert;h&Vert;²/(2N<sub>0</sub>) = '+fmtDb(toDb(mrtSnr/2))+' here, 3.0 dB below MRT'
+    :'No-CSIT orthogonal STBC: GE<sub>x</sub>&Vert;h&Vert;²/(N<sub>t</sub>N<sub>0</sub>) = '+fmtDb(toDb(mrtSnr/Nt))+' here (rate 1 only for N<sub>t</sub> = 2)';
+  const eff=h.reduce((s,x,m)=>add(s,mul(x,W[bfMode][m])),C());
+  $('bfFlowCsit').innerHTML={mrt:sig>0?'h with '+sig+'° phase error':'h exactly (feedback or TDD)',cb:'index k* = '+(pick.k+1)+', '+B+' bits',eq:'none',slip:'h known'}[bfMode];
+  $('bfFlowF').innerHTML={mrt:'f = h*/&Vert;h&Vert;',cb:'f = f<sub>k*</sub> from the codebook',eq:'f = 1/&radic;N<sub>t</sub> on every antenna',slip:'f = h/&Vert;h&Vert; (slip)'}[bfMode];
+  $('bfFlowEff').innerHTML='h<sup>T</sup>f = '+fmtC(eff);
+  $('bfFlowCap').innerHTML={mrt:'MRT needs the full channel at the transmitter. In TDD it comes from uplink sounding (h<sub>DL</sub> ≈ h<sub>UL</sub><sup>T</sup>), which requires calibrated RF chains and a turnaround shorter than the coherence time.',cb:'The receiver picks the codeword and returns only its index: '+B+' bits per coherence time instead of the '+(2*Nt)+' real numbers of h.',eq:'Without CSIT the transmitter cannot steer. Week 10 used Alamouti coding to collect diversity in that case.',slip:'The slide model is y = √(GE<sub>x</sub>) h<sup>T</sup>f s, with a transpose rather than a Hermitian transpose, so the conjugate belongs in f.'}[bfMode];
+
+  /* --- phasor chains --- */
+  const chains={};for(const k in W)chains[k]=h.map((x,m)=>mul(x,W[k][m]));
+  const pts=[C(n,0),C(-n,0),C(0,n),C(0,-n)];for(const k in chains){let p=C();chains[k].forEach(c=>{p=add(p,c);pts.push(p)})}
+  const zp=cfit($('bfPhasor'),pts);
+  zp.c.save();zp.c.strokeStyle=css('--muted');zp.c.setLineDash([4,4]);zp.c.beginPath();zp.c.arc(zp.ox,zp.oy,n*zp.s,0,2*Math.PI);zp.c.stroke();zp.c.restore();
+  ['eq','slip','cb','mrt'].filter(k=>k!==bfMode).concat([bfMode]).forEach(k=>{const on=k===bfMode;let p=C();zp.c.save();zp.c.globalAlpha=on?1:.28;chains[k].forEach(c=>{const q=add(p,c),[x0,y0]=zp.P(p),[x1,y1]=zp.P(q);arrowPx(zp.c,x0,y0,x1,y1,css(bfCol[k]),on?2.6:1.6);p=q});zp.c.restore();if(on){const[x,y]=zp.P(p);zp.c.fillStyle=css(bfCol[k]);zp.c.font='11px system-ui';zp.c.fillText('hᵀf',x+5,y-5)}});
+  const pct=(100*sel/n2).toFixed(0);
+  bullets($('bfPhNote'),[
+    'Each arrow is one antenna’s contribution h<sub>m</sub>f<sub>m</sub>, and the receiver sees their sum h<sup>T</sup>f. The dashed circle has radius &Vert;h&Vert; = '+n.toFixed(2)+', the Cauchy–Schwarz limit for any unit-norm f.',
+    {mrt:sig>0?'With a CSIT phase error of σ = '+sig+'° per antenna (stale feedback, or uncalibrated RF chains in TDD), the contributions fan out and the chain falls short: '+pct+'% of &Vert;h&Vert;² is captured on this channel. Only the differences between the errors matter; Lab 01 lets you set them one at a time.'
+        :'MRT sets f<sub>m</sub> = h<sub>m</sub>*/&Vert;h&Vert;, so every contribution is |h<sub>m</sub>|²/&Vert;h&Vert;, real and positive. The chain lies on the real axis and ends exactly on the circle: |h<sup>T</sup>f|² = &Vert;h&Vert;².',
+      cb:'The receiver tries all K = '+K+' codewords and feeds back the best index, k* = '+(pick.k+1)+'. That beam captures '+pct+'% of &Vert;h&Vert;² ('+fmtDb(toDb(sel/n2))+' against MRT) for B = '+B+' bits.',
+      eq:'Without CSIT the contributions keep the channel’s random phases and add to &Sigma;h<sub>m</sub>/&radic;N<sub>t</sub>, which for i.i.d. branches is again CN(0,1): a single Rayleigh channel. Here |h<sup>T</sup>f|² = '+sel.toFixed(2)+', against &Vert;h&Vert;² = '+n2.toFixed(2)+'.',
+      slip:'Dropping the conjugate gives h<sub>m</sub>f<sub>m</sub> = h<sub>m</sub>²/&Vert;h&Vert;: the phases are doubled instead of removed, so the chain wanders. |h<sup>T</sup>f|² = '+sel.toFixed(2)+' on this channel ('+pct+'% of the bound).'}[bfMode],
+    'Press New channel: the MRT chain always reaches the circle, and the other chains land anywhere inside it.'
+  ]);
+
+  /* --- outage --- */
+  const zo=ax($('bfOut'),-5,30,-4,0,'GEₓ/N₀ (dB)','Outage probability',{xticks:7,yticks:4,yfmt:decade}),xs=range(-5,30,.25);
+  logCurve(zo,xs,outF.eq,css('--muted'),2);
+  logCurve(zo,xs,d=>gammaCdf(Nt,Nt*g0/fromDb(d)),css('--green'),2);
+  logCurve(zo,xs,outF.cb,css('--purple'),2.2);
+  logCurve(zo,xs,d=>gammaCdf(Nt,g0/fromDb(d)),css('--blue'),2.4);
+  if(phS)logCurve(zo,xs,outF.mrt,css('--blue'),2,[6,4]);
+  if(bfMode==='slip')logCurve(zo,xs,outF.slip,css('--red'),2,[3,3]);
+  vline(zo,snr,css('--red'),[4,4],1.4);
+  const po=outF[bfMode](snr);if(po>0)dot(zo,snr,Math.max(-4,Math.log10(po)),css(bfCol[bfMode]),5);
+  const need=f=>solveDb(f,1e-2,-20,60),dM=need(d=>gammaCdf(Nt,g0/fromDb(d))),dC=need(outF.cb);
+  bullets($('bfOutNote'),[
+    'MRT: the SNR is GE<sub>x</sub>&Vert;h&Vert;²/N<sub>0</sub> and &Vert;h&Vert;² ~ Gamma(N<sub>t</sub>), so the blue curve falls N<sub>t</sub> = '+Nt+' decades per 10 dB at high SNR: diversity order N<sub>t</sub>.',
+    Nt>1?'The no-CSIT orthogonal code (green) has the same slope but sits 10log<sub>10</sub>N<sub>t</sub> = '+toDb(Nt).toFixed(1)+' dB to the right'+(Nt===2?', the 3 dB Alamouti penalty from Week 10':'')+': it splits E<sub>x</sub> over the antennas instead of steering it.':'With one antenna every curve collapses onto the SISO curve.',
+    isFinite(dC)&&isFinite(dM)?'At 1% outage the '+B+'-bit codebook needs '+(dC-dM).toFixed(1)+' dB more than MRT. Its slope is min(K, N<sub>t</sub>) = '+Math.min(K,Nt)+'.':null,
+    phS?'The dashed blue curve is MRT with a '+sig+'° phase error: the CSIT is only as good as the channel it was measured on.':'Equal weights (grey) follow the single-antenna curve exactly: without CSIT, simultaneous repetition adds nothing.',
+    'The Monte Carlo curves use 4000 channels, so they stop near 2.5×10⁻⁴.'
+  ]);
+
+  /* --- limited feedback --- */
+  const lo=Nt>1?Math.floor(-toDb(Nt))-0.5:-1,zc=ax($('bfCb'),0,8,lo,0.4,'Feedback bits B (K = 2ᴮ)','Kept fraction of ‖h‖² (dB)',{xticks:8,yticks:4});
+  hline(zc,0,css('--blue'),[5,4],1.4);if(Nt>1)hline(zc,-toDb(Nt),css('--muted'),[5,4],1.4);
+  const th8=range(0,8,1).map(b=>[b,toDb(rvqFrac(Nt,1<<b))]);line(zc,th8,css('--purple'),2.2);th8.forEach(p=>dot(zc,p[0],p[1],css('--purple'),2.5));
+  for(let b=1;b<=6;b++)dot(zc,b,toDb(bfCbStats(Nt,b).frac),css('--blue'),4);
+  ring(zc,B,toDb(rvqFrac(Nt,K)),css('--green'),7);
+  plotLabel(zc,zc.X(0.2),zc.Y(0)-3,'perfect MRT',css('--blue'));
+  bullets($('bfCbNote'),[
+    Nt>1?'Random vector quantization (RVQ): K = 2<sup>B</sup> random unit vectors shared by both ends. On average they keep a fraction 1 − K·Beta(K, N<sub>t</sub>/(N<sub>t</sub>−1)) of &Vert;h&Vert;²'+(Nt===2?', which for N<sub>t</sub> = 2 is K/(K+1).':'.'):'With N<sub>t</sub> = 1 there is nothing to steer, so every codebook keeps the full gain.',
+    Nt>1?'B = '+B+' bits keep '+(100*rvqFrac(Nt,K)).toFixed(0)+'% ('+fmtDb(toDb(rvqFrac(Nt,K)))+'); the dots are Monte Carlo. The residual loss halves roughly every N<sub>t</sub> − 1 = '+(Nt-1)+' bits, so larger arrays need more feedback.':null,
+    'B = 0 is one fixed beam: 1/N<sub>t</sub> of the gain on average, the grey line. Grassmannian codebooks spread the beams evenly and beat RVQ at the same B; LTE/NR and 802.11 use structured codebooks.'
+  ]);
+}
+
+/* ==================================================================
+   2 · SPATIAL MULTIPLEXING
+   ================================================================== */
+let smSeed=0,smDeck=null,smSisoCache=null;const smSeCache={},SM_SNRS=range(-5,30,1);
+function smChannel(Nt,Nr,r){if(smDeck!=null)return realMat([[1,smDeck],[smDeck,1]]);return kron(randMat(rng(7100+smSeed),Nr,Nt,4,4),r)}
+function smSiso(){if(smSisoCache)return smSisoCache;const g=rng(7500),e=[];for(let k=0;k<4000;k++)e.push(-Math.log(Math.max(g(),1e-12)));return smSisoCache=SM_SNRS.map(d=>{const p=fromDb(d);return e.reduce((s,x)=>s+Math.log2(1+p*x),0)/e.length})}
+function smErgodic(Nt,Nr,r){const key=Nt+'|'+Nr+'|'+r;if(smSeCache[key])return smSeCache[key];const st=eigStats(Nt,Nr,r,2000,7700),K=2000,m=Math.min(Nt,Nr);return smSeCache[key]=SM_SNRS.map(d=>{const p=fromDb(d)/Nt;let s=0;for(let k=0;k<K;k++)for(let j=0;j<m;j++)s+=Math.log2(1+p*st.lam[j][k]);return s/K})}
+$('smNew').addEventListener('click',()=>{smDeck=null;smSeed++;drawSm()});
+$('smH1').addEventListener('click',()=>{smDeck=0.5;drawSm()});
+$('smH2').addEventListener('click',()=>{smDeck=0.9;drawSm()});
+['smNt','smNr','smCorr'].forEach(id=>$(id).addEventListener('input',()=>{smDeck=null;drawSm()}));
+['smSnr','smRx'].forEach(id=>$(id).addEventListener('input',drawSm));
+function drawSm(){
+  if(smDeck!=null){$('smNt').value=2;$('smNr').value=2}
+  const Nt=+$('smNt').value,Nr=+$('smNr').value,r=+$('smCorr').value/100,snr=+$('smSnr').value,rho=fromDb(snr),m=Math.min(Nt,Nr);
+  $('smRx').max=Nr;if(+$('smRx').value>Nr)$('smRx').value=Nr;const rx=+$('smRx').value-1;
+  $('smNtOut').textContent=Nt;$('smNrOut').textContent=Nr;$('smCorrOut').textContent=r.toFixed(2);$('smSnrOut').textContent=snr+' dB';$('smRxOut').textContent=rx+1;
+  const H=smChannel(Nt,Nr,r),a=Math.sqrt(rho/Nt),ev=hermEigVals(mmul(herm(H),H)).slice(0,m),sv=ev.map(Math.sqrt),
+    rank=sv.filter(s=>s>1e-6*sv[0]).length,kap=sv[m-1]>1e-9?sv[0]/sv[m-1]:Infinity,se=ev.reduce((s,l)=>s+Math.log2(1+rho*l/Nt),0),siso=Math.log2(1+rho);
+  $('smStreams').textContent=m;$('smPer').textContent=fmtDb(-toDb(Nt));$('smRank').textContent=rank;
+  $('smCond').textContent=isFinite(kap)?kap.toFixed(2)+' ('+toDb(kap*kap).toFixed(1)+' dB in σ²)':'∞';
+  $('smSe').textContent=se.toFixed(2)+' bit/s/Hz';$('smSiso').textContent=siso.toFixed(2)+' bit/s/Hz';
+  $('smFlowSp').textContent=Nt+' parallel streams';$('smFlowScale').innerHTML='&radic;(E<sub>x</sub>/'+Nt+') each';$('smFlowH').textContent=Nr+'×'+Nt+', mixes the streams';
+  $('smMat').innerHTML=(smDeck!=null?'deck ':'')+'H ='+H.map(row=>'<br>&nbsp;['+row.map(v=>smDeck!=null?v.re.toFixed(2):fmtC(v,2)).join(',&nbsp; ')+']').join('');
+
+  /* --- singular values --- */
+  let z=ax($('smSv'),0.4,m+0.6,0,Math.max(1,sv[0])*1.28,'Mode j','Singular value σⱼ',{xticks:1,xfmt:()=>'',yticks:4});
+  sv.forEach((s,j)=>{box(z,j+0.7,j+1.3,0,s,css(modeCols[j]),.85);textAt(z,j+1,s,'σ'+sub1(j+1)+' = '+s.toFixed(2),css('--text'));xLabelAt(z,j+1,'j = '+(j+1))});
+  bullets($('smSvNote'),[
+    'This '+Nr+'×'+Nt+' channel has '+rank+' nonzero singular value'+(rank===1?'':'s')+', so it can carry at most '+rank+' stream'+(rank===1?'':'s')+' (min(N<sub>t</sub>, N<sub>r</sub>) = '+m+').',
+    m>1?'κ = σ₁/σ<sub>min</sub> = '+(isFinite(kap)?kap.toFixed(2):'∞')+'. '+(kap<3?'The modes are comparable: a good channel for multiplexing.':kap<10?'The weakest mode is noticeably weaker, and ZF will lose SNR on it (Tab 3).':'The weakest mode is nearly lost: a linear detector will amplify noise on it, and a precoder would drop it (Tab 4).'):'With one mode there is nothing to condition: this is a diversity link, not a multiplexing one.',
+    'Σσⱼ² = &Vert;H&Vert;<sub>F</sub>² = '+ev.reduce((s,x)=>s+x,0).toFixed(2)+': the singular values share out the total channel power. '+(smDeck!=null?'For the deck matrix [1 c; c 1] they are 1 + c and 1 − c.':'Correlation concentrates it in the first mode.')
+  ]);
+
+  /* --- what one receive antenna hears --- */
+  const Mc=1<<(2*Nt),combos=[];
+  for(let c=0;c<Mc;c++){let y=C();for(let k=0;k<Nt;k++)y=add(y,mul(H[rx][k],qpsk[(c>>(2*k))&3]));combos.push(scale(y,a))}
+  const g=rng(7300+smSeed),noisy=[];for(let t=0;t<250;t++)noisy.push(add(combos[Math.min(Mc-1,Math.floor(g()*Mc))],cn(g)));
+  const s1=qpsk.map(s=>scale(mul(H[rx][0],s),a));
+  $('smMixTitle').textContent='What RX antenna '+(rx+1)+' hears: every stream at once';
+  const zm=cfit($('smMix'),combos.concat(noisy,s1));
+  const pdot=(p,col,rad,alpha)=>{const[x,y]=zm.P(p);zm.c.globalAlpha=alpha;zm.c.fillStyle=col;zm.c.beginPath();zm.c.arc(x,y,rad,0,2*Math.PI);zm.c.fill();zm.c.globalAlpha=1};
+  noisy.forEach(p=>pdot(p,css('--muted'),2,.35));combos.forEach(p=>pdot(p,css('--blue'),Nt>3?2:3,.9));
+  zm.c.save();zm.c.strokeStyle=css('--red');zm.c.lineWidth=2;s1.forEach(p=>{const[x,y]=zm.P(p);zm.c.beginPath();zm.c.arc(x,y,8,0,2*Math.PI);zm.c.stroke()});zm.c.restore();
+  bullets($('smMixNote'),[
+    'RX antenna '+(rx+1)+' receives √(GE<sub>x</sub>/N<sub>t</sub>) &Sigma;<sub>m</sub> h<sub>'+(rx+1)+',m</sub>s<sub>m</sub> + v. The '+Mc+' blue points are the noiseless sums over every QPSK symbol combination.',
+    Nt>1?'The red circles are where stream 1 would land on its own. The other streams split each of them into 4<sup>N<sub>t</sub>−1</sup> = '+(Mc/4)+' points: inter-stream interference, which no single antenna can remove.':'With N<sub>t</sub> = 1 there is only one stream, and so no interference: the points are a scaled, rotated QPSK.',
+    'Separating the streams needs the whole vector y from all N<sub>r</sub> antennas. The detectors of Tab 3 invert the mixing that way.'
+  ]);
+
+  /* --- eigenvalue distributions --- */
+  const st=eigStats(Nt,Nr,r,2000,7700);
+  z=ax($('smEig'),-30,15,0,1,'σⱼ² (dB)','CDF over fading',{xticks:9,yticks:4});
+  const clampX=v=>Math.max(-30,Math.min(15,v));
+  st.sorted.forEach((s,j)=>{const p=[];for(let k=0;k<s.length;k+=8)p.push([clampX(toDb(s[k])),(k+1)/s.length]);p.push([clampX(toDb(s[s.length-1])),1]);line(z,p,css(modeCols[j]),2.2)});
+  ev.forEach((l,j)=>dot(z,clampX(toDb(l)),cdfFrac(st.sorted[j],l),css(modeCols[j]),5));
+  const weak=st.sorted[m-1],med=toDb(weak[weak.length>>1]),below=cdfFrac(weak,0.1);
+  bullets($('smEigNote'),[
+    'Each curve is the distribution of one squared singular value σⱼ² over 2000 fading draws with this N<sub>t</sub>, N<sub>r</sub> and correlation. '+(smDeck!=null?'The dots mark the deck matrix, which is fixed rather than random.':'The dots mark this channel.'),
+    m>1?'The weakest mode has median '+fmtDb(med)+' and is below −10 dB in '+(100*below).toFixed(0)+'% of channels.'+(Nr===Nt?' With N<sub>r</sub> = N<sub>t</sub> it is often very weak; try N<sub>r</sub> = N<sub>t</sub> + 1 and watch it rise.':' The spare receive antennas keep it clear of zero.'):'With a single mode, σ₁² = &Vert;H&Vert;<sub>F</sub>² is the whole story.',
+    r>0?'Correlation r = '+r.toFixed(2)+' pulls the weaker modes down and pushes σ₁² up: the channel looks more and more like rank one.':'Raise the antenna correlation to see the power concentrate in the first mode.'
+  ]);
+
+  /* --- rate against SNR --- */
+  const erg=smErgodic(Nt,Nr,r),sis=smSiso(),cur=SM_SNRS.map(d=>ev.reduce((s,l)=>s+Math.log2(1+fromDb(d)*l/Nt),0)),
+    top=Math.ceil(Math.max(...erg,...cur,...sis)+1);
+  z=ax($('smSeP'),-5,30,0,top,'GEₓ/N₀ (dB)','Spectral efficiency (bit/s/Hz)',{xticks:7,yticks:Math.min(8,top)});
+  line(z,SM_SNRS.map((d,i)=>[d,sis[i]]),css('--muted'),2);
+  line(z,SM_SNRS.map((d,i)=>[d,erg[i]]),css('--blue'),2.6);
+  line(z,SM_SNRS.map((d,i)=>[d,cur[i]]),css('--purple'),2,[6,4]);
+  const y30=erg[erg.length-1],sl=m*Math.log2(10)/10;line(z,[[14,y30-sl*16],[30,y30]],css('--green'),1.6,[3,4]);
+  vline(z,snr,css('--red'),[4,4],1.4);
+  const i24=SM_SNRS.indexOf(24),meas=(y30-erg[i24])/(6/toDb(2)),iS=SM_SNRS.indexOf(snr);
+  bullets($('smSeNote'),[
+    'Equal power over N<sub>t</sub> streams, Gaussian inputs, no CSIT: R = &Sigma;ⱼ log₂(1 + GE<sub>x</sub>σⱼ²/(N<sub>t</sub>N<sub>0</sub>)). At '+snr+' dB: this channel '+cur[iS].toFixed(2)+', fading average '+erg[iS].toFixed(2)+', SISO '+sis[iS].toFixed(2)+' bit/s/Hz.',
+    'At high SNR each extra 3 dB buys about min(N<sub>t</sub>, N<sub>r</sub>) = '+m+' bit/s/Hz (measured between 24 and 30 dB: '+meas.toFixed(2)+'), against 1 for SISO. That slope is the multiplexing gain.',
+    'At low SNR the curves bunch together: splitting E<sub>x</sub> over N<sub>t</sub> streams pays only once each stream has SNR to spare.'
+  ]);
+
+  /* --- rate–diversity landscape --- */
+  $('smTblTitle').innerHTML='Rate&ndash;diversity landscape for '+Nt+'&times;'+Nr;
+  const rows=[['Alamouti','No',Nt===2?'1':'&mdash;',Nt===2?String(2*Nr):'needs N<sub>t</sub> = 2'],['MRT / rank-1 eigenbeamforming','Yes','1',String(Nt*Nr)],['Spatial multiplexing + ZF/MMSE','No*',String(m),Nr>=Nt?String(Nr-Nt+1):'needs N<sub>r</sub> &ge; N<sub>t</sub>'],['Eigenbeamforming, N<sub>s</sub> = '+m,'Yes',String(m),String((Nr-m+1)*(Nt-m+1))]];
+  $('smTbl').innerHTML='<tr><th>Technique</th><th>CSIT</th><th>Streams</th><th>Diversity</th></tr>'+rows.map(r=>'<tr><td>'+r[0]+'</td><td class="num">'+r[1]+'</td><td class="num">'+r[2]+'</td><td class="num">'+r[3]+'</td></tr>').join('');
+  bullets($('smTblNote'),[
+    '*Spatial multiplexing needs channel knowledge only at the receiver. Diversity orders are for i.i.d. Rayleigh fading. The deck table is the N<sub>r</sub> = 1 case of the first two rows.',
+    'One stream buys diversity up to N<sub>t</sub>N<sub>r</sub> = '+(Nt*Nr)+'. Full multiplexing buys '+m+' streams at diversity '+(Nr>=Nt?(Nr-Nt+1):(Nt-Nr+1))+'. Precoding (Tab 4) chooses a point in between.'
+  ]);
+}
+
+/* ==================================================================
+   3 · MIMO DETECTION
+   ================================================================== */
+let deSeed=0,deNoise=0,deMode='zf';const deBerCache={};
+function deChannel(Nt,Nr){if($('deCh').value==='deck'){const c=+$('deC').value/100;return realMat([[1,c],[c,1]])}return randMat(rng(8100+deSeed),Nr,Nt,6,4)}
+/* Model y = a H s + v with N0 = 1 and a^2 = (GEx/N0)/Nt; MMSE SINR is independent of the row scaling of W. */
+function deAnalyze(H,rho){const Nt=H[0].length,a2=rho/Nt,Hh=herm(H),G=mmul(Hh,H),Gi=minv(G),Wm=mmul(minv(addDiag(G,1/a2)),Hh),B=mmul(Wm,H),zf=[],mm=[],mf=[];
+  for(let j=0;j<Nt;j++){mf.push(a2*vnorm2(colOf(H,j)));zf.push(Gi?a2/Gi[j][j].re:0);let intf=0;for(let k=0;k<Nt;k++)if(k!==j)intf+=abs2(B[j][k]);mm.push(a2*abs2(B[j][j])/(a2*intf+vnorm2(Wm[j])))}
+  return{zf,mm,mf,G,Gi,Wm,B,Hh}}
+/* QPSK over i.i.d. Rayleigh with common channels and noise across the SNR grid; ML prunes a candidate once its partial metric exceeds the best. */
+function deBerSim(Nt,Nr){const key=Nt+'x'+Nr;if(deBerCache[key])return deBerCache[key];
+  const snrs=range(0,30,3),T=Nt>=4?800:1500,r=rng(8700+10*Nt+Nr),M=1<<(2*Nt),S=snrs.length,eZ=new Float64Array(S),eM=new Float64Array(S),eL=new Float64Array(S),HC=new Float64Array(M*Nr*2),yr=new Float64Array(Nr),yi=new Float64Array(Nr);
+  for(let t=0;t<T;t++){
+    const H=randMat(r,Nr,Nt,Nr,Nt),s=[];for(let j=0;j<Nt;j++)s.push(qpsk[Math.min(3,Math.floor(r()*4))]);const v=[];for(let i=0;i<Nr;i++)v.push(cn(r));
+    const Hs=mvec(H,s),Hh=herm(H),G=mmul(Hh,H),Gi=minv(G);if(!Gi)continue;const Wz=mmul(Gi,Hh);
+    for(let c=0;c<M;c++)for(let i=0;i<Nr;i++){let re=0,im=0;for(let j=0;j<Nt;j++){const h=H[i][j],q=qpsk[(c>>(2*j))&3];re+=h.re*q.re-h.im*q.im;im+=h.re*q.im+h.im*q.re}HC[(c*Nr+i)*2]=re;HC[(c*Nr+i)*2+1]=im}
+    const bitErr=zs=>{let e=0;for(let j=0;j<Nt;j++){if((zs[j].re>=0)!==(s[j].re>0))e++;if((zs[j].im>=0)!==(s[j].im>0))e++}return e};
+    for(let k=0;k<S;k++){const a=Math.sqrt(fromDb(snrs[k])/Nt),y=Hs.map((x,i)=>add(scale(x,a),v[i]));
+      eZ[k]+=bitErr(mvec(Wz,y));
+      eM[k]+=bitErr(mvec(mmul(minv(addDiag(G,1/(a*a))),Hh),y));
+      for(let i=0;i<Nr;i++){yr[i]=y[i].re;yi[i]=y[i].im}
+      let best=Infinity,bc=0;for(let c=0;c<M;c++){let d=0;const o=c*Nr*2;for(let i=0;i<Nr;i++){const dr=yr[i]-a*HC[o+2*i],di=yi[i]-a*HC[o+2*i+1];d+=dr*dr+di*di;if(d>=best)break}if(d<best){best=d;bc=c}}
+      const zs=[];for(let j=0;j<Nt;j++)zs.push(qpsk[(bc>>(2*j))&3]);eL[k]+=bitErr(zs)}}
+  const nb=T*Nt*2;return deBerCache[key]={snrs,T,zf:Array.from(eZ,e=>e/nb),mm:Array.from(eM,e=>e/nb),ml:Array.from(eL,e=>e/nb)}}
+document.querySelectorAll('[data-de]').forEach(b=>b.addEventListener('click',()=>{deMode=b.dataset.de;drawDe()}));
+$('deNew').addEventListener('click',()=>{$('deCh').value='rand';deSeed++;drawDe()});
+$('deNewNoise').addEventListener('click',()=>{deNoise++;drawDe()});
+function deExercise(c){$('deCh').value='deck';$('deC').value=c;$('deSnr').value=10;$('deNt').value=2;$('deNr').value=2;drawDe()}
+$('deEx1').addEventListener('click',()=>deExercise(50));
+$('deEx2').addEventListener('click',()=>deExercise(90));
+['deNt','deNr'].forEach(id=>$(id).addEventListener('input',()=>{$('deCh').value='rand';drawDe()}));
+$('deC').addEventListener('input',()=>{$('deCh').value='deck';drawDe()});
+['deCh','deSnr','deMod'].forEach(id=>$(id).addEventListener('input',drawDe));
+function drawDe(){
+  const deck=$('deCh').value==='deck';
+  if(deck){$('deNt').value=2;$('deNr').value=2}
+  $('deNr').min=$('deNt').value;if(+$('deNr').value<+$('deNt').value)$('deNr').value=$('deNt').value;
+  const Nt=+$('deNt').value,Nr=+$('deNr').value,snr=+$('deSnr').value,rho=fromDb(snr),a=Math.sqrt(rho/Nt),mod=$('deMod').value,pts=mod==='qam16'?qam16:qpsk,Mc=pts.length;
+  $('deNtOut').textContent=Nt;$('deNrOut').textContent=Nr;$('deSnrOut').textContent=snr+' dB';$('deCOut').textContent=(+$('deC').value/100).toFixed(2);
+  pressGroup($('deModes'),'data-de',deMode);
+  const H=deChannel(Nt,Nr),A=deAnalyze(H,rho),ev=hermEigVals(A.G),kap=Math.sqrt(ev[0]/Math.max(ev[Nt-1],1e-300)),
+    zfDb=A.zf.map(toDb),mmDb=A.mm.map(toDb),mfDb=A.mf.map(toDb),pen=A.mf.map((v,j)=>v/Math.max(A.zf[j],1e-300)),
+    jw=zfDb.indexOf(Math.min(...zfDb)),jm=mmDb.indexOf(Math.min(...mmDb)),penMax=Math.max(...pen);
+  $('deZf').textContent=fmtDb(zfDb[jw])+' (j = '+(jw+1)+')';$('deMm').textContent=fmtDb(mmDb[jm])+' (j = '+(jm+1)+')';
+  $('deGap').textContent='+'+Math.max(0,mmDb[jm]-zfDb[jw]).toFixed(2)+' dB';$('dePen').textContent=fmtDb(toDb(penMax));
+  $('deCond').textContent=kap.toFixed(2);$('deInv').textContent=A.Gi?A.Gi.map((r,j)=>r[j].re.toFixed(2)).join(', '):'singular';
+  $('deCx').textContent=fmtCount(Math.pow(Mc,Nt))+' vs '+Nt*Mc;
+  $('deLam').innerHTML='&lambda; = N<sub>t</sub>N<sub>0</sub>/(GE<sub>x</sub>) = '+(Nt/rho).toFixed(4);
+  $('deFlowName').textContent=deMode==='zf'?'ZF':'MMSE';
+  $('deFlowRule').innerHTML=deMode==='zf'?'z = (H<sup>H</sup>H)<sup>&minus;1</sup>H<sup>H</sup>y / &alpha;':'z = W<sub>MMSE</sub>y, then &divide; (WH)<sub>jj</sub>';
+  $('deFlowOut').innerHTML=deMode==='zf'?'z<sub>j</sub> = s<sub>j</sub> + amplified noise':'z<sub>j</sub> = s<sub>j</sub> + residual interference + noise';
+  $('deFlowDet').textContent='nearest '+(mod==='qam16'?'16-QAM':'QPSK')+' point, '+Nt+'× per vector';
+
+  /* --- per-stream bars --- */
+  const all=zfDb.concat(mmDb,mfDb),lo=Math.max(-30,Math.floor(Math.min(0,...all)/5)*5),hi=Math.ceil((Math.max(...all)+4)/5)*5;
+  let z=ax($('deBars'),0.4,Nt+0.6,lo,hi,'Stream j','Post-processing SNR (dB)',{xticks:1,xfmt:()=>'',yticks:Math.min(8,(hi-lo)/5)});
+  for(let j=0;j<Nt;j++){const x=j+1,cl=v=>Math.max(lo,Math.min(hi,v));box(z,x-.33,x-.12,lo,cl(mfDb[j]),css('--muted'),.7);box(z,x-.1,x+.1,lo,cl(zfDb[j]),css('--orange'),.9);box(z,x+.12,x+.33,lo,cl(mmDb[j]),css('--purple'),.9);textAt(z,x,cl(Math.max(zfDb[j],mmDb[j],mfDb[j])),'ZF '+fmtDb(zfDb[j]),css('--orange'));xLabelAt(z,x,'j = '+x)}
+  if(lo<0&&hi>0)hline(z,0,css('--text'),[2,3],1);
+  const g0=A.Gi?A.Gi[jw][jw].re:Infinity;
+  bullets($('deBarsNote'),[
+    'Grey is the matched-filter bound α²&Vert;h<sub>j</sub>&Vert;²/N<sub>0</sub>: stream j on its own, with no interference. ZF (orange) nulls the other streams and loses '+fmtDb(toDb(penMax))+' on the worst one. That loss, &Vert;h<sub>j</sub>&Vert;²[(H<sup>H</sup>H)<sup>−1</sup>]<sub>jj</sub>, is the noise enhancement.',
+    'Stream '+(jw+1)+': [(H<sup>H</sup>H)<sup>−1</sup>]<sub>jj</sub> = '+g0.toFixed(2)+' and GE<sub>x</sub>/(N<sub>t</sub>N<sub>0</sub>) = '+(rho/Nt).toFixed(2)+', so γ<sup>ZF</sup> = '+(rho/Nt).toFixed(2)+'/'+g0.toFixed(2)+' = '+A.zf[jw].toFixed(3)+' ('+fmtDb(zfDb[jw])+').'+(deck&&snr===10?' Compare the exercise solution: 3.5 dB for H<sub>1</sub>, −10.0 dB for H<sub>2</sub>.':''),
+    'MMSE (purple) is never below ZF. Here it gains '+Math.max(0,mmDb[jm]-zfDb[jw]).toFixed(2)+' dB on the worst stream; the gain is largest on ill-conditioned channels at moderate SNR.'
+  ]);
+
+  /* --- detector output --- */
+  const g=rng(8300+deNoise),Wz=A.Gi?mmul(A.Gi,A.Hh):null,bias=A.B.map((r,j)=>r[j].re),out=[];let errs=0;
+  for(let t=0;t<150;t++){const idx=[];for(let j=0;j<Nt;j++)idx.push(Math.min(Mc-1,Math.floor(g()*Mc)));const s=idx.map(i=>pts[i]),y=mvec(H,s).map(x=>add(scale(x,a),cn(g)));
+    let zz;if(deMode==='zf'&&Wz)zz=mvec(Wz,y).map(x=>scale(x,1/a));else zz=mvec(A.Wm,y).map((x,j)=>scale(x,1/(a*bias[j])));
+    zz.forEach((v,j)=>{const e=nearest(pts,v)!==idx[j];if(e)errs++;out.push({v,j,e})})}
+  $('deErr').textContent=errs+' / '+(150*Nt);$('deErrSmall').textContent=(100*errs/(150*Nt)).toFixed(1)+'% of the plotted symbols';
+  $('deConstTitle').textContent=(deMode==='zf'?'ZF':'MMSE')+' output for 150 symbol vectors';
+  const lim=mod==='qam16'?1.8:1.9,zc=constPlane($('deConst'),lim);zc.clip();
+  out.forEach(o=>{const[x,y]=zc.P(o.v);zc.c.globalAlpha=.6;zc.c.fillStyle=css(modeCols[o.j]);zc.c.beginPath();zc.c.arc(x,y,2.4,0,2*Math.PI);zc.c.fill();zc.c.globalAlpha=1;if(o.e){zc.c.strokeStyle=css('--red');zc.c.lineWidth=1.4;zc.c.beginPath();zc.c.arc(x,y,4.5,0,2*Math.PI);zc.c.stroke()}});
+  zc.c.strokeStyle=css('--text');zc.c.lineWidth=1.5;pts.forEach(p=>{const[x,y]=zc.P(p);zc.c.beginPath();zc.c.moveTo(x-5,y);zc.c.lineTo(x+5,y);zc.c.moveTo(x,y-5);zc.c.lineTo(x,y+5);zc.c.stroke()});zc.c.restore();
+  bullets($('deConstNote'),[
+    (Nt===2?'Both':'All '+Nt)+' streams are overlaid, one colour each; crosses mark the ideal points. '+(deMode==='zf'?'ZF output z = W<sub>ZF</sub>y/α = s + W<sub>ZF</sub>v/α: no interference is left, only noise, and each stream’s cloud has its own size, set by [(H<sup>H</sup>H)<sup>−1</sup>]<sub>jj</sub>.':'MMSE output divided by its bias (WH)<sub>jj</sub> = '+bias.map(b=>b.toFixed(2)).join(', ')+'. Some interference remains, but the noise is smaller than after ZF.'),
+    'Symbol errors: '+errs+' of '+(150*Nt)+'. Press New noise for another draw, or switch between ZF and MMSE on the same symbols.',
+    mod==='qam16'?'Without the rescaling, MMSE shrinks the constellation by (WH)<sub>jj</sub> < 1, and the outer 16-QAM ring would fall into the inner decision regions. QPSK needs only signs, so the bias does not matter there.':'Switch to 16-QAM: the points are √5 closer together (7 dB less d<sub>min</sub>²), so the same noise enhancement causes many more errors.'
+  ]);
+
+  /* --- SNR sweep for this channel --- */
+  const xs=range(-5,35,.5),sw=xs.map(d=>deAnalyze(H,fromDb(d))),allS=[];sw.forEach(q=>{q.zf.forEach(v=>allS.push(toDb(v)));q.mm.forEach(v=>allS.push(toDb(v)))});
+  const slo=Math.max(-30,Math.floor(Math.min(...allS)/10)*10),shi=Math.min(50,Math.ceil(Math.max(...allS)/10)*10);
+  z=ax($('deSweep'),-5,35,slo,shi,'GEₓ/N₀ (dB)','γⱼ (dB)',{xticks:8,yticks:Math.min(8,(shi-slo)/10)});clipPlot(z);
+  for(let j=0;j<Nt;j++){line(z,xs.map((d,i)=>[d,toDb(sw[i].zf[j])]),css(modeCols[j]),2.2);line(z,xs.map((d,i)=>[d,toDb(sw[i].mm[j])]),css(modeCols[j]),2,[6,4])}
+  z.c.restore();vline(z,snr,css('--red'),[4,4],1.4);
+  const i0=xs.indexOf(0),i30=xs.indexOf(30),gapAt=i=>toDb(sw[i].mm[jw])-toDb(sw[i].zf[jw]);
+  bullets($('deSweepNote'),[
+    'ZF (solid) rises exactly 1 dB per dB: γⱼ<sup>ZF</sup> is linear in GE<sub>x</sub>/N<sub>0</sub>, with a fixed offset −10log<sub>10</sub>(N<sub>t</sub>[(H<sup>H</sup>H)<sup>−1</sup>]<sub>jj</sub>).',
+    'MMSE (dashed) merges with ZF at high SNR, where λ → 0 (gap on stream '+(jw+1)+': '+gapAt(i30).toFixed(2)+' dB at 30 dB), and pulls ahead at low SNR, where it tends to the matched filter H<sup>H</sup> (gap '+gapAt(i0).toFixed(1)+' dB at 0 dB).',
+    'This reproduces the deck figure “post-processing SNR (ZF) vs SINR (MMSE)”. Select the deck matrix and raise c to see the ZF lines drop.'
+  ]);
+
+  /* --- BER over fading --- */
+  const bs=deBerSim(Nt,Nr),L=Nr-Nt+1;
+  z=ax($('deBer'),0,30,-5,0,'GEₓ/N₀ (dB)','Bit error rate (QPSK)',{xticks:6,yticks:5,yfmt:decade});
+  const xb=range(0,30,.25);
+  logCurve(z,xb,d=>berMrc(Nr,fromDb(d)/Nt/2),css('--muted'),1.8,[6,4]);
+  logCurve(z,xb,d=>berMrc(L,fromDb(d)/Nt/2),css('--orange'),2.4);
+  const dots=(arr,col,off)=>arr.forEach((v,i)=>{if(v>0&&Math.log10(v)>=-5)dot(z,bs.snrs[i]+off,Math.log10(v),css(col),3.6)});
+  dots(bs.zf,'--orange',-.35);dots(bs.mm,'--purple',0);dots(bs.ml,'--blue',.35);
+  vline(z,snr,css('--red'),[4,4],1.4);
+  bullets($('deBerNote'),[
+    'QPSK over i.i.d. Rayleigh fading, N<sub>t</sub> = '+Nt+', N<sub>r</sub> = '+Nr+'. With ZF each stream sees γ = (GE<sub>x</sub>/N<sub>t</sub>)·Gamma(N<sub>r</sub> − N<sub>t</sub> + 1), so the exact orange curve has diversity order '+L+'. The orange dots are a simulation of the same detector.',
+    'ML (blue dots) follows the slope of the matched-filter bound (grey dashed, order N<sub>r</sub> = '+Nr+'), at the cost of '+Math.pow(4,Nt)+' candidate vectors per received vector.',
+    'MMSE (purple) is better than ZF at every SNR. Compare its slope with ZF’s across the range shown. Monte Carlo: '+bs.T+' channels per point, so rates below about '+expo(1/(bs.T*Nt*2))+' are not resolved.'
+  ]);
+
+  /* --- complexity --- */
+  z=ax($('deCplx'),1,8,0,10,'Streams Nₜ','Candidates per received vector',{xticks:7,yticks:5,yfmt:decade});
+  const ns=range(1,8,1);
+  line(z,ns.map(n=>[n,n*Math.log10(4)]),css('--blue'),2.2);line(z,ns.map(n=>[n,n*Math.log10(16)]),css('--purple'),2.2);line(z,ns.map(n=>[n,Math.log10(n*16)]),css('--orange'),2.2);
+  dot(z,Nt,Nt*Math.log10(Mc),css('--green'),6);dot(z,Nt,Math.log10(Nt*Mc),css('--green'),6);
+  bullets($('deCplxNote'),[
+    'ML evaluates every vector in C<sup>N<sub>t</sub></sup>: '+fmtCount(Math.pow(Mc,Nt))+' candidates per received vector for '+(mod==='qam16'?'16-QAM':'QPSK')+' at N<sub>t</sub> = '+Nt+', each needing an N<sub>r</sub>-length distance.',
+    'ZF/MMSE need one N<sub>t</sub>×N<sub>t</sub> inversion per coherence interval, and then N<sub>t</sub>|C| = '+Nt*Mc+' scalar comparisons per vector.',
+    'At N<sub>t</sub> = 8 with 16-QAM, ML would need 4.3 billion candidates per vector. Sphere decoding lowers the average cost but stays exponential in the worst case.'
+  ]);
+}
+
+/* ==================================================================
+   4 · LINEAR PRECODING AND EIGENBEAMFORMING
+   ================================================================== */
+let pcSeed=0,pcFixed=null;
+function pcSet(Nt,Nr,Ns,snr){$('pcNt').value=Nt;$('pcNr').value=Nr;$('pcNs').max=Math.min(Nt,Nr);$('pcNs').value=Ns;$('pcSnr').value=snr}
+$('pcNew').addEventListener('click',()=>{pcSeed++;pcFixed=null;drawPc()});
+$('pcEx1').addEventListener('click',()=>{pcFixed={H:realMat([[1,.5],[.5,1]]),name:'deck H₁'};pcSet(2,2,2,10);drawPc()});
+$('pcEx2').addEventListener('click',()=>{pcFixed={H:realMat([[1,.9],[.9,1]]),name:'deck H₂'};pcSet(2,2,2,10);drawPc()});
+$('pcRank').addEventListener('click',()=>{const r=rng(9900),U=randUnitary(4,r),V=randUnitary(4,r),s=[2,1.6,.25,.1],H=cmat(4,4);
+  for(let i=0;i<4;i++)for(let k=0;k<4;k++){let acc=C();for(let j=0;j<4;j++)acc=add(acc,scale(mul(U[j][i],conj(V[j][k])),s[j]));H[i][k]=acc}
+  pcFixed={H,name:'σ = 2, 1.6, 0.25, 0.1'};pcSet(4,4,2,10);drawPc()});
+['pcNt','pcNr','pcCorr'].forEach(id=>$(id).addEventListener('input',()=>{pcFixed=null;drawPc()}));
+['pcNs','pcSnr','pcTh'].forEach(id=>$(id).addEventListener('input',drawPc));
+function pcRates(sig,rho){return sig.map((_,k)=>{let s=0;for(let j=0;j<=k;j++)s+=Math.log2(1+rho*sig[j]*sig[j]/(k+1));return s})}
+function drawPc(){
+  const Nt=+$('pcNt').value,Nr=+$('pcNr').value,m=Math.min(Nt,Nr);$('pcNs').max=m;if(+$('pcNs').value>m)$('pcNs').value=m;
+  const Ns=+$('pcNs').value,snr=+$('pcSnr').value,rho=fromDb(snr),r=+$('pcCorr').value/100,th=+$('pcTh').value;
+  $('pcNtOut').textContent=Nt;$('pcNrOut').textContent=Nr;$('pcNsOut').textContent=Ns;$('pcSnrOut').textContent=snr+' dB';$('pcCorrOut').textContent=r.toFixed(2);$('pcThOut').textContent=th+' dB';
+  const H=pcFixed?pcFixed.H:kron(randMat(rng(9500+pcSeed),Nr,Nt,4,4),r),{sig,V,U}=svdH(H),
+    gam=sig.map(s=>rho*s*s/Ns),rates=pcRates(sig,rho),best=rates.indexOf(Math.max(...rates))+1,div=(Nr-Ns+1)*(Nt-Ns+1),mrt=rho*sig[0]*sig[0];
+  let zfW=null;if(Nr>=Nt){const Gi=minv(mmul(herm(H),H));if(Gi)zfW=Math.min(...Gi.map((row,j)=>rho/Nt/row[j].re))}
+  $('pcSig').textContent=sig.map(s=>s.toFixed(2)).join(', ');$('pcSigSmall').textContent='κ = '+(sig[m-1]>1e-9?(sig[0]/sig[m-1]).toFixed(2):'∞')+', Σσ² = ‖H‖²_F = '+sig.reduce((a,s)=>a+s*s,0).toFixed(2);
+  $('pcGam').textContent=gam.slice(0,Ns).map(g=>fmtDb(toDb(g))).join(', ');
+  $('pcSe').textContent=rates[Ns-1].toFixed(2)+' b/s/Hz';
+  $('pcBest').textContent='Nₛ = '+best;$('pcBestSmall').textContent=rates.map((v,k)=>(k+1)+': '+v.toFixed(2)).join(' · ')+' b/s/Hz';
+  $('pcZf').textContent=zfW==null?(Nr<Nt?'needs Nᵣ ≥ Nₜ':'singular'):fmtDb(toDb(zfW));
+  $('pcDiv').textContent=div;
+  $('pcMrt').textContent=fmtDb(toDb(mrt));$('pcMrtSmall').textContent=rho.toFixed(2)+' × '+(sig[0]*sig[0]).toFixed(2)+' = '+mrt.toFixed(2);
+  $('pcFlowS').textContent=Ns+' symbols, Eₓ/'+Ns+' each';
+  $('pcFlowF').textContent=Nt+'×'+Ns+', first '+Ns+' right singular vectors';
+  $('pcFlowH').textContent=Nr+'×'+Nt+(pcFixed?', '+pcFixed.name:r>0?', r = '+r.toFixed(2):', i.i.d.');
+  $('pcFlowPar').textContent='zⱼ = √(GEₓ/Nₛ)σⱼsⱼ + nⱼ, j ≤ '+Ns;
+
+  /* --- rank adaptation bars --- */
+  const gDb=gam.map(toDb),refs=[toDb(mrt)];if(zfW!=null)refs.push(toDb(zfW));
+  const vals=gDb.concat(refs),lo=Math.max(-30,Math.floor(Math.min(0,...vals)/5)*5),hi=Math.ceil((Math.max(...vals)+4)/5)*5;
+  let z=ax($('pcBars'),.4,m+.6,lo,hi,'Eigenmode j','γⱼ = GEₓσⱼ²/(NₛN₀) (dB)',{xticks:1,xfmt:()=>'',yticks:Math.min(8,(hi-lo)/5)});
+  for(let j=0;j<m;j++){const x=j+1,v=Math.max(lo,gDb[j]),on=j<Ns;box(z,x-.3,x+.3,lo,v,css(on?'--blue':'--muted'),on?.9:.35);textAt(z,x,v,fmtDb(gDb[j]),css(on?'--blue':'--muted'));xLabelAt(z,x,'σ'+sub1(x)+' = '+sig[j].toFixed(2))}
+  hline(z,toDb(mrt),css('--green'),[6,4],1.8);if(zfW!=null&&toDb(zfW)>lo)hline(z,toDb(zfW),css('--orange'),[3,3],1.8);if(lo<0)hline(z,0,css('--text'),[2,3],1);
+  const pcExNote=pcFixed&&pcFixed.name.startsWith('deck')&&snr===10&&Ns===2?' Exercise check: '+(pcFixed.name.endsWith('₁')?'10.5 dB and 1.0 dB; with Nₛ = 1, 13.5 dB.':'12.6 dB and −13.0 dB; with Nₛ = 1, 15.6 dB.'):'';
+  bullets($('pcBarsNote'),[
+    'Each transmitted mode gets power E<sub>x</sub>/N<sub>s</sub> and sees gain σ<sub>j</sub>². With N<sub>s</sub> = '+Ns+': '+gam.slice(0,Ns).map((g,j)=>'γ'+sub1(j+1)+' = '+rho.toFixed(1)+'·'+(sig[j]*sig[j]).toFixed(2)+'/'+Ns+' = '+fmtDb(toDb(g))).join(', ')+'.'+pcExNote,
+    'The green line is N<sub>s</sub> = 1 (dominant eigenmode, i.e. MIMO MRT): all power goes on σ<sub>1</sub>'+(Ns>1?', which puts it '+(10*Math.log10(Ns)).toFixed(1)+' dB above stream 1 of your split':'')+'. Going from N<sub>s</sub> to N<sub>s</sub> + 1 streams cuts every stream’s power by N<sub>s</sub>/(N<sub>s</sub> + 1), so the extra stream pays only if its mode is strong.',
+    zfW!=null?'Orange: open-loop spatial multiplexing with ZF (no CSIT), worst stream '+fmtDb(toDb(zfW))+'. With CSIT the SVD streams need no inversion, so there is no noise enhancement. Best choice on this channel: N<sub>s</sub> = '+best+'.':'Open-loop ZF would need N<sub>r</sub> ≥ N<sub>t</sub>. Precoding with CSIT has no such requirement; best choice on this channel: N<sub>s</sub> = '+best+'.'
+  ]);
+
+  /* --- SVD matrices --- */
+  const D=cmat(Ns,Ns);
+  for(let k=0;k<Ns;k++){const hv=mvec(H,V[k]);for(let i=0;i<Ns;i++)D[i][k]=dotH(U[i],hv)}
+  $('pcMatH').innerHTML='|H| ='+H.map(row=>'<br>&nbsp;['+row.map(v=>Math.sqrt(abs2(v)).toFixed(2)).join('  ')+']').join('');
+  $('pcMatD').innerHTML='|U<sub>s</sub><sup>H</sup>HV<sub>s</sub>| ='+D.map((row,i)=>'<br>&nbsp;['+row.map((v,k)=>{const a=Math.sqrt(abs2(v));return i===k?a.toFixed(2):'<span class="ok">'+(a<5e-3?'0.00':a.toFixed(2))+'</span>'}).join('  ')+']').join('');
+  bullets($('pcMatNote'),[
+    'Left: every receive antenna hears every transmit antenna, so the streams interfere. Right: after precoding with V<sub>s</sub> and combining with U<sub>s</sub><sup>H</sup>, the effective channel is diag(σ<sub>1</sub>, …, σ<sub>N<sub>s</sub></sub>), and the green off-diagonal entries are zero.',
+    'The transmitter must know V (CSIT, for example over a feedback link) and the receiver must know U. In return, detection is '+Ns+' independent scalar decisions, with no inversion or ML search.',
+    pcFixed&&pcFixed.name.startsWith('σ')?'Slide-figure channel: two strong modes (σ = 2, 1.6) and two weak ones (0.25, 0.1). Try N<sub>s</sub> = 2, 3 and 4 and watch the rate in the next plot.':'Press New channel, or raise the correlation r: the singular values spread out and the lower modes become useless.'
+  ]);
+
+  /* --- rate vs SNR per Ns --- */
+  const xs=range(-5,30,.5),cur=xs.map(d=>pcRates(sig,fromDb(d))),ymax=Math.ceil(Math.max(...cur[cur.length-1])/5)*5||5;
+  z=ax($('pcSeP'),-5,30,0,ymax,'GEₓ/N₀ (dB)','Spectral efficiency (b/s/Hz)',{xticks:7,yticks:5});
+  for(let k=0;k<m;k++)line(z,xs.map((d,i)=>[d,cur[i][k]]),css(modeCols[k]),k+1===Ns?3:1.8,k+1===Ns?[]:[6,4]);
+  vline(z,snr,css('--red'),[4,4],1.4);
+  const cross=[];for(let k=1;k<m;k++){const x=solveDb(d=>{const q=pcRates(sig,fromDb(d));return q[k-1]-q[k]},0,-20,60);cross.push('N<sub>s</sub> = '+(k+1)+' overtakes '+k+(isFinite(x)?' at '+fmtN(x,1)+' dB':x<0?' at every SNR shown':' only above 60 dB'))}
+  bullets($('pcSeNote'),[
+    'Each curve is Σ<sub>j≤N<sub>s</sub></sub> log<sub>2</sub>(1 + GE<sub>x</sub>σ<sub>j</sub>²/(N<sub>s</sub>N<sub>0</sub>)) on this channel; the thick line is your N<sub>s</sub>. At high SNR the slope is N<sub>s</sub> b/s/Hz per 3 dB: the multiplexing gain.',
+    m>1?cross.join('; ')+'. Below that SNR, extra streams take power from strong modes and give it to weak ones.':'Only one mode exists (N<sub>t</sub> or N<sub>r</sub> is 1): this is MISO/SIMO beamforming, as in the first tab.',
+    'This is rank adaptation, as in LTE/NR rank indicator feedback: the receiver reports how many streams the channel supports at the current SNR.'
+  ]);
+
+  /* --- weakest-stream outage over fading --- */
+  const st=eigStats(Nt,Nr,r,3000,9700),g0=fromDb(th);
+  z=ax($('pcOut'),-5,30,-3,0,'GEₓ/N₀ (dB)','Outage of weakest stream',{xticks:7,yticks:3,yfmt:decade});
+  const xo=range(-5,30,.5);
+  for(let k=1;k<=m;k++)logCurve(z,xo,d=>cdfFrac(st.sorted[k-1],g0*k/fromDb(d)),css(modeCols[k-1]),k===Ns?3:1.8,k===Ns?[]:[6,4]);
+  vline(z,snr,css('--red'),[4,4],1.4);
+  const po=cdfFrac(st.sorted[Ns-1],g0*Ns/rho);
+  bullets($('pcOutNote'),[
+    'Over '+Nr+'×'+Nt+' Rayleigh fading'+(r>0?' with correlation r = '+r.toFixed(2):'')+', the weakest stream fails when GE<sub>x</sub>λ<sub>N<sub>s</sub></sub>/(N<sub>s</sub>N<sub>0</sub>) < γ<sub>0</sub>. With your N<sub>s</sub> = '+Ns+' at '+snr+' dB: P<sub>out</sub> '+(po>0?'= ':'')+fmtP(po)+'.',
+    'Slopes: '+range(1,m,1).map(k=>'N<sub>s</sub> = '+k+' → d = '+(Nr-k+1)*(Nt-k+1)).join(', ')+'. N<sub>s</sub> = 1 gets the full N<sub>t</sub>N<sub>r</sub>; N<sub>s</sub> = min(N<sub>t</sub>,N<sub>r</sub>) gets only |N<sub>t</sub> − N<sub>r</sub>| + 1.',
+    'This is the diversity–multiplexing trade-off in one plot: each extra stream gives more rate at high SNR and a shallower outage curve. Monte Carlo over 3000 channels, so values below about 10⁻³ are not shown.'
+  ]);
+}
+
+window.addEventListener('resize',drawActive);
+drawBf();
+</script>
+</body>
+</html>
