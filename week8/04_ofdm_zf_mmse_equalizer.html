@@ -22,7 +22,7 @@
 <div class="field"><label for="center">Notch centre <span id="centerOut">k<sub>c</sub> = 28</span></label><input id="center" type="range" min="2" max="61" step="1" value="28"></div>
 <div class="field"><label for="selected">Observed subcarrier <span id="selectedOut">k = 28</span></label><input id="selected" type="range" min="0" max="63" step="1" value="28"></div>
 <div class="field"><label for="mod">Modulation</label><select id="mod"><option selected>QPSK</option><option>16-QAM</option></select></div>
-<div class="field"><label>Presets</label><div class="row"><button id="deep" class="primary">Deep fade</button><button id="flat">Flat channel H[k] = 1</button><button id="high">High SNR</button><button id="newData">New symbols and noise</button></div></div>
+<div class="field"><label>Presets</label><div class="row"><button type="button" id="deep" class="primary" aria-pressed="true">Deep fade</button><button type="button" id="flat" aria-pressed="false">Flat channel H[k] = 1</button><button type="button" id="high" aria-pressed="false">High SNR</button><button type="button" id="newData">New symbols and noise</button></div></div>
 <div class="equation">W<sub>ZF</sub>[k] = 1/H[k]<br>W<sub>MMSE</sub>[k] = H*[k] / (|H[k]|² + σ<sub>V</sub>²/E<sub>X</sub>)</div>
 <div id="status" aria-live="polite" class="status"></div>
 </section>
@@ -86,6 +86,20 @@ function renderConst(vId,pts,cls,idealPts,sharedLim){
   return clipped;
 }
 function render(){const res=process(),baseLim=mod==='QPSK'?1.6:1.5,sharedEqLim=Math.max(baseLim,quantile(res.zf.concat(res.mmse).flatMap(p=>[Math.abs(p.re),Math.abs(p.im)]),.985)*1.08),rawIdeal=constellation().map(p=>mul(res.h,p));$('snrOut').textContent=snrDb+' dB';$('depthOut').textContent=depthDb+' dB';$('widthOut').textContent=width.toFixed(1)+' bins';$('centerOut').innerHTML='k<sub>c</sub> = '+center;$('selectedOut').textContent='k = '+selected;renderChannel();renderGains(res);renderConst('rawSvg',res.raw,'',rawIdeal,Math.max(1.25,quantile(res.raw.flatMap(p=>[Math.abs(p.re),Math.abs(p.im)]),.99)*1.15));renderConst('zfSvg',res.zf,'zfPoint',constellation(),sharedEqLim);renderConst('mmseSvg',res.mmse,'mmsePoint',constellation(),sharedEqLim);const hdb=20*Math.log10(Math.max(abs(res.h),1e-12)),zg=20*Math.log10(abs(res.wzf)),gamma=res.h2/res.sigma2,gammaDb=10*Math.log10(Math.max(gamma,1e-15)),shrink=gamma/(gamma+1),mmseGainDb=20*Math.log10(Math.max(abs(res.wmmse),1e-15));$('hMetric').textContent=hdb.toFixed(1)+' dB';$('toneSnrMetric').textContent=gammaDb.toFixed(1)+' dB';$('zfGainMetric').textContent=zg.toFixed(1)+' dB';$('zfMse').textContent=res.mseZ.toFixed(res.mseZ<.01?4:3);$('mmseMse').textContent=res.mseM.toFixed(res.mseM<.01?4:3);const st=$('status');if(shrink<.2)st.innerHTML='<strong>Very unreliable selected subcarrier:</strong> post-channel SNR is '+gammaDb.toFixed(1)+' dB. ZF strongly amplifies noise, whereas MMSE uses gain '+mmseGainDb.toFixed(1)+' dB and shrinkage '+shrink.toFixed(3)+', accepting bias to reduce variance.';else if(shrink<.8)st.innerHTML='<strong>Regularisation is important:</strong> post-channel SNR is '+gammaDb.toFixed(1)+' dB. MMSE shrinkage is '+shrink.toFixed(3)+', so its gain is deliberately smaller than ZF to limit noise enhancement.';else if(shrink<.97)st.innerHTML='<strong>ZF and MMSE are becoming similar:</strong> post-channel SNR is '+gammaDb.toFixed(1)+' dB and MMSE shrinkage is '+shrink.toFixed(3)+'. Some regularisation remains visible.';else st.innerHTML='<strong>High post-channel SNR:</strong> |H[k]|² dominates σ<sub>V</sub>²/E<sub>X</sub>. MMSE shrinkage is '+shrink.toFixed(3)+', so MMSE closely approaches ZF on this selected subcarrier.'}
-$('snr').oninput=e=>{snrDb=Number(e.target.value);render()};$('depth').oninput=e=>{depthDb=Number(e.target.value);render()};$('width').oninput=e=>{width=Number(e.target.value);render()};$('center').oninput=e=>{center=Number(e.target.value);render()};$('selected').oninput=e=>{selected=Number(e.target.value);render()};$('mod').onchange=e=>{mod=e.target.value;regenerate();render()};$('deep').onclick=()=>{snrDb=20;depthDb=25;width=5;center=28;selected=28;$('snr').value=snrDb;$('depth').value=depthDb;$('width').value=width;$('center').value=center;$('selected').value=selected;render()};$('flat').onclick=()=>{depthDb=0;$('depth').value=0;render()};$('high').onclick=()=>{snrDb=32;$('snr').value=32;render()};$('newData').onclick=()=>{seed=(seed+246813579)>>>0;regenerate();render()};regenerate();render();
+const presetIds=['deep','flat','high'];
+function setActivePreset(id){presetIds.forEach(presetId=>{const button=$(presetId),active=presetId===id;button.classList.toggle('primary',active);button.setAttribute('aria-pressed',String(active))})}
+function clearActivePreset(){setActivePreset('')}
+function applyPreset(id,values){({snrDb,depthDb,width,center,selected}=values);$('snr').value=snrDb;$('depth').value=depthDb;$('width').value=width;$('center').value=center;$('selected').value=selected;setActivePreset(id);render()}
+$('snr').oninput=e=>{snrDb=Number(e.target.value);clearActivePreset();render()};
+$('depth').oninput=e=>{depthDb=Number(e.target.value);clearActivePreset();render()};
+$('width').oninput=e=>{width=Number(e.target.value);clearActivePreset();render()};
+$('center').oninput=e=>{center=Number(e.target.value);clearActivePreset();render()};
+$('selected').oninput=e=>{selected=Number(e.target.value);clearActivePreset();render()};
+$('mod').onchange=e=>{mod=e.target.value;regenerate();render()};
+$('deep').onclick=()=>applyPreset('deep',{snrDb:20,depthDb:25,width:5,center:28,selected:28});
+$('flat').onclick=()=>applyPreset('flat',{snrDb:20,depthDb:0,width:5,center:28,selected:28});
+$('high').onclick=()=>applyPreset('high',{snrDb:32,depthDb:25,width:5,center:28,selected:28});
+$('newData').onclick=()=>{seed=(seed+246813579)>>>0;regenerate();render()};
+regenerate();render();
 </script>
 </body></html>

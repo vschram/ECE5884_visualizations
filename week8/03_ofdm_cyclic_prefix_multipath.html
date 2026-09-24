@@ -16,11 +16,11 @@
 <main><div class="layout">
 <section class="card controls">
 <h2>Controls</h2>
-<div class="field"><label for="cp">CP length <span id="cpOut">L<sub>c</sub> = 8</span></label><input id="cp" type="range" min="0" max="20" step="1" value="8"><small>N = 32 useful samples. Efficiency is N/(N + L<sub>c</sub>).</small></div>
+<div class="field"><label for="cp">CP length <span id="cpOut">L<sub>c</sub> = 10</span></label><input id="cp" type="range" min="0" max="20" step="1" value="10"><small>N = 32 useful samples. Efficiency is N/(N + L<sub>c</sub>).</small></div>
 <div class="field"><label for="delay">Latest path delay <span id="delayOut">L = 6 samples</span></label><input id="delay" type="range" min="1" max="20" step="1" value="6"></div>
 <div class="field"><label for="gain">Delayed-path magnitude <span id="gainOut">|h[L]| = 0.60</span></label><input id="gain" type="range" min="0.10" max="0.90" step="0.05" value="0.60"></div>
-<div class="field"><label for="offset">FFT-start offset <span id="offsetOut">s = 0 samples</span></label><input id="offset" type="range" min="-20" max="8" step="1" value="0"><small>s = 0 starts immediately after the CP; negative s starts earlier inside or before the CP.</small></div>
-<div class="field"><label>Presets</label><div class="row"><button id="safeBtn" class="primary">Sufficient CP</button><button id="shortBtn">CP too short</button><button id="lateBtn">Late window</button><button id="randomBtn">New data</button></div></div>
+<div class="field"><label for="offset">FFT-start offset <span id="offsetOut">s = -2 samples</span></label><input id="offset" type="range" min="-20" max="8" step="1" value="-2"><small>s = 0 starts immediately after the CP; negative s starts earlier inside or before the CP.</small></div>
+<div class="field"><label>Presets</label><div class="row"><button type="button" id="safeBtn" class="primary" aria-pressed="true">Sufficient CP</button><button type="button" id="shortBtn" aria-pressed="false">CP too short</button><button type="button" id="lateBtn" aria-pressed="false">Late window</button><button type="button" id="randomBtn">New data</button></div></div>
 <div class="equation">Y<sub>s</sub>[k] = e<sup>j2πks/N</sup>H[k]X[k] &nbsp; when &nbsp; L<sub>c</sub> ≥ L and L−L<sub>c</sub> ≤ s ≤ 0</div>
 <div id="status" aria-live="polite" class="status good"></div>
 </section>
@@ -35,7 +35,7 @@
 </div></main>
 <script>
 'use strict';
-const NS='http://www.w3.org/2000/svg',$=id=>document.getElementById(id),N=32;let Lc=8,L=6,g=.6,s=0,seed=1234567;
+const NS='http://www.w3.org/2000/svg',$=id=>document.getElementById(id),N=32;let Lc=10,L=6,g=.6,s=-2,seed=1234567;
 function el(tag,a={},t=''){const n=document.createElementNS(NS,tag);Object.entries(a).forEach(([k,v])=>n.setAttribute(k,v));if(t)n.textContent=t;return n}function line(v,x1,y1,x2,y2,c){v.appendChild(el('line',{x1,y1,x2,y2,class:c}))}function text(v,x,y,t,c='tick',an='middle'){v.appendChild(el('text',{x,y,class:c,'text-anchor':an},t))}function add(a,b){return{re:a.re+b.re,im:a.im+b.im}}function mul(a,b){return{re:a.re*b.re-a.im*b.im,im:a.re*b.im+a.im*b.re}}function expj(a){return{re:Math.cos(a),im:Math.sin(a)}}function mag(a){return Math.hypot(a.re,a.im)}
 function rng(){seed=(1664525*seed+1013904223)>>>0;return seed/4294967296}function qpsk(){const q=Math.SQRT1_2;return{re:(rng()<.5?-q:q),im:(rng()<.5?-q:q)}}function fft(x){return Array.from({length:N},(_,k)=>{let z={re:0,im:0};for(let n=0;n<N;n++)z=add(z,mul(x[n],expj(-2*Math.PI*k*n/N)));return z})}function ifft(X){return Array.from({length:N},(_,n)=>{let z={re:0,im:0};for(let k=0;k<N;k++)z=add(z,mul(X[k],expj(2*Math.PI*k*n/N)));return{re:z.re/N,im:z.im/N}})}
 let blocks=[];function newData(){blocks=Array.from({length:5},()=>{const X=Array.from({length:N},qpsk);return{X,x:ifft(X)}})}newData();
@@ -50,6 +50,18 @@ line(v,x(0),45,x(L),45,'axis');line(v,x(0),38,x(0),52,'axis');line(v,x(L),38,x(L
 function renderChannel(){const v=$('channelSvg'),W=620,H=290,Lm=55,R=18,T=20,B=44,pw=W-Lm-R,ph=H-T-B,x=k=>Lm+k/20*pw,y=a=>T+(1-a/1.05)*ph;v.innerHTML='';for(let q=0;q<=4;q++){const yy=T+q*ph/4;line(v,Lm,yy,W-R,yy,'gridline');text(v,Lm-8,yy+4,(1.05*(1-q/4)).toFixed(2),'tick','end')}for(let q=0;q<=4;q++){const xx=Lm+q*pw/4;line(v,xx,T,xx,H-B,'gridline');text(v,xx,H-B+18,String(q*5))}line(v,Lm,H-B,W-R,H-B,'axis');line(v,Lm,T,Lm,H-B,'axis');text(v,Lm+pw/2,H-8,'Delay ℓ (samples)','label');v.appendChild(el('text',{x:15,y:T+ph/2,class:'label','text-anchor':'middle',transform:`rotate(-90 15 ${T+ph/2})`},'|h[ℓ]|'));line(v,x(0),y(0),x(0),y(1),'tap');v.appendChild(el('circle',{cx:x(0),cy:y(1),r:5,class:'tap'}));line(v,x(L),y(0),x(L),y(g),'tap delayed');v.appendChild(el('circle',{cx:x(L),cy:y(g),r:5,class:'tap delayed'}))}
 function renderError(err,safe){const v=$('errorSvg'),W=620,H=290,Lm=58,R=18,T=20,B=44,pw=W-Lm-R,ph=H-T-B,max=Math.max(...err,1e-8),x=k=>Lm+(k+.5)/N*pw,y=e=>T+(max-e)/max*ph;v.innerHTML='';for(let q=0;q<=4;q++){const yy=T+q*ph/4;line(v,Lm,yy,W-R,yy,'gridline');text(v,Lm-8,yy+4,(max*(1-q/4)).toExponential(1),'tick','end')}line(v,Lm,H-B,W-R,H-B,'axis');line(v,Lm,T,Lm,H-B,'axis');const bw=pw/N*.72;err.forEach((e,k)=>v.appendChild(el('rect',{x:x(k)-bw/2,y:y(e),width:bw,height:H-B-y(e),class:safe?'errbar safeBar':'errbar'})));for(let k=0;k<N;k+=4)text(v,x(k),H-B+17,String(k));text(v,Lm+pw/2,H-8,'Subcarrier k','label');v.appendChild(el('text',{x:15,y:T+ph/2,class:'label','text-anchor':'middle',transform:`rotate(-90 15 ${T+ph/2})`},'Normalised model error'))}
 function render(){const safe=Lc>=L&&s>=L-Lc&&s<=0,res=simulate();$('cpOut').innerHTML='L<sub>c</sub> = '+Lc;$('delayOut').textContent='L = '+L+' samples';$('gainOut').textContent='|h[L]| = '+g.toFixed(2);$('offsetOut').textContent='s = '+s+' samples';$('eff').textContent=(100*N/(N+Lc)).toFixed(1)+'%';$('safeRange').textContent=Lc>=L?'['+(L-Lc)+', 0]':'none';$('evm').textContent=(100*res.evm).toFixed(res.evm<.001?4:2)+'%';$('verdict').textContent=safe?'valid':'broken';const st=$('status');if(Lc<L){st.className='status bad';st.innerHTML='<strong>Insufficient CP:</strong> L<sub>c</sub> &lt; L. No length-N window can avoid adjacent-symbol contamination; depending on its position, samples from the previous and/or next OFDM symbol enter the window, so the block is not a circular convolution.'}else if(!safe){st.className='status warn';st.innerHTML='<strong>Window outside the CP-safe interval:</strong> the CP is long enough, but this start position includes samples contaminated by an adjacent OFDM symbol. ICI and ISI appear.'}else{st.className='status good';st.innerHTML='<strong>Valid circular-convolution block:</strong> the FFT diagonalises the channel. A nonzero negative start offset contributes only the deterministic phase ramp e<sup>j2πks/N</sup>.'}renderTimeline();renderChannel();renderError(res.err,safe)}
-$('cp').oninput=e=>{Lc=Number(e.target.value);render()};$('delay').oninput=e=>{L=Number(e.target.value);render()};$('gain').oninput=e=>{g=Number(e.target.value);render()};$('offset').oninput=e=>{s=Number(e.target.value);render()};$('safeBtn').onclick=()=>{Lc=10;L=6;s=-2;$('cp').value=Lc;$('delay').value=L;$('offset').value=s;render()};$('shortBtn').onclick=()=>{Lc=4;L=9;s=0;$('cp').value=Lc;$('delay').value=L;$('offset').value=s;render()};$('lateBtn').onclick=()=>{Lc=10;L=6;s=3;$('cp').value=Lc;$('delay').value=L;$('offset').value=s;render()};$('randomBtn').onclick=()=>{seed=(seed+987654321)>>>0;newData();render()};render();
+const presetIds=['safeBtn','shortBtn','lateBtn'];
+function setActivePreset(id){presetIds.forEach(presetId=>{const button=$(presetId),active=presetId===id;button.classList.toggle('primary',active);button.setAttribute('aria-pressed',String(active))})}
+function clearActivePreset(){setActivePreset('')}
+function applyPreset(id,values){({Lc,L,g,s}=values);$('cp').value=Lc;$('delay').value=L;$('gain').value=g;$('offset').value=s;setActivePreset(id);render()}
+$('cp').oninput=e=>{Lc=Number(e.target.value);clearActivePreset();render()};
+$('delay').oninput=e=>{L=Number(e.target.value);clearActivePreset();render()};
+$('gain').oninput=e=>{g=Number(e.target.value);clearActivePreset();render()};
+$('offset').oninput=e=>{s=Number(e.target.value);clearActivePreset();render()};
+$('safeBtn').onclick=()=>applyPreset('safeBtn',{Lc:10,L:6,g:.6,s:-2});
+$('shortBtn').onclick=()=>applyPreset('shortBtn',{Lc:4,L:9,g:.6,s:0});
+$('lateBtn').onclick=()=>applyPreset('lateBtn',{Lc:10,L:6,g:.6,s:3});
+$('randomBtn').onclick=()=>{seed=(seed+987654321)>>>0;newData();render()};
+render();
 </script>
 </body></html>
