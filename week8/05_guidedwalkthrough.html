@@ -16,7 +16,6 @@
 .summary-row .toolbar-metrics.metrics-4{grid-template-columns:repeat(4,minmax(0,1fr))}.summary-row .toolbar-metrics.metrics-5{grid-template-columns:repeat(5,minmax(0,1fr))}.summary-row .toolbar-metrics.metrics-7{grid-template-columns:repeat(4,minmax(0,1fr))}
 .summary-row .toolbar-metrics.metrics-1{grid-template-columns:1fr}
 .mode-row{margin-bottom:10px}.mode-row button{padding:6px 10px}
-.mode-hint{align-self:center;color:var(--muted);font-size:.7rem}
 .mode-buttons .preset{margin-left:auto;border-color:var(--purple);color:var(--purple);background:color-mix(in srgb,var(--purple) 7%,var(--surface))}.mode-buttons .preset:hover{border-color:var(--purple);background:color-mix(in srgb,var(--purple) 13%,var(--surface))}
 .control-sections{display:grid;grid-template-columns:1.15fr 1fr;gap:8px}.control-section{min-width:0;padding:8px 10px;border:1px solid var(--border);border-radius:9px;background:var(--surface2)}.control-section-title{margin-bottom:7px;color:var(--muted);font-size:.64rem;font-weight:700;text-transform:uppercase;letter-spacing:.065em}.control-section .control-grid{grid-template-columns:repeat(auto-fit,minmax(135px,1fr));gap:7px 10px}
 .flow-caption{color:var(--muted);font-size:.72rem;margin:-6px 0 14px}
@@ -72,7 +71,7 @@ MMSE equalization.</p>
 <section class="panel" id="ifft" role="tabpanel" aria-labelledby="tab-ifft" hidden>
   <div class="panel-head"><div><div class="eyebrow">IFFT synthesis</div><h2>The IFFT is a bank of complex sinusoids, and each subcarrier is one of them scaled by its symbol</h2></div><div class="message">x[n] = (1/N) &sum;<sub>k</sub> X<sub>k</sub> e<sup>j2&pi;kn/N</sup>. Subcarrier k contributes exactly one sinusoid that completes k whole cycles across the block. Adding the active terms produces the N time-domain samples transmitted in one OFDM block.</div></div>
   <div class="sticky-bar"><div class="toolbar">
-    <div class="mode-buttons mode-row"><button type="button" id="ifAll">All non-DC active</button><button type="button" id="ifRandom">Random set</button><button type="button" id="ifSingle">Highlighted only</button><button type="button" id="ifClear">Clear</button><span class="mode-hint">After attempting the slide calculation:</span><button type="button" class="preset" id="ifExerciseAll">Check part 1 · 256 data</button><button type="button" class="preset" id="ifExercise200">Check part 3 · 200 data</button></div>
+    <div class="mode-buttons mode-row"><button type="button" id="ifAll">All non-DC active</button><button type="button" id="ifRandom">Random set</button><button type="button" id="ifSingle">Highlighted only</button><button type="button" id="ifClear">Clear</button></div>
     <div class="control-grid">
     <div class="ctrl"><label for="ifN"><span>Subcarriers N</span> <strong id="ifNOut">16</strong></label><input id="ifN" type="range" min="3" max="8" value="4" step="1"></div>
     <div class="ctrl"><label for="ifAct"><span>Activate the first M</span> <strong id="ifActOut">15 on</strong></label><input id="ifAct" type="range" min="1" max="16" value="16" step="1"></div>
@@ -341,17 +340,12 @@ function drawWhy(){
    2 · IFFT SYNTHESIS
    ================================================================== */
 /* The active set is the source of truth, so any subset can be switched on.
-   Practical presets hold k = 0 out as the DC null; the slide exercise may
-   explicitly include it because part 1 says all 256 subcarriers carry data. */
-let ifActive=null,ifStemMap=null,ifAllowDc=false;
-function ifFirstM(N,m,includeDc=false){
-  ifAllowDc=includeDc;ifActive=new Set();
-  const start=includeDc?0:1,count=Math.min(m,includeDc?N:N-1);
-  for(let i=start;i<start+count&&i<N;i++)ifActive.add(i);
-}
+   Subcarrier k = 0 is held out as the practical DC null. */
+let ifActive=null,ifStemMap=null;
+function ifFirstM(N,m){ifActive=new Set();for(let i=1;i<=Math.min(m,N-1);i++)ifActive.add(i)}
 function ifftParams(){
   const N=Math.pow(2,+$('ifN').value),kEl=$('ifK');
-  kEl.max=N-1;$('ifAct').max=ifAllowDc?N:N-1;$('ifLc').max=N;
+  kEl.max=N-1;$('ifAct').max=N-1;$('ifLc').max=N;
   const k=Math.min(+kEl.value,N-1);
   if(+kEl.value!==k)kEl.value=k;
   if(!ifActive)ifFirstM(N,+$('ifAct').value);
@@ -421,8 +415,7 @@ function drawIfft(){
   }
   bullets($('ifStemsNote'),[
     p.act+' of '+p.N+' subcarriers carry a '+(p.mod==='qam16'?'16-QAM':'QPSK')+' symbol; the rest are zero and cost nothing but bandwidth. Click any stem to switch that subcarrier on or off.',
-    active[0]?'The slide exercise deliberately uses all '+p.N+' IFFT inputs as data, including k = 0. Practical OFDM usually nulls DC because receiver DC offset and local-oscillator leakage sit there.'
-      :'Subcarrier 0 is held at zero as the DC null. It would land on the carrier frequency, where local-oscillator leakage and DC offset in the receiver sit.',
+    'Subcarrier 0 is held at zero as the DC null. It would land on the carrier frequency, where local-oscillator leakage and DC offset in the receiver sit.',
     p.mod==='qam16'?'16-QAM gives three distinct magnitudes here, so the stems vary in height; QPSK would make them all equal.'
       :'QPSK puts every symbol on one amplitude ring, so all the active stems are the same height. Switch to 16-QAM to see the magnitudes spread.'
   ]);
@@ -431,19 +424,11 @@ function drawIfft(){
 $('ifAct').addEventListener('input',()=>{ifFirstM(Math.pow(2,+$('ifN').value),+$('ifAct').value);drawIfft()});
 ['ifN','ifK','ifMod','ifBw','ifLc'].forEach(id=>$(id).addEventListener('input',drawIfft));
 $('ifAll').addEventListener('click',()=>{const N=Math.pow(2,+$('ifN').value);$('ifAct').value=N-1;ifFirstM(N,N-1);drawIfft()});
-$('ifClear').addEventListener('click',()=>{ifAllowDc=false;ifActive=new Set();drawIfft()});
-$('ifSingle').addEventListener('click',()=>{ifAllowDc=false;ifActive=new Set([Math.max(1,+$('ifK').value)]);drawIfft()});
-$('ifRandom').addEventListener('click',()=>{const N=Math.pow(2,+$('ifN').value);ifAllowDc=false;ifActive=new Set();
+$('ifClear').addEventListener('click',()=>{ifActive=new Set();drawIfft()});
+$('ifSingle').addEventListener('click',()=>{ifActive=new Set([Math.max(1,+$('ifK').value)]);drawIfft()});
+$('ifRandom').addEventListener('click',()=>{const N=Math.pow(2,+$('ifN').value);ifActive=new Set();
   for(let i=1;i<N;i++)if(Math.random()<0.5)ifActive.add(i);
   if(!ifActive.size)ifActive.add(1);drawIfft()});
-$('ifExerciseAll').addEventListener('click',()=>{
-  $('ifN').value=8;$('ifLc').value=64;$('ifBw').value=100;$('ifMod').value='qpsk';$('ifAct').max=256;$('ifAct').value=256;
-  ifFirstM(256,256,true);drawIfft();
-});
-$('ifExercise200').addEventListener('click',()=>{
-  $('ifN').value=8;$('ifLc').value=64;$('ifBw').value=100;$('ifMod').value='qpsk';$('ifAct').value=200;
-  ifFirstM(256,200);drawIfft();
-});
 $('ifStems').style.cursor='pointer';
 $('ifStems').addEventListener('click',e=>{
   if(!ifStemMap)return;
