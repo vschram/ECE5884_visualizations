@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Week 8 Guided Walkthrough</title>
+<title>Week 9 Guided Walkthrough</title>
 <style>
 :root{--bg:#f7f8fb;--surface:#fff;--surface2:#eef2f7;--border:#dfe5ec;--text:#172033;--muted:#667085;--blue:#2563eb;--orange:#ea580c;--green:#059669;--red:#dc2626;--purple:#7c3aed;--cyan:#0891b2;--shadow:0 1px 2px rgba(16,24,40,.04)}
 @media(prefers-color-scheme:dark){:root{--bg:#0e1117;--surface:#171b24;--surface2:#222938;--border:#303949;--text:#e8edf5;--muted:#99a4b5;--shadow:none}}
@@ -29,12 +29,12 @@
 </style>
 </head>
 <body>
-<h1>Week 8 · OFDM: Synthesis, Orthogonality, and Equalization</h1>
-<p class="sub">Follow the Week 8 slide sequence: motivate multicarrier transmission, build an OFDM symbol,
+<h1>Week 9 · OFDM: Synthesis, Orthogonality, and Equalization</h1>
+<p class="sub">Follow the Week 9 slide sequence: motivate multicarrier transmission, build an OFDM symbol,
 connect orthogonality to its spectrum, repair multipath with a cyclic prefix, then compare one-tap ZF and
 MMSE equalization.</p>
 
-<nav class="tabs" role="tablist" aria-label="Week 8 topics">
+<nav class="tabs" role="tablist" aria-label="Week 9 topics">
   <button type="button" role="tab" id="tab-why" aria-controls="why" aria-selected="true">1 &middot; Why Multicarrier</button>
   <button type="button" role="tab" id="tab-ifft" aria-controls="ifft" aria-selected="false">2 &middot; IFFT Synthesis</button>
   <button type="button" role="tab" id="tab-ortho" aria-controls="ortho" aria-selected="false">3 &middot; Orthogonality &amp; Spectrum</button>
@@ -331,7 +331,7 @@ function drawWhy(){
   bullets($('whFlatNote'),[
     'The response wanders across the band because the channel has '+(Math.min(60,p.L)+1)+' taps. Over the whole of B that variation is severe; over the shaded width of one subcarrier it is almost nothing.',
     'Delay ratio τ<sub>max</sub>/T<sub>s</sub> = Δfτ<sub>max</sub> = '+p.flat.toFixed(3)+'. '+(p.flat<0.1?'It is well below 0.1, so each subcarrier is narrow relative to the channel variation.':p.flat<0.3?'It is between 0.1 and 0.3: the narrowband approximation is becoming marginal.':'It exceeds 0.3, so increase N if a flatter response within each subcarrier is required.'),
-    'Raise N to shrink Δf and flatten each subcarrier further — at the price of a longer symbol, more latency, and more sensitivity to Doppler, which is the Week 8 system-design trade-off.'
+    'Raise N to shrink Δf and flatten each subcarrier further — at the price of a longer symbol, more latency, and more sensitivity to Doppler, which is the Week 9 system-design trade-off.'
   ]);
 }
 ['whB','whTau','whN','whCp'].forEach(id=>$(id).addEventListener('input',drawWhy));
@@ -786,7 +786,7 @@ function drawOfTone(){
     'Drag k across the block: every subcarrier sits at a different point of the same H(f), so the constellation turns and breathes subcarrier by subcarrier. That is the picture per-subcarrier equalization exists to undo.',
     ofPerfect?'With Ĥₖ assumed perfect the residual gain is GₖHₖ = '+st.ghMag.toFixed(3)+' ∠'+fmtDeg(st.ghDeg)+' — rotation fully removed'+(ofEq==='mmse'?', with the MMSE shrinkage left in on purpose.':'.')
       :'Pilots provide Ĥₖ. In this illustrative estimate it is off by '+estErr.toFixed(3)+', leaving residual gain GₖHₖ = '+st.ghMag.toFixed(3)+' ∠'+fmtDeg(st.ghDeg)+' after equalization.',
-    'The walkthrough deliberately does not assume a comb pattern or interpolation rule: Week 8 needs only the distinction between Hₖ and the estimate Ĥₖ used by the equalizer.',
+    'The walkthrough deliberately does not assume a comb pattern or interpolation rule: Week 9 needs only the distinction between Hₖ and the estimate Ĥₖ used by the equalizer.',
     mod==='qam16'?'16-QAM is where a faded subcarrier hurts: its rings are '+(2/Math.sqrt(10)).toFixed(2)+' apart against QPSK’s '+(2/Math.sqrt(2)).toFixed(2)+', so the same |Hₖ| and the same noise now push the inner ring into its neighbours’ decision regions. Measured EVM '+(100*st.evm).toFixed(1)+'%.'
       :'Measured EVM '+(100*st.evm).toFixed(1)+'% with the '+name+' equalizer. Switch to 16-QAM to see why deep subcarriers need coding across subcarriers: the same fade QPSK shrugs off closes the 16-QAM rings.'
   ]);
@@ -819,7 +819,7 @@ function drawOfdm(){
   bullets($('ofChannelNote'),[
     ofCh==='notch'?'Notch asked for '+p.depth+' dB and the channel delivers '+(-achieved).toFixed(1)+' dB. The shape is pulled back to L + 1 = '+(p.L+1)+' taps so it stays a genuine finite-memory channel, and a short channel simply cannot cut a deep narrow notch — widen it, or raise L, and the full depth appears.':null,
     'The physical channel supplies one complex H[k] per subcarrier. Deep notches are the bins on which ZF becomes dangerous.',
-    ofPerfect?'Perfect Ĥ[k] is selected, so the equalizer uses the true channel response.':'The dashed curve is a simple noisy Ĥ[k] supplied by pilots. Week 8 uses it in the equalizer but does not prescribe the pilot pattern or interpolation method.'
+    ofPerfect?'Perfect Ĥ[k] is selected, so the equalizer uses the true channel response.':'The dashed curve is a simple noisy Ĥ[k] supplied by pilots. Week 9 uses it in the equalizer but does not prescribe the pilot pattern or interpolation method.'
   ]);
 
   /* --- per-subcarrier SNR --- */
