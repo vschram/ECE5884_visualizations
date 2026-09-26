@@ -10,7 +10,7 @@
 *{box-sizing:border-box}html{color-scheme:light dark}body{margin:0 auto;max-width:1180px;padding:18px;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",sans-serif}h1{font-size:1.28rem;margin:0 0 4px}h2{font-size:1.05rem;margin:0 0 4px}h3{font-size:.83rem;margin:0 0 6px}.sub{margin:0 0 12px;color:var(--muted);font-size:.86rem;line-height:1.42}.tabs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin-bottom:10px}.tabs button,button,select{border:1px solid var(--border);background:var(--surface2);color:var(--text);padding:7px 10px;border-radius:999px;cursor:pointer;font:inherit;font-size:.76rem}.tabs button{border-radius:9px;min-height:42px;line-height:1.2}.tabs button[aria-selected=true]{background:var(--blue);border-color:var(--blue);color:#fff}.tabs button:hover,button:hover{border-color:var(--blue)}button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--blue);outline-offset:2px}.panel[hidden]{display:none}.panel-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:8px}.eyebrow{font-size:.66rem;text-transform:uppercase;letter-spacing:.08em;color:var(--blue);margin-bottom:3px}.message{max-width:700px;color:var(--muted);font-size:.8rem;line-height:1.4}.toolbar,.card,.metric,.note,.formula,.flow-step{background:var(--surface);border:1px solid var(--border);border-radius:10px;box-shadow:var(--shadow)}.toolbar{padding:10px 12px;margin-bottom:10px}.sticky-bar{position:sticky;top:0;z-index:15;background:var(--bg);padding-top:4px;margin-bottom:10px}.sticky-bar .toolbar{margin-bottom:0}.controls{display:flex;align-items:center;flex-wrap:wrap;gap:10px}.toggle-row{margin-top:7px}.ctrl{min-width:150px;flex:1}.ctrl label,.rowlabel{display:flex;justify-content:space-between;gap:7px;color:var(--muted);font-size:.73rem;margin-bottom:3px}.ctrl strong,.rowlabel strong{color:var(--text);white-space:nowrap}.ctrl input[type=range]{width:100%}.inline-check{display:flex;align-items:center;gap:7px;color:var(--text);font-size:.76rem;cursor:pointer;min-height:30px}.plots{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.two{grid-template-columns:repeat(2,minmax(0,1fr))}.card{padding:10px;min-width:0}.title{font-size:.68rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:6px}.canvas-wrap{width:100%;min-width:0}canvas{display:block;width:100%;height:235px}.plots.two canvas{height:245px}.metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:10px}.metric{padding:8px 9px;text-align:center;min-width:0}.metric .name{font-size:.63rem;color:var(--muted);text-transform:uppercase;letter-spacing:.055em}.metric .value{font-size:.96rem;font-weight:700;margin-top:2px;overflow-wrap:anywhere}.metric .small{font-size:.68rem;color:var(--muted);margin-top:2px;line-height:1.28}.wk8{display:inline-block;margin-left:5px;padding:1px 5px;border:1px solid var(--purple);border-radius:999px;font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--purple);vertical-align:middle;white-space:nowrap}.note,.formula{padding:9px 11px;margin-top:10px;font-size:.76rem;color:var(--muted);line-height:1.42}.note strong,.formula strong{color:var(--text)}.formula{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;overflow-x:auto}.flow{display:flex;align-items:stretch;gap:5px;margin-bottom:10px}.flow-step{padding:8px 7px;flex:1;min-width:0;text-align:center}.flow-step strong{display:block;font-size:.73rem}.flow-step span{display:block;font-size:.66rem;color:var(--muted);margin-top:2px;line-height:1.25}.arrow{align-self:center;color:var(--muted)}.mode-buttons{display:flex;gap:6px;flex-wrap:wrap}.mode-buttons button[aria-pressed=true]{background:var(--blue);color:#fff;border-color:var(--blue)}.model-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.matrix-wrap{overflow:auto}.matrix{border-collapse:separate;border-spacing:3px;margin:auto;font-size:.7rem}.matrix th{color:var(--muted);font-weight:600;padding:3px}.matrix td{min-width:46px;text-align:center;padding:6px 4px;border:1px solid var(--border);border-radius:6px;font-family:ui-monospace,SFMono-Regular,Consolas,monospace}.matrix td.active{background:rgba(37,99,235,.16);border-color:var(--blue)}.checklist{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:10px}.check{padding:9px 10px;border-left:3px solid var(--blue);background:var(--surface2);border-radius:0 8px 8px 0}.check strong{display:block;font-size:.74rem}.check span{display:block;color:var(--muted);font-size:.68rem;line-height:1.32;margin-top:2px}.legend{display:flex;gap:11px;flex-wrap:wrap;color:var(--muted);font-size:.7rem;margin-top:5px}.bullets{margin:6px 0 0;padding-left:16px;color:var(--muted);font-size:.73rem;line-height:1.38}.bullets li{margin-bottom:3px}.bullets li:last-child{margin-bottom:0}.bullets strong{color:var(--text)}.sw{display:inline-block;width:11px;height:3px;vertical-align:middle;margin-right:4px;border-radius:2px}.ink{background:var(--text)}.blue{background:var(--blue)}.orange{background:var(--orange)}.purple{background:var(--purple)}.green{background:var(--green)}.cyan{background:var(--cyan)}
 .toolbar-split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,auto);gap:16px;align-items:center}.toolbar-left{min-width:0}.toolbar-left>.controls{margin:0}.toolbar-metrics{display:grid;grid-auto-flow:column;gap:9px}.toolbar-metrics .metric{padding:8px 11px;min-width:118px}.toolbar-metrics .metric .value{font-size:.92rem;margin-top:2px}.toolbar-metrics .metric .small{margin-top:2px}.panel-main{min-width:0}.metric-rail{display:grid;gap:10px;min-width:0}.metric-rail .formula,.metric-rail .note{margin-top:0;overflow-wrap:anywhere}.metric-rail .formula{overflow-x:visible}.metric-rail .formula div+div{margin-top:7px}.gain-dialog{width:calc(100% - 32px);max-width:540px;padding:18px;background:var(--surface);color:var(--text);border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow)}.gain-dialog::backdrop{background:color-mix(in srgb,var(--text) 38%,transparent)}.gain-dialog h3{margin-bottom:10px}.gain-dialog .formula{margin:0 0 12px}.gain-dialog .message{margin:0 0 14px}.metric button{margin-top:8px}
 .plot-formula{margin-top:8px;padding:8px 10px;overflow-wrap:anywhere;overflow-x:visible}
-.plot-card-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:8px}.plot-card-head .title{margin-bottom:0}.plot-card-head button{flex:0 0 auto;padding:6px 10px}
+.plot-card-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:8px}.plot-card-head .title{flex:1 1 160px;margin-bottom:0}.plot-card-head button{flex:0 1 auto;max-width:100%;padding:6px 10px}
 .control-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:6px 11px;align-items:end}.control-grid .ctrl{min-width:0}.control-grid select{width:100%}
 .summary-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(275px,.72fr);gap:8px;align-items:stretch;margin-top:8px}.summary-row .toolbar-metrics{grid-auto-flow:row;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}.summary-row .toolbar-metrics .metric{min-width:0;padding:7px 8px}.summary-row .note{display:block;margin:0;max-width:none}.summary-row .formula{display:block;margin:0;overflow-wrap:anywhere;overflow-x:visible;font-size:.71rem;line-height:1.34}.summary-row .formula div+div{margin-top:4px}
 .summary-row .toolbar-metrics.metrics-4{grid-template-columns:repeat(4,minmax(0,1fr))}.summary-row .toolbar-metrics.metrics-5{grid-template-columns:repeat(5,minmax(0,1fr))}.summary-row .toolbar-metrics.metrics-7{grid-template-columns:repeat(4,minmax(0,1fr))}
@@ -31,7 +31,7 @@
 <body>
 <h1>Week 9 · OFDM: Synthesis, Orthogonality, and Equalization</h1>
 <p class="sub">Follow the Week 9 slide sequence: motivate multicarrier transmission, build an OFDM symbol,
-connect orthogonality to its spectrum, repair multipath with a cyclic prefix, then compare one-tap ZF and
+connect orthogonality to its spectrum, account for multipath with a cyclic prefix, then compare one-tap ZF and
 MMSE equalization.</p>
 
 <nav class="tabs" role="tablist" aria-label="Week 9 topics">
@@ -45,7 +45,7 @@ MMSE equalization.</p>
 <main>
 
 <section class="panel" id="why" role="tabpanel" aria-labelledby="tab-why">
-  <div class="panel-head"><div><div class="eyebrow">Multicarrier motivation</div><h2>A wideband channel has memory; splitting the band into N narrow subcarriers takes it away</h2></div><div class="message">One wideband carrier sampled every T = 1/B seconds sees channel memory L = &lceil;&tau;<sub>max</sub>/T&rceil;. Divide the same B into N subcarriers and each one is N times narrower and its useful symbol N times longer, so it sees a channel that is almost flat &mdash; one complex gain instead of a filter.</div></div>
+  <div class="panel-head"><div><div class="eyebrow">Multicarrier motivation</div><h2>A wideband single-carrier signal experiences frequency-selective fading; OFDM divides the band into approximately flat-fading subchannels</h2></div><div class="message">Under the complex-baseband convention used here, the sample rate is B and the sample period is T = 1/B. A maximum excess delay &tau;<sub>max</sub> therefore spans approximately L = &lceil;&tau;<sub>max</sub>/T&rceil; samples. Dividing the same bandwidth into N subcarriers makes each useful symbol N times longer, so the normalized delay &tau;<sub>max</sub>/T<sub>s</sub> becomes smaller and each subcarrier can be represented approximately by one complex gain.</div></div>
   <div class="sticky-bar"><div class="toolbar">
     <div class="control-grid">
     <div class="ctrl"><label for="whB"><span>Bandwidth B</span> <strong id="whBOut">10 MHz</strong></label><input id="whB" type="range" min="1" max="40" value="10" step="1"></div>
@@ -56,37 +56,37 @@ MMSE equalization.</p>
     <div class="summary-row"><div class="toolbar-metrics metrics-4">
       <div class="metric"><div class="name">Channel memory L</div><div class="value" id="whL">&mdash;</div><div class="small">&lceil;&tau;<sub>max</sub>/T&rceil; samples</div></div>
       <div class="metric"><div class="name">Subcarrier spacing &Delta;f</div><div class="value" id="whDf">&mdash;</div><div class="small">B / N</div></div>
-      <div class="metric"><div class="name">Delay ratio</div><div class="value" id="whFlatOut">&mdash;</div><div class="small">&tau;<sub>max</sub>/T<sub>s</sub> = &Delta;f&tau;<sub>max</sub></div></div>
+      <div class="metric"><div class="name">Normalized maximum delay</div><div class="value" id="whFlatOut">&mdash;</div><div class="small">&tau;<sub>max</sub>/T<sub>s</sub> = &Delta;f&tau;<sub>max</sub></div></div>
       <div class="metric"><div class="name">CP overhead</div><div class="value" id="whOver">&mdash;</div><div class="small">L<sub>c</sub> / (N + L<sub>c</sub>)</div></div>
     </div><div class="formula"><div>T = 1/B, T<sub>s</sub> = NT, &Delta;f = 1/T<sub>s</sub> = B/N</div><div>L = &lceil;&tau;<sub>max</sub>/T&rceil;</div><div id="whSym">useful symbol duration = &mdash;</div></div></div>
   </div></div>
 
   <div class="plots">
-    <div class="card"><div class="title">Channel memory against bandwidth</div><canvas id="whMem" role="img" aria-label="Channel memory in samples against bandwidth, with the current operating point marked"></canvas><div class="legend"><span><i class="sw blue"></i>Single carrier: L samples</span><span><i class="sw green"></i>Per subcarrier</span><span><i class="sw" style="background:var(--red)"></i>Your B</span></div><ul class="bullets" id="whMemNote"></ul></div>
-    <div class="card"><div class="title">Multiplies per useful symbol</div><canvas id="whCost" role="img" aria-label="Per-symbol multiply count for a time-domain equalizer and for OFDM against bandwidth"></canvas><div class="legend"><span><i class="sw orange"></i>Time-domain EQ: L taps</span><span><i class="sw purple"></i>OFDM: log&#8322;N + 1</span></div><ul class="bullets" id="whCostNote"></ul></div>
+    <div class="card"><div class="title">Channel memory against bandwidth</div><canvas id="whMem" role="img" aria-label="Channel memory in samples against bandwidth, with the selected operating point marked"></canvas><div class="legend"><span><i class="sw blue"></i>Single carrier: L samples</span><span><i class="sw green"></i>Normalized subcarrier delay</span><span><i class="sw" style="background:var(--red)"></i>Selected bandwidth</span></div><ul class="bullets" id="whMemNote"></ul></div>
+    <div class="card"><div class="title">Approximate complex-multiplication scaling</div><canvas id="whCost" role="img" aria-label="Approximate per-sample complex-multiplication scaling for time-domain equalization and OFDM against bandwidth"></canvas><div class="legend"><span><i class="sw orange"></i>Time-domain EQ: proportional to L</span><span><i class="sw purple"></i>OFDM: proportional to log&#8322;N + 1</span></div><ul class="bullets" id="whCostNote"></ul></div>
     <div class="card"><div class="title">|H(f)| across the band, with the subcarrier grid</div><canvas id="whFlat" role="img" aria-label="Channel magnitude across the band with subcarrier boundaries drawn, showing how little of the response one subcarrier spans"></canvas><div class="legend"><span><i class="sw blue"></i>|H(f)|</span><span><i class="sw" style="background:var(--red)"></i>One subcarrier</span></div><ul class="bullets" id="whFlatNote"></ul></div>
   </div>
 </section>
 
 <section class="panel" id="ifft" role="tabpanel" aria-labelledby="tab-ifft" hidden>
-  <div class="panel-head"><div><div class="eyebrow">IFFT synthesis</div><h2>The IFFT is a bank of complex sinusoids, and each subcarrier is one of them scaled by its symbol</h2></div><div class="message">x[n] = (1/N) &sum;<sub>k</sub> X<sub>k</sub> e<sup>j2&pi;kn/N</sup>. Subcarrier k contributes exactly one sinusoid that completes k whole cycles across the block. Adding the active terms produces the N time-domain samples transmitted in one OFDM block.</div></div>
+  <div class="panel-head"><div><div class="eyebrow">IFFT synthesis</div><h2>The IFFT synthesizes the time-domain block as a weighted sum of orthogonal complex exponentials</h2></div><div class="message">x[n] = (1/N) &sum;<sub>k</sub> X<sub>k</sub> e<sup>j2&pi;kn/N</sup>. Subcarrier k contributes one complex exponential that completes k cycles across the block, weighted by symbol X<sub>k</sub>. Summing the active terms produces the N time-domain samples in one OFDM block.</div></div>
   <div class="sticky-bar"><div class="toolbar">
     <div class="mode-buttons mode-row"><button type="button" id="ifAll">All non-DC active</button><button type="button" id="ifRandom">Random set</button><button type="button" id="ifSingle">Highlighted only</button><button type="button" id="ifClear">Clear</button></div>
     <div class="control-grid">
     <div class="ctrl"><label for="ifN"><span>Subcarriers N</span> <strong id="ifNOut">16</strong></label><input id="ifN" type="range" min="3" max="8" value="4" step="1"></div>
-    <div class="ctrl"><label for="ifAct"><span>Activate the first M</span> <strong id="ifActOut">15 on</strong></label><input id="ifAct" type="range" min="1" max="16" value="16" step="1"></div>
+    <div class="ctrl"><label for="ifAct"><span>Active non-DC subcarriers M</span> <strong id="ifActOut">15 on</strong></label><input id="ifAct" type="range" min="1" max="16" value="16" step="1"></div>
     <div class="ctrl"><label for="ifK"><span>Highlighted subcarrier k</span> <strong id="ifKOut">3</strong></label><input id="ifK" type="range" min="0" max="15" value="3" step="1"></div>
     <div class="ctrl"><label for="ifMod">Constellation</label><select id="ifMod"><option value="qpsk" selected>QPSK</option><option value="qam16">16-QAM</option></select></div>
-    <div class="ctrl"><label for="ifBw"><span>Sample rate / bandwidth B</span> <strong id="ifBwOut">10 MHz</strong></label><input id="ifBw" type="range" min="1" max="100" value="10" step="1"></div>
+    <div class="ctrl"><label for="ifBw"><span>Complex-baseband sample rate B</span> <strong id="ifBwOut">10 MHz</strong></label><input id="ifBw" type="range" min="1" max="100" value="10" step="1"></div>
     <div class="ctrl"><label for="ifLc"><span>CP length L<sub>c</sub></span> <strong id="ifLcOut">4</strong></label><input id="ifLc" type="range" min="0" max="64" value="4" step="1"></div>
     </div>
     <div class="summary-row"><div class="toolbar-metrics metrics-7">
       <div class="metric"><div class="name">Cycles per block</div><div class="value" id="ifCycles">&mdash;</div><div class="small">subcarrier k completes k cycles</div></div>
-      <div class="metric"><div class="name">Block energy check</div><div class="value" id="ifParseval">&mdash;</div><div class="small">N&sum;|x[n]|&sup2; vs &sum;|X<sub>k</sub>|&sup2;</div></div>
+      <div class="metric"><div class="name">Parseval energy ratio</div><div class="value" id="ifParseval">&mdash;</div><div class="small">N&sum;|x[n]|&sup2; / &sum;|X<sub>k</sub>|&sup2;</div></div>
       <div class="metric"><div class="name">DC subcarrier</div><div class="value" id="ifDc">&mdash;</div><div class="small">k = 0 is usually nulled</div></div>
-      <div class="metric"><div class="name">Payload</div><div class="value" id="ifBits">&mdash;</div><div class="small">N<sub>data</sub> log<sub>2</sub>M bits</div></div>
+      <div class="metric"><div class="name">Uncoded bits per OFDM symbol</div><div class="value" id="ifBits">&mdash;</div><div class="small">N<sub>data</sub> log<sub>2</sub>M bits</div></div>
       <div class="metric"><div class="name">OFDM symbol time</div><div class="value" id="ifTsym">&mdash;</div><div class="small">(N + L<sub>c</sub>)/B</div></div>
-      <div class="metric"><div class="name">Raw bit rate</div><div class="value" id="ifRate">&mdash;</div><div class="small">payload / symbol time</div></div>
+      <div class="metric"><div class="name">Uncoded gross bit rate</div><div class="value" id="ifRate">&mdash;</div><div class="small">bits per OFDM symbol / symbol time</div></div>
       <div class="metric lab-metric"><div class="name">Interactive lab</div><div class="value">IFFT Builder</div><button type="button" class="lab-toggle" aria-controls="lab-ifft" aria-expanded="false">Open lab</button></div>
     </div><div class="formula"><div>x[n] = (1/N) &sum;<sub>k</sub> X<sub>k</sub> e<sup>j2&pi;kn/N</sup></div><div id="ifOneFormula">highlighted term: &mdash;</div></div></div>
   </div></div>
@@ -94,26 +94,26 @@ MMSE equalization.</p>
   <div class="lab-shell" id="lab-ifft" hidden><iframe class="lab-frame" loading="lazy" title="OFDM IFFT Builder interactive lab" src="01_ofdm_ifft_builder.html?v=20260924"></iframe></div>
 
   <div class="plots two">
-    <div class="card"><div class="title">Subcarrier k on its own</div><canvas id="ifOne" role="img" aria-label="Real and imaginary parts of the single highlighted subcarrier across the block"></canvas><div class="legend"><span><i class="sw blue"></i>real</span><span><i class="sw orange"></i>imaginary</span></div><ul class="bullets" id="ifOneNote"></ul></div>
-    <div class="card"><div class="title">Adding the active subcarriers: x[n]</div><canvas id="ifSum" role="img" aria-label="Real part of the OFDM waveform as active subcarriers are summed, with the highlighted subcarrier shown separately"></canvas><div class="legend"><span><i class="sw blue"></i>x[n], all active</span><span><i class="sw green"></i>highlighted subcarrier</span></div><ul class="bullets" id="ifSumNote"></ul></div>
+    <div class="card"><div class="title">Selected subcarrier: ideal continuous-time contribution and IFFT samples</div><canvas id="ifOne" role="img" aria-label="Smooth real and imaginary components of the selected subcarrier with markers at the IFFT sample times"></canvas><div class="legend"><span><i class="sw blue"></i>real / in-phase</span><span><i class="sw orange"></i>imaginary / quadrature</span></div><ul class="bullets" id="ifOneNote"></ul></div>
+    <div class="card"><div class="title">Ideal continuous-time sum of the active subcarriers</div><canvas id="ifSum" role="img" aria-label="Smooth in-phase component of the ideal OFDM synthesis with markers at the IFFT sample times and the selected subcarrier shown separately"></canvas><div class="legend"><span><i class="sw blue"></i>in-phase component of x(t)</span><span><i class="sw green"></i>selected subcarrier</span></div><ul class="bullets" id="ifSumNote"></ul></div>
     <div class="card"><div class="title">IFFT input: |X<sub>k</sub>| across subcarriers &mdash; click to switch one on or off</div><canvas id="ifStems" role="img" aria-label="Stem plot of the symbol magnitude on each subcarrier, with inactive subcarriers and the highlighted one marked"></canvas><div class="legend"><span><i class="sw blue"></i>active</span><span><i class="sw green"></i>highlighted</span><span><i class="sw" style="background:var(--muted)"></i>off</span></div><ul class="bullets" id="ifStemsNote"></ul></div>
   </div>
 </section>
 
 <section class="panel" id="ortho" role="tabpanel" aria-labelledby="tab-ortho" hidden>
-  <div class="panel-head"><div><div class="eyebrow">Orthogonality, spectra, and out-of-band emissions</div><h2>Integer cycles make the subcarriers orthogonal; the transmit window shapes their sidelobes</h2></div><div class="message">Subcarrier k and receiver basis m differ by an integer number of cycles over the useful block, so their inner product is exactly zero unless k = m. Their sinc-like spectra overlap, but the nulls land on the other subcarrier centres. A smoother time-domain window reduces the out-of-band sidelobes at the cost of transition time.</div></div>
+  <div class="panel-head"><div><div class="eyebrow">Orthogonality, spectra, and out-of-band emissions</div><h2>Integer cycles make the subcarriers orthogonal; the transmit window shapes their sidelobes</h2></div><div class="message">Over a rectangular useful FFT interval, subcarrier k and FFT basis index m differ by an integer number of cycles, so their inner product is zero unless k = m. Their finite-length spectra overlap, but the nulls occur at the other subcarrier centres. The separate transmit-spectrum illustration assumes that any taper transition is accommodated in overlap or guard samples outside the useful FFT interval.</div></div>
   <div class="sticky-bar"><div class="toolbar">
     <div class="control-grid">
     <div class="ctrl"><label for="orN"><span>Subcarriers N</span> <strong id="orNOut">16</strong></label><input id="orN" type="range" min="3" max="7" value="4" step="1"></div>
     <div class="ctrl"><label for="orK"><span>Transmitted subcarrier k</span> <strong id="orKOut">4</strong></label><input id="orK" type="range" min="0" max="15" value="4" step="1"></div>
-    <div class="ctrl"><label for="orM"><span>Receiver basis m</span> <strong id="orMOut">4</strong></label><input id="orM" type="range" min="0" max="15" value="4" step="1"></div>
-    <div class="ctrl"><label for="orRoll"><span>Window edge taper</span> <strong id="orRollOut">0%</strong></label><input id="orRoll" type="range" min="0" max="30" value="0" step="1"></div>
+    <div class="ctrl"><label for="orM"><span>FFT basis index m</span> <strong id="orMOut">4</strong></label><input id="orM" type="range" min="0" max="15" value="4" step="1"></div>
+    <div class="ctrl"><label for="orRoll"><span>Taper duration per block edge</span> <strong id="orRollOut">0%</strong></label><input id="orRoll" type="range" min="0" max="30" value="0" step="1"></div>
     </div>
     <div class="summary-row"><div class="toolbar-metrics metrics-5">
       <div class="metric"><div class="name">Inner product</div><div class="value" id="orInner">&mdash;</div><div class="small">|&sum;<sub>n</sub> e<sup>j2&pi;(k&minus;m)n/N</sup>| / N</div></div>
       <div class="metric"><div class="name">Orthogonal spacing</div><div class="value">&Delta;fT<sub>s</sub> = 1</div><div class="small">one FFT-bin spacing</div></div>
-      <div class="metric"><div class="name">Active spectrum</div><div class="value" id="orOccupied">&mdash;</div><div class="small">N &minus; 2 active subcarriers</div></div>
-      <div class="metric"><div class="name">OOB probe</div><div class="value" id="orOob">&mdash;</div><div class="small">two bins beyond the band edge</div></div>
+      <div class="metric"><div class="name">Active spectrum</div><div class="value" id="orOccupied">&mdash;</div><div class="small">N &minus; 2 active; DC and one edge bin are nulled</div></div>
+      <div class="metric"><div class="name">Normalized out-of-band power</div><div class="value" id="orOob">&mdash;</div><div class="small">measured 2&Delta;f beyond the upper edge, relative to the peak</div></div>
       <div class="metric lab-metric"><div class="name">Interactive lab</div><div class="value">Orthogonality</div><button type="button" class="lab-toggle" aria-controls="lab-ortho" aria-expanded="false">Open lab</button></div>
     </div><div class="formula"><div>&sum;<sub>n=0</sub><sup>N&minus;1</sup> e<sup>j2&pi;(k&minus;m)n/N</sup> = N if k = m, else 0</div><div id="orNote">Rectangular window: narrow main lobe, slowly decaying sidelobes</div></div></div>
   </div></div>
@@ -121,39 +121,39 @@ MMSE equalization.</p>
   <div class="lab-shell" id="lab-ortho" hidden><iframe class="lab-frame" loading="lazy" title="OFDM Orthogonality Explorer interactive lab" src="02_ofdm_orthogonality_explorer.html?v=20260924"></iframe></div>
 
   <div class="plots">
-    <div class="card"><div class="title">Subcarrier k against receiver basis m, term by term</div><canvas id="orBasis" role="img" aria-label="Real part of the product of the transmitted subcarrier and the conjugated receiver basis, with its running sum"></canvas><div class="legend"><span><i class="sw blue"></i>term n</span><span><i class="sw orange"></i>running sum</span></div><ul class="bullets" id="orBasisNote"></ul></div>
-    <div class="card"><div class="title">Subcarrier spectra: nulls on the neighbours' centres</div><canvas id="orSpec" role="img" aria-label="Dirichlet kernel spectra of neighbouring subcarriers with the sampling instants of the receiver marked"></canvas><div class="legend"><span><i class="sw blue"></i>transmitted subcarrier</span><span><i class="sw" style="background:var(--muted)"></i>neighbours</span><span><i class="sw" style="background:var(--red)"></i>receiver samples</span></div><ul class="bullets" id="orSpecNote"></ul></div>
+    <div class="card"><div class="title">Subcarrier k against FFT basis m, term by term</div><canvas id="orBasis" role="img" aria-label="Real part of the product of the transmitted subcarrier and the conjugated FFT basis function, with its running sum"></canvas><div class="legend"><span><i class="sw blue"></i>term n</span><span><i class="sw orange"></i>running sum</span></div><ul class="bullets" id="orBasisNote"></ul></div>
+    <div class="card"><div class="title">Subcarrier spectra: nulls at neighbouring subcarrier centres</div><canvas id="orSpec" role="img" aria-label="Finite-length spectra of neighbouring subcarriers with the FFT-bin frequencies marked"></canvas><div class="legend"><span><i class="sw blue"></i>transmitted subcarrier</span><span><i class="sw" style="background:var(--muted)"></i>neighbours</span><span><i class="sw" style="background:var(--red)"></i>FFT-bin frequencies</span></div><ul class="bullets" id="orSpecNote"></ul></div>
     <div class="card"><div class="title">Aggregate OFDM spectrum and out-of-band sidelobes</div><canvas id="orAggregate" role="img" aria-label="Aggregate OFDM spectrum for rectangular and tapered symbol windows, including out-of-band sidelobes"></canvas><div class="legend"><span><i class="sw blue"></i>Rectangular</span><span><i class="sw orange"></i>Windowed</span><span><i class="sw" style="background:var(--red)"></i>Band edge</span></div><ul class="bullets" id="orAggregateNote"></ul></div>
   </div>
 </section>
 
 <section class="panel" id="cp" role="tabpanel" aria-labelledby="tab-cp" hidden>
-  <div class="panel-head"><div><div class="eyebrow">From linear convolution to circular convolution</div><h2>Multipath breaks the per-subcarrier model, and the cyclic prefix is what repairs it</h2></div><div class="message">The physical channel performs linear convolution. Copying the last L<sub>c</sub> symbols of a block to its front, then discarding the first L<sub>c</sub> received samples, makes the following N useful samples identical to a length-N circular convolution — exactly, provided L<sub>c</sub> ≥ L.</div></div>
+  <div class="panel-head"><div><div class="eyebrow">From linear convolution to circular convolution</div><h2>Without a sufficient cyclic prefix, linear convolution breaks the per-subcarrier model</h2></div><div class="message">The physical channel performs linear convolution. Copying the last L<sub>c</sub> time-domain samples of a block to its front, then discarding the first L<sub>c</sub> received samples, makes the following N useful samples identical to a length-N circular convolution—provided L<sub>c</sub> ≥ L.</div></div>
   <div class="sticky-bar"><div class="toolbar"><div class="control-grid">
     <div class="ctrl"><label for="cpN">Block size N <strong id="cpNOut">32</strong></label><input id="cpN" type="range" min="3" max="8" value="5" step="1"></div>
     <div class="ctrl"><label for="cpLc"><span>Cyclic prefix L<sub>c</sub></span> <strong id="cpLcOut">4</strong></label><input id="cpLc" type="range" min="0" max="20" value="4" step="1"></div>
     <div class="ctrl"><label for="cpL">Channel memory L <strong id="cpLOut">3</strong></label><input id="cpL" type="range" min="0" max="16" value="3" step="1"></div>
-    <div class="ctrl"><label for="cpSnr"><span>E<sub>x</sub>/N₀</span> <strong id="cpSnrOut">18 dB</strong></label><input id="cpSnr" type="range" min="0" max="30" value="18" step="1"></div>
+    <div class="ctrl"><label for="cpSnr"><span>Average subcarrier SNR</span> <strong id="cpSnrOut">18 dB</strong></label><input id="cpSnr" type="range" min="0" max="30" value="18" step="1"></div>
   </div><div class="summary-row"><div class="toolbar-metrics metrics-5">
     <div class="metric"><div class="name">CP condition</div><div class="value" id="cpCond">—</div><div class="small">requires L<sub>c</sub> ≥ L</div></div>
     <div class="metric"><div class="name">CP efficiency</div><div class="value" id="cpEta">—</div><div class="small">η<sub>CP</sub> = N / (N + L<sub>c</sub>)</div></div>
     <div class="metric"><div class="name">Overhead</div><div class="value" id="cpOver">—</div><div class="small">L<sub>c</sub> / (N + L<sub>c</sub>)</div></div>
-    <div class="metric"><div class="name">Circular-model error</div><div class="value" id="cpErr">—</div><div class="small">‖y − h⊛x‖² / ‖h⊛x‖², AWGN off</div></div>
+    <div class="metric"><div class="name">Normalized circular-convolution mismatch</div><div class="value" id="cpErr">—</div><div class="small">‖y − h⊛x‖² / ‖h⊛x‖², computed without additive noise</div></div>
     <div class="metric lab-metric"><div class="name">Interactive lab</div><div class="value">CP &amp; Multipath</div><button type="button" class="lab-toggle" aria-controls="lab-cp" aria-expanded="false">Open lab</button></div>
   </div><div class="note" id="cpNote" aria-live="polite"></div></div></div></div>
 
   <div class="lab-shell" id="lab-cp" hidden><iframe class="lab-frame" loading="lazy" title="OFDM Cyclic Prefix and Multipath interactive lab" src="03_ofdm_cyclic_prefix_multipath.html?v=20260924"></iframe></div>
 
-  <div class="flow" aria-label="Cyclic prefix block processing chain" aria-live="polite"><div class="flow-step" data-state="ready"><strong>Data block</strong><span id="cpFlowData">N symbols</span></div><div class="arrow">→</div><div class="flow-step" data-state="ready"><strong>Prepend CP</strong><span id="cpFlowCp">copy last L<sub>c</sub></span></div><div class="arrow">→</div><div class="flow-step" data-state="ready"><strong>Linear channel</strong><span id="cpFlowChan">memory L</span></div><div class="arrow">→</div><div class="flow-step" id="cpFlowDropStep" data-state="ready"><strong>Discard L<sub>c</sub></strong><span id="cpFlowDrop">—</span></div><div class="arrow">→</div><div class="flow-step" id="cpFlowFftStep" data-state="ready"><strong>FFT</strong><span id="cpFlowFft">—</span></div></div>
+  <div class="flow" aria-label="Cyclic prefix block processing chain" aria-live="polite"><div class="flow-step" data-state="ready"><strong>Useful OFDM block</strong><span id="cpFlowData">N time-domain samples</span></div><div class="arrow">→</div><div class="flow-step" data-state="ready"><strong>Prepend CP</strong><span id="cpFlowCp">copy last L<sub>c</sub></span></div><div class="arrow">→</div><div class="flow-step" data-state="ready"><strong>Linear channel</strong><span id="cpFlowChan">memory L</span></div><div class="arrow">→</div><div class="flow-step" id="cpFlowDropStep" data-state="ready"><strong>Discard L<sub>c</sub></strong><span id="cpFlowDrop">—</span></div><div class="arrow">→</div><div class="flow-step" id="cpFlowFftStep" data-state="ready"><strong>FFT</strong><span id="cpFlowFft">—</span></div></div>
 
   <div class="plots two">
-    <div class="card"><div class="title">Assembling the transmitted block: prefix then data</div><canvas id="cpAssembly" role="img" aria-label="Timeline showing the last L c data symbols copied to the front of the block to form the cyclic prefix"></canvas><ul class="bullets" id="cpAssemblyNote"></ul></div>
-    <div class="card"><div class="title">Where previous-block interference lands</div><canvas id="cpAbsorb" role="img" aria-label="Aligned transmitted stream, previous-block interference at the channel output, and receiver windows showing the discarded cyclic prefix and useful FFT samples"></canvas><ul class="bullets" id="cpAbsorbNote"></ul></div>
+    <div class="card"><div class="title">Assembling the transmitted block: prefix then data</div><canvas id="cpAssembly" role="img" aria-label="Timeline showing the last L c time-domain samples copied to the front of the block to form the cyclic prefix"></canvas><ul class="bullets" id="cpAssemblyNote"></ul></div>
+    <div class="card"><div class="title">Location of inter-block interference</div><canvas id="cpAbsorb" role="img" aria-label="Aligned transmitted stream, previous-block interference at the channel output, and receiver windows showing the discarded cyclic prefix and useful FFT samples"></canvas><ul class="bullets" id="cpAbsorbNote"></ul></div>
   </div>
 
   <div class="plots two" style="margin-top:14px">
     <div class="card"><div class="title">CP overhead versus block size</div><canvas id="cpOverhead" role="img" aria-label="Cyclic prefix overhead fraction against block size for several prefix lengths"></canvas><div class="legend"><span><i class="sw blue"></i>Your L<sub>c</sub></span><span><i class="sw" style="background:var(--cyan)"></i>L<sub>c</sub> = 4</span><span><i class="sw purple"></i>L<sub>c</sub> = 16</span><span><i class="sw green"></i>You are here</span></div><ul class="bullets" id="cpOverheadNote"></ul></div>
-    <div class="card"><div class="title">Equalized block: what a short CP costs</div><canvas id="cpConst" role="img" aria-label="QPSK constellation after per-bin equalization and inverse FFT for the current cyclic prefix length"></canvas><div class="legend"><span><i class="sw orange"></i>Before equalization</span><span><i class="sw blue"></i>After per-bin MMSE + IFFT</span><span><i class="sw" style="background:var(--red)"></i>Ideal QPSK</span></div><ul class="bullets" id="cpConstNote"></ul></div>
+    <div class="card"><div class="title">Effect of CP sufficiency on the equalized OFDM constellation</div><canvas id="cpConst" role="img" aria-label="Received and MMSE-equalized QPSK subcarriers for the current cyclic prefix length"></canvas><div class="legend"><span><i class="sw orange"></i>Received Y[k]</span><span><i class="sw blue"></i>After per-subcarrier MMSE</span><span><i class="sw" style="background:var(--red)"></i>Transmitted X[k]</span></div><ul class="bullets" id="cpConstNote"></ul></div>
   </div>
 </section>
 
@@ -184,25 +184,25 @@ MMSE equalization.</p>
 
   <div class="flow" aria-label="OFDM transmitter chain"><div class="flow-step" data-state="ready"><strong>Map to X<sub>k</sub></strong><span>QAM per subcarrier</span></div><div class="arrow">→</div><div class="flow-step" data-state="required"><strong>IFFT</strong><span id="ofTxIfft">N-point, required</span></div><div class="arrow">→</div><div class="flow-step" data-state="ready"><strong>Add CP</strong><span>assume L<sub>c</sub> ≥ L</span></div><div class="arrow">→</div><div class="flow-step" data-state="warning"><strong>Channel</strong><span id="ofTxChan">memory L</span></div></div>
   <div class="flow" aria-label="OFDM receiver chain"><div class="flow-step" data-state="ready"><strong>Sync, remove CP</strong><span>keep N samples</span></div><div class="arrow">→</div><div class="flow-step" data-state="ready"><strong>FFT</strong><span id="ofRxFft">N-point</span></div><div class="arrow">→</div><div class="flow-step" data-state="required"><strong>Estimate Ĥ<sub>k</sub></strong><span id="ofRxEst">—</span></div><div class="arrow">→</div><div class="flow-step" data-state="required"><strong>Per-subcarrier G<sub>k</sub></strong><span id="ofRxEq">—</span></div><div class="arrow">→</div><div class="flow-step" data-state="ready"><strong>Demap</strong><span>no IFFT needed</span></div></div>
-  <p class="flow-caption">The receiver after the FFT is identical to SC-FDE. The architectures differ before the IFFT/FFT and in how symbols are assigned to subcarriers.</p>
+  <p class="flow-caption">The FFT and one-tap equalizer are shared with SC-FDE. OFDM then demaps each subcarrier directly, whereas SC-FDE applies an IFFT before symbol decisions.</p>
 
   <div class="plots two">
-    <div class="card"><div class="plot-card-head"><div class="title">|H[k]| and the estimate used by the equalizer</div><button type="button" id="ofPerfect" aria-pressed="false">Perfect Ĥ[k] (no pilots)</button></div><canvas id="ofChannelPilots" role="img" aria-label="True channel magnitude across subcarriers and a simple pilot-based channel estimate"></canvas><div class="legend"><span><i class="sw blue"></i>True |H[k]|</span><span><i class="sw purple"></i>Pilot-based |Ĥ[k]|</span></div><ul class="bullets" id="ofChannelNote"></ul></div>
+    <div class="card"><div class="plot-card-head"><div class="title">|H[k]| and the estimate used by the equalizer</div><button type="button" id="ofPerfect" aria-pressed="false">Assume perfect channel knowledge: Ĥ[k] = H[k]</button></div><canvas id="ofChannelPilots" role="img" aria-label="True channel magnitude across subcarriers and an illustrative pilot-based channel estimate"></canvas><div class="legend"><span><i class="sw blue"></i>True |H[k]|</span><span><i class="sw purple"></i>Pilot-based |Ĥ[k]|</span></div><ul class="bullets" id="ofChannelNote"></ul></div>
     <div class="card"><div class="title">Per-subcarrier SNR |H<sub>k</sub>|²E<sub>X</sub>/(NN₀)</div><canvas id="ofSnrTones" role="img" aria-label="Per subcarrier signal-to-noise ratio in decibels with deep fades highlighted"></canvas><div class="legend"><span><i class="sw blue"></i>Per-subcarrier SNR</span><span><i class="sw green"></i>Average</span><span><i class="sw" style="background:var(--red)"></i>Below 0 dB</span></div><ul class="bullets" id="ofSnrNote"></ul></div>
-    <div class="card"><div class="title">Subcarrier k: the constellation faded by H<sub>k</sub></div><canvas id="ofToneConst" role="img" aria-label="Constellation carried by the selected subcarrier, faded by the channel and after per-subcarrier equalization, against ideal reference circles"></canvas><div class="legend"><span><i class="sw" style="background:var(--red)"></i>Ideal (circles)</span><span><i class="sw orange"></i>Faded by H<sub>k</sub></span><span><i class="sw blue"></i>After G<sub>k</sub></span></div><ul class="bullets" id="ofToneConstNote"></ul></div>
-    <div class="card"><div class="title">Symbol error power versus SNR</div><canvas id="ofEvm" role="img" aria-label="Normalized symbol error power against signal to noise ratio for zero forcing and MMSE with estimated and perfect channel knowledge"></canvas><div class="legend"><span><i class="sw orange"></i>ZF</span><span><i class="sw purple"></i>MMSE</span><span><i class="sw" style="background:var(--cyan)"></i>Dashed — perfect Ĥ</span><span><i class="sw green"></i>Your SNR</span></div><ul class="bullets" id="ofEvmNote"></ul></div>
+    <div class="card"><div class="title">Received and equalized constellation on subcarrier k</div><canvas id="ofToneConst" role="img" aria-label="Ideal, received, and equalized constellation points on the selected subcarrier"></canvas><div class="legend"><span><i class="sw" style="background:var(--red)"></i>Ideal (circles)</span><span><i class="sw orange"></i>Received after H<sub>k</sub></span><span><i class="sw blue"></i>After G<sub>k</sub></span></div><ul class="bullets" id="ofToneConstNote"></ul></div>
+    <div class="card"><div class="title">Mean normalized squared symbol error versus average subcarrier SNR</div><canvas id="ofEvm" role="img" aria-label="Mean normalized squared symbol error against average subcarrier signal-to-noise ratio for zero forcing and MMSE with estimated and perfect channel knowledge"></canvas><div class="legend"><span><i class="sw orange"></i>ZF, estimated channel</span><span><i class="sw purple"></i>MMSE, estimated channel</span><span><i class="sw" style="background:var(--cyan)"></i>Long dash: perfect-channel ZF</span><span><i class="sw" style="background:var(--cyan)"></i>Short dash: perfect-channel MMSE</span><span><i class="sw green"></i>Selected SNR</span></div><ul class="bullets" id="ofEvmNote"></ul></div>
   </div>
 
   <div class="checklist">
     <div class="check"><strong>CP length L<sub>c</sub> ≥ L</strong><span>Sets whether the per-subcarrier model holds at all. Too short leaves inter-block interference no equalizer can undo.</span></div>
     <div class="check"><strong>Block size N</strong><span>Larger N amortizes the CP but adds latency and assumes the channel is static over N + L<sub>c</sub> symbols.</span></div>
-    <div class="check"><strong>Deep fades</strong><span>ZF inverts them and amplifies noise. MMSE, coding across subcarriers, and frequency diversity are the standard answers.</span></div>
+    <div class="check"><strong>Deep fades</strong><span>ZF inverts them and amplifies noise. MMSE equalization, coding and interleaving across subcarriers, and frequency diversity are standard mitigation methods.</span></div>
   </div>
 </section>
 
 </main>
 
-<dialog class="gain-dialog" id="ofDenomDialog" aria-labelledby="ofDenomDialogTitle"><h3 id="ofDenomDialogTitle">Why SC-FDE uses N₀/E<sub>x</sub> and OFDM uses NN₀/E<sub>X</sub></h3><div class="formula" id="ofDenomCalc"></div><p class="message">Both denominators are the same thing — the inverse per-subcarrier SNR — written for different symbol mappings. In SC-FDE, X[k] is the DFT of a block of time-domain symbols of energy E<sub>x</sub>, so its energy picks up the same factor N that the noise does and the N cancels. In OFDM, X<sub>k</sub> <em>is</em> the transmitted symbol on subcarrier k with energy E<sub>X</sub>, while the noise still gains N from the non-unitary DFT, so the factor survives. With a unitary DFT it disappears from both.</p><button type="button" id="ofDenomClose">Close</button></dialog>
+<dialog class="gain-dialog" id="ofDenomDialog" aria-labelledby="ofDenomDialogTitle"><h3 id="ofDenomDialogTitle">Why SC-FDE uses N₀/E<sub>x</sub> and OFDM uses NN₀/E<sub>X</sub></h3><div class="formula" id="ofDenomCalc"></div><p class="message">Both denominators represent the inverse per-subcarrier SNR, expressed for different symbol mappings. In SC-FDE, X[k] is the DFT of a block of time-domain symbols with energy E<sub>x</sub>; its energy and the transformed noise variance both acquire a factor N, which cancels. In OFDM, X<sub>k</sub> is the transmitted symbol on subcarrier k with energy E<sub>X</sub>, while the non-unitary DFT multiplies the noise variance by N, so the factor remains. A unitary DFT normalization removes this factor from both expressions.</p><button type="button" id="ofDenomClose">Close</button></dialog>
 
 <script>
 'use strict';
@@ -292,17 +292,17 @@ function drawWhy(){
   line(z,[[6,0],[8,0]],css('--green'),1.8,[5,4]);
   dot(z,Math.log10(p.B),Math.log10(p.L),css('--red'),5.5);
   plotLabel(z,z.X(Math.log10(p.B)),z.Y(Math.log10(p.L))-8,'L = '+p.L,css('--red'));
-  plotLabel(z,z.X(Math.log10(1.4e6)),z.Y(0)-7,'per subcarrier: ≈ 1',css('--green'));
+  plotLabel(z,z.X(Math.log10(1.4e6)),z.Y(0)-7,'flat-subchannel reference',css('--green'));
   bullets($('whMemNote'),[
     'At B = '+(p.B/1e6).toFixed(0)+' MHz the sample period is T = '+(p.T*1e9).toFixed(0)+' ns. A maximum excess delay of '+(p.tauMax*1e6).toFixed(1)+' µs therefore gives L = ⌈τ<sub>max</sub>/T⌉ = '+p.L+' samples.',
-    'Memory grows in direct proportion to bandwidth: every doubling of B doubles the number of taps a time-domain equalizer needs, which is the wall Week 7 ran into.',
+    'Memory in samples grows in direct proportion to bandwidth: every doubling of B doubles the number of taps required by a time-domain equalizer, which is the equalizer-complexity issue encountered in Week 7.',
     'Split the band into N = '+p.N+' subcarriers and the useful symbol lasts T<sub>s</sub> = NT = '+(p.Ts*1e6).toFixed(2)+' µs. The maximum excess delay is now only '+p.flat.toFixed(3)+' of T<sub>s</sub>.'
   ]);
 
   /* --- multiplies per useful symbol --- */
   const tdeOf=b=>Math.max(1,p.tauMax*b),ofdmCost=Math.log2(p.N)+1,
     costs=bs.map(b=>tdeOf(b)),hiC=Math.ceil(Math.log10(Math.max(...costs,ofdmCost))),loC=0;
-  z=axes($('whCost'),6,8,loC,hiC,'Bandwidth B (Hz)','Multiplies per symbol',
+  z=axes($('whCost'),6,8,loC,hiC,'Bandwidth B (Hz)','Approximate multiplies per sample',
     {xticks:2,yticks:Math.max(2,hiC),xfmt:decade,yfmt:decade});
   line(z,bs.map((b,i)=>[Math.log10(b),Math.log10(Math.max(1,costs[i]))]),css('--orange'),2.4);
   line(z,[[6,Math.log10(ofdmCost)],[8,Math.log10(ofdmCost)]],css('--purple'),2.4);
@@ -310,8 +310,8 @@ function drawWhy(){
   dot(z,Math.log10(p.B),Math.log10(ofdmCost),css('--purple'),5);
   plotLabel(z,z.X(Math.log10(1.4e6)),z.Y(Math.log10(ofdmCost))-7,'log₂N + 1 = '+ofdmCost.toFixed(1),css('--purple'));
   bullets($('whCostNote'),[
-    'At your setting the time-domain equalizer needs about '+p.L+' multiplies per symbol; OFDM needs log₂N + 1 = '+ofdmCost.toFixed(1)+', a factor of '+(p.L/ofdmCost).toFixed(1)+'.',
-    'The OFDM line is almost flat because the FFT cost per symbol grows only as log₂N, while the equalizer itself is a single complex multiply on every subcarrier.',
+    'For the selected parameters, the illustrative scaling is about '+p.L+' complex multiplies per sample for time-domain equalization and log₂N + 1 = '+ofdmCost.toFixed(1)+' for OFDM, a ratio of '+(p.L/ofdmCost).toFixed(1)+'.',
+    'These are first-order scaling estimates rather than implementation-specific operation counts. The FFT contribution per sample grows as O(log₂N), and frequency-domain equalization adds one complex multiplication per subcarrier.',
     'This is the comparison used in the slides: time-domain equalization scales with channel length, while block frequency-domain processing uses an FFT plus one coefficient per frequency bin.'
   ]);
 
@@ -329,9 +329,9 @@ function drawWhy(){
     plotLabel(z,z.X((kmid+0.5)*step),z.m.t+13,'one subcarrier: '+wpx.toFixed(1)+' px wide',css('--red'),'top');}
   line(z,mag.map((v,i)=>[i/Nf,v]),css('--blue'),2.4);
   bullets($('whFlatNote'),[
-    'The response wanders across the band because the channel has '+(Math.min(60,p.L)+1)+' taps. Over the whole of B that variation is severe; over the shaded width of one subcarrier it is almost nothing.',
+    'The response varies across the band because the channel has '+(Math.min(60,p.L)+1)+' taps. Across the full bandwidth this variation is substantial; across the shaded width of one subcarrier it is much smaller.',
     'Delay ratio τ<sub>max</sub>/T<sub>s</sub> = Δfτ<sub>max</sub> = '+p.flat.toFixed(3)+'. '+(p.flat<0.1?'It is well below 0.1, so each subcarrier is narrow relative to the channel variation.':p.flat<0.3?'It is between 0.1 and 0.3: the narrowband approximation is becoming marginal.':'It exceeds 0.3, so increase N if a flatter response within each subcarrier is required.'),
-    'Raise N to shrink Δf and flatten each subcarrier further — at the price of a longer symbol, more latency, and more sensitivity to Doppler, which is the Week 9 system-design trade-off.'
+    'Increasing N reduces Δf and improves the flat-subchannel approximation, with the trade-offs of a longer symbol, greater latency, and increased sensitivity to Doppler, as considered in the Week 9 system design.'
   ]);
 }
 ['whB','whTau','whN','whCp'].forEach(id=>$(id).addEventListener('input',drawWhy));
@@ -381,27 +381,35 @@ function drawIfft(){
   const one=Array.from({length:p.N},(_,n)=>{
     const th=2*Math.PI*p.k*n/p.N;
     return kOn?scale(mul(X[p.k],C(Math.cos(th),Math.sin(th))),1/p.N):C();});
-  const lim1=Math.max(1e-3,...one.map(v=>Math.max(Math.abs(v.re),Math.abs(v.im))))*1.3;
-  let z=axes($('ifOne'),0,p.N-1,-lim1,lim1,'sample n','contribution of subcarrier k',{xticks:Math.min(8,p.N-1),yticks:4});
-  line(z,[[0,0],[p.N-1,0]],css('--border'),1.2);
-  line(z,one.map((v,n)=>[n,v.re]),css('--blue'),2.4);
-  line(z,one.map((v,n)=>[n,v.im]),css('--orange'),2,[5,4]);
+  const steps=480,oneContinuous=Array.from({length:steps+1},(_,i)=>{const u=i/steps,th=2*Math.PI*p.k*u;
+    return{u,v:kOn?scale(mul(X[p.k],C(Math.cos(th),Math.sin(th))),1/p.N):C()}});
+  const lim1=Math.max(1e-3,...oneContinuous.map(q=>Math.max(Math.abs(q.v.re),Math.abs(q.v.im))))*1.3;
+  const timeFmt=v=>v.toFixed(2).replace(/0+$/,'').replace(/\.$/,'');
+  let z=axes($('ifOne'),0,1,-lim1,lim1,'normalized time t/Tₛ','Real part of subcarrier contribution',{xticks:4,yticks:4,xfmt:timeFmt});
+  line(z,[[0,0],[1,0]],css('--border'),1.2);
+  line(z,oneContinuous.map(q=>[q.u,q.v.re]),css('--blue'),2.4);
+  line(z,oneContinuous.map(q=>[q.u,q.v.im]),css('--orange'),2,[5,4]);
+  one.forEach((v,n)=>{dot(z,n/p.N,v.re,css('--blue'),3.2);dot(z,n/p.N,v.im,css('--orange'),3)});
   bullets($('ifOneNote'),[
-    kOn?'Subcarrier '+p.k+' contributes (1/N) X<sub>'+p.k+'</sub> e<sup>j2π·'+p.k+'n/N</sup>: one complex sinusoid completing exactly '+p.k+' cycle'+(p.k===1?'':'s')+' across the '+p.N+' samples of the block.'
+    kOn?'Subcarrier '+p.k+' contributes (1/N) X<sub>'+p.k+'</sub> e<sup>j2π·'+p.k+'t/Tₛ</sup>: one complex sinusoid completing exactly '+p.k+' cycle'+(p.k===1?'':'s')+' over the useful symbol interval.'
       :'Subcarrier '+p.k+' is switched off, so it contributes nothing. Raise the active count past '+p.k+' to bring it in.',
-    'Its amplitude is set by |X<sub>k</sub>| and its starting phase by ∠X<sub>k</sub> — the symbol is carried in the sinusoid, not in any single time sample.',
-    'Whole cycles per block is the whole trick: it is why the receiver can separate this subcarrier from every other one, which is the next tab.'
+    'The smooth curves show the ideal continuous-time basis function; the markers are the N IFFT samples at t/Tₛ = n/N. Practical DAC reconstruction and pulse shaping can alter the waveform between these samples.',
+    'Its amplitude is set by |X<sub>k</sub>| and its starting phase by ∠X<sub>k</sub>: the symbol is encoded in the amplitude and phase of the complex exponential, not in any single time sample.',
+    'An integer number of cycles over the block establishes DFT orthogonality, allowing the receiver to separate this subcarrier from the others, as shown in the next tab.'
   ]);
 
   /* --- the sum --- */
-  const lim=Math.max(1e-3,...x.map(v=>Math.max(Math.abs(v.re),Math.abs(v.im))))*1.2;
-  z=axes($('ifSum'),0,p.N-1,-lim,lim,'sample n','Re x[n]',{xticks:Math.min(8,p.N-1),yticks:4});
-  line(z,[[0,0],[p.N-1,0]],css('--border'),1.2);
-  line(z,one.map((v,n)=>[n,v.re]),css('--green'),1.8,[4,4]);
-  line(z,x.map((v,n)=>[n,v.re]),css('--blue'),2.6);
+  const sumContinuous=Array.from({length:steps+1},(_,i)=>{const u=i/steps;let v=C();
+    for(let k=0;k<p.N;k++)if(active[k])v=add(v,scale(mul(X[k],C(Math.cos(2*Math.PI*k*u),Math.sin(2*Math.PI*k*u))),1/p.N));
+    return{u,v}}),lim=Math.max(1e-3,...sumContinuous.map(q=>Math.max(Math.abs(q.v.re),Math.abs(q.v.im))))*1.2;
+  z=axes($('ifSum'),0,1,-lim,lim,'normalized time t/Tₛ','In-phase component of x(t)',{xticks:4,yticks:4,xfmt:timeFmt});
+  line(z,[[0,0],[1,0]],css('--border'),1.2);
+  line(z,oneContinuous.map(q=>[q.u,q.v.re]),css('--green'),1.8,[4,4]);
+  line(z,sumContinuous.map(q=>[q.u,q.v.re]),css('--blue'),2.6);
+  x.forEach((v,n)=>dot(z,n/p.N,v.re,css('--blue'),3.2));
   bullets($('ifSumNote'),[
-    'x[n] is the sum of '+p.act+' such sinusoids. Individual samples are not constellation points — they are superpositions, which is why detecting OFDM in the time domain is hopeless.',
-    'The dashed green curve is the highlighted subcarrier on its own. It is one small component of a waveform that looks like noise once enough subcarriers are added.',
+    'The ideal synthesis x(t) is the sum of '+p.act+' continuous complex exponentials. The blue markers show the discrete sequence x[n] produced by the IFFT.',
+    'The dashed green curve is the highlighted subcarrier alone. It is one component of a waveform that has a noise-like appearance when many subcarriers are active.',
     'The receiver applies the FFT to this complete N-sample block to recover the separate subcarrier symbols X[k].'
   ]);
 
@@ -414,7 +422,7 @@ function drawIfft(){
     stem(z,i,active[i]?magX[i]:0.02,col);
   }
   bullets($('ifStemsNote'),[
-    p.act+' of '+p.N+' subcarriers carry a '+(p.mod==='qam16'?'16-QAM':'QPSK')+' symbol; the rest are zero and cost nothing but bandwidth. Click any stem to switch that subcarrier on or off.',
+    p.act+' of '+p.N+' subcarriers carry a '+(p.mod==='qam16'?'16-QAM':'QPSK')+' symbol; the remaining IFFT bins are zero-valued and carry no data. Click any stem to switch that subcarrier on or off.',
     'Subcarrier 0 is held at zero as the DC null. It would land on the carrier frequency, where local-oscillator leakage and DC offset in the receiver sit.',
     p.mod==='qam16'?'16-QAM gives three distinct magnitudes here, so the stems vary in height; QPSK would make them all equal.'
       :'QPSK puts every symbol on one amplitude ring, so all the active stems are the same height. Switch to 16-QAM to see the magnitudes spread.'
@@ -488,8 +496,8 @@ function drawOrtho(){
   line(z,terms.map((v,n)=>[n,v.re]),css('--blue'),2.2);
   line(z,run.map((v,n)=>[n,v]),css('--orange'),2.4);
   bullets($('orBasisNote'),[
-    'The blue curve is Re{e<sup>j2π(k−m)n/N</sup>}, the product of transmitted subcarrier '+p.k+' with the conjugate of receiver basis '+p.m+'.',
-    p.k!==p.m?'Because k − m is an integer, the product goes round a whole number of times. Its terms cancel exactly and the orange running sum returns to zero.'
+    'The blue curve is Re{e<sup>j2π(k−m)n/N</sup>}, the product of transmitted subcarrier '+p.k+' with the conjugate of FFT basis function '+p.m+'.',
+    p.k!==p.m?'Because k − m is an integer, the product completes an integer number of cycles. Its terms cancel exactly and the orange running sum returns to zero.'
       :'For k = m every term is 1, so the running sum climbs to N and the normalized inner product is exactly 1.',
     'Normalized inner product = '+inner.toFixed(4)+'. This exact cancellation is the DFT orthogonality used by the receiver.'
   ]);
@@ -509,8 +517,8 @@ function drawOrtho(){
   line(z,main,css('--blue'),2.6);
   for(let c=lo;c<=hi;c++)dot(z,c,dirichlet(c-centre,p.N),css('--red'),4);
   bullets($('orSpecNote'),[
-    'Each subcarrier occupies a Dirichlet kernel — the finite-block version of a sinc. The lobes overlap heavily: OFDM subcarriers are <em>not</em> separated in frequency.',
-    'They do not interfere because of where the nulls fall. The red dots are the receiver’s sampling instants, one per subcarrier centre.',
+    'Each subcarrier has a Dirichlet-shaped response: the finite-length frequency response of a rectangularly windowed complex exponential. The lobes overlap substantially; OFDM subcarriers are not separated by guard bands.',
+    'At ideal spacing, the nulls occur at the other subcarrier centres. The red dots mark the FFT-bin frequencies, one per subcarrier centre.',
     'Every red dot except the transmitted one sits exactly on a null. The spectra overlap, but the FFT samples them at precisely the interference-free frequencies.',
     'Here ΔfT<sub>s</sub> = 1. The lab below can be opened for the extension in which frequency or spacing error moves the nulls off the FFT-bin centres.'
   ]);
@@ -533,9 +541,9 @@ function drawOrtho(){
   $('orOob').textContent=oob.toFixed(1)+' dB';
   $('orNote').textContent=p.roll?'Tapered edges: lower sidelobes, with a wider transition region':'Rectangular window: narrow main lobe, slowly decaying sidelobes';
   bullets($('orAggregateNote'),[
-    (p.N-2)+' active subcarriers add to one occupied band. Increasing N packs in narrower sinc-like spectra, but rectangular-window sidelobes still decay slowly.',
-    p.roll?'A '+Math.round(100*p.roll)+'% edge taper smooths the symbol boundaries and lowers the out-of-band trace. The price is transition time or overlap that must fit within the guard interval.'
-      :'Set a non-zero edge taper to compare a smoother transmit window with the blue rectangular-window spectrum.',
+    (p.N-2)+' active subcarriers form one occupied band. Increasing N narrows the individual spectra but does not change the slow sidelobe decay of a rectangular window.',
+    p.roll?'A '+Math.round(100*p.roll)+'% taper at each edge smooths the block transitions and reduces out-of-band power. This spectrum assumes the taper transition is accommodated in overlap or guard samples outside the useful FFT interval.'
+      :'Set a non-zero taper duration to compare a smoother transmit spectrum with the blue rectangular-window spectrum. The orthogonality calculation continues to use a rectangular useful FFT interval.',
     'The red lines mark the nominal occupied-band edges. Guard subcarriers, filtering, and windowing help satisfy the spectral mask outside them.'
   ]);
 }
@@ -607,16 +615,17 @@ function drawToneConst(cvId,o){
    return{N,Lc,L,snr,N0:Math.pow(10,-snr/10)}}
 function cpSimulate(p,withNoise,seed){
   const r=rng(seed||7701),h=pdpChannel(p.L,5501),
-    x0=qpskBlock(p.N,r),x1=qpskBlock(p.N,r),
+    X0=qpskBlock(p.N,r),X1=qpskBlock(p.N,r),
+    x0=fft(X0,true),x1=fft(X1,true),
     blk=x=>{const cp=[];for(let i=0;i<p.Lc;i++)cp.push(x[p.N-p.Lc+i]);return cp.concat(x)},
     stream=blk(x0).concat(blk(x1)),
-    sd=Math.sqrt(p.N0/2),
+    sd=Math.sqrt(p.N0/(2*p.N)),
     rx=stream.map((_,m)=>{let s=C();for(let l=0;l<h.length;l++){const u=stream[m-l];if(u)s=add(s,mul(h[l],u))}return withNoise?add(s,C(gauss(r)*sd,gauss(r)*sd)):s}),
     start=p.N+2*p.Lc,
     y=Array.from({length:p.N},(_,n)=>rx[start+n]||C()),
     full=circConv(h,x1,p.N),
     ideal=full;
-  return{h,x1,stream,rx,y,ideal,start}}
+  return{h,X1,x1,stream,rx,y,ideal,start}}
 function drawCp(){
   const p=cpParams();
   $('cpNOut').textContent=p.N;$('cpLcOut').textContent=p.Lc;$('cpLOut').textContent=p.L;$('cpSnrOut').textContent=p.snr+' dB';
@@ -629,13 +638,13 @@ function drawCp(){
   $('cpEta').textContent=(100*eta).toFixed(1)+'%';
   $('cpOver').textContent=(100*over).toFixed(1)+'%';
   $('cpErr').textContent=rel<1e-12?'0 (exact)':expo(rel);
-  $('cpFlowData').textContent=p.N+' symbols';
+  $('cpFlowData').textContent=p.N+' time-domain samples';
   $('cpFlowCp').textContent='copy last '+p.Lc;
   $('cpFlowChan').textContent='memory L = '+p.L;
   $('cpFlowDropStep').dataset.state=ok?'ready':'warning';
   $('cpFlowDrop').textContent=ok?'spread contained':'spread leaks in';
   $('cpFlowFftStep').dataset.state=ok?'ready':'warning';
-  $('cpFlowFft').textContent=ok?'Y[k] = H[k]X[k] + V[k]':'per-bin model broken';
+  $('cpFlowFft').textContent=ok?'Y[k] = H[k]X[k] + V[k]':'per-subcarrier model invalid';
 
   /* --- figure: cyclic prefix assembly --- */
   drawCpAssembly(p);
@@ -650,29 +659,28 @@ function drawCp(){
   dot(z,Math.log2(p.N),over,css('--green'),6);
   plotLabel(z,z.X(Math.log2(p.N)),z.Y(over)-9,(100*over).toFixed(1)+'% at N = '+p.N,css('--green'));
   bullets($('cpOverheadNote'),[
-    'At N = '+p.N+' with L_c = '+p.Lc+', the prefix consumes '+(100*over).toFixed(1)+'% of every transmitted block; η_CP = '+(100*eta).toFixed(1)+'% of the symbols carry new information.',
-    'Doubling N roughly halves the overhead, so long blocks are cheap in bandwidth — but they add latency and assume the channel holds still for N + L_c symbols.',
-    'Every block architecture in this deck pays this same price: it is a property of the cyclic prefix, not of SC-FDE or OFDM.'
+    'At N = '+p.N+' with L_c = '+p.Lc+', the prefix consumes '+(100*over).toFixed(1)+'% of every transmitted block; η_CP = '+(100*eta).toFixed(1)+'% of the transmitted samples belong to the useful OFDM block.',
+    'Doubling N approximately halves the fractional overhead, but longer blocks add latency and require the channel to remain approximately time invariant over N + L_c samples.',
+    'This overhead applies to any block architecture using a cyclic prefix; it is not specific to SC-FDE or OFDM.'
   ]);
 
-  /* --- equalized constellation --- */
+  /* --- OFDM constellation: FFT, one-tap equalization, direct decisions --- */
   const sn=cpSimulate(p,true,7702),Yn=fft(sn.y,false),Hn=dftOf(sn.h,p.N),lam=p.N0,
-    Xh=Yn.map((v,k)=>mul(divc(conj(Hn[k]),C(abs2(Hn[k])+lam,0)),v)),
-    xh=fft(Xh,true);
+    Xh=Yn.map((v,k)=>mul(divc(conj(Hn[k]),C(abs2(Hn[k])+lam,0)),v));
   const zc=axes($('cpConst'),-2,2,-2,2,'In-phase','Quadrature');
   const cloud=(pts,color,alpha)=>{zc.c.save();zc.c.globalAlpha=alpha;zc.c.fillStyle=color;pts.forEach(v=>{zc.c.beginPath();zc.c.arc(zc.X(Math.max(-2,Math.min(2,v.re))),zc.Y(Math.max(-2,Math.min(2,v.im))),3,0,Math.PI*2);zc.c.fill()});zc.c.restore()};
-  cloud(sn.y,css('--orange'),.35);cloud(xh,css('--blue'),.65);
+  cloud(Yn,css('--orange'),.35);cloud(Xh,css('--blue'),.65);
   zc.c.save();zc.c.strokeStyle=css('--red');zc.c.lineWidth=2;qpsk.forEach(pt=>{const px=zc.X(pt.re),py=zc.Y(pt.im);zc.c.beginPath();zc.c.moveTo(px-6,py-6);zc.c.lineTo(px+6,py+6);zc.c.moveTo(px-6,py+6);zc.c.lineTo(px+6,py-6);zc.c.stroke()});zc.c.restore();
-  const evm=Math.sqrt(xh.reduce((a,v,n)=>a+abs2(sub(v,sn.x1[n])),0)/p.N);
+  const evm=Math.sqrt(Xh.reduce((a,v,k)=>a+abs2(sub(v,sn.X1[k])),0)/p.N);
   bullets($('cpConstNote'),[
-    'One block of '+p.N+' QPSK symbols at '+p.snr+' dB, equalized per bin with MMSE and brought back with an IFFT. Error vector magnitude '+(100*evm).toFixed(1)+'%.',
-    ok?'The clusters are limited by AWGN alone; the CP has removed the interference completely.'
-      :'The clusters stay smeared however high you push the SNR: with L_c < L the residual is interference, and interference does not shrink with noise.',
-    'Try raising the SNR with a short prefix — the spread barely moves. That is the signature of an error floor.'
+    'One OFDM block carries '+p.N+' QPSK symbols X[k] at an average subcarrier SNR of '+p.snr+' dB. After CP removal, the receiver applies the FFT and one MMSE coefficient per subcarrier; no post-equalization IFFT is used. Error vector magnitude '+(100*evm).toFixed(1)+'%.',
+    ok?'With a sufficient CP, no inter-block interference enters the FFT window. The remaining displacement is due to additive white Gaussian noise (AWGN) and the expected attenuation introduced by MMSE equalization.'
+      :'With L_c < L, residual inter-block interference broadens the clusters and does not decrease as the additive-noise power is reduced.',
+    'With an insufficient CP, increasing SNR has little effect on the residual spread; this behaviour indicates an interference-limited error floor.'
   ]);
-  $('cpNote').innerHTML='<strong>'+(ok?'The per-bin model holds exactly.':'The per-bin model is broken.')+'</strong> '+(ok
-    ?'With L_c = '+p.Lc+' ≥ L = '+p.L+', the last '+p.Lc+' symbols copied to the front absorb the entire channel spread. The receiver discards those '+p.Lc+' samples and the remaining N = '+p.N+' obey y = h ⊛ x + v exactly, at a cost of '+(100*over).toFixed(1)+'% of the block.'
-    :'With L_c = '+p.Lc+' < L = '+p.L+', the tail of the previous block reaches '+(p.L-p.Lc)+' samples into the useful window. That is inter-block interference: it survives the FFT, contaminates every bin, and sets an error floor no equalizer can lower.');
+  $('cpNote').innerHTML='<strong>'+(ok?'The per-subcarrier model holds exactly.':'The per-subcarrier model is invalid.')+'</strong> '+(ok
+    ?'With L_c = '+p.Lc+' ≥ L = '+p.L+', the '+p.Lc+' samples copied to the front contain all delayed energy from the preceding block. The receiver discards those samples, and the remaining N = '+p.N+' obey y = h ⊛ x + v exactly, at an overhead of '+(100*over).toFixed(1)+'% of the block.'
+    :'With L_c = '+p.Lc+' < L = '+p.L+', the tail of the previous block reaches '+(p.L-p.Lc)+' samples into the useful window. This inter-block interference survives the FFT, contaminates every subcarrier, and produces an error floor that one-tap equalization cannot remove.');
 }
 function panelCanvas(cv){const z=resizeCanvas(cv);z.c.clearRect(0,0,z.w,z.h);z.c.font='11px system-ui';return z}
 function labelledBlock(z,x,y,w,h,fill,stroke,label,sub){z.c.save();z.c.globalAlpha=.18;z.c.fillStyle=fill;z.c.fillRect(x,y,w,h);z.c.globalAlpha=1;z.c.strokeStyle=stroke;z.c.lineWidth=1.6;z.c.strokeRect(x,y,w,h);if(label&&w>26){z.c.fillStyle=stroke;z.c.textAlign='center';z.c.textBaseline='middle';z.c.fillText(label,x+w/2,y+h/2-(sub?6:0));if(sub){z.c.fillStyle=css('--muted');z.c.font='10px system-ui';z.c.fillText(sub,x+w/2,y+h/2+8)}}z.c.restore()}
@@ -698,9 +706,9 @@ function drawCpAssembly(p){
   if(p.Lc>0)arrowCurve(z,tailX+tailW/2,y1+rowH+26,pad+p.Lc*unit/2,y2-4,css('--orange'),null);
   brace(z,pad,pad+(p.N+p.Lc)*unit,y2+rowH+4,'N + L_c = '+(p.N+p.Lc)+' transmitted symbols · η_CP = '+(100*p.N/(p.N+p.Lc)).toFixed(1)+'%',css('--muted'));
   bullets($('cpAssemblyNote'),[
-    'w[n] = x[n+N−L_c] for n < L_c and x[n−L_c] afterwards — a plain copy, no new information.',
+    'w[n] = x[n+N−L_c] for n < L_c and x[n−L_c] afterwards: the prefix is a direct copy and contains no new information.',
     'The upper data box is aligned with the same N data samples in the transmitted block below; the orange tail is copied into the prefix position on the left.',
-    'Because the prefix repeats the block’s own tail, a delayed copy arriving inside the useful window looks like a wrapped index rather than a symbol from somewhere else. That wrap is what turns linear convolution into circular.',
+    'Because the prefix repeats the block’s own tail, a delayed copy arriving inside the useful window corresponds to a wrapped block index rather than a sample from the preceding block. This wrapping converts the relevant linear convolution samples into circular convolution.',
     'The transmitter pays for it in bandwidth: '+(100*p.Lc/(p.N+p.Lc)).toFixed(1)+'% of the symbols sent carry nothing new.'
   ]);
 }
@@ -726,16 +734,16 @@ function drawCpAbsorb(p){
   labelledBlock(z,fftX,yR,p.N*unit,rowH,css('--green'),css('--green'),'useful FFT window','N = '+p.N);
   if(!ok){const badX2=Math.min(reachX,endX);labelledBlock(z,fftX,yR,Math.max(1,badX2-fftX),rowH,css('--red'),css('--red'),'','');
     brace(z,fftX,badX2,yR+rowH+4,(p.L-p.Lc)+' contaminated sample'+(p.L-p.Lc===1?'':'s'),css('--red'))}
-  else brace(z,fftX,endX,yR+rowH+4,'clean FFT window: circular model exact',css('--green'));
+  else brace(z,fftX,endX,yR+rowH+4,'uncontaminated FFT window: circular model exact',css('--green'));
 
   z.c.save();z.c.strokeStyle=css('--muted');z.c.globalAlpha=.55;z.c.lineWidth=1;z.c.beginPath();
   z.c.moveTo(blockX,yT-3);z.c.lineTo(blockX,yR+rowH);z.c.moveTo(fftX,yT-3);z.c.lineTo(fftX,yR+rowH);z.c.stroke();z.c.restore();
   bullets($('cpAbsorbNote'),[
     'The top row is the continuous transmitted stream: the tail of the previous block is followed by this block’s CP and data.',
-    'The red strip in the middle row is not another block. It is the part of the current received interval that can still contain delayed energy from the previous block; channel memory L sets its maximum length.',
-    ok?'That red strip ends before the FFT boundary because L = '+p.L+' ≤ L_c = '+p.Lc+'. The receiver discards it with the prefix, leaving a clean N-sample FFT window.'
-      :'The red strip crosses the FFT boundary because L = '+p.L+' > L_c = '+p.Lc+'. The first '+(p.L-p.Lc)+' useful sample'+(p.L-p.Lc===1?' is':'s are')+' contaminated by the previous block.',
-    'The condition is only L_c ≥ L. Nothing here asks the channel to be flat, short in an absolute sense, or slowly varying across frequency.'
+    'The red interference region in the middle row is the part of the current received interval that can still contain delayed energy from the previous block; channel memory L sets its maximum length.',
+    ok?'The interference region ends before the FFT boundary because L = '+p.L+' ≤ L_c = '+p.Lc+'. The receiver discards it with the prefix, leaving an uncontaminated N-sample FFT window.'
+      :'The interference region crosses the FFT boundary because L = '+p.L+' > L_c = '+p.Lc+'. The first '+(p.L-p.Lc)+' useful sample'+(p.L-p.Lc===1?' is':'s are')+' contaminated by the previous block.',
+    'The required condition is L_c ≥ L; the channel need not be frequency flat or have short memory in an absolute sense.'
   ]);
 }
 ['cpN','cpLc','cpL','cpSnr'].forEach(id=>$(id).addEventListener('input',drawCp));
@@ -782,13 +790,13 @@ function drawOfTone(){
     st=drawToneConst('ofToneConst',{H:Hk,G,lambda:p.lambda,mod,seed:7301+k,k}),
     estErr=Math.sqrt(abs2(sub(He,Hk)));
   bullets($('ofToneConstNote'),[
-    'Subcarrier k = '+k+' carries its own '+(mod==='qam16'?'16-QAM':'QPSK')+' symbol Xₖ, and the channel hands it |Hₖ| = '+st.hMag.toFixed(3)+' at ∠Hₖ = '+fmtDeg(st.hDeg)+'. The dashed orange circles are the ideal points after that rotation and scaling.',
-    'Drag k across the block: every subcarrier sits at a different point of the same H(f), so the constellation turns and breathes subcarrier by subcarrier. That is the picture per-subcarrier equalization exists to undo.',
-    ofPerfect?'With Ĥₖ assumed perfect the residual gain is GₖHₖ = '+st.ghMag.toFixed(3)+' ∠'+fmtDeg(st.ghDeg)+' — rotation fully removed'+(ofEq==='mmse'?', with the MMSE shrinkage left in on purpose.':'.')
-      :'Pilots provide Ĥₖ. In this illustrative estimate it is off by '+estErr.toFixed(3)+', leaving residual gain GₖHₖ = '+st.ghMag.toFixed(3)+' ∠'+fmtDeg(st.ghDeg)+' after equalization.',
-    'The walkthrough deliberately does not assume a comb pattern or interpolation rule: Week 9 needs only the distinction between Hₖ and the estimate Ĥₖ used by the equalizer.',
-    mod==='qam16'?'16-QAM is where a faded subcarrier hurts: its rings are '+(2/Math.sqrt(10)).toFixed(2)+' apart against QPSK’s '+(2/Math.sqrt(2)).toFixed(2)+', so the same |Hₖ| and the same noise now push the inner ring into its neighbours’ decision regions. Measured EVM '+(100*st.evm).toFixed(1)+'%.'
-      :'Measured EVM '+(100*st.evm).toFixed(1)+'% with the '+name+' equalizer. Switch to 16-QAM to see why deep subcarriers need coding across subcarriers: the same fade QPSK shrugs off closes the 16-QAM rings.'
+    'Subcarrier k = '+k+' carries a '+(mod==='qam16'?'16-QAM':'QPSK')+' symbol Xₖ. The channel scales it by |Hₖ| = '+st.hMag.toFixed(3)+' and rotates it by ∠Hₖ = '+fmtDeg(st.hDeg)+'. The dashed orange circles show the ideal constellation after this channel scaling and rotation.',
+    'Move k across the block: the channel magnitude and phase differ between subcarriers, so the received constellation has a different scaling and rotation on each subcarrier. Per-subcarrier equalization compensates for these effects.',
+    ofPerfect?'With Ĥₖ assumed perfect, the residual gain is GₖHₖ = '+st.ghMag.toFixed(3)+' ∠'+fmtDeg(st.ghDeg)+'; the phase rotation is removed'+(ofEq==='mmse'?', while the expected MMSE attenuation remains.':'.')
+      :'Pilots provide Ĥₖ. In this illustrative estimate, the estimation-error magnitude is '+estErr.toFixed(3)+', leaving residual gain GₖHₖ = '+st.ghMag.toFixed(3)+' ∠'+fmtDeg(st.ghDeg)+' after equalization.',
+    'The walkthrough does not assume a particular pilot arrangement or interpolation rule. For this walkthrough, the required distinction is between the true response Hₖ and the estimate Ĥₖ used by the equalizer.',
+    mod==='qam16'?'16-QAM has a smaller minimum distance than QPSK: adjacent levels are '+(2/Math.sqrt(10)).toFixed(2)+' apart, compared with '+(2/Math.sqrt(2)).toFixed(2)+' for QPSK. Consequently, the same attenuation and noise cause a larger symbol-error risk. Measured EVM '+(100*st.evm).toFixed(1)+'%.'
+      :'Measured EVM '+(100*st.evm).toFixed(1)+'% with the '+name+' equalizer. Select 16-QAM to observe how its smaller decision-region spacing increases sensitivity to strongly attenuated subcarriers.'
   ]);
 }
 function drawOfdm(){
@@ -817,9 +825,9 @@ function drawOfdm(){
   if(!ofPerfect)line(z,emag.map((v,k)=>[k,v]),css('--purple'),2,[5,4]);
   const achieved=20*Math.log10(Math.min(...mag)/Math.max(...mag));
   bullets($('ofChannelNote'),[
-    ofCh==='notch'?'Notch asked for '+p.depth+' dB and the channel delivers '+(-achieved).toFixed(1)+' dB. The shape is pulled back to L + 1 = '+(p.L+1)+' taps so it stays a genuine finite-memory channel, and a short channel simply cannot cut a deep narrow notch — widen it, or raise L, and the full depth appears.':null,
-    'The physical channel supplies one complex H[k] per subcarrier. Deep notches are the bins on which ZF becomes dangerous.',
-    ofPerfect?'Perfect Ĥ[k] is selected, so the equalizer uses the true channel response.':'The dashed curve is a simple noisy Ĥ[k] supplied by pilots. Week 9 uses it in the equalizer but does not prescribe the pilot pattern or interpolation method.'
+    ofCh==='notch'?'Requested notch depth: '+p.depth+' dB; achieved depth: '+(-achieved).toFixed(1)+' dB. The impulse response is constrained to L + 1 = '+(p.L+1)+' taps to maintain a finite-memory channel. The achievable depth of a narrow notch therefore depends on channel memory; increase the notch width or L to approach the requested depth.':null,
+    'The physical channel supplies one complex coefficient H[k] per subcarrier. On strongly attenuated subcarriers, ZF causes substantial noise enhancement.',
+    ofPerfect?'Perfect channel knowledge is selected, so the equalizer uses the true response H[k].':'The dashed curve is an illustrative noisy channel estimate Ĥ[k]. No particular pilot arrangement or interpolation method is assumed.'
   ]);
 
   /* --- per-subcarrier SNR --- */
@@ -836,7 +844,7 @@ function drawOfdm(){
     'Each subcarrier carries its own QAM symbol at its own SNR: the spread here is '+(Math.max(...snrK)-Math.min(...snrK)).toFixed(1)+' dB across the block, around an average of '+avg.toFixed(1)+' dB.',
     deep?deep+' of '+p.N+' subcarriers fall below 0 dB. Uncoded, those subcarriers dominate the error rate however good the rest are.'
       :'No subcarrier falls below 0 dB at this setting, but the weakest still sits '+(avg-Math.min(...snrK)).toFixed(1)+' dB below average.',
-    'This is why practical OFDM codes across subcarriers: coding turns a few dead subcarriers into a manageable average, which per-subcarrier equalization alone cannot do.'
+    'Practical OFDM systems therefore code and interleave across subcarriers, exploiting frequency diversity to reduce the effect of a few severely attenuated subcarriers. Per-subcarrier equalization alone cannot provide this protection.'
   ]);
 
   /* --- selected-subcarrier constellation --- */
@@ -860,7 +868,7 @@ function drawOfEvm(p,H,mag){
         aZ+=abs2(sub(zf,X[k]));aM+=abs2(sub(mm,X[k]));aZp+=abs2(sub(zfp,X[k]));aMp+=abs2(sub(mmp,X[k]));cnt++}}
     xs.push(sn);zfE.push(aZ/cnt);mmE.push(aM/cnt);zfP.push(aZp/cnt);mmP.push(aMp/cnt)}
   const all=zfE.concat(mmE,zfP,mmP),hi=Math.ceil(Math.log10(Math.max(...all))),lo=Math.floor(Math.log10(Math.max(Math.min(...all),1e-6))),span=Math.min(7,Math.max(2,hi-lo));
-  const z=axes($('ofEvm'),-5,30,hi-span,hi,'Average subcarrier SNR E'+'_X/(NN₀) (dB)','Normalized symbol error power',{xticks:7,yticks:span,yfmt:decade});
+  const z=axes($('ofEvm'),-5,30,hi-span,hi,'Average subcarrier SNR E'+'_X/(NN₀) (dB)','Mean normalized squared symbol error',{xticks:7,yticks:span,yfmt:decade});
   const clip=v=>Math.min(hi,Math.max(hi-span,Math.log10(Math.max(v,1e-9))));
   line(z,xs.map((s,i)=>[s,clip(zfP[i])]),css('--cyan'),1.8,[6,4]);
   line(z,xs.map((s,i)=>[s,clip(mmP[i])]),css('--cyan'),1.8,[2,4]);
@@ -870,9 +878,9 @@ function drawOfEvm(p,H,mag){
   dot(z,xs[i0],clip(ofEq==='zf'?zfE[i0]:mmE[i0]),css('--green'),6);
   plotLabel(z,z.X(xs[i0]),z.Y(clip(Math.max(zfE[i0],mmE[i0])))-9,p.snr+' dB',css('--green'));
   bullets($('ofEvmNote'),[
-    'Solid curves use a simple pilot-based estimate Ĥ[k]; dashed cyan curves assume perfect channel knowledge. Their gap shows the cost of using an estimate without introducing a particular pilot-grid design.',
+    'Solid curves use an illustrative noisy channel estimate Ĥ[k]; dashed cyan curves assume perfect channel knowledge. Their separation shows the effect of estimation error without assuming a particular pilot arrangement.',
     'ZF stays above MMSE throughout because the channel has deep fades: at '+p.snr+' dB the measured gap is '+(zfE[i0]/Math.max(mmE[i0],1e-12)).toFixed(1)+'×.',
-    'Monte Carlo over 10 blocks per point, so a little scatter in the curves is expected.'
+    'Each point uses a Monte Carlo average over 10 blocks, so finite-sample variation in the curves is expected.'
   ]);
 }
 ['ofN','ofL','ofSnr','ofDepth','ofWidth','ofCentre'].forEach(id=>$(id).addEventListener('input',drawOfdm));
