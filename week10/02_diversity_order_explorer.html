@@ -16,12 +16,12 @@
 </head>
 <body>
 <div class="shell">
-<section class="hero"><h1>Diversity order and outage slope</h1><p>On this log-probability versus SNR in dB plot, diversity order M appears asymptotically as a decrease of M decades for every 10 dB increase in average SNR. Equivalently, the slope is −M/10 decades per dB.</p></section>
+<section class="hero"><h1>Diversity order and outage slope</h1><p>On this logarithmic outage-probability plot, diversity order M is the high-SNR slope. At sufficiently high SNR, increasing the average SNR by 10 dB reduces the outage probability by approximately M decades, that is, by a factor of 10<sup>M</sup>. Equivalently, the slope is −M/10 decades per decibel.</p></section>
 <div class="layout">
 <aside class="card">
 <h2 style="margin-top:0">Explore</h2>
 <label>Combining method</label>
-<div class="segment" role="group" aria-label="Combining method"><button id="scBtn" aria-pressed="false">SC</button><button id="mrcBtn" class="active" aria-pressed="true">MRC</button></div>
+<div class="segment" role="group" aria-label="Combining method"><button id="scBtn" aria-pressed="false">Selection combining (SC)</button><button id="mrcBtn" class="active" aria-pressed="true">Maximal-ratio combining (MRC)</button></div>
 <label for="threshold">Outage threshold, γ₀</label><div class="row"><input id="threshold" type="range" min="-5" max="15" step="1" value="5"><span class="value" id="thresholdVal">5 dB</span></div>
 <label for="highlight">Highlight order M</label><div class="row"><input id="highlight" type="range" min="1" max="4" step="1" value="2"><span class="value" id="highlightVal">2</span></div>
 <div class="order-box">
@@ -29,7 +29,7 @@
 <div class="order"><span>Diversity order</span><strong id="order">2</strong></div>
 </div>
 <div class="formula" id="formula"></div>
-<p class="small">Assumptions: independent, identically distributed Rayleigh branches and equal average branch SNR. Correlation can reduce the effective gain and may reduce the asymptotic order in rank-deficient cases.</p>
+<p class="small">Assumptions: independent, identically distributed Rayleigh-fading branches with equal average branch SNR. Correlation reduces the gain and can reduce the asymptotic diversity order when the branch-correlation matrix does not have full rank.</p>
 </aside>
 <main class="card">
 <h2 style="margin-top:0">Outage probability versus average branch SNR</h2>

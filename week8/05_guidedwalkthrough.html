@@ -113,7 +113,7 @@ MMSE equalization.</p>
       <div class="metric"><div class="name">Inner product</div><div class="value" id="orInner">&mdash;</div><div class="small">|&sum;<sub>n</sub> e<sup>j2&pi;(k&minus;m)n/N</sup>| / N</div></div>
       <div class="metric"><div class="name">Orthogonal spacing</div><div class="value">&Delta;fT<sub>s</sub> = 1</div><div class="small">one FFT-bin spacing</div></div>
       <div class="metric"><div class="name">Active spectrum</div><div class="value" id="orOccupied">&mdash;</div><div class="small">N &minus; 2 active; DC and one edge bin are nulled</div></div>
-      <div class="metric"><div class="name">Normalized out-of-band power</div><div class="value" id="orOob">&mdash;</div><div class="small">measured 2&Delta;f beyond the upper edge, relative to the peak</div></div>
+      <div class="metric"><div class="name">Normalized out-of-band PSD</div><div class="value" id="orOob">&mdash;</div><div class="small">at f<sub>edge</sub> + 2&Delta;f, relative to the spectrum peak</div></div>
       <div class="metric lab-metric"><div class="name">Interactive lab</div><div class="value">Orthogonality</div><button type="button" class="lab-toggle" aria-controls="lab-ortho" aria-expanded="false">Open lab</button></div>
     </div><div class="formula"><div>&sum;<sub>n=0</sub><sup>N&minus;1</sup> e<sup>j2&pi;(k&minus;m)n/N</sup> = N if k = m, else 0</div><div id="orNote">Rectangular window: narrow main lobe, slowly decaying sidelobes</div></div></div>
   </div></div>
@@ -123,7 +123,7 @@ MMSE equalization.</p>
   <div class="plots">
     <div class="card"><div class="title">Subcarrier k against FFT basis m, term by term</div><canvas id="orBasis" role="img" aria-label="Real part of the product of the transmitted subcarrier and the conjugated FFT basis function, with its running sum"></canvas><div class="legend"><span><i class="sw blue"></i>term n</span><span><i class="sw orange"></i>running sum</span></div><ul class="bullets" id="orBasisNote"></ul></div>
     <div class="card"><div class="title">Subcarrier spectra: nulls at neighbouring subcarrier centres</div><canvas id="orSpec" role="img" aria-label="Finite-length spectra of neighbouring subcarriers with the FFT-bin frequencies marked"></canvas><div class="legend"><span><i class="sw blue"></i>transmitted subcarrier</span><span><i class="sw" style="background:var(--muted)"></i>neighbours</span><span><i class="sw" style="background:var(--red)"></i>FFT-bin frequencies</span></div><ul class="bullets" id="orSpecNote"></ul></div>
-    <div class="card"><div class="title">Aggregate OFDM spectrum and out-of-band sidelobes</div><canvas id="orAggregate" role="img" aria-label="Aggregate OFDM spectrum for rectangular and tapered symbol windows, including out-of-band sidelobes"></canvas><div class="legend"><span><i class="sw blue"></i>Rectangular</span><span><i class="sw orange"></i>Windowed</span><span><i class="sw" style="background:var(--red)"></i>Band edge</span></div><ul class="bullets" id="orAggregateNote"></ul></div>
+    <div class="card"><div class="title">Aggregate OFDM spectrum and out-of-band sidelobes</div><canvas id="orAggregate" role="img" aria-label="Aggregate OFDM spectrum for rectangular and tapered symbol windows, including out-of-band sidelobes and the PSD probe"></canvas><div class="legend"><span><i class="sw blue"></i>Rectangular</span><span><i class="sw orange"></i>Windowed</span><span><i class="sw" style="background:var(--red)"></i>Band edge</span><span><i class="sw green"></i>PSD probe</span></div><ul class="bullets" id="orAggregateNote"></ul></div>
   </div>
 </section>
 
@@ -463,19 +463,27 @@ function dirichlet(d,N){
   const num=Math.sin(Math.PI*d),den=N*Math.sin(Math.PI*d/N);
   return Math.abs(den)<1e-12?(Math.abs(d)<1e-9?1:0):num/den;
 }
-function taperWeights(N,roll){
-  const edge=Math.floor(N*roll),w=[];let sum=0;
-  for(let n=0;n<N;n++){
-    const q=Math.min(n,N-1-n),v=edge&&q<edge?0.5-0.5*Math.cos(Math.PI*(q+1)/(edge+1)):1;
-    w.push(v);sum+=v;
-  }
-  return{w,sum};
+/* Continuous-time Fourier integral of exp(-j2πdu) over a <= u <= b. */
+function ctExpIntegral(d,a,b){
+  if(Math.abs(d)<1e-10)return C(b-a,0);
+  const eb=C(Math.cos(-2*Math.PI*d*b),Math.sin(-2*Math.PI*d*b)),
+    ea=C(Math.cos(-2*Math.PI*d*a),Math.sin(-2*Math.PI*d*a));
+  return mul(sub(eb,ea),C(0,1/(2*Math.PI*d)));
 }
-function taperedResponse(d,N,tw){
-  const{w,sum}=tw;
-  let re=0,im=0;
-  for(let n=0;n<N;n++){const th=-2*Math.PI*d*n/N;re+=w[n]*Math.cos(th);im+=w[n]*Math.sin(th)}
-  return(re*re+im*im)/(sum*sum);
+/*
+  Continuous transmit-pulse spectrum in units of Δf = 1/Ts.
+  roll = 0 is the rectangular useful symbol and therefore sinc². For roll > 0,
+  raised-cosine transitions of duration roll*Ts are added before and after the
+  useful interval; these transitions are assumed to occupy guard/overlap time.
+*/
+function transmitPulsePower(d,roll){
+  if(!roll)return abs2(ctExpIntegral(d,0,1));
+  const shift=1/(2*roll),
+    baseEdge=sub(scale(ctExpIntegral(d,0,roll),.5),scale(add(ctExpIntegral(d-shift,0,roll),ctExpIntegral(d+shift,0,roll)),.25)),
+    left=mul(C(Math.cos(2*Math.PI*d*roll),Math.sin(2*Math.PI*d*roll)),baseEdge),
+    right=mul(C(Math.cos(-2*Math.PI*d),Math.sin(-2*Math.PI*d)),conj(left)),
+    response=add(add(left,ctExpIntegral(d,0,1)),right),area=1+roll;
+  return abs2(response)/(area*area);
 }
 function drawOrtho(){
   const p=orthoParams();
@@ -524,10 +532,10 @@ function drawOrtho(){
   ]);
 
   /* --- aggregate spectrum and windowing --- */
-  const fLo=-3,fHi=p.N+1,ns=320,rect=[],taper=[],tw=taperWeights(p.N,p.roll);
+  const fLo=-3,fHi=p.N+1,ns=320,rect=[],taper=[];
   for(let i=0;i<=ns;i++){
     const f=fLo+(fHi-fLo)*i/ns;let pr=0,pw=0;
-    for(let k=1;k<=p.N-2;k++){pr+=Math.pow(dirichlet(f-k,p.N),2);pw+=taperedResponse(f-k,p.N,tw)}
+    for(let k=1;k<=p.N-2;k++){pr+=transmitPulsePower(f-k,0);pw+=transmitPulsePower(f-k,p.roll)}
     rect.push([f,pr]);taper.push([f,pw]);
   }
   const peakR=Math.max(...rect.map(q=>q[1])),peakW=Math.max(...taper.map(q=>q[1])),toDb=(v,m)=>Math.max(-80,10*Math.log10(Math.max(v/m,1e-8)));
@@ -536,15 +544,17 @@ function drawOrtho(){
   if(p.roll>0)line(z,taper.map(q=>[q[0],toDb(q[1],peakW)]),css('--orange'),2.4);
   z.c.save();z.c.strokeStyle=css('--red');z.c.setLineDash([5,4]);
   for(const edge of[0.5,p.N-1.5]){z.c.beginPath();z.c.moveTo(z.X(edge),z.m.t);z.c.lineTo(z.X(edge),z.h-z.m.b);z.c.stroke()}z.c.restore();
-  const probe=p.N+0.5,probeRect=Array.from({length:p.N-2},(_,i)=>Math.pow(dirichlet(probe-(i+1),p.N),2)).reduce((a,b)=>a+b,0),
-    probeWin=Array.from({length:p.N-2},(_,i)=>taperedResponse(probe-(i+1),p.N,tw)).reduce((a,b)=>a+b,0),oob=p.roll?toDb(probeWin,peakW):toDb(probeRect,peakR);
+  const probe=p.N+0.5,probeRect=Array.from({length:p.N-2},(_,i)=>transmitPulsePower(probe-(i+1),0)).reduce((a,b)=>a+b,0),
+    probeWin=Array.from({length:p.N-2},(_,i)=>transmitPulsePower(probe-(i+1),p.roll)).reduce((a,b)=>a+b,0),oob=p.roll?toDb(probeWin,peakW):toDb(probeRect,peakR);
   $('orOob').textContent=oob.toFixed(1)+' dB';
+  dot(z,probe,oob,css('--green'),5);
+  plotLabel(z,z.X(probe),z.Y(oob)-7,'f_edge + 2Δf',css('--green'));
   $('orNote').textContent=p.roll?'Tapered edges: lower sidelobes, with a wider transition region':'Rectangular window: narrow main lobe, slowly decaying sidelobes';
   bullets($('orAggregateNote'),[
     (p.N-2)+' active subcarriers form one occupied band. Increasing N narrows the individual spectra but does not change the slow sidelobe decay of a rectangular window.',
     p.roll?'A '+Math.round(100*p.roll)+'% taper at each edge smooths the block transitions and reduces out-of-band power. This spectrum assumes the taper transition is accommodated in overlap or guard samples outside the useful FFT interval.'
       :'Set a non-zero taper duration to compare a smoother transmit spectrum with the blue rectangular-window spectrum. The orthogonality calculation continues to use a rectangular useful FFT interval.',
-    'The red lines mark the nominal occupied-band edges. Guard subcarriers, filtering, and windowing help satisfy the spectral mask outside them.'
+    'The red lines mark the nominal occupied-band edges. The green marker is the PSD probe at two subcarrier spacings beyond the upper edge. Guard subcarriers, filtering, and windowing help satisfy the spectral mask outside the occupied band.'
   ]);
 }
 ['orN','orK','orM','orRoll'].forEach(id=>$(id).addEventListener('input',drawOrtho));

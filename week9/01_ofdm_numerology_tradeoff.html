@@ -20,19 +20,19 @@ canvas{width:100%;height:280px;display:block;border:1px solid var(--line);border
 <body>
 <main>
 <h1>OFDM Numerology Trade-off Explorer</h1>
-<p class="subtitle">Change bandwidth, FFT size, delay spread, and Doppler. Observe how subcarrier spacing helps one constraint while hurting another.</p>
+<p class="subtitle">In OFDM, the numerology specifies quantities such as the subcarrier spacing and symbol duration. Change the bandwidth, FFT size, delay spread, and Doppler spread to examine the trade-off between cyclic-prefix overhead and sensitivity to channel variation.</p>
 <div class="grid">
 <section class="card controls" aria-label="Controls">
   <label for="bandwidth">Occupied bandwidth, B</label>
   <div class="row"><input id="bandwidth" type="range" min="0.5" max="20" step="0.5" value="5"><output class="value" id="bandwidthOut"></output></div>
-  <label for="fftSize">FFT/IFFT size, N</label>
+  <label for="fftSize">Transform size N (FFT/IFFT)</label>
   <select id="fftSize"><option>64</option><option selected>128</option><option>256</option><option>512</option><option>1024</option></select>
   <label for="delay">Maximum delay spread, τmax</label>
   <div class="row"><input id="delay" type="range" min="0.2" max="20" step="0.2" value="5"><output class="value" id="delayOut"></output></div>
   <label for="doppler">Doppler spread, BD</label>
   <div class="row"><input id="doppler" type="range" min="0" max="2000" step="25" value="150"><output class="value" id="dopplerOut"></output></div>
   <div class="equation">Δf = B/N &nbsp;&nbsp; | &nbsp;&nbsp; Ts = 1/Δf<br>ηCP = Ts/(Ts + TCP)</div>
-  <p class="note">The CP is automatically chosen as the smallest whole number of samples not shorter than τmax. Practical systems normally include an additional margin.</p>
+  <p class="note">The cyclic prefix (CP) is automatically set to the smallest whole number of samples whose duration is at least τmax. Practical systems normally include an additional safety margin.</p>
 </section>
 <section class="card">
   <div class="metrics">
@@ -40,7 +40,7 @@ canvas{width:100%;height:280px;display:block;border:1px solid var(--line);border
     <div class="metric"><span>Useful symbol time</span><b id="ts"></b></div>
     <div class="metric"><span>CP length</span><b id="cp"></b></div>
     <div class="metric"><span>CP efficiency</span><b id="eff"></b></div>
-    <div class="metric"><span>Doppler ratio BD/Δf</span><b id="ratio"></b></div>
+    <div class="metric"><span>Doppler-to-spacing ratio BD/Δf</span><b id="ratio"></b></div>
     <div class="metric"><span>CP samples Lc</span><b id="lc"></b></div>
   </div>
   <canvas id="plot" width="900" height="360" role="img" aria-label="OFDM symbol and subcarrier-spacing visualization"></canvas>
@@ -62,9 +62,9 @@ function update(){
  $('bandwidthOut').textContent=fmt(Bmhz,1)+' MHz'; $('delayOut').textContent=fmt(tauUs,1)+' μs'; $('dopplerOut').textContent=BD+' Hz';
  $('df').textContent=fmt(df/1e3,2)+' kHz'; $('ts').textContent=fmt(Ts*1e6,2)+' μs'; $('cp').textContent=fmt(Tcp*1e6,2)+' μs'; $('eff').textContent=fmt(100*eta,1)+'%'; $('ratio').textContent=fmt(ratio,3); $('lc').textContent=Lc;
  let msg, warn=false;
- if(ratio<=0.01) msg='Doppler is much smaller than the subcarrier spacing: subcarriers are likely to remain approximately orthogonal over one symbol.';
- else if(ratio<=0.1) msg='The Doppler ratio is moderate. Inter-carrier interference may become noticeable, depending on the channel and receiver.';
- else {msg='Doppler is no longer small relative to Δf. A larger subcarrier spacing would improve time variation tolerance.';warn=true}
+ if(ratio<=0.01) msg='The Doppler spread is much smaller than the subcarrier spacing, so the subcarriers should remain approximately orthogonal during one symbol.';
+ else if(ratio<=0.1) msg='The Doppler-to-spacing ratio is moderate. Inter-carrier interference may become noticeable, depending on the channel and receiver.';
+ else {msg='The Doppler spread is no longer small relative to Δf. Increasing the subcarrier spacing would make the system more tolerant of channel variation.';warn=true}
  msg+=' CP overhead is '+fmt(100*(1-eta),1)+'%.'; const s=$('status');s.textContent=msg;s.className='status'+(warn?' warn':'');
  last={Bmhz,N,tauUs,BD,df,Ts,Tcp,eta,ratio}; draw(last);
 }

@@ -34,7 +34,7 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid 
 </head>
 <body>
 <div class="shell">
-<section class="hero"><h1>Alamouti encoding and linear detection</h1><p>Choose two QPSK symbols and a two-antenna channel. The orthogonal code makes the matched-filter outputs decouple into two scalar symbol detections.</p></section>
+<section class="hero"><h1>Alamouti encoding and linear detection</h1><p>Choose two quadrature phase-shift keying (QPSK) symbols and a two-antenna channel. The orthogonal Alamouti code removes cross-interference between the two matched-filter outputs, allowing two independent scalar symbol decisions.</p></section>
 <div class="top">
 <aside class="card">
 <h2 style="margin-top:0">Inputs</h2>
@@ -44,9 +44,9 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid 
 <label for="p1">∠h₁</label><div class="row"><input id="p1" type="range" min="-180" max="180" step="1" value="25"><span class="value" id="p1v">25°</span></div>
 <label for="a2">|h₂|</label><div class="row"><input id="a2" type="range" min="0.01" max="2.5" step="0.01" value="0.8"><span class="value" id="a2v">0.80</span></div>
 <label for="p2">∠h₂</label><div class="row"><input id="p2" type="range" min="-180" max="180" step="1" value="-70"><span class="value" id="p2v">−70°</span></div>
-<label for="snr">Reference GEₓ/N₀</label><div class="row"><input id="snr" type="range" min="0" max="25" step="1" value="12"><span class="value" id="snrv">12 dB</span></div>
+<label for="snr">Reference SNR GEₓ/N₀ (total transmit energy)</label><div class="row"><input id="snr" type="range" min="0" max="25" step="1" value="12"><span class="value" id="snrv">12 dB</span></div>
 <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:16px"><button id="noise">Draw new noise</button><button id="random" class="secondary">Random channel</button></div>
-<p class="small">The channel is constant over both time slots and known at the receiver. The numerical samples use G = Eₓ = 1. Noise is CN(0,N₀). Moving the SNR slider rescales the same unit-noise draw; only “Draw new noise” changes its direction.</p>
+<p class="small">The channel is constant over both time slots and is known at the receiver. The numerical example uses G = Eₓ = 1. The noise is zero-mean circularly symmetric complex Gaussian with variance N₀, denoted CN(0,N₀). Moving the SNR slider rescales the same normalised noise realisation; “Draw new noise” generates an independent realisation.</p>
 </aside>
 <main class="card">
 <h2 style="margin-top:0">1. Encode across antennas and time</h2>
@@ -55,7 +55,7 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid 
 <div class="cell time">time 0</div><div class="cell"><div class="symbol">s₀/√2</div></div><div class="cell"><div class="symbol">s₁/√2</div></div>
 <div class="cell time">time 1</div><div class="cell"><div class="symbol">−s₁*/√2</div></div><div class="cell"><div class="symbol">s₀*/√2</div></div>
 </div>
-<h2>2. Receive and apply the matched filter H₀ᴴ</h2>
+<h2>2. Receive and apply the matched filter H₀ᴴ (the Hermitian transpose of H₀)</h2>
 <div class="flow">
 <div class="step"><h3>Received vector</h3><div class="complex" id="received"></div></div><div class="arrow">→</div>
 <div class="step"><h3>Matched-filter outputs</h3><div class="complex" id="matched"></div></div><div class="arrow">→</div>
@@ -70,11 +70,11 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid 
 <div class="matrix" id="matrix"></div>
 <div class="metrics">
 <div class="metric"><span>Alamouti SNR</span><strong id="alamoutiSnr">—</strong></div>
-<div class="metric"><span>MRT SNR (perfect CSIT)</span><strong id="mrtSnr">—</strong></div>
-<div class="metric"><span>MRT − Alamouti</span><strong>3.01 dB</strong></div>
+<div class="metric"><span>Maximum-ratio transmission SNR</span><strong id="mrtSnr">—</strong></div>
+<div class="metric"><span>SNR difference: MRT − Alamouti</span><strong>3.01 dB</strong></div>
 <div class="metric"><span>Detection</span><strong id="status">—</strong></div>
 </div>
-<div class="take">The conjugation and sign change make the columns of the unscaled channel matrix H₀ orthogonal. After applying H₀ᴴ, interference between s[0] and s[1] cancels exactly. The MRT comparison assumes perfect transmitter channel knowledge and the same total transmit energy.</div>
+<div class="take">The conjugation and sign change make the columns of the unscaled channel matrix H₀ orthogonal. After applying H₀ᴴ, interference between s[0] and s[1] cancels exactly. The maximum-ratio transmission (MRT) comparison assumes perfect channel-state information at the transmitter (CSIT) and the same total transmit energy.</div>
 </aside>
 </div>
 </div>
