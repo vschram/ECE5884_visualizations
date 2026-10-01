@@ -22,6 +22,21 @@
 .panel.lab-open>.panel-head .message{display:none}.panel.lab-open>.sticky-bar .mode-row,.panel.lab-open>.sticky-bar .control-grid,.panel.lab-open>.sticky-bar .control-sections,.panel.lab-open>.sticky-bar .summary-row>.formula,.panel.lab-open>.sticky-bar .toolbar-metrics>.metric:not(.lab-metric){display:none}.panel.lab-open>.sticky-bar .summary-row{display:block}.panel.lab-open>.sticky-bar .toolbar-metrics{display:grid;grid-template-columns:minmax(220px,360px)}
 </style>
 <style>.ma-comparison{grid-template-columns:repeat(3,minmax(0,1fr));margin-top:10px}.ma-comparison canvas{height:235px}@media(max-width:900px){.ma-comparison{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:620px){.ma-comparison{grid-template-columns:1fr}}#ma .ma-fdma-only[hidden]{display:none!important}#ma .control-sections{grid-template-columns:1fr}#ma .summary-row .toolbar-metrics{grid-template-columns:1fr}#maTry{margin:10px 0 0}</style>
+<style>
+#ma .toolbar{padding:8px 10px}
+#ma .control-section{padding:7px 9px}
+#ma .control-section-heading{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px;flex-wrap:wrap}
+#ma .control-section-heading .control-section-title{margin:0}
+#ma .control-section-heading button{padding:4px 9px;font-size:.7rem}
+#ma .control-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:6px 12px}
+#ma .summary-row{grid-template-columns:minmax(0,1fr) auto;gap:8px;margin-top:6px;align-items:center}
+#ma .summary-row .toolbar-metrics{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+#ma .summary-row .metric{padding:5px 7px}
+#ma .summary-row .formula{padding:7px 9px;font-size:.68rem}
+#maTry{margin:6px 0 0;font-size:.72rem;max-width:none;line-height:1.3}
+@media(max-width:900px){#ma .summary-row{grid-template-columns:1fr}#ma .summary-row .formula{padding:4px 7px}}
+@media(max-width:620px){#ma .control-grid{grid-template-columns:repeat(2,minmax(0,1fr))}#ma .summary-row .toolbar-metrics{grid-template-columns:repeat(3,minmax(0,1fr))}}
+</style>
 </head>
 <body>
 <h1>Week 10 · OFDM Design, PAPR, and Multiple Access with OFDMA and SC-FDMA</h1>
@@ -43,7 +58,6 @@ compare multiple-access schemes, schedule users on OFDMA resource blocks, and us
 <section class="panel" id="param" role="tabpanel" aria-labelledby="tab-param">
   <div class="panel-head"><div><div class="eyebrow">Recap of OFDM and OFDM parameter selection</div><h2>Subcarrier spacing balances cyclic-prefix overhead against sensitivity to Doppler spread</h2></div><div class="message">The channel delay spread sets the minimum cyclic-prefix (CP) duration; allow a margin for timing uncertainty. Increasing the useful symbol duration T<sub>s</sub> = 1/&Delta;f therefore reduces the CP overhead, but the corresponding smaller subcarrier spacing &Delta;f increases sensitivity to Doppler spread B<sub>D</sub>. Per-subcarrier equalization removes intersymbol interference (ISI) when the CP is long enough, but it does not remove frequency-selective fades. Coding and interleaving across subcarriers are therefore needed to obtain frequency diversity.</div></div>
   <div class="sticky-bar"><div class="toolbar">
-    <div class="mode-buttons mode-row"><button type="button" id="pmNewCh">New channel</button><button type="button" class="preset" id="pmExample">Slide example: B = 1 MHz, N = 128</button></div>
     <div class="control-sections">
       <div class="control-section"><div class="control-section-title">OFDM parameters</div><div class="control-grid">
         <div class="ctrl"><label for="pmB"><span>Bandwidth B</span> <strong id="pmBOut">1 MHz</strong></label><input id="pmB" type="range" min="0.5" max="20" value="1" step="0.5"></div>
@@ -76,7 +90,7 @@ compare multiple-access schemes, schedule users on OFDMA resource blocks, and us
     <div class="card"><div class="title">Two OFDM symbols to scale</div><canvas id="pmTimeline" role="img" aria-label="Timeline of two OFDM symbols showing cyclic prefix, useful part, the channel echo of the previous symbol, and the FFT window"></canvas><div class="legend"><span><i class="sw orange"></i>CP</span><span><i class="sw blue"></i>Useful T<sub>s</sub></span><span><i class="sw red"></i>Echo / ISI</span><span><i class="sw green"></i>FFT window</span></div><ul class="bullets" id="pmTimelineNote"></ul></div>
   </div>
   <div class="plots" style="grid-template-columns:1fr;margin-top:14px">
-    <div class="card"><div class="title">Per-subcarrier SNR and codeword assignment</div><canvas id="pmSnrPlot" role="img" aria-label="Per-subcarrier SNR across the band with two strips showing codeword assignment with and without interleaving"></canvas><div class="legend"><span><i class="sw blue"></i>|H[k]|&sup2; &times; average SNR</span><span><i class="sw red"></i>SNR for uncoded P<sub>e</sub> &asymp; 10&#8315;&sup3;</span><span>Strips: upper = contiguous, lower = interleaved (colour = codeword)</span></div><ul class="bullets" id="pmSnrNote"></ul></div>
+    <div class="card"><div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:8px;flex-wrap:wrap"><div class="title" style="margin:0">Per-subcarrier SNR and codeword assignment</div><button type="button" id="pmNewCh" aria-controls="pmSnrPlot pmSnrNote">New channel</button></div><canvas id="pmSnrPlot" role="img" aria-label="Per-subcarrier SNR across the band with two strips showing codeword assignment with and without interleaving"></canvas><div class="legend"><span><i class="sw blue"></i>|H[k]|&sup2; &times; average SNR</span><span><i class="sw red"></i>SNR for uncoded P<sub>e</sub> &asymp; 10&#8315;&sup3;</span><span>Strips: upper = contiguous, lower = interleaved (colour = codeword)</span></div><ul class="bullets" id="pmSnrNote"></ul></div>
   </div>
 </section>
 
@@ -119,18 +133,19 @@ compare multiple-access schemes, schedule users on OFDMA resource blocks, and us
 <section class="panel" id="ma" role="tabpanel" aria-labelledby="tab-ma" hidden>
   <div class="panel-head"><div><div class="eyebrow">Multiple access techniques</div><h2>Users share the available bandwidth by frequency, time, or code</h2></div><div class="message">Frequency-division multiple access (FDMA) gives each user a narrow channel, time-division multiple access (TDMA) gives each user a repeating time slot, and code-division multiple access (CDMA) separates users by spreading codes. OFDM-based access applies the same principles to a digital time&ndash;frequency grid: OFDMA assigns disjoint subcarrier sets, OFDM-TDMA assigns complete OFDM symbols, and multicarrier CDMA (MC-CDMA) spreads each data symbol across subcarriers.</div></div>
   <div class="sticky-bar"><div class="toolbar">
-    <div class="mode-buttons mode-row"><button type="button" class="preset" id="maExample">Slide example: 25 MHz, 30 kHz FDMA</button></div>
     <div class="control-sections">
-      <div class="control-section"><div class="control-section-title">Users and allocation</div><div class="control-grid">
+      <div class="control-section"><div class="control-section-heading"><div class="control-section-title">Users and allocation</div><button type="button" id="maExample">Slide example: 25 MHz, 30 kHz FDMA</button></div><div class="control-grid">
         <div class="ctrl"><label for="maK"><span>Users K</span> <strong id="maKOut">4</strong></label><input id="maK" type="range" min="2" max="8" value="4" step="1"></div>
         <div class="ctrl ma-fdma-only"><label for="maB"><span>Total bandwidth B</span> <strong id="maBOut">25 MHz</strong></label><input id="maB" type="range" min="1" max="50" value="25" step="1"></div>
         <div class="ctrl ma-fdma-only"><label for="maBc"><span>Channel bandwidth B<sub>c</sub></span> <strong id="maBcOut">30 kHz</strong></label><input id="maBc" type="range" min="10" max="200" value="30" step="5"></div>
-        <div class="ctrl ma-fdma-only"><label for="maBg"><span>Edge guard band B<sub>g</sub></span> <strong id="maBgOut">10 kHz</strong></label><input id="maBg" type="range" min="0" max="100" value="10" step="5"></div>
+        <div class="ctrl ma-fdma-only"><label for="maBg"><span>Guard width at each band edge B<sub>g</sub></span> <strong id="maBgOut">10 kHz</strong></label><input id="maBg" type="range" min="0" max="100" value="10" step="5"></div>
       </div></div>
     </div>
     <p class="message" id="maTry">Change the channel width and watch how many FDMA channels fit in the band.</p>
     <div class="summary-row ma-fdma-only"><div class="toolbar-metrics metrics-4">
       <div class="metric"><div class="name">FDMA channels</div><div class="value" id="maChan">&mdash;</div><div class="small">&lfloor;(B &minus; 2B<sub>g</sub>)/B<sub>c</sub>&rfloor;</div></div>
+      <div class="metric"><div class="name">Total guard bandwidth</div><div class="value" id="maGuardWidth">&mdash;</div><div class="small">2B<sub>g</sub>, both edges combined</div></div>
+      <div class="metric"><div class="name">Channels lost to edge guards</div><div class="value" id="maGuardLoss">&mdash;</div><div class="small">compared with B<sub>g</sub> = 0</div></div>
     </div><div class="formula"><div>N<sub>FDMA</sub> = &lfloor;(B &minus; 2B<sub>g</sub>)/B<sub>c</sub>&rfloor;</div></div></div>
   </div></div>
 
@@ -190,8 +205,8 @@ compare multiple-access schemes, schedule users on OFDMA resource blocks, and us
     <div class="card"><div class="title">Rate per user under each allocation rule</div><canvas id="ofRates" role="img" aria-label="Stacked bars of each user's rate under equal allocation and maximum-rate scheduling, for equal allocation and maximum-rate scheduling"></canvas><div class="legend" id="ofRatesLegend"></div><ul class="bullets" id="ofRatesNote"></ul></div>
   </div>
   <div class="plots two" style="margin-top:14px">
-    <div class="card"><div class="title">N = 64 example: frequency-sorted order and IFFT-array order</div><canvas id="ofIdx" role="img" aria-label="The 64 subcarriers of the worked example, coloured by role, in frequency-sorted order and in raw DFT-bin order"></canvas><div class="legend"><span><i class="sw grey"></i>Edge guard</span><span><i class="sw blue"></i>User 1</span><span><i class="sw red"></i>DC (unused)</span><span><i class="sw orange"></i>User 2</span></div><ul class="bullets" id="ofIdxNote"></ul></div>
-    <div class="card"><div class="title">Uplink: User 1's power in each FFT bin</div><canvas id="ofAsync" role="img" aria-label="Power of User 1 after the base-station FFT in its own subcarriers and leaking into User 2's subcarriers"></canvas><div class="legend"><span><i class="sw blue"></i>User 1 in its own bins</span><span><i class="sw red"></i>User 1 leaking into User 2's bins</span><span><i class="sw orange"></i>User 2's signal</span></div><ul class="bullets" id="ofAsyncNote"></ul></div>
+    <div class="card"><div class="title">N = 64 example: frequency-sorted and unshifted subcarrier order</div><canvas id="ofIdx" role="img" aria-label="The 64 subcarriers of the worked example, coloured by role, in frequency-sorted order and in unshifted subcarrier order"></canvas><div class="legend"><span><i class="sw grey"></i>Edge guard</span><span><i class="sw blue"></i>User 1</span><span><i class="sw red"></i>DC (unused)</span><span><i class="sw orange"></i>User 2</span></div><ul class="bullets" id="ofIdxNote"></ul></div>
+    <div class="card"><div class="title">Uplink: User 1's power in each FFT subcarrier</div><canvas id="ofAsync" role="img" aria-label="Power of User 1 after the base-station FFT in its own subcarriers and leaking into User 2's subcarriers"></canvas><div class="legend"><span><i class="sw blue"></i>User 1 in its own subcarriers</span><span><i class="sw red"></i>User 1 leaking into User 2's subcarriers</span><span><i class="sw orange"></i>User 2's signal</span></div><ul class="bullets" id="ofAsyncNote"></ul></div>
   </div>
 </section>
 
@@ -220,23 +235,23 @@ compare multiple-access schemes, schedule users on OFDMA resource blocks, and us
       <div class="metric"><div class="name">SC-FDMA P<sub>e</sub></div><div class="value" id="scPeS">&mdash;</div><div class="small" id="scPeSSmall">&mdash;</div></div>
       <div class="metric"><div class="name">Mean ZF noise gain</div><div class="value" id="scGain">&mdash;</div><div class="small">mean<sub>k</sub> 1/|H[k]|&sup2;</div></div>
       <div class="metric lab-metric"><div class="name">Interactive lab</div><div class="value">DFT spreading</div><button type="button" class="lab-toggle" aria-controls="lab-sc" aria-expanded="false">Open lab</button></div>
-    </div><div class="formula"><div>S = F<sub>M</sub>s &rarr; map onto M of N bins &rarr; x[n] = (1/N) &sum;<sub>k</sub> X[k] e<sup>j2&pi;kn/N</sup></div><div>OFDMA: SNR[k] = |H[k]|&sup2; / NSR</div><div>SC-FDMA: SNR = 1 / (NSR &middot; mean<sub>k</sub> 1/|H[k]|&sup2;), ŝ = F<sub>M</sub><sup>&minus;1</sup>Ŝ</div></div></div>
+    </div><div class="formula"><div>S = F<sub>M</sub>s &rarr; map onto M of N subcarriers &rarr; x[n] = (1/N) &sum;<sub>k</sub> X[k] e<sup>j2&pi;kn/N</sup></div><div>OFDMA: SNR[k] = |H[k]|&sup2; / NSR</div><div>SC-FDMA: SNR = 1 / (NSR &middot; mean<sub>k</sub> 1/|H[k]|&sup2;), ŝ = F<sub>M</sub><sup>&minus;1</sup>Ŝ</div></div></div>
   </div></div>
   <div class="lab-shell" id="lab-sc" hidden><iframe class="lab-frame" loading="lazy" title="DFT spreading interactive lab" src="04_scfdma_dft_spreading_explorer.html?v=20261001"></iframe></div>
 
 
 
-  <div class="flow" aria-label="SC-FDMA transmitter at the handset"><div class="flow-step"><strong>QAM s[n]</strong><span>M data symbols</span></div><div class="arrow">&rarr;</div><div class="flow-step hl"><strong>M-point DFT</strong><span>S = F<sub>M</sub>s</span></div><div class="arrow">&rarr;</div><div class="flow-step"><strong>Map subcarriers</strong><span id="scFlowMap">M contiguous bins</span></div><div class="arrow">&rarr;</div><div class="flow-step"><strong>N-point IFFT</strong><span>creates the transmit waveform</span></div><div class="arrow">&rarr;</div><div class="flow-step"><strong>Add CP</strong><span>then transmit through the power amplifier</span></div></div>
-  <div class="flow" aria-label="SC-FDMA receiver at the base station"><div class="flow-step"><strong>Remove CP</strong><span>retain N samples</span></div><div class="arrow">&rarr;</div><div class="flow-step"><strong>N-point FFT</strong><span>separates the subcarriers</span></div><div class="arrow">&rarr;</div><div class="flow-step"><strong>Extract M bins</strong><span>allocated to this user</span></div><div class="arrow">&rarr;</div><div class="flow-step"><strong>One-tap equalizer</strong><span>estimates S[k]</span></div><div class="arrow">&rarr;</div><div class="flow-step hl"><strong>M-point IDFT</strong><span>ŝ = F<sub>M</sub><sup>&minus;1</sup>Ŝ</span></div><div class="arrow">&rarr;</div><div class="flow-step"><strong>Symbol decisions</strong><span>estimate the transmitted QAM symbols</span></div></div>
+  <div class="flow" aria-label="SC-FDMA transmitter at the handset"><div class="flow-step"><strong>QAM s[n]</strong><span>M data symbols</span></div><div class="arrow">&rarr;</div><div class="flow-step hl"><strong>M-point DFT</strong><span>S = F<sub>M</sub>s</span></div><div class="arrow">&rarr;</div><div class="flow-step"><strong>Map subcarriers</strong><span id="scFlowMap">M contiguous subcarriers</span></div><div class="arrow">&rarr;</div><div class="flow-step"><strong>N-point IFFT</strong><span>creates the transmit waveform</span></div><div class="arrow">&rarr;</div><div class="flow-step"><strong>Add CP</strong><span>then transmit through the power amplifier</span></div></div>
+  <div class="flow" aria-label="SC-FDMA receiver at the base station"><div class="flow-step"><strong>Remove CP</strong><span>retain N samples</span></div><div class="arrow">&rarr;</div><div class="flow-step"><strong>N-point FFT</strong><span>separates the subcarriers</span></div><div class="arrow">&rarr;</div><div class="flow-step"><strong>Extract M subcarriers</strong><span>allocated to this user</span></div><div class="arrow">&rarr;</div><div class="flow-step"><strong>One-tap equalizer</strong><span>estimates S[k]</span></div><div class="arrow">&rarr;</div><div class="flow-step hl"><strong>M-point IDFT</strong><span>ŝ = F<sub>M</sub><sup>&minus;1</sup>Ŝ</span></div><div class="arrow">&rarr;</div><div class="flow-step"><strong>Symbol decisions</strong><span>estimate the transmitted QAM symbols</span></div></div>
   <p class="flow-caption">Equalization is performed in the frequency domain, followed by symbol decisions in the original data-symbol domain. This is the same structure used for single-carrier frequency-domain equalization (SC-FDE) in the earlier SC-FDE lecture. OFDMA does not use the additional M-point DFT at the transmitter or M-point IDFT at the receiver.</p>
 
   <div class="plots">
-    <div class="card"><div class="title">IFFT inputs for the same QAM data block</div><canvas id="scMap" role="img" aria-label="Magnitude of the IFFT input on each bin, frequency-sorted, for SC-FDMA and OFDMA with the chosen mapping"></canvas><div class="legend"><span><i class="sw blue"></i>SC-FDMA |S[k]|</span><span><i class="sw orange"></i>OFDMA |a<sub>k</sub>|</span></div><ul class="bullets" id="scMapNote"></ul></div>
+    <div class="card"><div class="title">IFFT inputs for the same QAM data block</div><canvas id="scMap" role="img" aria-label="Magnitude of the IFFT input on each subcarrier, frequency-sorted, for SC-FDMA and OFDMA with the chosen mapping"></canvas><div class="legend"><span><i class="sw blue"></i>SC-FDMA |S[k]|</span><span><i class="sw orange"></i>OFDMA |a<sub>k</sub>|</span></div><ul class="bullets" id="scMapNote"></ul></div>
     <div class="card"><div class="title">Transmitted power over one block</div><canvas id="scWave" role="img" aria-label="Normalized instantaneous power of the OFDMA and SC-FDMA waveforms for the same data, with the backoff level"></canvas><div class="legend"><span><i class="sw orange"></i>OFDMA</span><span><i class="sw blue"></i>SC-FDMA</span><span><i class="sw red"></i>Backoff</span></div><ul class="bullets" id="scWaveNote"></ul></div>
     <div class="card"><div class="title">PAPR complementary cumulative distribution: OFDMA and SC-FDMA</div><canvas id="scCcdf" role="img" aria-label="PAPR complementary cumulative distribution for OFDMA and SC-FDMA with the theoretical OFDMA curve and the back-off"></canvas><div class="legend"><span><i class="sw orange"></i>OFDMA</span><span><i class="sw blue"></i>SC-FDMA</span><span><i class="sw green"></i>Theory, M subcarriers</span><span><i class="sw red"></i>Back-off</span></div><ul class="bullets" id="scCcdfNote"></ul></div>
   </div>
   <div class="plots" style="margin-top:14px">
-    <div class="card"><div class="title">Zero-forcing noise gain: individual subcarriers and SC-FDMA average</div><canvas id="scNoise" role="img" aria-label="Zero-forcing noise gain on each allocated subcarrier with the average that each SC-FDMA symbol experiences"></canvas><div class="legend"><span><i class="sw orange"></i>1/|H[k]|&sup2;: OFDMA symbol k</span><span><i class="sw blue"></i>Mean: every SC-FDMA symbol</span><span><i class="sw grey"></i>Incorrect shortcut: 1/mean|H|&sup2;</span></div><ul class="bullets" id="scNoiseNote"></ul></div>
+    <div class="card"><div class="title">Zero-forcing noise gain: individual subcarriers and SC-FDMA average</div><canvas id="scNoise" role="img" aria-label="Zero-forcing noise gain on each allocated subcarrier with the average that each SC-FDMA symbol experiences"></canvas><div class="legend"><span><i class="sw orange"></i>1/|H[k]|&sup2;: OFDMA symbol k</span><span><i class="sw blue"></i>Mean: every SC-FDMA symbol</span></div><ul class="bullets" id="scNoiseNote"></ul></div>
     <div class="card"><div class="title">Received constellation after equalization</div><canvas id="scConst" role="img" aria-label="Equalized OFDMA symbols on strong and weak subcarriers beside SC-FDMA symbols after the M-point IDFT"></canvas><div class="legend"><span><i class="sw green"></i>OFDMA, strong subcarriers</span><span><i class="sw orange"></i>OFDMA, weak subcarriers</span><span><i class="sw blue"></i>SC-FDMA</span><span><i class="sw red"></i>Ideal</span></div><ul class="bullets" id="scConstNote"></ul></div>
     <div class="card"><div class="title">Symbol error probability versus input SNR = 1/NSR</div><canvas id="scPe" role="img" aria-label="Average symbol error probability for OFDMA and SC-FDMA versus the input signal-to-noise ratio"></canvas><div class="legend"><span><i class="sw orange"></i>OFDMA, averaged P<sub>e</sub></span><span><i class="sw blue"></i>SC-FDMA</span><span><i class="sw red"></i>Selected NSR</span></div><ul class="bullets" id="scPeNote"></ul></div>
   </div>
@@ -321,6 +336,10 @@ function sizeLabFrame(frame){try{frame.style.height=Math.max(760,frame.contentDo
 document.querySelectorAll('.lab-frame').forEach(frame=>frame.addEventListener('load',()=>sizeLabFrame(frame)));
 document.querySelectorAll('.lab-toggle').forEach(button=>button.addEventListener('click',()=>{const shell=$(button.getAttribute('aria-controls')),panel=button.closest('.panel'),open=shell.hidden;shell.hidden=!open;panel.classList.toggle('lab-open',open);button.setAttribute('aria-expanded',String(open));button.textContent=open?'Close lab':'Open lab';requestAnimationFrame(()=>{if(open)sizeLabFrame(shell.querySelector('.lab-frame'));else drawActive()})}));
 function drawActive(){const id=document.querySelector('[role=tab][aria-selected=true]').getAttribute('aria-controls'),panel=$(id),draw=({param:drawParam,papr:drawPapr,ma:drawMa,ofdma:drawOfdma,sc:drawSc})[id];draw();panel.querySelectorAll('.lab-shell:not([hidden]) .lab-frame').forEach(sizeLabFrame)}
+function setControls(values){Object.entries(values).forEach(([id,value])=>{$(id).value=value})}
+function restoreControlDefaults(){document.querySelectorAll('input').forEach(input=>{input.value=input.defaultValue;input.checked=input.defaultChecked});document.querySelectorAll('select').forEach(select=>{const options=Array.from(select.options),index=options.findIndex(option=>option.defaultSelected);select.selectedIndex=index<0?0:index})}
+restoreControlDefaults();
+window.addEventListener('pageshow',()=>{restoreControlDefaults();drawActive()});
 function pressGroup(container,attr,value){container.querySelectorAll('['+attr+']').forEach(b=>b.setAttribute('aria-pressed',String(b.getAttribute(attr)===value)))}
 
 /* ==================================================================
@@ -378,7 +397,7 @@ function drawParam(){
   bullets($('pmTimelineNote'),[
     'T<sub>sym</sub> = T<sub>s</sub> + T<sub>CP</sub> = '+fmtUs(p.Ts)+' + '+fmtUs(p.Tcp)+' = '+fmtUs(p.Tsym)+'; η<sub>CP</sub> = '+(100*p.eta).toFixed(1)+'%.',
     tau<=cp+1e-12?'The delayed component (τ<sub>max</sub> = '+tau.toFixed(1)+' µs) ends within the CP (T<sub>CP</sub> = '+cp.toFixed(2)+' µs), so the FFT window contains only the current symbol.':'τ<sub>max</sub> exceeds T<sub>CP</sub> by '+(tau-cp).toFixed(2)+' µs, so part of the preceding symbol enters the FFT window and causes block ISI (red).',
-    p.Bd>0?'Coherence time T<sub>c</sub> ≈ 1/B<sub>D</sub> = '+(1e3/p.Bd).toFixed(2)+' ms, which is '+(1/(p.Bd*p.Tsym)).toFixed(0)+' OFDM symbols: '+(1/(p.Bd*p.Tsym)>10?'the channel is effectively constant over one symbol.':'the channel changes noticeably within a few symbols.'):'No Doppler: the channel is static.'
+    p.Bd>0?'Coherence time T<sub>c</sub> ≈ 1/B<sub>D</sub> = '+(1e3/p.Bd).toFixed(2)+' ms, which is '+(1/(p.Bd*p.Tsym)).toFixed(0)+' OFDM symbol'+(Math.round(1/(p.Bd*p.Tsym))===1?'':'s')+': '+(1/(p.Bd*p.Tsym)>10?'the channel is effectively constant over one symbol.':'the channel changes noticeably within a few symbols.'):'No Doppler: the channel is static.'
   ]);
 
   /* --- per-subcarrier SNR and codeword placement --- */
@@ -396,14 +415,13 @@ function drawParam(){
   const weak=snrDb.filter(v=>v<req).length;
   bullets($('pmSnrNote'),[
     'Each subcarrier has its own one-tap equalizer, but equalization does not remove the fades: '+weak+' of '+p.N+' subcarriers sit below the '+req+' dB that uncoded '+(p.M===4?'QPSK':'16-QAM')+' needs for P<sub>e</sub> ≈ 10⁻³.',
-    'Nearby subcarriers can fade together. A codeword confined to neighbouring bins can therefore be damaged by one fade (upper strip).',
+    'Nearby subcarriers can fade together. A codeword confined to neighbouring subcarriers can therefore be damaged by one fade (upper strip).',
     'With a stride-'+CW+' interleaver (lower strip), neighbouring subcarriers contribute to different codewords, so the errors caused by one fade are distributed across all codewords.'
   ]);
 
 }
 ['pmB','pmN','pmTau','pmLc','pmBd','pmMod','pmSnr'].forEach(id=>$(id).addEventListener('input',drawParam));
 $('pmNewCh').addEventListener('click',()=>{pmSeed++;drawParam()});
-$('pmExample').addEventListener('click',()=>{$('pmB').value=1;$('pmN').value=7;$('pmTau').value=5;$('pmLc').value=8;$('pmMod').value='qam16';drawParam()});
 
 /* ==================================================================
    2 · PAPR
@@ -514,7 +532,7 @@ function drawPapr(){
   plotLabel(z,z.X(p.bo),z.Y(-2.8),'backoff '+p.bo.toFixed(1)+' dB',css('--red'));
   bullets($('paCcdfNote'),[
     'At '+p.bo.toFixed(1)+' dB backoff: theory '+fmtP(th)+', simulated '+fmtP(emp)+' ('+p.os+'× oversampled) and '+fmtP(empNy)+' (N samples only). The simulation cannot resolve probabilities below 1/'+mc.trials+'.',
-    'P₀ is a linear power ratio: '+p.bo.toFixed(1)+' dB means P₀ = '+p.P0.toFixed(2)+'. Using P₀ = '+p.bo.toFixed(1)+' directly would give '+fmtP(paprTheory(p.bo,p.N))+' instead.',
+    'P₀ is a linear power ratio: '+p.bo.toFixed(1)+' dB means P₀ = '+p.P0.toFixed(2)+'.',
     'The theory treats the N IFFT samples as independent, and the N-sample simulation follows this approximation. Oversampling reveals peaks between the IFFT samples and can shift the curve toward higher PAPR. A small horizontal shift can cause a large change in exceedance probability where the curve is steep. Increasing N also shifts the curves toward higher PAPR.'
   ]);
 }
@@ -535,11 +553,15 @@ function drawMa(){
   $('maKOut').textContent=p.K;$('maBOut').textContent=(p.B/1e6)+' MHz';$('maBcOut').textContent=(p.Bc/1e3)+' kHz';$('maBgOut').textContent=(p.Bg/1e3)+' kHz';
   const nChan=Math.max(0,Math.floor((p.B-2*p.Bg)/p.Bc+1e-9));
   $('maChan').textContent=nChan;
+  const noGuard=Math.floor(p.B/p.Bc+1e-9);
+  $('maGuardWidth').textContent=(2*p.Bg/1e3)+' kHz';
+  $('maGuardLoss').textContent=noGuard-nChan;
   {
     const counts=[Math.min(p.K,nChan),Math.max(0,nChan-p.K),nChan],labels=['Active','Unused','Total capacity'];
-    const capacity=ax($('maCapacity'),0,3,0,Math.max(1,nChan)*1.15,'','Number of channels',{xticks:3,yticks:4,xfmt:()=>'',yfmt:v=>String(Math.round(v))});
+    const capacity=ax($('maCapacity'),0,3,0,Math.max(1,noGuard)*1.15,'','Number of channels',{xticks:3,yticks:4,xfmt:()=>'',yfmt:v=>String(Math.round(v))});
+    hline(capacity,noGuard,css('--muted'),[4,4],1);
     counts.forEach((count,i)=>{box(capacity,i+.2,i+.8,0,count,css(i===0?'--blue':i===1?'--orange':'--green'),.75);capacity.c.fillStyle=css('--text');capacity.c.textAlign='center';capacity.c.textBaseline='bottom';capacity.c.fillText(String(count),capacity.X(i+.5),capacity.Y(count)-4);capacity.c.textBaseline='top';capacity.c.fillText(labels[i],capacity.X(i+.5),capacity.h-capacity.m.b+7)});
-    bullets($('maCapacityNote'),['Usable bandwidth = B − 2B<sub>g</sub> = '+((p.B-2*p.Bg)/1e6).toFixed(3)+' MHz. Divide by '+(p.Bc/1e3)+' kHz per channel and round down: '+nChan+' channels.',p.K<=nChan?'Only '+p.K+' users are active here, leaving '+(nChan-p.K)+' channels unused. The time–frequency sketch above enlarges the active channels so their separation is visible.':p.K+' users request service, but only '+nChan+' channels fit; '+(p.K-nChan)+' users cannot receive a dedicated channel.']);
+    bullets($('maCapacityNote'),['Usable bandwidth = B − 2B<sub>g</sub> = '+((p.B-2*p.Bg)/1e6).toFixed(3)+' MHz. Divide by '+(p.Bc/1e3)+' kHz per channel and round down: '+nChan+' channels.',p.K<=nChan?'Only '+p.K+' users are active here, leaving '+(nChan-p.K)+' channels unused. The time–frequency diagram above enlarges the active channels so their separation is visible.':p.K+' users request service, but only '+nChan+' channels fit; '+(p.K-nChan)+' users cannot receive a dedicated channel.']);
   }
   /* --- time-frequency plane --- */
   const titles={fdma:'FDMA: a frequency channel per user',tdma:'TDMA: a time slot per user',cdma:'CDMA: a code per user',ofdma:'OFDMA: subcarrier sets per interval',ofdmtdma:'OFDM-TDMA: whole OFDM symbols per user',mccdma:'MC-CDMA: codes across subcarriers'};
@@ -564,14 +586,14 @@ function drawMa(){
     tdma:['Each user is assigned the complete band during a repeating time slot; GSM uses eight slots per frame. Short guard intervals separate adjacent slots.','On the uplink, each burst must arrive aligned with the slot boundaries, so the base station controls each handset\'s timing.','Each burst occupies the complete system bandwidth and may therefore require frequency-selective equalization.'],
     cdma:['All users occupy the same time–frequency resources and are separated by their spreading codes.','Multipath can degrade code orthogonality on the downlink.','On the uplink, users are not perfectly synchronized and their received powers differ. A strong nearby user can overwhelm a weak distant user; power control limits this near–far problem.'],
     ofdma:['Users get disjoint subcarrier sets, and the scheduler can reassign them every interval (each column is one interval here).','On the downlink all subcarriers come out of one base-station IFFT, so adjacent users stay orthogonal without a guard between them.','LTE schedules in resource blocks of 12 subcarriers; tab 4 builds on this.'],
-    ofdmtdma:['Each complete OFDM symbol is assigned to one user, so users are separated in time.','A low-rate service such as voice receives the complete band in short bursts separated by waiting intervals. This allocation can increase latency, delay variation, and buffering requirements.','Scheduling users over OFDM symbols is considered again in Week 10.'],
+    ofdmtdma:['Each complete OFDM symbol is assigned to one user, so users are separated in time.','A low-rate service such as voice receives the complete band in short bursts separated by waiting intervals. This allocation can increase latency, delay variation, and buffering requirements.','Compare the complete-symbol allocation here with the subcarrier allocation in OFDMA.'],
     mccdma:['Each data symbol is spread by a code across several subcarriers, and all users share those subcarriers.','Spreading across subcarriers provides frequency diversity. In a broadband system, however, the available spreading factors may be small, which limits the diversity benefit.','LTE uses OFDMA on the downlink and SC-FDMA on the uplink rather than MC-CDMA.']};
   bullets($('maNote-'+maMode),notes[maMode]);
   }
 
 }
 ['maK','maB','maBc','maBg'].forEach(id=>$(id).addEventListener('input',drawMa));
-$('maExample').addEventListener('click',()=>{maMode='fdma';pressGroup($('maModes'),'data-ma','fdma');$('maB').value=25;$('maBc').value=30;$('maBg').value=10;drawMa()});
+$('maExample').addEventListener('click',()=>{$('maK').value=4;$('maB').value=25;$('maBc').value=30;$('maBg').value=10;drawMa()});
 
 /* ==================================================================
    4 · OFDMA
@@ -637,7 +659,7 @@ function drawOfdma(){
 
   /* --- N = 64 index example --- */
   z=panelCanvas($('ofIdx'));const padX=16,cw=(z.w-2*padX)/64,roleOf=i=>i<12||i>52?'g':i<32?'u1':i===32?'dc':'u2',colOf=r=>r==='g'?css('--muted'):r==='u1'?css('--blue'):r==='dc'?css('--red'):css('--orange');
-  const rows=[{y:30,label:'fftshift order (frequency-sorted: negative edge → DC → positive edge)',idx:i=>i,ticks:[0,12,32,53,63]},{y:128,label:'raw DFT-bin order (what the IFFT input array looks like)',idx:b=>{const f=b<32?b:b-64;return f+32},ticks:[0,21,44,63]}];
+  const rows=[{y:30,label:'fftshift order (frequency-sorted: negative edge → DC → positive edge)',idx:i=>i,ticks:[0,12,32,53,63]},{y:128,label:'unshifted subcarrier order (DC first, then positive and negative frequencies)',idx:b=>{const f=b<32?b:b-64;return f+32},ticks:[0,21,44,63]}];
   rows.forEach(row=>{z.c.fillStyle=css('--text');z.c.font='11px system-ui';z.c.textAlign='left';z.c.textBaseline='bottom';z.c.fillText(row.label,padX,row.y-6);
     for(let b=0;b<64;b++){const role=roleOf(row.idx(b));z.c.globalAlpha=role==='g'?.3:.85;z.c.fillStyle=colOf(role);z.c.fillRect(padX+b*cw+.5,row.y,cw-1,34);z.c.globalAlpha=1}
     z.c.fillStyle=css('--muted');z.c.font='10px system-ui';z.c.textAlign='center';z.c.textBaseline='top';row.ticks.forEach(t=>z.c.fillText(String(t),padX+(t+.5)*cw,row.y+38))});
@@ -645,8 +667,8 @@ function drawOfdma(){
   [[6,'guard 12'],[22,'User 1: 20'],[43,'User 2: 20'],[58.5,'guard 11']].forEach(([c,t])=>{if(cw*10>z.c.measureText(t).width)z.c.fillText(t,padX+c*cw,rows[0].y+17)});
   [[10.5,'User 2'],[32.5,'guards 21–43'],[54,'User 1']].forEach(([c,t])=>{if(cw*14>z.c.measureText(t).width)z.c.fillText(t,padX+c*cw,rows[1].y+17)});
   bullets($('ofIdxNote'),[
-    '64 = 12 + 20 + 1 + 20 + 11. The DC subcarrier (red, fftshift index 32) is left unused, as in the LTE downlink. User 1 has 12–31 and User 2 has 33–52, either side of DC; the edge guards are 12 and 11 bins because an even FFT has one more negative frequency than positive.',
-    'The same allocation in raw DFT-bin order reads DC = bin 0, User 2 = bins 1–20, guard = 21–43, User 1 = 44–63. The guard bands meet in the middle of the array, because raw indexing is circular and bin 63 is next to bin 0 in frequency.',
+    '64 = 12 + 20 + 1 + 20 + 11. The DC subcarrier (red, fftshift index 32) is left unused, as in the LTE downlink. User 1 has 12–31 and User 2 has 33–52, either side of DC; the edge guards are 12 and 11 subcarriers because an even FFT has one more negative frequency than positive.',
+    'The same allocation in unshifted subcarrier order reads DC = subcarrier 0, User 2 = subcarriers 1–20, guard = 21–43, User 1 = 44–63. The guard bands meet in the middle of the array, because unshifted indexing is circular and subcarrier 63 is next to subcarrier 0 in frequency.',
     'No guard is needed between the users: both come out of the same base-station IFFT, so they stay orthogonal. The DC null separates them only because of where DC falls; the edge guards only limit out-of-band emission.'
   ]);
 
@@ -663,7 +685,7 @@ function drawOfdma(){
   const sir0=-dbAt(33),inCp=p.to<=16&&p.cfo===0;
   $('ofSir').textContent=sir0>=59.9?'> 60 dB':fmtDb(sir0);
   bullets($('ofAsyncNote'),[
-    inCp?'δ = '+p.to+' ≤ L<sub>c</sub> = 16 with zero carrier-frequency offset (CFO): the delay remains within the CP, so it produces only a phase rotation on User 1\'s subcarriers and no leakage into User 2\'s bins. The FFT therefore continues to separate the adjacent users.':'With δ = '+p.to+' samples'+(p.to>16?' ('+(p.to-16)+' beyond the CP)':'')+' and normalized CFO ε = '+p.cfo.toFixed(2)+', User 1 leaks into User 2\'s bins. On User 2\'s first subcarrier, the leakage is '+(sir0>=59.9?'more than 60':sir0.toFixed(1))+' dB below User 2\'s signal and decreases with distance from the allocation boundary.',
+    inCp?'δ = '+p.to+' ≤ L<sub>c</sub> = 16 with zero carrier-frequency offset (CFO): the delay remains within the CP, so it produces only a phase rotation on User 1\'s subcarriers and no leakage into User 2\'s subcarriers. The FFT therefore continues to separate the adjacent users.':'With δ = '+p.to+' samples'+(p.to>16?' ('+(p.to-16)+' beyond the CP)':'')+' and normalized CFO ε = '+p.cfo.toFixed(2)+', User 1 leaks into User 2\'s subcarriers. On User 2\'s first subcarrier, the leakage is '+(sir0>=59.9?'more than 60':sir0.toFixed(1))+' dB below User 2\'s signal and decreases with distance from the allocation boundary.',
     p.cfo>0?'A normalized CFO of ε = '+p.cfo.toFixed(2)+' also reduces User 1\'s recovered power (the blue line falls below 0 dB), because each subcarrier is no longer sampled at the maximum of its sinc response.':'A nonzero CFO would also reduce User 1\'s recovered power because its subcarriers would no longer be sampled at the maxima of their sinc responses.',
     'On the downlink one IFFT and one oscillator make this impossible. On the uplink each handset has its own timing and oscillator, so timing advance and frequency synchronization are what keep uplink OFDMA orthogonal.'
   ]);
@@ -671,7 +693,7 @@ function drawOfdma(){
 ['ofK','ofRB','ofSnr','ofEdge','ofL','ofTo','ofCfo'].forEach(id=>$(id).addEventListener('input',drawOfdma));
 $('ofRules').addEventListener('click',e=>{const b=e.target.closest('[data-of-rule]');if(!b)return;ofRule=b.dataset.ofRule;pressGroup($('ofRules'),'data-of-rule',ofRule);drawOfdma()});
 $('ofNew').addEventListener('click',()=>{ofSeed++;drawOfdma()});
-$('ofExercise').addEventListener('click',()=>{$('ofRB').value=33;$('ofK').value=2;drawOfdma()});
+$('ofExercise').addEventListener('click',()=>{setControls({ofRB:33,ofK:2,ofSnr:20,ofEdge:8,ofL:6,ofTo:0,ofCfo:0});ofRule='equal';ofSeed=1;pressGroup($('ofRules'),'data-of-rule',ofRule);drawOfdma()});
 
 /* ==================================================================
    5 · SC-FDMA
@@ -683,8 +705,8 @@ function scParams(){
   const bins=scMap==='localized'?Array.from({length:M},(_,i)=>N/4-M/2+i):Array.from({length:M},(_,i)=>i*(N/M));
   return{N,M,mod,Mm,bits:Math.log2(Mm),bo:+$('scBo').value,P0:fromDb(+$('scBo').value),chan:$('scChan').value,nsrDb,nsr:fromDb(nsrDb),bins,os:4};
 }
-/* One block through both transmitters: OFDMA puts s on the bins directly,
-   SC-FDMA puts S = F_M s / sqrt(M) there, so both have E|X[k]|^2 = 1 on M bins
+/* One block through both transmitters: OFDMA puts s on the subcarriers directly,
+   SC-FDMA puts S = F_M s / sqrt(M) there, so both have E|X[k]|^2 = 1 on M subcarriers
    and E|x|^2 = M/N^2. */
 function scBlock(p,s){const oRe=new Float64Array(p.N),oIm=new Float64Array(p.N),sRe=new Float64Array(p.N),sIm=new Float64Array(p.N),dRe=new Float64Array(p.M),dIm=new Float64Array(p.M);
   s.forEach((v,i)=>{dRe[i]=v.re;dIm[i]=v.im});fftRI(dRe,dIm,false);const g=1/Math.sqrt(p.M);
@@ -703,7 +725,7 @@ function drawSc(){
   const p=scParams(),mc=scMC(p),cur=mc.cur,ch=scChannel(p),pe=scPeCurves(p,ch,p.nsr);
   $('scNOut').textContent=p.N;$('scMOut').textContent=p.M;$('scBoOut').textContent=p.bo.toFixed(1)+' dB';
   $('scNsrOut').textContent=p.nsr.toFixed(p.nsr<0.01?4:3)+' ('+fmtDb(p.nsrDb)+')';
-  $('scFlowMap').textContent=scMap==='localized'?'M contiguous bins':'every '+(p.N/p.M)+'th bin';
+  $('scFlowMap').textContent=scMap==='localized'?'M contiguous subcarriers':'every '+(p.N/p.M)+'th subcarrier';
   const thO=paprTheory(p.P0,p.M),fO=ccdfFrac(mc.po,p.P0),fS=ccdfFrac(mc.ps,p.P0);
   $('scRate').textContent=fmtBps(p.M*p.bits/TSYM9);
   $('scPapO').textContent=fmtP(fO);$('scPapOSmall').textContent='theory for M occupied subcarriers: '+fmtP(thO);
@@ -714,15 +736,15 @@ function drawSc(){
 
   /* --- IFFT input map, frequency-sorted --- */
   const fOf=k=>k<p.N/2?k:k-p.N;
-  let z=ax($('scMap'),-p.N/2,p.N/2,0,2.4,'Frequency bin (fftshift order)','|X[k]|',{xticks:4,yticks:4,xfmt:v=>String(Math.round(v))});
+  let z=ax($('scMap'),-p.N/2,p.N/2,0,2.4,'Frequency subcarrier (fftshift order)','|X[k]|',{xticks:4,yticks:4,xfmt:v=>String(Math.round(v))});
   const bw=Math.max(1,(z.w-z.m.l-z.m.r)/p.N*.8);
   for(let k=0;k<p.N;k++){const vs=Math.hypot(cur.sRe[k],cur.sIm[k]),vo=Math.hypot(cur.oRe[k],cur.oIm[k]);if(vs===0&&vo===0)continue;const x=z.X(fOf(k));
     z.c.fillStyle=css('--blue');z.c.globalAlpha=.8;z.c.fillRect(x-bw/2,z.Y(Math.min(vs,2.4)),bw,z.Y(0)-z.Y(Math.min(vs,2.4)));z.c.globalAlpha=1;
     z.c.fillStyle=css('--orange');z.c.fillRect(x-1.5,z.Y(vo)-1.5,3,3)}
   bullets($('scMapNote'),[
-    scMap==='localized'?'Localized mapping, as used by the LTE uplink, places the handset\'s M = '+p.M+' transformed values in contiguous frequency bins and is compatible with resource-block scheduling.':'Interleaved mapping places the M = '+p.M+' transformed values in every '+(p.N/p.M)+'th frequency bin across the band, which provides additional frequency diversity.',
-    'OFDMA (orange) puts the '+(p.mod==='qam16'?'16-QAM':'QPSK')+' symbols themselves on the bins'+(p.mod==='qpsk'?', so every active |a<sub>k</sub>| = 1':'')+'. SC-FDMA (blue) puts the M-point DFT of the whole block there, so each bin carries a combination of all M symbols.',
-    'The other '+(p.N-p.M)+' bins are zero; in a real uplink they belong to other handsets.'
+    scMap==='localized'?'Localized mapping, as used by the LTE uplink, places the handset\'s M = '+p.M+' transformed values in contiguous frequency subcarriers and is compatible with resource-block scheduling.':'Interleaved mapping places the M = '+p.M+' transformed values in every '+(p.N/p.M)+'th frequency subcarrier across the band, which provides additional frequency diversity.',
+    'OFDMA (orange) puts the '+(p.mod==='qam16'?'16-QAM':'QPSK')+' symbols themselves on the subcarriers'+(p.mod==='qpsk'?', so every active |a<sub>k</sub>| = 1':'')+'. SC-FDMA (blue) puts the M-point DFT of the whole block there, so each subcarrier carries a combination of all M symbols.',
+    'The other '+(p.N-p.M)+' subcarriers are zero; in a real uplink they belong to other handsets.'
   ]);
 
   /* --- transmitted power over one block --- */
@@ -755,17 +777,16 @@ function drawSc(){
   ]);
 
   /* --- noise gain per subcarrier --- */
-  const gdb=ch.g.map(v=>-toDb(v)),avgGain=toDb(pe.gain),slip=-toDb(ch.g.reduce((a,v)=>a+v,0)/p.M),
-    glo=Math.min(-6,Math.floor(Math.min(...gdb,slip)/3)*3),ghi=Math.max(9,Math.ceil(Math.max(...gdb,avgGain)/3)*3+2);
+  const gdb=ch.g.map(v=>-toDb(v)),avgGain=toDb(pe.gain),
+    glo=Math.min(-6,Math.floor(Math.min(...gdb)/3)*3),ghi=Math.max(9,Math.ceil(Math.max(...gdb,avgGain)/3)*3+2);
   z=ax($('scNoise'),0,p.M,glo,ghi,'Allocated subcarrier i','ZF noise gain (dB)',{xticks:4,yticks:4,xfmt:v=>String(Math.round(v))});
   const bw2=(z.w-z.m.l-z.m.r)/p.M;
   gdb.forEach((v,i)=>{const x=z.X(i),y0=z.Y(0),y1=z.Y(Math.max(glo,Math.min(ghi,v)));z.c.fillStyle=css('--orange');z.c.globalAlpha=.65;z.c.fillRect(x+bw2*.1,Math.min(y0,y1),Math.max(1,bw2*.8),Math.abs(y1-y0));z.c.globalAlpha=1});
-  hline(z,0,css('--border'),[],1);hline(z,avgGain,css('--blue'),[],2.4);hline(z,slip,css('--muted'),[5,4],1.6);
+  hline(z,0,css('--border'),[],1);hline(z,avgGain,css('--blue'),[],2.4);
   plotLabel(z,z.X(0),z.Y(avgGain)-3,'mean 1/|H|² = '+pe.gain.toFixed(2),css('--blue'));
   bullets($('scNoiseNote'),[
     'ZF on subcarrier k multiplies the noise power by 1/|H[k]|². In OFDMA symbol k keeps its own gain'+(p.chan==='two'?': 0.5 (−3 dB) on the strong half and 4 (+6 dB) on the weak half.':', so symbols on faded subcarriers see a large noise gain.'),
     'In SC-FDMA the M-point IDFT comes after the equalizer and spreads every symbol over every subcarrier, so each symbol sees the average gain '+pe.gain.toFixed(2)+' ('+fmtDb(avgGain)+').',
-    'Incorrect shortcut: averaging |H|² first gives 1/mean|H|² = '+fromDb(slip).toFixed(2)+' (grey). Weak subcarriers have a large contribution to mean(1/|H|²), so this shortcut underestimates the post-equalization noise.'
   ]);
 
   /* --- symbols after the receiver --- */
@@ -803,7 +824,6 @@ function drawSc(){
   const ratio=pe.pO/Math.max(pe.pS,1e-300);
   bullets($('scPeNote'),[
     'At NSR = '+p.nsr.toFixed(3)+', the average OFDMA symbol error probability across subcarriers is '+fmtPe(pe.pO)+', while the SC-FDMA symbol error probability is '+fmtPe(pe.pS)+'. '+(ratio>1?'Without coding, distributing each symbol across the subcarriers reduces the error probability by a factor of '+ratio.toFixed(1)+'.':'For this channel, OFDMA has the lower error probability because the average SC-FDMA noise gain is dominated by '+(p.chan==='rand'?'deeply faded':'weak')+' subcarriers.'),
-    'Average the error probabilities, not the SNRs. Averaging the OFDMA SNRs first would predict a far smaller P<sub>e</sub>.',
     p.chan==='two'?'With a random multipath channel, a single deep fade can make mean(1/|H|²) very large. Zero-forcing SC-FDMA can then have a higher error probability than OFDMA, where the largest error probabilities are confined to the faded subcarriers. Coding and adaptive bit loading can further improve OFDMA.':'Deep fades can cause severe zero-forcing noise enhancement in SC-FDMA, whereas their direct effect in OFDMA is confined to the faded subcarriers. Minimum-mean-square-error (MMSE) equalization and coding reduce this limitation in practice.'
   ]);
 }
