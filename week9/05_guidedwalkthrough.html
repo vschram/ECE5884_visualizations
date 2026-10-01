@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Week 9 Guided Walkthrough</title>
+<title>Week 10 Guided Walkthrough</title>
 <style>
 :root{--bg:#f7f8fb;--surface:#fff;--surface2:#eef2f7;--border:#dfe5ec;--text:#172033;--muted:#667085;--blue:#2563eb;--orange:#ea580c;--green:#059669;--red:#dc2626;--purple:#7c3aed;--cyan:#0891b2;--amber:#ca8a04;--pink:#db2777;--shadow:0 1px 2px rgba(16,24,40,.04)}
 @media(prefers-color-scheme:dark){:root{--bg:#0e1117;--surface:#171b24;--surface2:#222938;--border:#303949;--text:#e8edf5;--muted:#99a4b5;--shadow:none}}
@@ -15,20 +15,21 @@
 .mode-row{margin-bottom:10px}.mode-row button{padding:6px 10px}
 .mode-buttons .preset{margin-left:auto;border-color:var(--purple);color:var(--purple);background:color-mix(in srgb,var(--purple) 7%,var(--surface))}.mode-buttons .preset:hover{border-color:var(--purple);background:color-mix(in srgb,var(--purple) 13%,var(--surface))}.mode-buttons .preset+.preset{margin-left:0}
 .control-sections{display:grid;grid-template-columns:1.15fr 1fr;gap:8px}.control-section{min-width:0;padding:8px 10px;border:1px solid var(--border);border-radius:9px;background:var(--surface2)}.control-section-title{margin-bottom:7px;color:var(--muted);font-size:.64rem;font-weight:700;text-transform:uppercase;letter-spacing:.065em}.control-section .control-grid{grid-template-columns:repeat(auto-fit,minmax(135px,1fr));gap:7px 10px}
-.lab-metric .value{font-size:.82rem}.lab-metric button{width:100%}.lab-shell{margin:14px 0;min-width:0}.lab-shell[hidden]{display:none}.lab-frame{display:block;width:100%;min-height:760px;border:1px solid var(--border);border-radius:12px;background:var(--surface)}
-.panel.lab-open>.panel-head .message{display:none}.panel.lab-open>.sticky-bar .toolbar{padding:8px 10px}.panel.lab-open>.sticky-bar .mode-row,.panel.lab-open>.sticky-bar .control-grid,.panel.lab-open>.sticky-bar .control-sections,.panel.lab-open>.sticky-bar .summary-row>.formula,.panel.lab-open>.sticky-bar .summary-row>.note,.panel.lab-open>.sticky-bar .toolbar-metrics>.metric:not(.lab-metric){display:none}.panel.lab-open>.sticky-bar .summary-row{display:block;margin:0}.panel.lab-open>.sticky-bar .toolbar-metrics{display:grid;grid-template-columns:minmax(220px,360px)}.panel.lab-open>.sticky-bar .lab-metric{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:4px 12px;text-align:left}.panel.lab-open>.sticky-bar .lab-metric .name{grid-column:1}.panel.lab-open>.sticky-bar .lab-metric .value{grid-column:1}.panel.lab-open>.sticky-bar .lab-metric button{grid-column:2;grid-row:1/3;width:auto;margin:0}
 @media(max-width:900px){.toolbar-metrics{grid-auto-flow:row;grid-template-columns:repeat(3,minmax(0,1fr))}.tabs{grid-template-columns:repeat(3,1fr)}.plots{grid-template-columns:1fr 1fr}.plots:not(.two) .card:last-child{grid-column:1/-1}.checklist{grid-template-columns:1fr 1fr}.control-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.control-sections{grid-template-columns:1fr}.summary-row{grid-template-columns:1fr}.summary-row .toolbar-metrics,.summary-row .toolbar-metrics.metrics-4,.summary-row .toolbar-metrics.metrics-5,.summary-row .toolbar-metrics.metrics-7{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:620px){.toolbar-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}body{padding:14px}.tabs{grid-template-columns:1fr 1fr}.panel-head{display:block}.plots,.two{grid-template-columns:1fr}.plots .card:last-child{grid-column:auto}.flow{display:grid;grid-template-columns:1fr 1fr}.arrow{display:none}.checklist{grid-template-columns:1fr 1fr}.mode-buttons .preset{margin-left:0}.control-section .control-grid{grid-template-columns:1fr 1fr}canvas{height:262px}}
 @media(max-width:390px){.tabs,.checklist,.flow,.control-grid,.control-section .control-grid,.summary-row .toolbar-metrics,.summary-row .toolbar-metrics.metrics-4,.summary-row .toolbar-metrics.metrics-5,.summary-row .toolbar-metrics.metrics-7{grid-template-columns:1fr}.ctrl{min-width:100%}.ctrl label{flex-wrap:wrap}}
+.lab-shell{margin:14px 0}.lab-shell[hidden]{display:none}.lab-frame{display:block;width:100%;min-height:760px;border:1px solid var(--border);border-radius:12px;background:var(--surface)}.lab-metric .value{font-size:.82rem}.lab-metric button{width:100%}
+.panel.lab-open>.panel-head .message{display:none}.panel.lab-open>.sticky-bar .mode-row,.panel.lab-open>.sticky-bar .control-grid,.panel.lab-open>.sticky-bar .control-sections,.panel.lab-open>.sticky-bar .summary-row>.formula,.panel.lab-open>.sticky-bar .toolbar-metrics>.metric:not(.lab-metric){display:none}.panel.lab-open>.sticky-bar .summary-row{display:block}.panel.lab-open>.sticky-bar .toolbar-metrics{display:grid;grid-template-columns:minmax(220px,360px)}
 </style>
+<style>.ma-comparison{grid-template-columns:repeat(3,minmax(0,1fr));margin-top:10px}.ma-comparison canvas{height:235px}@media(max-width:900px){.ma-comparison{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:620px){.ma-comparison{grid-template-columns:1fr}}#ma .ma-fdma-only[hidden]{display:none!important}#ma .control-sections{grid-template-columns:1fr}#ma .summary-row .toolbar-metrics{grid-template-columns:1fr}#maTry{margin:10px 0 0}</style>
 </head>
 <body>
-<h1>Week 9 · OFDM Design, PAPR, and Multiple Access with OFDMA and SC-FDMA</h1>
-<p class="sub">Follow the Week 9 sequence: select the OFDM numerology (subcarrier spacing and symbol duration),
+<h1>Week 10 · OFDM Design, PAPR, and Multiple Access with OFDMA and SC-FDMA</h1>
+<p class="sub">Follow the Week 10 sequence: select the OFDM parameters (subcarrier spacing and symbol duration),
 use coding across subcarriers to obtain frequency diversity, examine why summing N subcarriers can produce a high peak-to-average power ratio (PAPR),
 compare multiple-access schemes, schedule users on OFDMA resource blocks, and use DFT spreading (SC-FDMA) to reduce the uplink PAPR.</p>
 
-<nav class="tabs" role="tablist" aria-label="Week 9 topics">
+<nav class="tabs" role="tablist" aria-label="Week 10 topics">
   <button type="button" role="tab" id="tab-param" aria-controls="param" aria-selected="true">1 &middot; Parameter Selection</button>
   <button type="button" role="tab" id="tab-papr" aria-controls="papr" aria-selected="false">2 &middot; Peak-to-Average Power</button>
   <button type="button" role="tab" id="tab-ma" aria-controls="ma" aria-selected="false">3 &middot; Multiple Access</button>
@@ -40,21 +41,20 @@ compare multiple-access schemes, schedule users on OFDMA resource blocks, and us
 
 <!-- ============================ 1 · PARAMETER SELECTION ============================ -->
 <section class="panel" id="param" role="tabpanel" aria-labelledby="tab-param">
-  <div class="panel-head"><div><div class="eyebrow">Bridge from Week 8 and OFDM parameter selection</div><h2>Subcarrier spacing balances cyclic-prefix overhead against sensitivity to Doppler spread</h2></div><div class="message">The channel delay spread determines the required cyclic-prefix (CP) duration. Increasing the useful symbol duration T<sub>s</sub> = 1/&Delta;f therefore reduces the CP overhead, but the corresponding smaller subcarrier spacing &Delta;f increases sensitivity to Doppler spread B<sub>D</sub>. Per-subcarrier equalization removes intersymbol interference (ISI) when the CP is long enough, but it does not remove frequency-selective fades. Coding and interleaving across subcarriers are therefore needed to obtain frequency diversity.</div></div>
+  <div class="panel-head"><div><div class="eyebrow">Recap of OFDM and OFDM parameter selection</div><h2>Subcarrier spacing balances cyclic-prefix overhead against sensitivity to Doppler spread</h2></div><div class="message">The channel delay spread sets the minimum cyclic-prefix (CP) duration; allow a margin for timing uncertainty. Increasing the useful symbol duration T<sub>s</sub> = 1/&Delta;f therefore reduces the CP overhead, but the corresponding smaller subcarrier spacing &Delta;f increases sensitivity to Doppler spread B<sub>D</sub>. Per-subcarrier equalization removes intersymbol interference (ISI) when the CP is long enough, but it does not remove frequency-selective fades. Coding and interleaving across subcarriers are therefore needed to obtain frequency diversity.</div></div>
   <div class="sticky-bar"><div class="toolbar">
     <div class="mode-buttons mode-row"><button type="button" id="pmNewCh">New channel</button><button type="button" class="preset" id="pmExample">Slide example: B = 1 MHz, N = 128</button></div>
     <div class="control-sections">
-      <div class="control-section"><div class="control-section-title">Numerology</div><div class="control-grid">
+      <div class="control-section"><div class="control-section-title">OFDM parameters</div><div class="control-grid">
         <div class="ctrl"><label for="pmB"><span>Bandwidth B</span> <strong id="pmBOut">1 MHz</strong></label><input id="pmB" type="range" min="0.5" max="20" value="1" step="0.5"></div>
         <div class="ctrl"><label for="pmN"><span>Subcarriers N</span> <strong id="pmNOut">128</strong></label><input id="pmN" type="range" min="5" max="11" value="7" step="1"></div>
         <div class="ctrl"><label for="pmTau"><span>Delay spread &tau;<sub>max</sub></span> <strong id="pmTauOut">5.0 &micro;s</strong></label><input id="pmTau" type="range" min="0.2" max="20" value="5" step="0.2"></div>
-        <div class="ctrl"><label for="pmLc"><span>CP length L<sub>c</sub></span> <strong id="pmLcOut">auto</strong></label><input id="pmLc" type="range" min="0" max="256" value="0" step="1"></div>
+        <div class="ctrl"><label for="pmLc"><span>CP length L<sub>c</sub></span> <strong id="pmLcOut">auto</strong></label><input id="pmLc" type="range" min="0" max="256" value="8" step="1"></div>
         <div class="ctrl"><label for="pmBd"><span>Doppler spread B<sub>D</sub></span> <strong id="pmBdOut">150 Hz</strong></label><input id="pmBd" type="range" min="0" max="2000" value="150" step="10"></div>
         <div class="ctrl"><label for="pmMod">Constellation per subcarrier</label><select id="pmMod"><option value="qpsk">QPSK</option><option value="qam16" selected>16-QAM</option></select></div>
       </div></div>
-      <div class="control-section"><div class="control-section-title">Coding and interleaving</div><div class="control-grid">
+      <div class="control-section"><div class="control-section-title">Frequency-selective fading</div><div class="control-grid">
         <div class="ctrl"><label for="pmSnr"><span>Average subcarrier signal-to-noise ratio (SNR)</span> <strong id="pmSnrOut">20 dB</strong></label><input id="pmSnr" type="range" min="0" max="30" value="20" step="1"></div>
-        <div class="ctrl"><label for="pmT"><span>Code corrects t bits per codeword</span> <strong id="pmTOut">4</strong></label><input id="pmT" type="range" min="0" max="24" value="4" step="1"></div>
       </div></div>
     </div>
     <div class="summary-row"><div class="toolbar-metrics metrics-7">
@@ -64,26 +64,25 @@ compare multiple-access schemes, schedule users on OFDMA resource blocks, and us
       <div class="metric"><div class="name">CP efficiency</div><div class="value" id="pmEta">&mdash;</div><div class="small">&eta;<sub>CP</sub> = N/(N + L<sub>c</sub>)</div></div>
       <div class="metric"><div class="name">Doppler ratio</div><div class="value" id="pmDop">&mdash;</div><div class="small">B<sub>D</sub>/&Delta;f, want &#8810; 1</div></div>
       <div class="metric"><div class="name">Data rate</div><div class="value" id="pmRate">&mdash;</div><div class="small">N log&#8322;M / T<sub>sym</sub></div></div>
-      <div class="metric lab-metric"><div class="name">Interactive lab</div><div class="value">Numerology</div><button type="button" class="lab-toggle" aria-controls="lab-param" aria-expanded="false">Open lab</button></div>
+      <div class="metric lab-metric"><div class="name">Interactive lab</div><div class="value">OFDM parameters</div><button type="button" class="lab-toggle" aria-controls="lab-param" aria-expanded="false">Open lab</button></div>
     </div><div class="formula"><div>T = 1/B, &Delta;f = B/N, T<sub>s</sub> = NT = 1/&Delta;f</div><div>T<sub>sym</sub> = T<sub>s</sub> + T<sub>CP</sub>, T<sub>CP</sub> = L<sub>c</sub>T, L<sub>c</sub> &ge; &lceil;&tau;<sub>max</sub>/T&rceil;</div><div id="pmCheck">&mdash;</div></div></div>
   </div></div>
+  <div class="lab-shell" id="lab-param" hidden><iframe class="lab-frame" loading="lazy" title="OFDM parameters interactive lab" src="01_ofdm_numerology_tradeoff.html?v=20261001"></iframe></div>
 
-  <div class="lab-shell" id="lab-param" hidden><iframe class="lab-frame" loading="lazy" title="OFDM Numerology Trade-off interactive lab" src="01_ofdm_numerology_tradeoff.html?v=20260924"></iframe></div>
 
-  <div class="plots">
-    <div class="card"><div class="title">CP overhead and Doppler sensitivity versus N</div><canvas id="pmTrade" role="img" aria-label="CP overhead and Doppler ratio against the number of subcarriers, with the region where both are small shaded"></canvas><div class="legend"><span><i class="sw orange"></i>CP overhead L<sub>c</sub>/(N+L<sub>c</sub>)</span><span><i class="sw purple"></i>B<sub>D</sub>/&Delta;f</span><span><i class="sw green"></i>Both &le; 0.1</span></div><ul class="bullets" id="pmTradeNote"></ul></div>
+
+  <div class="plots two">
+    <div class="card"><div class="title">CP overhead and Doppler sensitivity versus N</div><canvas id="pmTrade" role="img" aria-label="CP overhead and Doppler ratio against the number of subcarriers, showing their opposing trends"></canvas><div class="legend"><span><i class="sw orange"></i>CP overhead L<sub>c</sub>/(N+L<sub>c</sub>)</span><span><i class="sw purple"></i>B<sub>D</sub>/&Delta;f</span></div><ul class="bullets" id="pmTradeNote"></ul></div>
     <div class="card"><div class="title">Two OFDM symbols to scale</div><canvas id="pmTimeline" role="img" aria-label="Timeline of two OFDM symbols showing cyclic prefix, useful part, the channel echo of the previous symbol, and the FFT window"></canvas><div class="legend"><span><i class="sw orange"></i>CP</span><span><i class="sw blue"></i>Useful T<sub>s</sub></span><span><i class="sw red"></i>Echo / ISI</span><span><i class="sw green"></i>FFT window</span></div><ul class="bullets" id="pmTimelineNote"></ul></div>
-    <div class="card"><div class="title">LTE / 5G New Radio (NR) numerology check</div><canvas id="pmNr" role="img" aria-label="For each NR numerology, the ratio of delay spread to CP length and of Doppler spread to subcarrier spacing"></canvas><div class="legend"><span><i class="sw orange"></i>&tau;<sub>max</sub>/T<sub>CP</sub>, target &le; 1</span><span><i class="sw purple"></i>B<sub>D</sub>/&Delta;f, illustrative target &le; 0.1</span><span><i class="sw green"></i>Both conditions satisfied</span></div><ul class="bullets" id="pmNrNote"></ul></div>
   </div>
-  <div class="plots two" style="margin-top:14px">
+  <div class="plots" style="grid-template-columns:1fr;margin-top:14px">
     <div class="card"><div class="title">Per-subcarrier SNR and codeword assignment</div><canvas id="pmSnrPlot" role="img" aria-label="Per-subcarrier SNR across the band with two strips showing codeword assignment with and without interleaving"></canvas><div class="legend"><span><i class="sw blue"></i>|H[k]|&sup2; &times; average SNR</span><span><i class="sw red"></i>SNR for uncoded P<sub>e</sub> &asymp; 10&#8315;&sup3;</span><span>Strips: upper = contiguous, lower = interleaved (colour = codeword)</span></div><ul class="bullets" id="pmSnrNote"></ul></div>
-    <div class="card"><div class="title">Expected bit errors per codeword</div><canvas id="pmCw" role="img" aria-label="Bar chart of expected bit errors in each of eight codewords, with and without interleaving, against the code's correction capability"></canvas><div class="legend"><span><i class="sw orange"></i>No interleaving</span><span><i class="sw blue"></i>Interleaved across subcarriers</span><span><i class="sw red"></i>Code corrects t</span></div><ul class="bullets" id="pmCwNote"></ul></div>
   </div>
 </section>
 
 <!-- ============================ 2 · PAPR ============================ -->
 <section class="panel" id="papr" role="tabpanel" aria-labelledby="tab-papr" hidden>
-  <div class="panel-head"><div><div class="eyebrow">Peak-to-average power ratio</div><h2>Occasional alignment of N subcarrier contributions creates large power peaks</h2></div><div class="message">Each inverse fast Fourier transform (IFFT) output sample is the sum of N subcarrier contributions represented as phasors. For sufficiently large N, the central limit theorem (CLT) gives an approximately complex Gaussian sample with E|x[n]|&sup2; = E<sub>X</sub>/N; consequently, its envelope is approximately Rayleigh distributed. The maximum possible PAPR is N and occurs when all phasors align, but random data almost never produce this extreme case. The practical quantity is Pr(PAPR &ge; P<sub>0</sub>): the probability that the PAPR exceeds the amplifier's available input back-off.</div></div>
+  <div class="panel-head"><div><div class="eyebrow">Peak-to-average power ratio</div><h2>Occasional alignment of N subcarrier contributions creates large power peaks</h2></div><div class="message">Each inverse fast Fourier transform (IFFT) output sample is the sum of N subcarrier contributions represented as phasors. For sufficiently large N, the central limit theorem (CLT) gives an approximately complex Gaussian sample with E|x[n]|&sup2; = E<sub>X</sub>/N; consequently, its envelope is approximately Rayleigh distributed. For equal-magnitude symbols such as QPSK, the sampled PAPR is bounded by N, reached when all phasors align, but random data almost never produce this extreme case. The practical quantity is Pr(PAPR &ge; P<sub>0</sub>): the probability that the PAPR exceeds the amplifier's available input back-off.</div></div>
   <div class="sticky-bar"><div class="toolbar">
     <div class="mode-buttons mode-row"><button type="button" id="paNew">New OFDM symbols</button><button type="button" class="preset" id="paExercise">Slide exercise: N = 512, 8 dB backoff</button></div>
     <div class="control-grid">
@@ -102,13 +101,13 @@ compare multiple-access schemes, schedule users on OFDMA resource blocks, and us
       <div class="metric lab-metric"><div class="name">Interactive lab</div><div class="value">PAPR distribution</div><button type="button" class="lab-toggle" aria-controls="lab-papr" aria-expanded="false">Open lab</button></div>
     </div><div class="formula"><div>x[n] = (1/N) &sum;<sub>k</sub> a<sub>k</sub> e<sup>j2&pi;kn/N</sup>, E|x[n]|&sup2; = E<sub>X</sub>/N</div><div>PAPR = max<sub>n</sub>|x[n]|&sup2; / E|x[n]|&sup2;</div><div>Pr(PAPR &ge; P<sub>0</sub>) &asymp; 1 &minus; (1 &minus; e<sup>&minus;P<sub>0</sub></sup>)<sup>N</sup>, P<sub>0</sub> linear</div><div id="paP0">&mdash;</div></div></div>
   </div></div>
+  <div class="lab-shell" id="lab-papr" hidden><iframe class="lab-frame" loading="lazy" title="PAPR distribution interactive lab" src="02_papr_phasor_ccdf_lab.html?v=20261001"></iframe></div>
 
-  <div class="lab-shell" id="lab-papr" hidden><iframe class="lab-frame" loading="lazy" title="OFDM PAPR interactive lab" src="02_papr_phasor_ccdf_lab.html?v=20260924"></iframe></div>
 
-  <div class="plots">
+
+  <div class="plots two">
     <div class="card"><div class="title">Phasor addition: peak and typical samples</div><canvas id="paPhasor" role="img" aria-label="Head-to-tail sum of the N subcarrier phasors at the peak sample and at a typical sample, with the root-mean-square circle and the back-off circle"></canvas><div class="legend"><span><i class="sw orange"></i>Peak sample</span><span><i class="sw blue"></i>Typical sample</span><span><i class="sw green"></i>Root-mean-square (RMS) amplitude</span><span><i class="sw red"></i>&radic;back-off</span></div><ul class="bullets" id="paPhasorNote"></ul></div>
     <div class="card"><div class="title">One OFDM symbol: |x(t)|&sup2; / E|x|&sup2;</div><canvas id="paWave" role="img" aria-label="Normalized instantaneous power over one OFDM symbol with the average, the backoff level, and the Nyquist-rate samples"></canvas><div class="legend"><span><i class="sw blue"></i>Oversampled</span><span><i class="sw cyan"></i>Dots: the N IFFT samples</span><span><i class="sw green"></i>Average</span><span><i class="sw red"></i>Backoff</span></div><ul class="bullets" id="paWaveNote"></ul></div>
-    <div class="card"><div class="title">Input and output amplitudes of the power amplifier</div><canvas id="paPa" role="img" aria-label="Soft-limiter amplifier transfer curve with the samples of the current symbol plotted on it"></canvas><div class="legend"><span><i class="sw grey"></i>Ideal linear response</span><span><i class="sw purple"></i>Power-amplifier model (Rapp, p = 3)</span><span><i class="sw blue"></i>Samples</span><span><i class="sw red"></i>Beyond saturation</span></div><ul class="bullets" id="paPaNote"></ul></div>
   </div>
   <div class="plots two" style="margin-top:14px">
     <div class="card"><div class="title">Envelope |x[n]| and the Rayleigh probability density</div><canvas id="paHist" role="img" aria-label="Histogram of the normalized envelope of the IFFT samples compared with the Rayleigh probability density"></canvas><div class="legend"><span><i class="sw blue"></i>Histogram, all simulated symbols</span><span><i class="sw orange"></i>Rayleigh density: 2r e<sup>&minus;r&sup2;</sup></span></div><ul class="bullets" id="paHistNote"></ul></div>
@@ -118,35 +117,33 @@ compare multiple-access schemes, schedule users on OFDMA resource blocks, and us
 
 <!-- ============================ 3 · MULTIPLE ACCESS ============================ -->
 <section class="panel" id="ma" role="tabpanel" aria-labelledby="tab-ma" hidden>
-  <div class="panel-head"><div><div class="eyebrow">Multiple access techniques</div><h2>Multiple-access schemes share the available signal dimensions by frequency, time, or code</h2></div><div class="message">Within bandwidth B and time interval T, a real passband signal has approximately 2BT independent signal dimensions. Frequency-division multiple access (FDMA) gives each user a narrow channel, time-division multiple access (TDMA) gives each user a repeating time slot, and code-division multiple access (CDMA) separates users by spreading codes. OFDM-based access applies the same principles to a digital time&ndash;frequency grid: OFDMA assigns disjoint subcarrier sets, OFDM-TDMA assigns complete OFDM symbols, and multicarrier CDMA (MC-CDMA) spreads each data symbol across subcarriers.</div></div>
+  <div class="panel-head"><div><div class="eyebrow">Multiple access techniques</div><h2>Users share the available bandwidth by frequency, time, or code</h2></div><div class="message">Frequency-division multiple access (FDMA) gives each user a narrow channel, time-division multiple access (TDMA) gives each user a repeating time slot, and code-division multiple access (CDMA) separates users by spreading codes. OFDM-based access applies the same principles to a digital time&ndash;frequency grid: OFDMA assigns disjoint subcarrier sets, OFDM-TDMA assigns complete OFDM symbols, and multicarrier CDMA (MC-CDMA) spreads each data symbol across subcarriers.</div></div>
   <div class="sticky-bar"><div class="toolbar">
-    <div class="mode-buttons mode-row" id="maModes"><button type="button" data-ma="fdma" aria-pressed="true">FDMA</button><button type="button" data-ma="tdma" aria-pressed="false">TDMA</button><button type="button" data-ma="cdma" aria-pressed="false">CDMA</button><button type="button" data-ma="ofdma" aria-pressed="false">OFDMA</button><button type="button" data-ma="ofdmtdma" aria-pressed="false">OFDM-TDMA</button><button type="button" data-ma="mccdma" aria-pressed="false">MC-CDMA</button><button type="button" class="preset" id="maExample">Slide example: 25 MHz, 30 kHz FDMA</button></div>
+    <div class="mode-buttons mode-row"><button type="button" class="preset" id="maExample">Slide example: 25 MHz, 30 kHz FDMA</button></div>
     <div class="control-sections">
-      <div class="control-section"><div class="control-section-title">Frequency-channel parameters</div><div class="control-grid">
+      <div class="control-section"><div class="control-section-title">Users and allocation</div><div class="control-grid">
         <div class="ctrl"><label for="maK"><span>Users K</span> <strong id="maKOut">4</strong></label><input id="maK" type="range" min="2" max="8" value="4" step="1"></div>
-        <div class="ctrl"><label for="maB"><span>Total bandwidth B</span> <strong id="maBOut">25 MHz</strong></label><input id="maB" type="range" min="1" max="50" value="25" step="1"></div>
-        <div class="ctrl"><label for="maBc"><span>Channel bandwidth B<sub>c</sub></span> <strong id="maBcOut">30 kHz</strong></label><input id="maBc" type="range" min="10" max="200" value="30" step="5"></div>
-        <div class="ctrl"><label for="maBg"><span>Edge guard band B<sub>g</sub></span> <strong id="maBgOut">10 kHz</strong></label><input id="maBg" type="range" min="0" max="100" value="10" step="5"></div>
-      </div></div>
-      <div class="control-section"><div class="control-section-title">CDMA uplink, Walsh codes of length 8</div><div class="control-grid">
-        <div class="ctrl"><label for="maOff"><span>Chip offset of other users</span> <strong id="maOffOut">0 chips</strong></label><input id="maOff" type="range" min="0" max="7" value="1" step="1"></div>
-        <div class="ctrl"><label for="maNf"><span>Near users' received-power advantage</span> <strong id="maNfOut">20 dB</strong></label><input id="maNf" type="range" min="0" max="40" value="20" step="1"></div>
-        <label class="inline-check"><input type="checkbox" id="maPc"> Power control on</label>
+        <div class="ctrl ma-fdma-only"><label for="maB"><span>Total bandwidth B</span> <strong id="maBOut">25 MHz</strong></label><input id="maB" type="range" min="1" max="50" value="25" step="1"></div>
+        <div class="ctrl ma-fdma-only"><label for="maBc"><span>Channel bandwidth B<sub>c</sub></span> <strong id="maBcOut">30 kHz</strong></label><input id="maBc" type="range" min="10" max="200" value="30" step="5"></div>
+        <div class="ctrl ma-fdma-only"><label for="maBg"><span>Edge guard band B<sub>g</sub></span> <strong id="maBgOut">10 kHz</strong></label><input id="maBg" type="range" min="0" max="100" value="10" step="5"></div>
       </div></div>
     </div>
-    <div class="summary-row"><div class="toolbar-metrics metrics-4">
+    <p class="message" id="maTry">Change the channel width and watch how many FDMA channels fit in the band.</p>
+    <div class="summary-row ma-fdma-only"><div class="toolbar-metrics metrics-4">
       <div class="metric"><div class="name">FDMA channels</div><div class="value" id="maChan">&mdash;</div><div class="small">&lfloor;(B &minus; 2B<sub>g</sub>)/B<sub>c</sub>&rfloor;</div></div>
-      <div class="metric"><div class="name">Approximate signal dimensions in 1 ms</div><div class="value" id="maDims">&mdash;</div><div class="small">2BT for a real passband signal</div></div>
-      <div class="metric"><div class="name">Largest cross-correlation</div><div class="value" id="maRho">&mdash;</div><div class="small">root-mean-square |&rho;<sub>ij</sub>|, i &ne; j</div></div>
-      <div class="metric"><div class="name">Far user's signal-to-interference ratio</div><div class="value" id="maSir">&mdash;</div><div class="small">SIR after despreading</div></div>
-    </div><div class="formula"><div>N<sub>FDMA</sub> = &lfloor;(B &minus; 2B<sub>g</sub>)/B<sub>c</sub>&rfloor;</div><div>&rho;<sub>ij</sub> = (1/8) &sum;<sub>n</sub> c<sub>i</sub>[n] c<sub>j</sub>[n &minus; d]</div><div>SIR<sub>1</sub> = 1 / &sum;<sub>j&ne;1</sub> (P<sub>j</sub>/P<sub>1</sub>) &rho;<sub>1j</sub>&sup2;</div></div></div>
+    </div><div class="formula"><div>N<sub>FDMA</sub> = &lfloor;(B &minus; 2B<sub>g</sub>)/B<sub>c</sub>&rfloor;</div></div></div>
   </div></div>
 
-  <div class="plots">
-    <div class="card"><div class="title" id="maPlaneTitle">Time&ndash;frequency plane</div><canvas id="maPlane" role="img" aria-label="Time-frequency plane showing how the selected multiple-access scheme assigns resources to each user"></canvas><div class="legend" id="maPlaneLegend"></div><ul class="bullets" id="maPlaneNote"></ul></div>
-    <div class="card"><div class="title">Walsh code cross-correlation, with chip offset</div><canvas id="maCodes" role="img" aria-label="Matrix of RMS cross-correlations between the users' Walsh codes at the chosen chip offset"></canvas><div class="legend"><span><i class="sw blue"></i>Darker = larger |&rho;|</span></div><ul class="bullets" id="maCodesNote"></ul></div>
-    <div class="card"><div class="title">Near&ndash;far problem: far user's signal-to-interference ratio (SIR)</div><canvas id="maNearFar" role="img" aria-label="Signal-to-interference ratio of the far user after despreading against the near users' power advantage"></canvas><div class="legend"><span><i class="sw blue"></i>Walsh codes, selected offset</span><span><i class="sw grey"></i>Random codes, length 8</span><span><i class="sw red"></i>Selected operating point</span></div><ul class="bullets" id="maNearFarNote"></ul></div>
+  <div class="legend" id="maSharedLegend"></div>
+  <div class="plots ma-comparison">
+    <div class="card"><div class="title" id="maTitle-fdma"></div><canvas id="maPlane-fdma" role="img" aria-label="FDMA time-frequency allocation"></canvas><ul class="bullets" id="maNote-fdma"></ul></div>
+    <div class="card"><div class="title" id="maTitle-tdma"></div><canvas id="maPlane-tdma" role="img" aria-label="TDMA time-frequency allocation"></canvas><ul class="bullets" id="maNote-tdma"></ul></div>
+    <div class="card"><div class="title" id="maTitle-cdma"></div><canvas id="maPlane-cdma" role="img" aria-label="CDMA time-frequency allocation"></canvas><ul class="bullets" id="maNote-cdma"></ul></div>
+    <div class="card"><div class="title" id="maTitle-ofdma"></div><canvas id="maPlane-ofdma" role="img" aria-label="OFDMA time-frequency allocation"></canvas><ul class="bullets" id="maNote-ofdma"></ul></div>
+    <div class="card"><div class="title" id="maTitle-ofdmtdma"></div><canvas id="maPlane-ofdmtdma" role="img" aria-label="OFDMTDMA time-frequency allocation"></canvas><ul class="bullets" id="maNote-ofdmtdma"></ul></div>
+    <div class="card"><div class="title" id="maTitle-mccdma"></div><canvas id="maPlane-mccdma" role="img" aria-label="MCCDMA time-frequency allocation"></canvas><ul class="bullets" id="maNote-mccdma"></ul></div>
   </div>
+  <div class="card" style="margin-top:14px"><div class="title">FDMA capacity: active users and available channels</div><canvas id="maCapacity" role="img" aria-label="Active, unused and total FDMA channels"></canvas><ul class="bullets" id="maCapacityNote"></ul></div>
 
   <div class="checklist">
     <div class="check"><strong>FDMA</strong><span>Continuous narrowband channels. Guard bands absorb filter roll-off and Doppler, and narrow channels need little equalization.</span></div>
@@ -158,9 +155,9 @@ compare multiple-access schemes, schedule users on OFDMA resource blocks, and us
 
 <!-- ============================ 4 · OFDMA ============================ -->
 <section class="panel" id="ofdma" role="tabpanel" aria-labelledby="tab-ofdma" hidden>
-  <div class="panel-head"><div><div class="eyebrow">Orthogonal frequency-division multiple access</div><h2>Assign each resource block to a user with favourable channel conditions and select a suitable modulation</h2></div><div class="message">Each user equipment (UE) reports a channel-quality indicator (CQI). The base station assigns disjoint resource blocks (RBs) of 12 subcarriers and selects a modulation and coding scheme (MCS) for each RB. Because users experience different frequency responses, a channel-aware scheduler can assign an RB to a user whose channel is strong on those subcarriers. The rates below use T<sub>sym</sub> = 57.6 &micro;s. On the downlink, all users' subcarriers are generated by one synchronized IFFT. On the uplink, each handset has an independent timing reference and oscillator.</div></div>
+  <div class="panel-head"><div><div class="eyebrow">Orthogonal frequency-division multiple access</div><h2>Assign each resource block to a user with favourable channel conditions and select a suitable modulation</h2></div><div class="message">Each user equipment (UE) reports a channel-quality indicator (CQI). The base station assigns disjoint resource blocks (RBs) of 12 subcarriers and selects a modulation and coding scheme (MCS) for each RB. Because users experience different frequency responses, a channel-aware scheduler can assign an RB to a user whose channel is strong on those subcarriers. Here, each RB is the lecture exercise’s simplified group of 12 subcarriers, allocated every symbol with T<sub>sym</sub> = 57.6 &micro;s. An actual LTE RB spans 12 subcarriers over a 0.5 ms slot. On the downlink, all users' subcarriers are generated by one synchronized IFFT. On the uplink, each handset has an independent timing reference and oscillator.</div></div>
   <div class="sticky-bar"><div class="toolbar">
-    <div class="mode-buttons mode-row" id="ofRules"><button type="button" data-of-rule="equal" aria-pressed="true">Equal contiguous allocation</button><button type="button" data-of-rule="max" aria-pressed="false">Highest absolute SNR</button><button type="button" data-of-rule="rel" aria-pressed="false">Highest SNR relative to user average</button><button type="button" id="ofNew">New channels</button><button type="button" class="preset" id="ofExercise">Slide exercise: 33 RBs</button></div>
+    <div class="mode-buttons mode-row" id="ofRules"><button type="button" data-of-rule="equal" aria-pressed="true">Equal contiguous allocation</button><button type="button" data-of-rule="max" aria-pressed="false">Maximum rate</button><button type="button" id="ofNew">New channels</button><button type="button" class="preset" id="ofExercise">Slide exercise: 33 RBs</button></div>
     <div class="control-sections">
       <div class="control-section"><div class="control-section-title">Cell and users</div><div class="control-grid">
         <div class="ctrl"><label for="ofK"><span>Users K</span> <strong id="ofKOut">2</strong></label><input id="ofK" type="range" min="2" max="4" value="2" step="1"></div>
@@ -177,20 +174,20 @@ compare multiple-access schemes, schedule users on OFDMA resource blocks, and us
     <div class="summary-row"><div class="toolbar-metrics metrics-5">
       <div class="metric"><div class="name">Total cell rate</div><div class="value" id="ofSum">&mdash;</div><div class="small">sum over scheduled RBs</div></div>
       <div class="metric"><div class="name">Per user</div><div class="value" id="ofUsers">&mdash;</div><div class="small">Mbit/s</div></div>
-      <div class="metric"><div class="name">Jain fairness</div><div class="value" id="ofJain">&mdash;</div><div class="small">1 indicates equal user rates</div></div>
       <div class="metric"><div class="name">Uplink signal-to-interference ratio</div><div class="value" id="ofSir">&mdash;</div><div class="small">at User 2's first subcarrier</div></div>
       <div class="metric lab-metric"><div class="name">Interactive lab</div><div class="value">Scheduler</div><button type="button" class="lab-toggle" aria-controls="lab-ofdma" aria-expanded="false">Open lab</button></div>
-    </div><div class="formula"><div>R<sub>RB</sub> = 12 log&#8322;M / T<sub>sym</sub>: QPSK 417 kbit/s, 16-QAM 833 kbit/s</div><div>Required RBs = &lceil;R<sub>req</sub>/R<sub>RB</sub>&rceil;, available RBs = &lfloor;N<sub>data</sub>/12&rfloor;</div><div>Modulation and coding scheme (MCS): uncoded P<sub>e</sub> &asymp; 10&#8315;&sup3; thresholds (BPSK 6.8, QPSK 10.3, 16-QAM 17.6, 64-QAM 24.0 dB)</div></div></div>
+    </div><div class="formula"><div>R<sub>RB</sub> = 12 log&#8322;M / T<sub>sym</sub>: QPSK 417 kbit/s, 16-QAM 833 kbit/s</div><div>Required RBs = &lceil;R<sub>req</sub>/R<sub>RB</sub>&rceil;, available RBs = &lfloor;N<sub>data</sub>/12&rfloor;</div><div>Illustrative modulation selection: uncoded P<sub>e</sub> &asymp; 10&#8315;&sup3; thresholds (QPSK 10.3, 16-QAM 17.6 dB)</div></div></div>
   </div></div>
+  <div class="lab-shell" id="lab-ofdma" hidden><iframe class="lab-frame" loading="lazy" title="Scheduler interactive lab" src="03_ofdma_scheduler_explorer.html?v=20261001"></iframe></div>
 
-  <div class="lab-shell" id="lab-ofdma" hidden><iframe class="lab-frame" loading="lazy" title="OFDMA Scheduler interactive lab" src="03_ofdma_scheduler_explorer.html?v=20260924"></iframe></div>
+
 
   <div class="flow" aria-label="Adaptive modulation and coding loop"><div class="flow-step"><strong>UE measures</strong><span>signal-to-interference-plus-noise ratio (SINR)</span></div><div class="arrow">&rarr;</div><div class="flow-step"><strong>CQI report</strong><span>summarizes channel quality</span></div><div class="arrow">&rarr;</div><div class="flow-step hl"><strong>Scheduler</strong><span>selects RBs and MCS</span></div><div class="arrow">&rarr;</div><div class="flow-step"><strong>Control signalling</strong><span>communicates the allocation</span></div><div class="arrow">&rarr;</div><div class="flow-step"><strong>Data</strong><span>each UE processes its assigned subcarriers</span></div></div>
   <div class="flow" aria-label="OFDMA downlink transceiver"><div class="flow-step"><strong>Map user data</strong><span>QAM symbols for K users</span></div><div class="arrow">&rarr;</div><div class="flow-step hl"><strong>Combine into X[k]</strong><span>disjoint subcarrier sets &#119974;<sub>k</sub></span></div><div class="arrow">&rarr;</div><div class="flow-step"><strong>N-point IFFT + CP</strong><span>one synchronized transmitter</span></div><div class="arrow">&rarr;</div><div class="flow-step"><strong>FFT at UE 1</strong><span>after removing the CP</span></div><div class="arrow">&rarr;</div><div class="flow-step hl"><strong>Select &#119974;<sub>1</sub></strong><span>retain UE 1's subcarriers</span></div><div class="arrow">&rarr;</div><div class="flow-step"><strong>One-tap equalizer</strong><span>then demap and decode</span></div></div>
 
   <div class="plots two">
     <div class="card"><div class="title">Per-user SNR and resource-block assignment</div><canvas id="ofCqi" role="img" aria-label="Effective SNR of each user on each resource block, with MCS thresholds and a strip showing the allocation"></canvas><div class="legend" id="ofCqiLegend"></div><ul class="bullets" id="ofCqiNote"></ul></div>
-    <div class="card"><div class="title">Rate per user under each allocation rule</div><canvas id="ofRates" role="img" aria-label="Stacked bars of each user's rate under equal, best-SNR and relatively-strong allocation, with Jain fairness"></canvas><div class="legend" id="ofRatesLegend"></div><ul class="bullets" id="ofRatesNote"></ul></div>
+    <div class="card"><div class="title">Rate per user under each allocation rule</div><canvas id="ofRates" role="img" aria-label="Stacked bars of each user's rate under equal allocation and maximum-rate scheduling, for equal allocation and maximum-rate scheduling"></canvas><div class="legend" id="ofRatesLegend"></div><ul class="bullets" id="ofRatesNote"></ul></div>
   </div>
   <div class="plots two" style="margin-top:14px">
     <div class="card"><div class="title">N = 64 example: frequency-sorted order and IFFT-array order</div><canvas id="ofIdx" role="img" aria-label="The 64 subcarriers of the worked example, coloured by role, in frequency-sorted order and in raw DFT-bin order"></canvas><div class="legend"><span><i class="sw grey"></i>Edge guard</span><span><i class="sw blue"></i>User 1</span><span><i class="sw red"></i>DC (unused)</span><span><i class="sw orange"></i>User 2</span></div><ul class="bullets" id="ofIdxNote"></ul></div>
@@ -222,15 +219,16 @@ compare multiple-access schemes, schedule users on OFDMA resource blocks, and us
       <div class="metric"><div class="name">OFDMA P<sub>e</sub></div><div class="value" id="scPeO">&mdash;</div><div class="small">average over subcarriers</div></div>
       <div class="metric"><div class="name">SC-FDMA P<sub>e</sub></div><div class="value" id="scPeS">&mdash;</div><div class="small" id="scPeSSmall">&mdash;</div></div>
       <div class="metric"><div class="name">Mean ZF noise gain</div><div class="value" id="scGain">&mdash;</div><div class="small">mean<sub>k</sub> 1/|H[k]|&sup2;</div></div>
-      <div class="metric lab-metric"><div class="name">Interactive lab</div><div class="value">DFT-spreading</div><button type="button" class="lab-toggle" aria-controls="lab-sc" aria-expanded="false">Open lab</button></div>
+      <div class="metric lab-metric"><div class="name">Interactive lab</div><div class="value">DFT spreading</div><button type="button" class="lab-toggle" aria-controls="lab-sc" aria-expanded="false">Open lab</button></div>
     </div><div class="formula"><div>S = F<sub>M</sub>s &rarr; map onto M of N bins &rarr; x[n] = (1/N) &sum;<sub>k</sub> X[k] e<sup>j2&pi;kn/N</sup></div><div>OFDMA: SNR[k] = |H[k]|&sup2; / NSR</div><div>SC-FDMA: SNR = 1 / (NSR &middot; mean<sub>k</sub> 1/|H[k]|&sup2;), ŝ = F<sub>M</sub><sup>&minus;1</sup>Ŝ</div></div></div>
   </div></div>
+  <div class="lab-shell" id="lab-sc" hidden><iframe class="lab-frame" loading="lazy" title="DFT spreading interactive lab" src="04_scfdma_dft_spreading_explorer.html?v=20261001"></iframe></div>
 
-  <div class="lab-shell" id="lab-sc" hidden><iframe class="lab-frame" loading="lazy" title="SC-FDMA DFT-Spreading interactive lab" src="04_scfdma_dft_spreading_explorer.html?v=20260924"></iframe></div>
+
 
   <div class="flow" aria-label="SC-FDMA transmitter at the handset"><div class="flow-step"><strong>QAM s[n]</strong><span>M data symbols</span></div><div class="arrow">&rarr;</div><div class="flow-step hl"><strong>M-point DFT</strong><span>S = F<sub>M</sub>s</span></div><div class="arrow">&rarr;</div><div class="flow-step"><strong>Map subcarriers</strong><span id="scFlowMap">M contiguous bins</span></div><div class="arrow">&rarr;</div><div class="flow-step"><strong>N-point IFFT</strong><span>creates the transmit waveform</span></div><div class="arrow">&rarr;</div><div class="flow-step"><strong>Add CP</strong><span>then transmit through the power amplifier</span></div></div>
   <div class="flow" aria-label="SC-FDMA receiver at the base station"><div class="flow-step"><strong>Remove CP</strong><span>retain N samples</span></div><div class="arrow">&rarr;</div><div class="flow-step"><strong>N-point FFT</strong><span>separates the subcarriers</span></div><div class="arrow">&rarr;</div><div class="flow-step"><strong>Extract M bins</strong><span>allocated to this user</span></div><div class="arrow">&rarr;</div><div class="flow-step"><strong>One-tap equalizer</strong><span>estimates S[k]</span></div><div class="arrow">&rarr;</div><div class="flow-step hl"><strong>M-point IDFT</strong><span>ŝ = F<sub>M</sub><sup>&minus;1</sup>Ŝ</span></div><div class="arrow">&rarr;</div><div class="flow-step"><strong>Symbol decisions</strong><span>estimate the transmitted QAM symbols</span></div></div>
-  <p class="flow-caption">Equalization is performed in the frequency domain, followed by symbol decisions in the original data-symbol domain. This is the same structure used for single-carrier frequency-domain equalization (SC-FDE) in Week 7. OFDMA does not use the additional M-point DFT at the transmitter or M-point IDFT at the receiver.</p>
+  <p class="flow-caption">Equalization is performed in the frequency domain, followed by symbol decisions in the original data-symbol domain. This is the same structure used for single-carrier frequency-domain equalization (SC-FDE) in the earlier SC-FDE lecture. OFDMA does not use the additional M-point DFT at the transmitter or M-point IDFT at the receiver.</p>
 
   <div class="plots">
     <div class="card"><div class="title">IFFT inputs for the same QAM data block</div><canvas id="scMap" role="img" aria-label="Magnitude of the IFFT input on each bin, frequency-sorted, for SC-FDMA and OFDMA with the chosen mapping"></canvas><div class="legend"><span><i class="sw blue"></i>SC-FDMA |S[k]|</span><span><i class="sw orange"></i>OFDMA |a<sub>k</sub>|</span></div><ul class="bullets" id="scMapNote"></ul></div>
@@ -319,9 +317,9 @@ function fmtPe(v){return v<1e-9?'< 10⁻⁹':v>=0.01?v.toFixed(3):expo(v)}
 const userCols=['--blue','--orange','--green','--purple','--red','--cyan','--amber','--pink'];
 
 document.querySelectorAll('[role=tab]').forEach((b,i,all)=>b.addEventListener('click',()=>{all.forEach(x=>{const on=x===b;x.setAttribute('aria-selected',on);$(x.getAttribute('aria-controls')).hidden=!on});requestAnimationFrame(drawActive)}));
-function sizeLabFrame(frame){try{frame.style.height='760px';frame.style.height=Math.max(760,frame.contentDocument.documentElement.scrollHeight,frame.contentDocument.body.scrollHeight)+'px'}catch(e){frame.style.height='1100px'}}
+function sizeLabFrame(frame){try{frame.style.height=Math.max(760,frame.contentDocument.documentElement.scrollHeight,frame.contentDocument.body.scrollHeight)+'px'}catch(e){frame.style.height='1100px'}}
 document.querySelectorAll('.lab-frame').forEach(frame=>frame.addEventListener('load',()=>sizeLabFrame(frame)));
-document.querySelectorAll('.lab-toggle').forEach(button=>button.addEventListener('click',()=>{const shell=$(button.getAttribute('aria-controls')),panel=button.closest('.panel'),open=shell.hidden;shell.hidden=!open;panel.classList.toggle('lab-open',open);button.setAttribute('aria-expanded',open);button.textContent=open?'Close lab':'Open lab';if(open){const frame=shell.querySelector('.lab-frame');sizeLabFrame(frame);setTimeout(()=>sizeLabFrame(frame),60)}}));
+document.querySelectorAll('.lab-toggle').forEach(button=>button.addEventListener('click',()=>{const shell=$(button.getAttribute('aria-controls')),panel=button.closest('.panel'),open=shell.hidden;shell.hidden=!open;panel.classList.toggle('lab-open',open);button.setAttribute('aria-expanded',String(open));button.textContent=open?'Close lab':'Open lab';requestAnimationFrame(()=>{if(open)sizeLabFrame(shell.querySelector('.lab-frame'));else drawActive()})}));
 function drawActive(){const id=document.querySelector('[role=tab][aria-selected=true]').getAttribute('aria-controls'),panel=$(id),draw=({param:drawParam,papr:drawPapr,ma:drawMa,ofdma:drawOfdma,sc:drawSc})[id];draw();panel.querySelectorAll('.lab-shell:not([hidden]) .lab-frame').forEach(sizeLabFrame)}
 function pressGroup(container,attr,value){container.querySelectorAll('['+attr+']').forEach(b=>b.setAttribute('aria-pressed',String(b.getAttribute(attr)===value)))}
 
@@ -334,14 +332,14 @@ function paramParams(){
   const B=+$('pmB').value*1e6,N=Math.pow(2,+$('pmN').value),tau=+$('pmTau').value*1e-6,Bd=+$('pmBd').value,
     T=1/B,Lmin=Math.max(1,Math.ceil(tau/T-1e-9)),LcSet=+$('pmLc').value,Lc=LcSet||Lmin,
     df=B/N,Ts=N*T,Tcp=Lc*T,Tsym=Ts+Tcp,mod=$('pmMod').value,M=mod==='qam16'?16:4,bits=Math.log2(M);
-  return{B,N,tau,Bd,T,Lmin,Lc,auto:!LcSet,df,Ts,Tcp,Tsym,eta:N/(N+Lc),dop:Bd/df,mod,M,bits,R:N*bits/Tsym,snr:+$('pmSnr').value,t:+$('pmT').value};
+  return{B,N,tau,Bd,T,Lmin,Lc,auto:!LcSet,df,Ts,Tcp,Tsym,eta:N/(N+Lc),dop:Bd/df,mod,M,bits,R:N*bits/Tsym,snr:+$('pmSnr').value};
 }
 function drawParam(){
   const p=paramParams();
   $('pmBOut').textContent=(p.B/1e6)+' MHz';$('pmNOut').textContent=p.N;
   $('pmTauOut').textContent=(p.tau*1e6).toFixed(1)+' µs';
   $('pmLcOut').textContent=p.auto?'auto = '+p.Lmin:String(p.Lc);
-  $('pmBdOut').textContent=p.Bd+' Hz';$('pmSnrOut').textContent=p.snr+' dB';$('pmTOut').textContent=p.t;
+  $('pmBdOut').textContent=p.Bd+' Hz';$('pmSnrOut').textContent=p.snr+' dB';
   $('pmDf').textContent=fmtHz(p.df);$('pmTs').textContent=fmtUs(p.Ts);
   $('pmLcM').textContent=p.Lc+' = '+fmtUs(p.Tcp);
   $('pmEta').textContent=(100*p.eta).toFixed(1)+'%';
@@ -354,10 +352,6 @@ function drawParam(){
   /* --- CP overhead and Doppler ratio against N --- */
   const over=e=>p.Lc/(Math.pow(2,e)+p.Lc),dopl=e=>p.Bd*Math.pow(2,e)/p.B,lg=v=>Math.max(-4.4,Math.log10(Math.max(v,1e-9)));
   let z=ax($('pmTrade'),5,12,-4,1,'Subcarriers N (CP fixed at '+p.Lc+' samples)','Fraction',{xticks:7,yticks:5,xfmt:e=>String(Math.round(Math.pow(2,e))),yfmt:decade});
-  let runStart=null,feasible=[];
-  for(let e=5;e<=12.0001;e+=0.01){const ok=over(e)<=0.1&&dopl(e)<=0.1;if(ok&&runStart===null)runStart=e;if((!ok||e>11.995)&&runStart!==null){feasible.push([runStart,e]);runStart=null}}
-  feasible.forEach(([a,b])=>band(z,a,b,css('--green'),'both ≤ 0.1',.13));
-  hline(z,-1,css('--muted'));
   const xs=[];for(let e=5;e<=12.0001;e+=0.05)xs.push(e);
   clipPlot(z);
   line(z,xs.map(e=>[e,lg(over(e))]),css('--orange'),2.4);
@@ -365,11 +359,10 @@ function drawParam(){
   z.c.restore();
   const e0=Math.log2(p.N);
   dot(z,e0,lg(over(e0)),css('--orange'),5);if(p.Bd>0)dot(z,e0,lg(dopl(e0)),css('--purple'),5);
-  plotLabel(z,z.X(5),z.Y(-1)-3,'illustrative limit 0.1',css('--muted'));
+
   bullets($('pmTradeNote'),[
     'For a fixed bandwidth B, the delay spread τ<sub>max</sub> determines the CP duration and therefore its length in samples: L<sub>c</sub> = '+p.Lc+'. Increasing N increases the useful symbol duration and reduces the fractional CP overhead, which is '+(100*(1-p.eta)).toFixed(1)+'% at N = '+p.N+'.',
-    p.Bd>0?'B<sub>D</sub>/Δf = B<sub>D</sub>N/B grows in proportion to N and equals '+p.dop.toFixed(3)+' here. '+(p.dop<0.1?'Each subcarrier remains approximately time-invariant during one OFDM symbol.':'The Doppler spread is no longer small relative to Δf, so energy leaks into neighbouring subcarriers and produces inter-carrier interference (ICI).'):'With B<sub>D</sub> = 0, Doppler spread places no upper constraint on N in this simplified comparison.',
-    feasible.length?'Both stay under the illustrative 0.1 limits for N from '+Math.ceil(Math.pow(2,feasible[0][0]))+' to '+Math.floor(Math.pow(2,feasible[feasible.length-1][1]))+'.':'No N keeps both under 0.1 at this delay and Doppler spread: the choice is a compromise, not a single optimum.'
+    'Increasing N reduces Δf, so Doppler spread becomes larger relative to the spacing. Compare the rising purple curve with the falling CP-overhead curve: the choice balances two competing effects.'
   ]);
 
   /* --- two OFDM symbols to scale --- */
@@ -388,25 +381,6 @@ function drawParam(){
     p.Bd>0?'Coherence time T<sub>c</sub> ≈ 1/B<sub>D</sub> = '+(1e3/p.Bd).toFixed(2)+' ms, which is '+(1/(p.Bd*p.Tsym)).toFixed(0)+' OFDM symbols: '+(1/(p.Bd*p.Tsym)>10?'the channel is effectively constant over one symbol.':'the channel changes noticeably within a few symbols.'):'No Doppler: the channel is static.'
   ]);
 
-  /* --- NR numerology check --- */
-  const cpNr=mu=>4.69e-6/Math.pow(2,mu),dfNr=mu=>15e3*Math.pow(2,mu),mus=[0,1,2,3,4],
-    r1=mus.map(mu=>p.tau/cpNr(mu)),r2=mus.map(mu=>p.Bd/dfNr(mu));
-  z=ax($('pmNr'),0,4,-3,2,'Subcarrier spacing Δf = 15·2^μ kHz','Ratio',{xticks:4,yticks:5,xfmt:v=>(15*Math.pow(2,Math.round(v)))+' kHz',yfmt:decade});
-  const okMu=mus.filter(mu=>r1[mu]<=1&&r2[mu]<=0.1);
-  okMu.forEach(mu=>band(z,mu-0.3,mu+0.3,css('--green'),'',.16));
-  hline(z,0,css('--orange'));hline(z,-1,css('--purple'));
-  line(z,mus.map(mu=>[mu,Math.max(-3.3,Math.log10(Math.max(r1[mu],1e-9)))]),css('--orange'),2.2);
-  mus.forEach(mu=>dot(z,mu,Math.max(-3.3,Math.log10(Math.max(r1[mu],1e-9))),r1[mu]>1?css('--red'):css('--orange'),4.5));
-  if(p.Bd>0){line(z,mus.map(mu=>[mu,Math.max(-3.3,Math.log10(r2[mu]))]),css('--purple'),2.2);
-    mus.forEach(mu=>dot(z,mu,Math.max(-3.3,Math.log10(r2[mu])),r2[mu]>0.1?css('--red'):css('--purple'),4.5));}
-  plotLabel(z,z.X(0),z.Y(0)-3,'τmax = TCP',css('--orange'));plotLabel(z,z.X(0),z.Y(-1)-3,'BD/Δf = 0.1',css('--purple'));
-  const cpOk=mus.filter(mu=>r1[mu]<=1),dopOk=mus.filter(mu=>r2[mu]<=0.1);
-  bullets($('pmNrNote'),[
-    'NR scales the normal CP with the symbol, T<sub>CP</sub> ≈ 4.7/2<sup>μ</sup> µs, so the CP overhead stays near 7% for every μ. What changes is the absolute CP length: larger Δf gives a shorter CP.',
-    cpOk.length?'The selected τ<sub>max</sub> = '+(p.tau*1e6).toFixed(1)+' µs does not exceed the normal CP when Δf ≤ '+dfNr(Math.max(...cpOk))/1e3+' kHz.':'The selected τ<sub>max</sub> = '+(p.tau*1e6).toFixed(1)+' µs exceeds the normal CP for every numerology; an extended CP or a smaller Δf is required.',
-    (dopOk.length?'B<sub>D</sub> = '+p.Bd+' Hz stays below 0.1Δf for Δf ≥ '+dfNr(Math.min(...dopOk))/1e3+' kHz. ':'')+(okMu.length?'Green: numerologies that satisfy both. LTE uses only 15 kHz.':'No numerology satisfies both conditions here.')
-  ]);
-
   /* --- per-subcarrier SNR and codeword placement --- */
   const Lch=Math.min(p.Lmin,64),h=pdpChannel(Lch,7000+pmSeed),H=dftOf(h,p.N),g=H.map(abs2),
     snrDb=g.map(v=>p.snr+toDb(v)),req=p.M===4?10.3:17.6,
@@ -419,28 +393,15 @@ function drawParam(){
   hline(z,req,css('--red'));
   line(z,snrDb.map((v,k)=>[k+.5,Math.max(lo,v)]),css('--blue'),2);
   plotLabel(z,z.X(0),z.Y(req)-3,(p.M===4?'QPSK':'16-QAM')+' needs '+req+' dB',css('--red'));
-  const weak=snrDb.filter(v=>v<req).length,Bc=1/p.tau;
+  const weak=snrDb.filter(v=>v<req).length;
   bullets($('pmSnrNote'),[
     'Each subcarrier has its own one-tap equalizer, but equalization does not remove the fades: '+weak+' of '+p.N+' subcarriers sit below the '+req+' dB that uncoded '+(p.M===4?'QPSK':'16-QAM')+' needs for P<sub>e</sub> ≈ 10⁻³.',
-    'A fade is roughly B<sub>c</sub> ≈ 1/τ<sub>max</sub> = '+fmtHz(Bc)+' wide, or about '+Math.max(1,Math.round(Bc/p.df))+' subcarriers. Without interleaving each codeword occupies '+(p.N/CW)+' contiguous subcarriers (upper strip), so one fade can hit most of a single codeword.',
+    'Nearby subcarriers can fade together. A codeword confined to neighbouring bins can therefore be damaged by one fade (upper strip).',
     'With a stride-'+CW+' interleaver (lower strip), neighbouring subcarriers contribute to different codewords, so the errors caused by one fade are distributed across all codewords.'
   ]);
 
-  /* --- expected bit errors per codeword --- */
-  const pb=g.map(v=>berQam(p.M,fromDb(p.snr)*v)),eNo=Array(CW).fill(0),eIn=Array(CW).fill(0);
-  for(let k=0;k<p.N;k++){eNo[Math.floor(k*CW/p.N)]+=p.bits*pb[k];eIn[k%CW]+=p.bits*pb[k]}
-  const top=Math.max(p.t+1,...eNo,...eIn)*1.15;
-  z=ax($('pmCw'),0,CW,0,top,'Codeword ('+(p.N*p.bits/CW)+' bits each)','Expected bit errors',{xticks:CW,xfmt:v=>v<CW?String(v+1):'',yticks:4});
-  for(let c=0;c<CW;c++){box(z,c+.14,c+.48,0,eNo[c],css('--orange'),eNo[c]>p.t?1:.55);box(z,c+.52,c+.86,0,eIn[c],css('--blue'),eIn[c]>p.t?1:.55)}
-  hline(z,p.t,css('--red'),[6,4],1.8);plotLabel(z,z.X(0),z.Y(p.t)-3,'code corrects t = '+p.t,css('--red'));
-  const tot=eNo.reduce((a,v)=>a+v,0),failNo=eNo.filter(v=>v>p.t).length,failIn=eIn.filter(v=>v>p.t).length;
-  bullets($('pmCwNote'),[
-    'Total expected errors are the same in both cases ('+tot.toFixed(1)+' bits per OFDM symbol). The interleaver moves errors between codewords; it does not remove any.',
-    'The worst codeword collects '+Math.max(...eNo).toFixed(1)+' expected errors without interleaving and '+Math.max(...eIn).toFixed(1)+' with it. Against t = '+p.t+', '+failNo+' of '+CW+' codewords are expected to fail without interleaving, against '+failIn+' with it.',
-    'This is the sense in which coding plus interleaving turns frequency selectivity into frequency diversity. The comparison uses expected error counts as a simple indicator, not a decoder simulation.'
-  ]);
 }
-['pmB','pmN','pmTau','pmLc','pmBd','pmMod','pmSnr','pmT'].forEach(id=>$(id).addEventListener('input',drawParam));
+['pmB','pmN','pmTau','pmLc','pmBd','pmMod','pmSnr'].forEach(id=>$(id).addEventListener('input',drawParam));
 $('pmNewCh').addEventListener('click',()=>{pmSeed++;drawParam()});
 $('pmExample').addEventListener('click',()=>{$('pmB').value=1;$('pmN').value=7;$('pmTau').value=5;$('pmLc').value=8;$('pmMod').value='qam16';drawParam()});
 
@@ -469,7 +430,7 @@ function drawPapr(){
   let nyPeak=0;for(let m=0;m<P;m+=p.os)nyPeak=Math.max(nyPeak,q[m]);
   const th=paprTheory(p.P0,p.N),emp=ccdfFrac(mc.os,p.P0),empNy=ccdfFrac(mc.ny,p.P0);
   $('paNOut').textContent=p.N;$('paBoOut').textContent=p.bo.toFixed(1)+' dB';
-  $('paMax').textContent=p.N+' = '+toDb(p.N).toFixed(1)+' dB';
+  $('paMax').textContent=p.mod==='qpsk'?p.N+' = '+toDb(p.N).toFixed(1)+' dB':'QPSK bound only';
   $('paNow').textContent=fmtDb(toDb(q[mStar]));$('paNowSmall').textContent='N IFFT samples only: '+fmtDb(toDb(nyPeak));
   $('paTh').textContent=fmtP(th);
   $('paEmp').textContent=fmtP(emp);$('paEmpSmall').textContent=mc.trials+' symbols, '+p.os+'× oversampled';
@@ -483,16 +444,27 @@ function drawPapr(){
   const pathAt=m=>{const pts=[[0,0]];let re=0,im=0;for(let k=0;k<p.N;k++){const kk=k<p.N/2?k:k-p.N,a=2*Math.PI*kk*m/P,c=Math.cos(a),s=Math.sin(a);re+=(cur.Xre[k]*c-cur.Xim[k]*s)/Math.sqrt(p.N);im+=(cur.Xre[k]*s+cur.Xim[k]*c)/Math.sqrt(p.N);pts.push([re,im])}return pts};
   const pk=pathAt(mStar),ty=pathAt(mTyp);
   let R=Math.max(Math.sqrt(p.P0),1);[...pk,...ty].forEach(([a,b])=>{R=Math.max(R,Math.hypot(a,b))});R*=1.08;
-  let z=panelCanvas($('paPhasor'));const sc=Math.min(z.w-24,z.h-24)/(2*R),cx=z.w/2,cy=z.h/2,Px=v=>cx+v*sc,Py=v=>cy-v*sc;
+  let z=panelCanvas($('paPhasor'));const sc=Math.min(z.w-100,z.h-76)/(2*R),cx=(z.w+36)/2,cy=(z.h-16)/2,Px=v=>cx+v*sc,Py=v=>cy-v*sc;
   z.c.strokeStyle=css('--border');z.c.lineWidth=1;z.c.beginPath();z.c.moveTo(Px(-R),cy);z.c.lineTo(Px(R),cy);z.c.moveTo(cx,Py(-R));z.c.lineTo(cx,Py(R));z.c.stroke();
+  z.c.save();z.c.font='10px system-ui';z.c.fillStyle=css('--muted');
+  for(const v of [-R/2,0,R/2]){
+    const label=v===0?'0':v.toFixed(1);
+    z.c.beginPath();z.c.moveTo(Px(v),cy-3);z.c.lineTo(Px(v),cy+3);z.c.moveTo(cx-3,Py(v));z.c.lineTo(cx+3,Py(v));z.c.stroke();
+    z.c.textAlign='center';z.c.textBaseline='top';z.c.fillText(label,Px(v),cy+5);
+    if(v!==0){z.c.textAlign='right';z.c.textBaseline='middle';z.c.fillText(label,cx-6,Py(v));}
+  }
+  z.c.fillStyle=css('--text');z.c.font='11px system-ui';z.c.textAlign='center';z.c.textBaseline='bottom';
+  z.c.fillText('Real component (in-phase, I)',cx,z.h-3);
+  z.c.translate(13,cy);z.c.rotate(-Math.PI/2);z.c.fillText('Imaginary component (quadrature, Q)',0,0);z.c.restore();
   const circle=(r,col,dash)=>{z.c.save();z.c.strokeStyle=col;z.c.lineWidth=1.6;z.c.setLineDash(dash);z.c.beginPath();z.c.arc(cx,cy,r*sc,0,2*Math.PI);z.c.stroke();z.c.restore()};
   circle(1,css('--green'),[5,4]);circle(Math.sqrt(p.P0),css('--red'),[6,4]);
   const path=(pts,col,w)=>{z.c.save();z.c.strokeStyle=col;z.c.lineWidth=w;z.c.lineJoin='round';z.c.beginPath();pts.forEach(([a,b],i)=>i?z.c.lineTo(Px(a),Py(b)):z.c.moveTo(Px(a),Py(b)));z.c.stroke();const [ea,eb]=pts[pts.length-1];z.c.fillStyle=col;z.c.beginPath();z.c.arc(Px(ea),Py(eb),4.5,0,2*Math.PI);z.c.fill();z.c.restore()};
   path(ty,css('--blue'),p.N>128?1:1.6);path(pk,css('--orange'),p.N>128?1.2:1.9);
-  z.c.font='10px system-ui';z.c.fillStyle=css('--muted');z.c.textAlign='left';z.c.textBaseline='top';z.c.fillText('units: √(E|x|²) = 1',6,6);
+  z.c.font='10px system-ui';z.c.fillStyle=css('--muted');z.c.textAlign='left';z.c.textBaseline='top';z.c.fillText('Both axes: amplitude / RMS amplitude',32,6);
   const pkEnd=pk[pk.length-1],pkAmp=Math.hypot(pkEnd[0],pkEnd[1]);
   bullets($('paPhasorNote'),[
-    'Each step is one subcarrier term a<sub>k</sub>e<sup>j2πkn/N</sup>/N, drawn head to tail and scaled so the RMS sample sits on the green circle.',
+    'This is the complex plane, not a time plot. Horizontal = real (I); vertical = imaginary (Q). Both axes are normalized by √(E|x|²), so the green circle has radius 1.',
+    'Start at the origin and follow each coloured path: every step adds one subcarrier term head to tail. The final dot is the OFDM sample; its distance from the origin is the normalized envelope, and its squared distance is the normalized instantaneous power.',
     'At the peak, the '+p.N+' phasors add with unusually similar directions and reach '+pkAmp.toFixed(2)+'× the root-mean-square (RMS) amplitude, corresponding to a PAPR of '+fmtDb(toDb(pkAmp*pkAmp))+'. At a typical sample, their directions are less aligned and the vector sum remains near the RMS circle.',
     'All '+p.N+' pointing the same way would reach √N = '+Math.sqrt(p.N).toFixed(1)+' (the '+toDb(p.N).toFixed(1)+' dB bound). For random data that has vanishing probability.'
   ]);
@@ -510,28 +482,8 @@ function drawPapr(){
   const above=q.filter(v=>v>p.P0).length;
   bullets($('paWaveNote'),[
     'This symbol reaches a peak '+fmtDb(toDb(q[mStar]))+' above its average power. '+(above?above+' of its '+P+' oversampled points exceed the input back-off threshold, so the amplifier distorts this symbol.':'None of its samples exceed the '+p.bo.toFixed(1)+' dB input back-off threshold, so the amplifier remains in its approximately linear region.'),
-    p.os>1?'The dots are the N IFFT samples. Their peak ('+fmtDb(toDb(nyPeak))+') can miss the true continuous-time peak by up to a few tenths of a dB, which is why PAPR is measured on an oversampled waveform.':'Only the N IFFT samples are shown. Choose 4× oversampling to see the peaks between them.',
+    p.os>1?'The dots are the N IFFT samples. Their peak ('+fmtDb(toDb(nyPeak))+') can miss peaks between samples, which is why PAPR is measured on an oversampled waveform.':'Only the N IFFT samples are shown. Choose 4× oversampling to see the peaks between them.',
     'E|x[n]|² = E<sub>X</sub>/N with the deck\'s 1/N IFFT scaling. Simulated: N·E|x[n]|²/E<sub>X</sub> = '+mc.meanPow.toFixed(3)+'.'
-  ]);
-
-  /* --- amplifier transfer curve --- */
-  const pRapp=3,pa=pin=>pin/Math.pow(1+Math.pow(pin,pRapp),1/pRapp);
-  z=ax($('paPa'),-30,6,-30,3,'Input power rel. saturation (dB)','Output power (dB)',{xticks:6,yticks:3});
-  const xsP=[];for(let d=-30;d<=6.001;d+=0.25)xsP.push(d);
-  clipPlot(z);
-  line(z,xsP.map(d=>[d,d]),css('--muted'),1.2,[4,4]);
-  line(z,xsP.map(d=>[d,toDb(pa(fromDb(d)))]),css('--purple'),2.4);
-  const stride=Math.max(1,Math.floor(P/1024));let outMean=0,nOut=0,sat=0;
-  for(let m=0;m<P;m+=stride){const din=-p.bo+toDb(Math.max(q[m],1e-6)),po=pa(fromDb(din));outMean+=po;nOut++;if(din>0)sat++;
-    if(din>-30)dot(z,din,toDb(po),din>0?css('--red'):css('--blue'),din>0?3:2)}
-  z.c.restore();
-  const avgIn=-p.bo;line(z,[[avgIn,-30],[avgIn,3]],css('--green'),1.4,[3,3]);
-  plotLabel(z,z.X(avgIn),z.Y(-27),'average input (input back-off '+p.bo.toFixed(1)+' dB)',css('--green'));
-  const obo=-toDb(outMean/nOut);
-  bullets($('paPaNote'),[
-    'The average input power sits '+p.bo.toFixed(1)+' dB below saturation. The instantaneous power ranges around that point, and the samples of this symbol are plotted on the curve.',
-    sat?sat+' of the plotted samples ('+(100*sat/nOut).toFixed(1)+'%) are driven beyond saturation. They are compressed, which causes in-band distortion and out-of-band spectral regrowth.':'No sample of this symbol reaches saturation, so the amplifier stays close to linear.',
-    'The average output power is '+obo.toFixed(1)+' dB below the saturated output; this difference is the output back-off. Increasing back-off reduces amplifier efficiency, which is generally a greater limitation for a battery-powered handset than for a base station.'
   ]);
 
   /* --- envelope histogram --- */
@@ -563,7 +515,7 @@ function drawPapr(){
   bullets($('paCcdfNote'),[
     'At '+p.bo.toFixed(1)+' dB backoff: theory '+fmtP(th)+', simulated '+fmtP(emp)+' ('+p.os+'× oversampled) and '+fmtP(empNy)+' (N samples only). The simulation cannot resolve probabilities below 1/'+mc.trials+'.',
     'P₀ is a linear power ratio: '+p.bo.toFixed(1)+' dB means P₀ = '+p.P0.toFixed(2)+'. Using P₀ = '+p.bo.toFixed(1)+' directly would give '+fmtP(paprTheory(p.bo,p.N))+' instead.',
-    'The theory treats the N IFFT samples as independent, and the N-sample simulation follows this approximation. Oversampling reveals peaks between the IFFT samples and shifts the curve toward higher PAPR by a few tenths of a decibel. A small horizontal shift can cause a large change in exceedance probability where the curve is steep. Increasing N also shifts the curves toward higher PAPR.'
+    'The theory treats the N IFFT samples as independent, and the N-sample simulation follows this approximation. Oversampling reveals peaks between the IFFT samples and can shift the curve toward higher PAPR. A small horizontal shift can cause a large change in exceedance probability where the curve is steep. Increasing N also shifts the curves toward higher PAPR.'
   ]);
 }
 ['paN','paMod','paOs','paBo'].forEach(id=>$(id).addEventListener('input',drawPapr));
@@ -574,28 +526,27 @@ $('paExercise').addEventListener('click',()=>{$('paN').value=9;$('paBo').value=8
    3 · MULTIPLE ACCESS
    ================================================================== */
 let maMode='fdma';
-const H8=(()=>{let H=[[1]];while(H.length<8)H=H.flatMap(r=>[r.concat(r),r.concat(r.map(v=>-v))]);return H})();
-/* RMS cross-correlation of code i with code j delayed by d chips, averaged
-   over the sign of the neighbouring data bit (even and odd correlation). */
-function walshRho(i,j,d){if(i===j)return 1;const a=H8[i],b=H8[j];let e=0;for(const sg of[1,-1]){let s=0;for(let m=0;m<8;m++){const idx=m-d;s+=a[m]*(idx>=0?b[idx]:sg*b[idx+8])}e+=(s/8)*(s/8)}return Math.sqrt(e/2)}
-function maParams(){return{K:+$('maK').value,B:+$('maB').value*1e6,Bc:+$('maBc').value*1e3,Bg:+$('maBg').value*1e3,off:+$('maOff').value,nf:+$('maNf').value,pc:$('maPc').checked}}
+function maParams(){return{K:+$('maK').value,B:+$('maB').value*1e6,Bc:+$('maBc').value*1e3,Bg:+$('maBg').value*1e3}}
+
 function drawMa(){
   const p=maParams();
-  $('maKOut').textContent=p.K;$('maBOut').textContent=(p.B/1e6)+' MHz';$('maBcOut').textContent=(p.Bc/1e3)+' kHz';$('maBgOut').textContent=(p.Bg/1e3)+' kHz';
-  $('maOffOut').textContent=p.off+(p.off===1?' chip':' chips');$('maNfOut').textContent=p.nf+' dB';
-  const nChan=Math.max(0,Math.floor((p.B-2*p.Bg)/p.Bc+1e-9));
-  $('maChan').textContent=nChan;$('maDims').textContent=Math.round(2*p.B*1e-3).toLocaleString('en-US');
-  const rho=[];for(let i=0;i<p.K;i++){rho.push([]);for(let j=0;j<p.K;j++)rho[i].push(walshRho(i,j,p.off))}
-  let worst=0;for(let i=0;i<p.K;i++)for(let j=0;j<p.K;j++)if(i!==j)worst=Math.max(worst,rho[i][j]);
-  $('maRho').textContent=worst.toFixed(2);
-  const S=rho[0].reduce((a,v,j)=>j?a+v*v:a,0),delta=p.pc?1:fromDb(p.nf),sir=S>1e-12?-toDb(delta*S):Infinity;
-  $('maSir').textContent=isFinite(sir)?fmtDb(sir):'∞ (orthogonal)';
 
+  $('maTry').textContent='Change K to compare all six schemes at once. The same colour identifies the same user in every plot. Bandwidth, channel width and edge guards affect only the FDMA capacity calculation below; the six allocation diagrams are schematic.';
+  $('maKOut').textContent=p.K;$('maBOut').textContent=(p.B/1e6)+' MHz';$('maBcOut').textContent=(p.Bc/1e3)+' kHz';$('maBgOut').textContent=(p.Bg/1e3)+' kHz';
+  const nChan=Math.max(0,Math.floor((p.B-2*p.Bg)/p.Bc+1e-9));
+  $('maChan').textContent=nChan;
+  {
+    const counts=[Math.min(p.K,nChan),Math.max(0,nChan-p.K),nChan],labels=['Active','Unused','Total capacity'];
+    const capacity=ax($('maCapacity'),0,3,0,Math.max(1,nChan)*1.15,'','Number of channels',{xticks:3,yticks:4,xfmt:()=>'',yfmt:v=>String(Math.round(v))});
+    counts.forEach((count,i)=>{box(capacity,i+.2,i+.8,0,count,css(i===0?'--blue':i===1?'--orange':'--green'),.75);capacity.c.fillStyle=css('--text');capacity.c.textAlign='center';capacity.c.textBaseline='bottom';capacity.c.fillText(String(count),capacity.X(i+.5),capacity.Y(count)-4);capacity.c.textBaseline='top';capacity.c.fillText(labels[i],capacity.X(i+.5),capacity.h-capacity.m.b+7)});
+    bullets($('maCapacityNote'),['Usable bandwidth = B − 2B<sub>g</sub> = '+((p.B-2*p.Bg)/1e6).toFixed(3)+' MHz. Divide by '+(p.Bc/1e3)+' kHz per channel and round down: '+nChan+' channels.',p.K<=nChan?'Only '+p.K+' users are active here, leaving '+(nChan-p.K)+' channels unused. The time–frequency sketch above enlarges the active channels so their separation is visible.':p.K+' users request service, but only '+nChan+' channels fit; '+(p.K-nChan)+' users cannot receive a dedicated channel.']);
+  }
   /* --- time-frequency plane --- */
   const titles={fdma:'FDMA: a frequency channel per user',tdma:'TDMA: a time slot per user',cdma:'CDMA: a code per user',ofdma:'OFDMA: subcarrier sets per interval',ofdmtdma:'OFDM-TDMA: whole OFDM symbols per user',mccdma:'MC-CDMA: codes across subcarriers'};
-  $('maPlaneTitle').textContent=titles[maMode];
-  $('maPlaneLegend').innerHTML=Array.from({length:p.K},(_,u)=>'<span><i class="sw" style="background:var('+userCols[u]+')"></i>User '+(u+1)+'</span>').join('')+(maMode==='fdma'||maMode==='tdma'?'<span><i class="sw grey"></i>Guard</span>':'');
-  let z=ax($('maPlane'),0,8,0,8,'Time →','Frequency →',{xticks:4,yticks:4,xfmt:()=>'',yfmt:()=>''});
+  $('maSharedLegend').innerHTML=Array.from({length:p.K},(_,u)=>'<span><i class="sw" style="background:var('+userCols[u]+')"></i>User '+(u+1)+'</span>').join('')+'<span><i class="sw grey"></i>Guard gaps (FDMA / TDMA)</span>';
+  for(const maMode of ['fdma','tdma','cdma','ofdma','ofdmtdma','mccdma']){
+  $('maTitle-'+maMode).textContent=titles[maMode];
+  let z=ax($('maPlane-'+maMode),0,8,0,8,maMode==='tdma'?'Time (two repeating frames)':'Time (schematic)',maMode==='fdma'?'Frequency (active channels enlarged)':'Frequency (schematic)',{xticks:4,yticks:4,xfmt:()=>'',yfmt:()=>''});
   const col=u=>css(userCols[u%userCols.length]),r=rng(55+p.K);
   if(maMode==='fdma'){const bh=8/p.K,g=.14*bh;for(let u=0;u<p.K;u++){box(z,0,8,u*bh,u*bh+g,css('--muted'),.18);box(z,0,8,u*bh+g,(u+1)*bh-g,col(u),.75);box(z,0,8,(u+1)*bh-g,(u+1)*bh,css('--muted'),.18)}}
   else if(maMode==='tdma'){const sw=4/p.K,g=.08*sw;for(let f=0;f<2;f++)for(let u=0;u<p.K;u++){const t0=f*4+u*sw;box(z,t0+g,t0+sw-g,0,8,col(u),.75);box(z,t0,t0+g,0,8,css('--muted'),.18);box(z,t0+sw-g,t0+sw,0,8,css('--muted'),.18)}}
@@ -611,47 +562,15 @@ function drawMa(){
   const notes={
     fdma:['Each user is assigned a narrow channel of bandwidth B<sub>c</sub> continuously. Guard bands accommodate non-ideal filter transitions and Doppler spreading.','For the selected values, ⌊(B − 2B<sub>g</sub>)/B<sub>c</sub>⌋ = '+nChan+' channels; Goldsmith Example 14.1 obtains 832 channels for 25 MHz with 30 kHz channels.','A channel that is narrow relative to the coherence bandwidth experiences less frequency selectivity and therefore requires simpler equalization. OFDMA applies a related principle using digitally generated subcarriers.'],
     tdma:['Each user is assigned the complete band during a repeating time slot; GSM uses eight slots per frame. Short guard intervals separate adjacent slots.','On the uplink, each burst must arrive aligned with the slot boundaries, so the base station controls each handset\'s timing.','Each burst occupies the complete system bandwidth and may therefore require frequency-selective equalization.'],
-    cdma:['All users occupy the same time–frequency resources and are separated by their spreading codes.','Orthogonal Walsh–Hadamard codes separate users perfectly only when they remain aligned to the chip timing on the downlink. The cross-correlation panel quantifies the effect of a chip offset.','On the uplink, users are not perfectly synchronized and their received powers differ. The resulting near–far problem requires rapid power control, as shown in the SIR panel.'],
+    cdma:['All users occupy the same time–frequency resources and are separated by their spreading codes.','Multipath can degrade code orthogonality on the downlink.','On the uplink, users are not perfectly synchronized and their received powers differ. A strong nearby user can overwhelm a weak distant user; power control limits this near–far problem.'],
     ofdma:['Users get disjoint subcarrier sets, and the scheduler can reassign them every interval (each column is one interval here).','On the downlink all subcarriers come out of one base-station IFFT, so adjacent users stay orthogonal without a guard between them.','LTE schedules in resource blocks of 12 subcarriers; tab 4 builds on this.'],
     ofdmtdma:['Each complete OFDM symbol is assigned to one user, so users are separated in time.','A low-rate service such as voice receives the complete band in short bursts separated by waiting intervals. This allocation can increase latency, delay variation, and buffering requirements.','Scheduling users over OFDM symbols is considered again in Week 10.'],
     mccdma:['Each data symbol is spread by a code across several subcarriers, and all users share those subcarriers.','Spreading across subcarriers provides frequency diversity. In a broadband system, however, the available spreading factors may be small, which limits the diversity benefit.','LTE uses OFDMA on the downlink and SC-FDMA on the uplink rather than MC-CDMA.']};
-  bullets($('maPlaneNote'),notes[maMode]);
+  bullets($('maNote-'+maMode),notes[maMode]);
+  }
 
-  /* --- Walsh correlation matrix --- */
-  z=panelCanvas($('maCodes'));const padL=46,padT=26,cell=Math.min((z.w-padL-12)/p.K,(z.h-padT-14)/p.K),gx=padL+((z.w-padL-12)-cell*p.K)/2;
-  z.c.textAlign='center';z.c.textBaseline='middle';
-  for(let i=0;i<p.K;i++)for(let j=0;j<p.K;j++){const v=rho[i][j],x=gx+j*cell,y=padT+i*cell;
-    z.c.fillStyle=css('--surface2');z.c.fillRect(x+1,y+1,cell-2,cell-2);
-    z.c.globalAlpha=Math.min(1,.06+.9*v);z.c.fillStyle=i===j?css('--green'):css('--blue');z.c.fillRect(x+1,y+1,cell-2,cell-2);z.c.globalAlpha=1;
-    if(cell>26){z.c.fillStyle=v>.55?'#fff':css('--text');z.c.font='10px system-ui';z.c.fillText(v.toFixed(2),x+cell/2,y+cell/2)}}
-  z.c.fillStyle=css('--muted');z.c.font='10px system-ui';
-  for(let i=0;i<p.K;i++){z.c.fillText('U'+(i+1),gx-14,padT+i*cell+cell/2);z.c.fillText('U'+(i+1),gx+i*cell+cell/2,padT-9)}
-  const nz=[];for(let i=0;i<p.K;i++)for(let j=i+1;j<p.K;j++)if(rho[i][j]>1e-9)nz.push(1);
-  bullets($('maCodesNote'),[
-    'Row i, column j: RMS correlation between user i\'s code and user j\'s code arriving '+p.off+' chip'+(p.off===1?'':'s')+' late, averaged over the sign of the neighbouring data bit. The diagonal is the despreader matched to its own user.',
-    p.off===0?'Chip-aligned Walsh codes are exactly orthogonal: every off-diagonal entry is 0, so the despreader removes all other users regardless of their power.':nz.length+' of '+(p.K*(p.K-1)/2)+' code pairs are no longer orthogonal at this offset, and the worst RMS correlation is '+worst.toFixed(2)+'. Walsh codes have poor shifted correlations.',
-    'Multipath has the same effect as an offset: delayed copies of the other users\' codes arrive misaligned, which is why downlink Walsh orthogonality degrades in multipath.'
-  ]);
-
-  /* --- near-far --- */
-  z=ax($('maNearFar'),0,40,-20,40,'Near users\' power advantage P_j/P_1 (dB)','Far user SIR (dB)',{xticks:4,yticks:6});
-  const ds=[];for(let d=0;d<=40;d+=0.5)ds.push(d);
-  const Srand=(p.K-1)/8;
-  clipPlot(z);
-  line(z,ds.map(d=>[d,-toDb(fromDb(d)*Srand)]),css('--muted'),1.8,[5,4]);
-  if(S>1e-12)line(z,ds.map(d=>[d,-toDb(fromDb(d)*S)]),css('--blue'),2.4);else line(z,[[0,39.2],[40,39.2]],css('--blue'),2.4);
-  z.c.restore();
-  const opD=p.pc?0:p.nf;dot(z,opD,Math.min(39.2,isFinite(sir)?sir:39.2),css('--red'),5.5);
-  hline(z,0,css('--muted'),[2,3],1);
-  if(S<=1e-12)plotLabel(z,z.X(2),z.Y(39.2)+3,'orthogonal: no interference',css('--blue'),'top');
-  bullets($('maNearFarNote'),[
-    'User 1 is far from the base station; the other '+(p.K-1)+' users are near and arrive '+p.nf+' dB stronger. After despreading, each interferer contributes (P<sub>j</sub>/P<sub>1</sub>)ρ<sub>1j</sub>².',
-    p.pc?'Power control is enabled, so all users arrive with equal received power and the operating point is 0 dB: SIR = '+(isFinite(sir)?fmtDb(sir):'∞')+'.':'Without power control, the far user\'s SIR is '+(isFinite(sir)?fmtDb(sir):'∞')+'. A 10 dB increase in the near users\' received-power advantage reduces the far user\'s SIR by 10 dB.',
-    'The grey curve is the average for random codes of length 8 (E ρ² = 1/8). The processing gain of 8 (9 dB) is small next to a 30 to 40 dB near–far spread, which is why 3G CDMA needed fast power control.'
-  ]);
 }
-['maK','maB','maBc','maBg','maOff','maNf','maPc'].forEach(id=>$(id).addEventListener('input',drawMa));
-$('maModes').addEventListener('click',e=>{const b=e.target.closest('[data-ma]');if(!b)return;maMode=b.dataset.ma;pressGroup($('maModes'),'data-ma',maMode);drawMa()});
+['maK','maB','maBc','maBg'].forEach(id=>$(id).addEventListener('input',drawMa));
 $('maExample').addEventListener('click',()=>{maMode='fdma';pressGroup($('maModes'),'data-ma','fdma');$('maB').value=25;$('maBc').value=30;$('maBg').value=10;drawMa()});
 
 /* ==================================================================
@@ -659,7 +578,7 @@ $('maExample').addEventListener('click',()=>{maMode='fdma';pressGroup($('maModes
    ================================================================== */
 let ofRule='equal',ofSeed=1;
 const TSYM9=57.6e-6,NFFT9=512;
-const MCS=[{name:'none',b:0,th:-Infinity},{name:'BPSK',b:1,th:6.8},{name:'QPSK',b:2,th:10.3},{name:'16-QAM',b:4,th:17.6},{name:'64-QAM',b:6,th:24.0}];
+const MCS=[{name:'none',b:0,th:-Infinity},{name:'QPSK',b:2,th:10.3},{name:'16-QAM',b:4,th:17.6}];
 function mcsOf(snr){let m=MCS[0];for(const q of MCS)if(snr>=q.th)m=q;return m}
 function ofdmaParams(){return{K:+$('ofK').value,nRB:+$('ofRB').value,snr:+$('ofSnr').value,edge:+$('ofEdge').value,L:+$('ofL').value,to:+$('ofTo').value,cfo:+$('ofCfo').value}}
 /* User u's mean SNR falls linearly from User 1 to the cell-edge user. Each RB's
@@ -669,9 +588,8 @@ function ofdmaUsers(p){const Nsc=12*p.nRB,users=[];
     for(let r=0;r<p.nRB;r++){let s=0;for(let i=0;i<12;i++){const k=12*r+i;let re=0,im=0;h.forEach((t,l)=>{const a=-2*Math.PI*l*k/NFFT9,c=Math.cos(a),sn=Math.sin(a);re+=t.re*c-t.im*sn;im+=t.re*sn+t.im*c});s+=mean+toDb(re*re+im*im)}rb.push(s/12)}
     users.push({mean,rb,avg:rb.reduce((a,v)=>a+v,0)/p.nRB})}
   return users}
-function allocate(rule,users,p){const a=[];for(let r=0;r<p.nRB;r++){if(rule==='equal'){a.push(Math.min(p.K-1,Math.floor(r*p.K/p.nRB)));continue}let best=0,bv=-Infinity;for(let u=0;u<p.K;u++){const v=rule==='max'?users[u].rb[r]:users[u].rb[r]-users[u].avg;if(v>bv){bv=v;best=u}}a.push(best)}return a}
+function allocate(rule,users,p){const a=[];for(let r=0;r<p.nRB;r++){if(rule==='equal'){a.push(Math.min(p.K-1,Math.floor(r*p.K/p.nRB)));continue}let best=0,bv=-Infinity;for(let u=0;u<p.K;u++){const v=mcsOf(users[u].rb[r]).b;if(v>bv){bv=v;best=u}}a.push(best)}return a}
 function ratesOf(alloc,users,p){const R=Array(p.K).fill(0);alloc.forEach((u,r)=>{R[u]+=12*mcsOf(users[u].rb[r]).b/TSYM9});return R}
-function jain(R){const s=R.reduce((a,v)=>a+v,0),s2=R.reduce((a,v)=>a+v*v,0);return s2>0?s*s/(R.length*s2):0}
 function asyncLeak(delta,eps){const N=64,Lc=16,trials=40,r=rng(777),P=new Float64Array(N),u1=[];for(let i=12;i<=31;i++)u1.push((i+32)%N);
   for(let t=0;t<trials;t++){const stream=[];for(let s=0;s<3;s++){const X=Array.from({length:N},()=>C());u1.forEach(b=>{X[b]=randSym(qpsk,r)});const x=fft(X,true);for(let n=N-Lc;n<N;n++)stream.push(x[n]);x.forEach(v=>stream.push(v))}
     const W0=(N+Lc)+Lc,win=[];for(let m=0;m<N;m++){const n=W0+m,v=stream[n-delta]||C(),ph=2*Math.PI*eps*n/N;win.push(mul(v,C(Math.cos(ph),Math.sin(ph))))}
@@ -679,12 +597,12 @@ function asyncLeak(delta,eps){const N=64,Lc=16,trials=40,r=rng(777),P=new Float6
   return P}
 let ofAsyncCache=null;
 function drawOfdma(){
-  const p=ofdmaParams(),users=ofdmaUsers(p),rules=['equal','max','rel'],ruleNames={equal:'Equal',max:'Best SNR',rel:'Relatively strong'},
+  const p=ofdmaParams(),users=ofdmaUsers(p),rules=['equal','max'],ruleNames={equal:'Equal',max:'Maximum rate'},
     allocs={},rates={};rules.forEach(k=>{allocs[k]=allocate(k,users,p);rates[k]=ratesOf(allocs[k],users,p)});
   const alloc=allocs[ofRule],R=rates[ofRule],sum=R.reduce((a,v)=>a+v,0);
   $('ofKOut').textContent=p.K;$('ofRBOut').textContent=p.nRB;$('ofSnrOut').textContent=p.snr+' dB';$('ofEdgeOut').textContent=p.edge+' dB';$('ofLOut').textContent=p.L+(p.L===1?' tap':' taps');
   $('ofToOut').textContent=p.to+(p.to===1?' sample':' samples');$('ofCfoOut').textContent=p.cfo.toFixed(2);
-  $('ofSum').textContent=fmtBps(sum);$('ofUsers').textContent=R.map(v=>(v/1e6).toFixed(1)).join(' / ');$('ofJain').textContent=jain(R).toFixed(2);
+  $('ofSum').textContent=fmtBps(sum);$('ofUsers').textContent=R.map(v=>(v/1e6).toFixed(1)).join(' / ');
   const legendUsers=Array.from({length:p.K},(_,u)=>'<span><i class="sw" style="background:var('+userCols[u]+')"></i>User '+(u+1)+(u===p.K-1&&p.K>1&&p.edge>0?' (cell edge)':'')+'</span>').join('');
   $('ofCqiLegend').innerHTML=legendUsers+'<span>thick = RBs assigned to that user</span>';$('ofRatesLegend').innerHTML=legendUsers;
 
@@ -700,20 +618,20 @@ function drawOfdma(){
   const mcsCount={};alloc.forEach((u,r)=>{const n=mcsOf(users[u].rb[r]).name;mcsCount[n]=(mcsCount[n]||0)+1});
   bullets($('ofCqiNote'),[
     'Each line shows one user\'s effective SNR on each resource block (RB), which represents its channel-quality indicator (CQI) in this model. Independent user channels place their frequency-selective fades at different RBs. The strip at the bottom shows the assigned user for each RB.',
-    ofRule==='equal'?'Equal allocation assigns contiguous RB groups without using channel quality, so a user may be assigned RBs that coincide with its channel fades.':ofRule==='max'?'Highest-SNR scheduling assigns each RB to the user with the largest absolute SNR on that RB. The cell-edge user is selected only where its SNR exceeds those of the other users.':'Relative-SNR scheduling compares each user\'s SNR with that user\'s own average. It can therefore serve every user near its individual channel peaks, including the cell-edge user.',
+    ofRule==='equal'?'Equal allocation gives users similar numbers of RBs without considering channel quality.':'Maximum-rate scheduling assigns each RB to a user whose supported modulation gives the highest rate; ties go to the first user.',
     'MCS of the scheduled RBs: '+Object.entries(mcsCount).map(([n,c])=>c+' × '+n).join(', ')+'. Weak RBs get a robust MCS and strong RBs a high-order constellation.'
   ]);
 
   /* --- stacked rates per rule --- */
   const sums=rules.map(k=>rates[k].reduce((a,v)=>a+v,0)/1e6),ytop=Math.max(...sums,1)*1.2;
-  z=ax($('ofRates'),0,3,0,ytop,'','Rate (Mbit/s)',{xticks:3,xfmt:()=>'',yticks:4});
+  z=ax($('ofRates'),0,2,0,ytop,'','Rate (Mbit/s)',{xticks:2,xfmt:()=>'',yticks:4});
   rules.forEach((k,i)=>{let acc=0;rates[k].forEach((v,u)=>{box(z,i+.22,i+.78,acc,acc+v/1e6,css(userCols[u]),k===ofRule?.9:.45);acc+=v/1e6});
     z.c.save();z.c.font=(k===ofRule?'bold ':'')+'11px system-ui';z.c.fillStyle=css('--text');z.c.textAlign='center';z.c.textBaseline='top';z.c.fillText(ruleNames[k],z.X(i+.5),z.h-z.m.b+6);
-    z.c.textBaseline='bottom';z.c.font='10px system-ui';z.c.fillStyle=css('--muted');z.c.fillText(sums[i].toFixed(1)+' Mbit/s · J = '+jain(rates[k]).toFixed(2),z.X(i+.5),z.Y(sums[i])-3);z.c.restore()});
+    z.c.textBaseline='bottom';z.c.font='10px system-ui';z.c.fillStyle=css('--muted');z.c.fillText(sums[i].toFixed(1)+' Mbit/s',z.X(i+.5),z.Y(sums[i])-3);z.c.restore()});
   const edgeU=p.K-1;
   bullets($('ofRatesNote'),[
     'Channel-aware scheduling increases the cell rate from '+sums[0].toFixed(1)+' to '+sums[1].toFixed(1)+' Mbit/s by assigning users to RBs with favourable channel conditions, where a higher-order MCS can be supported.',
-    'Best-SNR scheduling gives the cell-edge user (User '+(edgeU+1)+') '+(rates.max[edgeU]/1e6).toFixed(2)+' Mbit/s, compared with '+(rates.rel[edgeU]/1e6).toFixed(2)+' under relatively-strong scheduling. J is Jain\'s fairness index: 1 means equal rates.',
+    'Maximum-rate scheduling may leave the cell-edge user with few RBs. Equal allocation reserves a share for each user, but the resulting rates can differ.',
     'A practical scheduler balances throughput, fairness, and quality-of-service (QoS) requirements. Per RB, QPSK carries 12 × 2 / 57.6 µs = 417 kbit/s and 16-QAM carries 833 kbit/s. A user that changes from 16-QAM to QPSK therefore requires twice as many RBs to maintain the same rate.'
   ]);
 
