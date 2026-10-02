@@ -23,6 +23,54 @@
 @media(max-width:900px){.toolbar-metrics{grid-auto-flow:row;grid-template-columns:repeat(3,minmax(0,1fr))}.tabs{grid-template-columns:repeat(2,1fr)}.plots{grid-template-columns:1fr 1fr}.plots:not(.two) .card:last-child{grid-column:1/-1}.checklist{grid-template-columns:1fr 1fr}.control-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.control-sections{grid-template-columns:1fr}.summary-row{grid-template-columns:1fr}.summary-row .toolbar-metrics,.summary-row .toolbar-metrics.metrics-4,.summary-row .toolbar-metrics.metrics-5,.summary-row .toolbar-metrics.metrics-6{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:620px){.toolbar-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}body{padding:14px}.tabs{grid-template-columns:1fr 1fr}.panel-head{display:block}.plots,.two,.mat-pair{grid-template-columns:1fr}.plots .card:last-child{grid-column:auto}.flow{display:grid;grid-template-columns:1fr 1fr}.arrow{display:none}.checklist{grid-template-columns:1fr 1fr}.mode-buttons .preset{margin-left:0}.control-section .control-grid{grid-template-columns:1fr 1fr}canvas{height:262px}}
 @media(max-width:390px){.tabs,.checklist,.flow,.control-grid,.control-section .control-grid,.summary-row .toolbar-metrics,.summary-row .toolbar-metrics.metrics-4,.summary-row .toolbar-metrics.metrics-5,.summary-row .toolbar-metrics.metrics-6{grid-template-columns:1fr}.ctrl{min-width:100%}.ctrl label{flex-wrap:wrap}}
+
+/* Compact controls: inputs first, results next, labs and reference equations below. */
+.sticky-bar{position:static;padding-top:0}
+.toolbar{padding:10px;margin-bottom:0}
+.mode-row{margin-bottom:8px;gap:5px}
+.mode-row button{border-radius:7px;min-height:34px;padding:6px 9px}
+.mode-buttons .preset{margin-left:0}
+.control-sections{grid-template-columns:2fr 1fr;gap:6px}
+#de .control-sections{grid-template-columns:2fr 1fr}
+#pc .control-sections{grid-template-columns:3fr 1fr}
+.control-section{padding:7px 9px}
+.control-section-title{margin-bottom:4px}
+.control-section .control-grid{grid-template-columns:repeat(auto-fit,minmax(125px,1fr));gap:5px 10px;align-items:start}
+.ctrl label{min-height:30px;align-items:start;line-height:1.25}
+.ctrl input[type=range]{display:block;margin:0;height:24px;accent-color:var(--blue)}
+.control-grid select{border-radius:6px;min-height:34px;padding:5px 7px}
+.summary-row{display:block;margin-top:7px}
+.summary-row .toolbar-metrics,.summary-row .toolbar-metrics.metrics-4,.summary-row .toolbar-metrics.metrics-5,.summary-row .toolbar-metrics.metrics-6{grid-template-columns:repeat(5,minmax(0,1fr));gap:5px}
+#sm .summary-row .toolbar-metrics{grid-template-columns:repeat(4,minmax(0,1fr))}
+#de .summary-row .toolbar-metrics{grid-template-columns:repeat(4,minmax(0,1fr))}
+.summary-row .metric{padding:6px 7px;text-align:left}
+.metric .name{line-height:1.25;letter-spacing:.02em;text-transform:none}
+.metric .small{line-height:1.25}
+.lab-actions{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.lab-actions .lab-metric{display:flex;align-items:center;gap:8px;padding:6px 9px;text-align:left}
+.lab-actions .name{display:none}
+.lab-actions .value{font-size:.76rem;margin:0}
+.lab-actions button{margin:0;min-height:34px;width:auto;border-radius:7px}
+.relations{border:1px solid var(--border);border-radius:8px;background:var(--surface);margin:8px 0 10px}
+.relations summary{cursor:pointer;padding:8px 10px;font-size:.76rem;font-weight:600}
+.relations .formula{margin:0;border:0;border-top:1px solid var(--border);border-radius:0 0 8px 8px;font-size:.75rem;overflow-wrap:anywhere}
+.panel.lab-open>.sticky-bar,.panel.lab-open>.relations{display:none}
+.panel.lab-open>.lab-actions .lab-metric{display:flex}
+.lab-frame{min-height:540px}
+@media(max-width:900px){
+ .control-sections,#de .control-sections,#pc .control-sections{grid-template-columns:2fr 1fr}
+ .summary-row .toolbar-metrics,.summary-row .toolbar-metrics.metrics-4,.summary-row .toolbar-metrics.metrics-5,.summary-row .toolbar-metrics.metrics-6,#de .summary-row .toolbar-metrics{grid-template-columns:repeat(3,minmax(0,1fr))}
+ #sm .summary-row .toolbar-metrics{grid-template-columns:repeat(4,minmax(0,1fr))}
+}
+@media(max-width:620px){
+ .control-sections,#de .control-sections,#pc .control-sections{grid-template-columns:1fr}
+ .control-section .control-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .summary-row .toolbar-metrics,.summary-row .toolbar-metrics.metrics-4,.summary-row .toolbar-metrics.metrics-5,.summary-row .toolbar-metrics.metrics-6,#sm .summary-row .toolbar-metrics,#de .summary-row .toolbar-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .ctrl{min-width:0}.ctrl label{flex-wrap:nowrap}
+ .mode-row button{flex:1 1 140px;min-height:40px}
+ .lab-actions{display:grid;grid-template-columns:1fr}.lab-actions .lab-metric{justify-content:space-between}
+}
+@media(max-width:390px){.tabs,.flow,.checklist{grid-template-columns:repeat(2,minmax(0,1fr))}.tabs button{font-size:.71rem;padding:6px}.ctrl label{font-size:.71rem}.summary-row .metric{padding:6px}.metric .small{font-size:.65rem}}
 </style>
 </head>
 <body>
@@ -40,15 +88,15 @@
 
 <!-- ============================ 1 · MRT AND TRANSMIT BEAMFORMING ============================ -->
 <section class="panel" id="bf" role="tabpanel" aria-labelledby="tab-bf">
-  <div class="panel-head"><div><div class="eyebrow">Transmit beamforming with channel-state information, maximum-ratio transmission, limited feedback, and reciprocity</div><h2>With the channel known at the transmitter, f = h*/&Vert;h&Vert; phase-aligns every antenna contribution at the receiver, giving SNR GE<sub>x</sub>&Vert;h&Vert;&sup2;/N<sub>0</sub> and diversity order N<sub>t</sub></h2></div><div class="message">The same symbol s is transmitted from every antenna with weight f<sub>m</sub>, so the receiver observes the scalar effective channel h<sup>T</sup>f. For a unit-norm beamforming vector f, the Cauchy&ndash;Schwarz inequality gives |h<sup>T</sup>f|&sup2; &le; &Vert;h&Vert;&sup2;, with equality only for f &prop; h*. Achieving this bound requires channel-state information at the transmitter (CSIT). The Week 11 Alamouti code requires no CSIT but has an SNR 3 dB below MRT for two transmit antennas. In practice, CSIT can be obtained from feedback that identifies a beam in a shared codebook or, in time-division duplexing (TDD), from uplink channel measurements and channel reciprocity.</div></div>
+  <div class="panel-head"><div><div class="eyebrow">Transmit beamforming with channel-state information, maximum-ratio transmission, limited feedback, and reciprocity</div><h2>MRT uses transmitter channel knowledge to align the phases of the received antenna contributions</h2></div><div class="message">The signal-to-noise ratio (SNR) compares signal power with noise power. The same symbol s is transmitted from every antenna with weight f<sub>m</sub>, so the receiver observes the single-stream effective channel h<sup>T</sup>f. The beamforming vector has unit norm (‖f‖² = 1), which keeps total transmit energy fixed. The Cauchy&ndash;Schwarz inequality gives |h<sup>T</sup>f|&sup2; &le; &Vert;h&Vert;&sup2;, with equality only for f &prop; h*. Achieving this bound requires channel-state information at the transmitter (CSIT). The Week 11 Alamouti code requires no CSIT but has an SNR 3 dB below MRT for two transmit antennas. In practice, CSIT can be obtained from feedback that identifies a beamforming vector in a shared codebook, a set of candidate weight vectors or, in time-division duplexing (TDD), from uplink channel measurements and channel reciprocity.</div></div>
   <div class="sticky-bar"><div class="toolbar">
-    <div class="mode-buttons mode-row" id="bfModes"><button type="button" data-bf="mrt" aria-pressed="true">MRT (CSIT)</button><button type="button" data-bf="cb" aria-pressed="false">Codebook (B feedback bits)</button><button type="button" data-bf="eq" aria-pressed="false">No CSIT: equal weights</button><button type="button" data-bf="slip" aria-pressed="false">Incorrect weight: f = h/&Vert;h&Vert;</button><button type="button" id="bfNew">New channel</button><button type="button" class="preset" id="bfAla">Compare with Alamouti: N<sub>t</sub> = 2</button></div>
+    <div class="mode-buttons mode-row" id="bfModes"><button type="button" data-bf="mrt" aria-pressed="true">MRT (CSIT)</button><button type="button" data-bf="cb" aria-pressed="false">Codebook (B feedback bits)</button><button type="button" data-bf="eq" aria-pressed="false">No CSIT: equal weights</button><button type="button" data-bf="slip" aria-pressed="false">Incorrect weight: f = h/&Vert;h&Vert;</button><button type="button" id="bfNew">Generate channel</button><button type="button" class="preset" id="bfAla">Compare with Alamouti: N<sub>t</sub> = 2</button></div>
     <div class="control-sections">
       <div class="control-section"><div class="control-section-title">Link</div><div class="control-grid">
         <div class="ctrl"><label for="bfNt"><span>Transmit antennas N<sub>t</sub></span> <strong id="bfNtOut">4</strong></label><input id="bfNt" type="range" min="1" max="8" value="4" step="1"></div>
         <div class="ctrl"><label for="bfSnr"><span>GE<sub>x</sub>/N<sub>0</sub></span> <strong id="bfSnrOut">5 dB</strong></label><input id="bfSnr" type="range" min="-5" max="25" value="5" step="1"></div>
       </div></div>
-      <div class="control-section"><div class="control-section-title">Quality of the CSIT</div><div class="control-grid">
+      <div class="control-section"><div class="control-section-title">Codebook feedback</div><div class="control-grid">
         <div class="ctrl"><label for="bfBits"><span>Feedback bits B</span> <strong id="bfBitsOut">3</strong></label><input id="bfBits" type="range" min="1" max="6" value="3" step="1"></div>
       </div></div>
     </div>
@@ -56,15 +104,17 @@
       <div class="metric"><div class="name">&Vert;h&Vert;&sup2;, this channel</div><div class="value" id="bfNorm">&mdash;</div><div class="small" id="bfNormSmall">&mdash;</div></div>
       <div class="metric"><div class="name">Received SNR</div><div class="value" id="bfSel">&mdash;</div><div class="small" id="bfSelSmall">&mdash;</div></div>
       <div class="metric"><div class="name">MRT bound</div><div class="value" id="bfMrt">&mdash;</div><div class="small">GE<sub>x</sub>&Vert;h&Vert;&sup2;/N<sub>0</sub></div></div>
-      <div class="metric"><div class="name">Loss against MRT</div><div class="value" id="bfLoss">&mdash;</div><div class="small">|h<sup>T</sup>f|&sup2;/&Vert;h&Vert;&sup2;</div></div>
-      <div class="metric"><div class="name">Required transmitter channel information</div><div class="value" id="bfFb">&mdash;</div><div class="small" id="bfFbSmall">&mdash;</div></div>
-      <div class="metric lab-metric"><div class="name">Interactive lab</div><div class="value">MRT phasor alignment</div><button type="button" class="lab-toggle" aria-controls="lab-bf" aria-expanded="false">Open lab</button></div>
-    </div><div class="formula"><div>y = &radic;(GE<sub>x</sub>) h<sup>T</sup>f s + v, &Vert;f&Vert;&sup2; = 1</div><div>SNR(f) = GE<sub>x</sub>|h<sup>T</sup>f|&sup2;/N<sub>0</sub> &le; GE<sub>x</sub>&Vert;h&Vert;&sup2;/N<sub>0</sub></div><div>f<sub>MRT</sub> = h*/&Vert;h&Vert; (equality in Cauchy&ndash;Schwarz)</div><div>Codebook: k* = argmax<sub>k</sub> |h<sup>T</sup>f<sub>k</sub>|&sup2;, &lceil;log<sub>2</sub>K&rceil; bits fed back</div><div id="bfAlaLine">&mdash;</div></div></div>
+      <div class="metric"><div class="name">Gain relative to MRT</div><div class="value" id="bfLoss">&mdash;</div><div class="small">|h<sup>T</sup>f|&sup2;/&Vert;h&Vert;&sup2;</div></div>
+      <div class="metric"><div class="name">Transmitter channel knowledge</div><div class="value" id="bfFb">&mdash;</div><div class="small" id="bfFbSmall">&mdash;</div></div>
+    </div></div>
   </div></div>
+  <div class="lab-actions"><div class="metric lab-metric"><div class="name">Interactive activity</div><div class="value">MRT phasor alignment</div><button type="button" class="lab-toggle" aria-controls="lab-bf" aria-expanded="false">Open activity</button></div></div>
+  <details class="relations"><summary>Key equations</summary><div class="formula"><div>y = &radic;(GE<sub>x</sub>) h<sup>T</sup>f s + v, &Vert;f&Vert;&sup2; = 1</div><div>SNR(f) = GE<sub>x</sub>|h<sup>T</sup>f|&sup2;/N<sub>0</sub> &le; GE<sub>x</sub>&Vert;h&Vert;&sup2;/N<sub>0</sub></div><div>f<sub>MRT</sub> = h*/&Vert;h&Vert; (equality in Cauchy&ndash;Schwarz)</div><div>Codebook: k* = argmax<sub>k</sub> |h<sup>T</sup>f<sub>k</sub>|&sup2;, &lceil;log<sub>2</sub>K&rceil; bits fed back</div><div id="bfAlaLine">&mdash;</div></div></details>
+
 
   <div class="lab-shell" id="lab-bf" hidden><iframe class="lab-frame" loading="lazy" title="MRT Phasor Alignment interactive lab" src="01_mrt_phasor_alignment.html?v=20261002"></iframe></div>
 
-  <div class="flow" aria-label="Closed-loop beamforming chain"><div class="flow-step"><strong>Receiver estimates h</strong><span>reference signals provide receiver channel knowledge</span></div><div class="arrow">&rarr;</div><div class="flow-step hl"><strong>Transmitter obtains CSIT</strong><span id="bfFlowCsit">&mdash;</span></div><div class="arrow">&rarr;</div><div class="flow-step hl"><strong>Transmit weights</strong><span id="bfFlowF">&mdash;</span></div><div class="arrow">&rarr;</div><div class="flow-step"><strong>Channel</strong><span id="bfFlowEff">&mdash;</span></div><div class="arrow">&rarr;</div><div class="flow-step"><strong>Detect</strong><span>one stream, scalar decision</span></div></div>
+  <div class="flow" aria-label="Closed-loop beamforming chain"><div class="flow-step"><strong>Receiver estimates h</strong><span>reference signals provide receiver channel knowledge</span></div><div class="arrow">&rarr;</div><div class="flow-step hl"><strong>Transmitter obtains CSIT</strong><span id="bfFlowCsit">&mdash;</span></div><div class="arrow">&rarr;</div><div class="flow-step hl"><strong>Transmit weights</strong><span id="bfFlowF">&mdash;</span></div><div class="arrow">&rarr;</div><div class="flow-step"><strong>Channel</strong><span id="bfFlowEff">&mdash;</span></div><div class="arrow">&rarr;</div><div class="flow-step"><strong>Detect</strong><span>one stream, symbol decision</span></div></div>
   <p class="flow-caption" id="bfFlowCap">&mdash;</p>
 
   <div>
@@ -73,7 +123,7 @@
 
   <div class="checklist">
     <div class="check"><strong>Duality with receive combining</strong><span>For the same channel norm and total energy, MRT using N<sub>t</sub> transmit antennas and single-input multiple-output maximal-ratio combining (MRC) using N<sub>r</sub> = N<sub>t</sub> receive antennas give the same SNR, GE<sub>x</sub>&Vert;h&Vert;&sup2;/N<sub>0</sub>.</span></div>
-    <div class="check"><strong>TDD reciprocity</strong><span>In time-division duplexing, the base station estimates h from an uplink reference signal and applies the corresponding downlink weights. This requires calibrated radio-frequency (RF) chains and transmission within the channel coherence time.</span></div>
+    <div class="check"><strong>TDD reciprocity</strong><span>In time-division duplexing, the base station estimates h from an uplink reference signal and applies the corresponding downlink weights. This requires calibrated radio-frequency (RF) chains and transmission within the time over which the channel remains approximately constant.</span></div>
     <div class="check"><strong>Limited feedback</strong><span>The receiver reports only the index of the most suitable codeword. A Grassmannian codebook distributes its beamforming vectors to maximise their minimum chordal distance between beam directions.</span></div>
     <div class="check"><strong>Communication standards</strong><span>Long-Term Evolution and 5G New Radio report a precoding-matrix indicator (PMI) from a structured codebook. IEEE 802.11n/ac/ax systems can report a compressed beamforming matrix using quantised angles.</span></div>
   </div>
@@ -81,9 +131,9 @@
 
 <!-- ============================ 2 · SPATIAL MULTIPLEXING ============================ -->
 <section class="panel" id="sm" role="tabpanel" aria-labelledby="tab-sm" hidden>
-  <div class="panel-head"><div><div class="eyebrow">Vertical-Bell Laboratories Layered Space-Time transmission, the MIMO signal model, channel rank, and multiplexing gain</div><h2>N<sub>t</sub> antennas transmit N<sub>t</sub> different symbols in the same time and frequency resource; every receive antenna observes their superposition, and the singular values of H determine how many streams can be separated reliably</h2></div><div class="message">Vertical-Bell Laboratories Layered Space-Time (V-BLAST) transmission uses a 1:N<sub>t</sub> serial-to-parallel converter to assign each antenna a separate stream. Each stream is scaled by &radic;(E<sub>x</sub>/N<sub>t</sub>) so that the total transmitted energy remains E<sub>x</sub>. The receiver observes y = &radic;(GE<sub>x</sub>/N<sub>t</sub>) H s + v, where h<sub>i,m</sub> is the channel coefficient from transmit antenna m to receive antenna i. Each receive antenna observes a mixture of the streams, called inter-stream interference. If H = U&Sigma;V<sup>H</sup>, no more than rank(H) &le; min(N<sub>t</sub>, N<sub>r</sub>) streams can be recovered. The condition number &sigma;<sub>1</sub>/&sigma;<sub>min</sub> quantifies the disparity between the strongest and weakest channel modes. Multiple streams require sufficient channel rank and adequate post-detection SNR.</div></div>
+  <div class="panel-head"><div><div class="eyebrow">Independent data streams, channel rank, and stream separation</div><h2>Spatial multiplexing sends independent data streams at the same time and frequency</h2></div><div class="message">Spatial multiplexing, as in V-BLAST, uses a 1:N<sub>t</sub> serial-to-parallel converter to assign each antenna a separate stream. Each stream is scaled by &radic;(E<sub>x</sub>/N<sub>t</sub>) so that the total transmitted energy remains E<sub>x</sub>. The receiver observes y = &radic;(GE<sub>x</sub>/N<sub>t</sub>) H s + v, where h<sub>i,m</sub> is the channel coefficient from transmit antenna m to receive antenna i. A stream is an independent sequence of data symbols. Each receive antenna observes a mixture of these streams; the contributions from other streams are inter-stream interference. If H = U&Sigma;V<sup>H</sup>, no more than rank(H) &le; min(N<sub>t</sub>, N<sub>r</sub>) streams can be recovered. The singular values are the amplitude gains of the channel modes, or independent spatial directions. The condition number &sigma;<sub>1</sub>/&sigma;<sub>min</sub> quantifies the disparity between the strongest and weakest channel modes. Multiple streams require sufficient channel rank and adequate post-detection SNR.</div></div>
   <div class="sticky-bar"><div class="toolbar">
-    <div class="mode-buttons mode-row"><button type="button" id="smNew">New channel</button><button type="button" class="preset" id="smH1">Lecture example H<sub>1</sub> = [1 0.5; 0.5 1]</button><button type="button" class="preset" id="smH2">Lecture example H<sub>2</sub> = [1 0.9; 0.9 1]</button></div>
+    <div class="mode-buttons mode-row"><button type="button" id="smNew">Generate channel</button><button type="button" class="preset" id="smH1">Lecture example H<sub>1</sub> = [1 0.5; 0.5 1]</button><button type="button" class="preset" id="smH2">Lecture example H<sub>2</sub> = [1 0.9; 0.9 1]</button></div>
     <div class="control-sections">
       <div class="control-section"><div class="control-section-title">Antennas and channel</div><div class="control-grid">
         <div class="ctrl"><label for="smNt"><span>Transmit antennas N<sub>t</sub></span> <strong id="smNtOut">2</strong></label><input id="smNt" type="range" min="1" max="4" value="2" step="1"></div>
@@ -91,7 +141,7 @@
       </div></div>
       <div class="control-section"><div class="control-section-title">Link and view</div><div class="control-grid">
         <div class="ctrl"><label for="smSnr"><span>GE<sub>x</sub>/N<sub>0</sub></span> <strong id="smSnrOut">15 dB</strong></label><input id="smSnr" type="range" min="-5" max="30" value="15" step="1"></div>
-        <div class="ctrl"><label for="smRx"><span>Receive antenna displayed</span> <strong id="smRxOut">1</strong></label><input id="smRx" type="range" min="1" max="4" value="1" step="1"></div>
+        <div class="ctrl"><label for="smRx"><span>Receive antenna shown</span> <strong id="smRxOut">1</strong></label><input id="smRx" type="range" min="1" max="4" value="1" step="1"></div>
       </div></div>
     </div>
     <div class="summary-row"><div class="toolbar-metrics metrics-6">
@@ -99,7 +149,10 @@
       <div class="metric"><div class="name">Energy per stream</div><div class="value" id="smPer">&mdash;</div><div class="small">E<sub>x</sub>/N<sub>t</sub>, relative to E<sub>x</sub></div></div>
       <div class="metric"><div class="name">rank(H)</div><div class="value" id="smRank">&mdash;</div><div class="small">nonzero &sigma;<sub>j</sub></div></div>
       <div class="metric"><div class="name">Condition number</div><div class="value" id="smCond">&mdash;</div><div class="small">&kappa; = &sigma;<sub>1</sub>/&sigma;<sub>min</sub></div></div>
+    </div></div>
   </div></div>
+  <details class="relations"><summary>Key equations</summary><div class="formula"><div>y = √(GEₓ/Nₜ)Hs + v; H has Nᵣ rows and Nₜ columns.</div><div>Each stream has energy Eₓ/Nₜ. Up to min(Nₜ,Nᵣ) streams require sufficient rank and post-detection SNR.</div></div></details>
+
 
   <div class="flow" aria-label="Spatial multiplexing transceiver"><div class="flow-step"><strong>Quadrature-amplitude modulation symbols</strong><span>one serial data sequence</span></div><div class="arrow">&rarr;</div><div class="flow-step hl"><strong>Serial-to-parallel conversion</strong><span id="smFlowSp">&mdash;</span></div><div class="arrow">&rarr;</div><div class="flow-step"><strong>Energy scaling</strong><span id="smFlowScale">&mdash;</span></div><div class="arrow">&rarr;</div><div class="flow-step hl"><strong>Channel H</strong><span id="smFlowH">&mdash;</span></div><div class="arrow">&rarr;</div><div class="flow-step"><strong>Detector</strong><span>ZF, MMSE, or maximum likelihood (Tab 3)</span></div><div class="arrow">&rarr;</div><div class="flow-step"><strong>Parallel-to-serial conversion</strong><span>reconstruct the serial data sequence</span></div></div>
   <p class="flow-caption">The total transmit energy is E<sub>x</sub> per channel use whatever N<sub>t</sub> is: adding antennas splits the energy; it does not add any.</p>
@@ -109,7 +162,7 @@
     <div class="card"><div class="title" id="smMixTitle">Superposition observed by one receive antenna</div><canvas id="smMix" role="img" aria-label="Received constellation at one antenna: noiseless sums over all symbol combinations, noisy samples, and the locations for stream 1 alone"></canvas><div class="legend"><span><i class="sw blue"></i>Noiseless &Sigma;<sub>m</sub> h<sub>i,m</sub>s<sub>m</sub></span><span><i class="sw grey"></i>With noise</span><span><i class="sw red"></i>Stream 1 alone</span></div><ul class="bullets" id="smMixNote"></ul></div>
   </div>
   <div class="plots two" style="margin-top:14px">
-    <div class="card"><div class="title" id="smTblTitle">Rate&ndash;diversity landscape</div><table class="tbl" id="smTbl"></table><ul class="bullets" id="smTblNote"></ul></div>
+    <div class="card"><div class="title" id="smTblTitle">Stream count and diversity order</div><table class="tbl" id="smTbl"></table><ul class="bullets" id="smTblNote"></ul></div>
   </div>
 
   <div class="checklist">
@@ -122,13 +175,13 @@
 
 <!-- ============================ 3 · MIMO DETECTION ============================ -->
 <section class="panel" id="de" role="tabpanel" aria-labelledby="tab-de" hidden>
-  <div class="panel-head"><div><div class="eyebrow">Zero-forcing, post-processing SNR, noise enhancement, minimum mean-square error detection, and maximum-likelihood detection</div><h2>ZF removes inter-stream interference exactly but may amplify noise; MMSE balances residual interference against noise amplification; maximum-likelihood detection minimises symbol-vector error probability for equiprobable symbols in white Gaussian noise but searches |C|<sup>N<sub>t</sub></sup> symbol vectors</h2></div><div class="message">Assume perfect channel-state information at the receiver (CSIR), N<sub>r</sub> &ge; N<sub>t</sub>, and a full-column-rank channel. The zero-forcing detector W<sub>ZF</sub> = (H<sup>H</sup>H)<sup>&minus;1</sup>H<sup>H</sup> removes every other stream, where H<sup>H</sup> denotes the Hermitian transpose. The remaining noise has covariance N<sub>0</sub>(H<sup>H</sup>H)<sup>&minus;1</sup>. Stream j therefore has &gamma;<sub>j</sub> = (GE<sub>x</sub>/N<sub>t</sub>)/(N<sub>0</sub>[(H<sup>H</sup>H)<sup>&minus;1</sup>]<sub>jj</sub>). For an ill-conditioned H, this diagonal entry is large; this effect is called noise enhancement. MMSE detection adds a regularisation term &lambda;I = (N<sub>t</sub>N<sub>0</sub>/GE<sub>x</sub>)I before inversion, as in the Week 9 per-subcarrier MMSE equaliser. For independent, identically distributed Rayleigh fading, each ZF stream has diversity order N<sub>r</sub> &minus; N<sub>t</sub> + 1.</div></div>
+  <div class="panel-head"><div><div class="eyebrow">Zero-forcing, post-processing SNR, noise enhancement, minimum mean-square error detection, and maximum-likelihood detection</div><h2>ZF cancels interference between streams; MMSE balances interference cancellation and noise amplification</h2></div><div class="message">The signal-to-interference-plus-noise ratio (SINR) compares desired-signal power with the combined interference and noise power. Assume perfect channel-state information at the receiver (CSIR), N<sub>r</sub> &ge; N<sub>t</sub>, and a channel with linearly independent columns. The zero-forcing detector W<sub>ZF</sub> = (H<sup>H</sup>H)<sup>&minus;1</sup>H<sup>H</sup> removes every other stream, where H<sup>H</sup> denotes the Hermitian transpose. The remaining noise has covariance N<sub>0</sub>(H<sup>H</sup>H)<sup>&minus;1</sup>. Stream j therefore has &gamma;<sub>j</sub> = (GE<sub>x</sub>/N<sub>t</sub>)/(N<sub>0</sub>[(H<sup>H</sup>H)<sup>&minus;1</sup>]<sub>jj</sub>). When H has a small minimum singular value, this diagonal entry can be large; this effect is called noise enhancement. Before inversion, MMSE adds &lambda;I = (N<sub>t</sub>N<sub>0</sub>/GE<sub>x</sub>)I to H<sup>H</sup>H. This regularisation limits noise amplification, as in the Week 9 per-subcarrier MMSE equaliser. For independent, identically distributed Rayleigh fading, each ZF stream has diversity order N<sub>r</sub> &minus; N<sub>t</sub> + 1.</div></div>
   <div class="sticky-bar"><div class="toolbar">
-    <div class="mode-buttons mode-row" id="deModes"><button type="button" data-de="zf" aria-pressed="true">ZF</button><button type="button" data-de="mmse" aria-pressed="false">MMSE</button><button type="button" id="deNew">New channel</button><button type="button" id="deNewNoise">New noise</button><button type="button" class="preset" id="deEx1">Exercise: H<sub>1</sub> at 10 dB</button><button type="button" class="preset" id="deEx2">Exercise: H<sub>2</sub> at 10 dB</button></div>
+    <div class="mode-buttons mode-row" id="deModes"><button type="button" data-de="zf" aria-pressed="true">ZF</button><button type="button" data-de="mmse" aria-pressed="false">MMSE</button><button type="button" id="deNew">Generate channel</button><button type="button" id="deNewNoise">Generate noise</button><button type="button" class="preset" id="deEx1">Exercise: H<sub>1</sub> at 10 dB</button><button type="button" class="preset" id="deEx2">Exercise: H<sub>2</sub> at 10 dB</button></div>
     <div class="control-sections">
       <div class="control-section"><div class="control-section-title">Channel</div><div class="control-grid">
         <div class="ctrl"><label for="deCh">Channel matrix</label><select id="deCh"><option value="rand" selected>Independent Rayleigh coefficients</option><option value="deck">Lecture example: [1 c; c 1]</option></select></div>
-        <div class="ctrl"><label for="deC"><span>Lecture-example coupling c</span> <strong id="deCOut">0.90</strong></label><input id="deC" type="range" min="0" max="98" value="90" step="1"></div>
+        <div class="ctrl"><label for="deC"><span>Coupling c</span> <strong id="deCOut">0.90</strong></label><input id="deC" type="range" min="0" max="98" value="90" step="1"></div>
         <div class="ctrl"><label for="deNt"><span>Streams N<sub>t</sub></span> <strong id="deNtOut">2</strong></label><input id="deNt" type="range" min="2" max="4" value="2" step="1"></div>
         <div class="ctrl"><label for="deNr"><span>Receive antennas N<sub>r</sub></span> <strong id="deNrOut">2</strong></label><input id="deNr" type="range" min="2" max="6" value="2" step="1"></div>
       </div></div>
@@ -138,23 +191,24 @@
       </div></div>
     </div>
     <div class="summary-row"><div class="toolbar-metrics metrics-5">
-      <div class="metric"><div class="name">ZF, worst stream</div><div class="value" id="deZf">&mdash;</div><div class="small">&gamma;<sub>j</sub><sup>ZF</sup></div></div>
-      <div class="metric"><div class="name">MMSE, worst stream</div><div class="value" id="deMm">&mdash;</div><div class="small">&gamma;<sub>j</sub><sup>MMSE</sup> (SINR)</div></div>
-      <div class="metric"><div class="name">MMSE gain</div><div class="value" id="deGap">&mdash;</div><div class="small">worst stream, over ZF</div></div>
+      <div class="metric"><div class="name">ZF: lowest stream SNR</div><div class="value" id="deZf">&mdash;</div><div class="small">&gamma;<sub>j</sub><sup>ZF</sup></div></div>
+      <div class="metric"><div class="name">MMSE: lowest stream SINR</div><div class="value" id="deMm">&mdash;</div><div class="small">&gamma;<sub>j</sub><sup>MMSE</sup> (SINR)</div></div>
+      <div class="metric"><div class="name">MMSE gain</div><div class="value" id="deGap">&mdash;</div><div class="small">lowest stream SINR compared with ZF</div></div>
       <div class="metric"><div class="name">Condition number</div><div class="value" id="deCond">&mdash;</div><div class="small">&kappa; = &sigma;<sub>1</sub>/&sigma;<sub>min</sub></div></div>
       <div class="metric"><div class="name">[(H<sup>H</sup>H)<sup>&minus;1</sup>]<sub>jj</sub></div><div class="value" id="deInv">&mdash;</div><div class="small">one entry per stream</div></div>
-      <div class="metric"><div class="name">Candidate evaluations per received vector</div><div class="value" id="deCx">&mdash;</div><div class="small">maximum likelihood: |C|<sup>N<sub>t</sub></sup>; linear detection: N<sub>t</sub>|C|</div></div>
+      <div class="metric"><div class="name">Candidates per vector</div><div class="value" id="deCx">&mdash;</div><div class="small">maximum likelihood: |C|<sup>N<sub>t</sub></sup>; linear detection: N<sub>t</sub>|C|</div></div>
       <div class="metric"><div class="name">Symbol errors</div><div class="value" id="deErr">&mdash;</div><div class="small" id="deErrSmall">of the plotted symbols</div></div>
-      <div class="metric lab-metric"><div class="name">Interactive lab</div><div class="value">Zero-forcing noise enhancement</div><button type="button" class="lab-toggle" aria-controls="lab-de-02" aria-expanded="false">Open lab</button></div>
-      <div class="metric lab-metric"><div class="name">Interactive lab</div><div class="value">MMSE and zero-forcing detection</div><button type="button" class="lab-toggle" aria-controls="lab-de-03" aria-expanded="false">Open lab</button></div>
-    </div><div class="formula"><div>W<sub>ZF</sub> = (H<sup>H</sup>H)<sup>&minus;1</sup>H<sup>H</sup>, &gamma;<sub>j</sub><sup>ZF</sup> = (GE<sub>x</sub>/N<sub>t</sub>)/(N<sub>0</sub>[(H<sup>H</sup>H)<sup>&minus;1</sup>]<sub>jj</sub>)</div><div>W<sub>MMSE</sub> = &radic;(N<sub>t</sub>/GE<sub>x</sub>)(H<sup>H</sup>H + &lambda;I)<sup>&minus;1</sup>H<sup>H</sup>, <span id="deLam">&lambda; = N<sub>t</sub>N<sub>0</sub>/(GE<sub>x</sub>)</span></div><div>&gamma;<sub>j</sub><sup>MMSE</sup> = &alpha;&sup2;|w<sub>j</sub><sup>H</sup>h<sub>j</sub>|&sup2; / (&alpha;&sup2;&Sigma;<sub>m&ne;j</sub>|w<sub>j</sub><sup>H</sup>h<sub>m</sub>|&sup2; + N<sub>0</sub>&Vert;w<sub>j</sub>&Vert;&sup2;), &alpha; = &radic;(GE<sub>x</sub>/N<sub>t</sub>)</div><div>ML: &#349; = argmin<sub>s&isin;C<sup>N<sub>t</sub></sup></sub> &Vert;y &minus; &alpha;Hs&Vert;&sup2;</div></div></div>
+    </div></div>
   </div></div>
+  <div class="lab-actions"><div class="metric lab-metric"><div class="name">Interactive activity</div><div class="value">Zero-forcing noise enhancement</div><button type="button" class="lab-toggle" aria-controls="lab-de-02" aria-expanded="false">Open activity</button></div><div class="metric lab-metric"><div class="name">Interactive activity</div><div class="value">MMSE and zero-forcing detection</div><button type="button" class="lab-toggle" aria-controls="lab-de-03" aria-expanded="false">Open activity</button></div></div>
+  <details class="relations"><summary>Key equations</summary><div class="formula"><div>W<sub>ZF</sub> = (H<sup>H</sup>H)<sup>&minus;1</sup>H<sup>H</sup>, &gamma;<sub>j</sub><sup>ZF</sup> = (GE<sub>x</sub>/N<sub>t</sub>)/(N<sub>0</sub>[(H<sup>H</sup>H)<sup>&minus;1</sup>]<sub>jj</sub>)</div><div>W<sub>MMSE</sub> = &radic;(N<sub>t</sub>/GE<sub>x</sub>)(H<sup>H</sup>H + &lambda;I)<sup>&minus;1</sup>H<sup>H</sup>, <span id="deLam">&lambda; = N<sub>t</sub>N<sub>0</sub>/(GE<sub>x</sub>)</span></div><div>&gamma;<sub>j</sub><sup>MMSE</sup> = &alpha;&sup2;|w<sub>j</sub><sup>H</sup>h<sub>j</sub>|&sup2; / (&alpha;&sup2;&Sigma;<sub>m&ne;j</sub>|w<sub>j</sub><sup>H</sup>h<sub>m</sub>|&sup2; + N<sub>0</sub>&Vert;w<sub>j</sub>&Vert;&sup2;), &alpha; = &radic;(GE<sub>x</sub>/N<sub>t</sub>)</div><div>ML: &#349; = argmin<sub>s&isin;C<sup>N<sub>t</sub></sup></sub> &Vert;y &minus; &alpha;Hs&Vert;&sup2;</div></div></details>
+
 
   <div class="lab-shell" id="lab-de-02" hidden><iframe class="lab-frame" loading="lazy" title="ZF Noise Enhancement interactive lab" src="02_zf_noise_enhancement.html?v=20261002"></iframe></div>
   <div class="lab-shell" id="lab-de-03" hidden><iframe class="lab-frame" loading="lazy" title="MMSE versus ZF interactive lab" src="03_mmse_vs_zf.html?v=20261002"></iframe></div>
 
   <div class="flow" aria-label="Linear MIMO receiver"><div class="flow-step"><strong>N<sub>r</sub> antennas</strong><span>y = &alpha;Hs + v</span></div><div class="arrow">&rarr;</div><div class="flow-step"><strong>Estimate H</strong><span>perfect CSIR assumed</span></div><div class="arrow">&rarr;</div><div class="flow-step hl"><strong id="deFlowName">ZF</strong><span id="deFlowRule">&mdash;</span></div><div class="arrow">&rarr;</div><div class="flow-step"><strong>N<sub>t</sub> outputs</strong><span id="deFlowOut">&mdash;</span></div><div class="arrow">&rarr;</div><div class="flow-step"><strong>Decide each stream separately</strong><span id="deFlowDet">&mdash;</span></div><div class="arrow">&rarr;</div><div class="flow-step"><strong>Parallel-to-serial conversion</strong><span>reconstruct the serial data sequence</span></div></div>
-  <p class="flow-caption">Maximum-likelihood (ML) detection omits the linear detector and jointly evaluates all possible transmitted symbol vectors. ZF and MMSE detection replace this N<sub>t</sub>-dimensional search with N<sub>t</sub> separate scalar decisions.</p>
+  <p class="flow-caption">Maximum-likelihood (ML) detection omits the linear detector and jointly evaluates all possible transmitted symbol vectors. ZF and MMSE detection replace this N<sub>t</sub>-dimensional search with N<sub>t</sub> separate symbol decisions.</p>
 
   <div class="plots">
     <div class="card"><div class="title">ZF SNR and MMSE SINR of each stream</div><canvas id="deBars" role="img" aria-label="Grouped bars of ZF post-processing SNR and MMSE post-processing SINR for each stream in decibels"></canvas><div class="legend"><span><i class="sw orange"></i>ZF</span><span><i class="sw purple"></i>MMSE</span></div><ul class="bullets" id="deBarsNote"></ul></div>
@@ -167,17 +221,17 @@
 
   <div class="checklist">
     <div class="check"><strong>Zero-forcing (ZF)</strong><span>Removes inter-stream interference exactly. It requires N<sub>r</sub> &ge; N<sub>t</sub> and full column rank, and its noise variance is increased by [(H<sup>H</sup>H)<sup>&minus;1</sup>]<sub>jj</sub>.</span></div>
-    <div class="check"><strong>Minimum mean-square error (MMSE)</strong><span>Approaches scaled ZF as N<sub>0</sub> → 0 for a full-column-rank channel; at low input SNR, its filter direction approaches H<sup>H</sup>. ZF and MMSE outputs use different scaling conventions. The constellation experiment uses ZF outputs divided by √(GEₓ/Nₜ), as in the lecture exercise.</span></div>
-    <div class="check"><strong>Maximum-likelihood (ML)</strong><span>Minimises the probability of a vector decision error and achieves full receive diversity, but requires &Oscr;(|C|<sup>N<sub>t</sub></sup>) candidate evaluations per received vector. Sphere decoding reduces average complexity but not worst-case complexity.</span></div>
+    <div class="check"><strong>Minimum mean-square error (MMSE)</strong><span>Approaches scaled ZF as N<sub>0</sub> → 0 for a channel with linearly independent columns; at low input SNR, its filter direction approaches H<sup>H</sup>. ZF and MMSE outputs use different scaling conventions. The constellation experiment uses ZF outputs divided by √(GEₓ/Nₜ), as in the lecture exercise.</span></div>
+    <div class="check"><strong>Maximum-likelihood (ML)</strong><span>Minimises the probability of a vector decision error and achieves receive diversity order N<sub>r</sub> under independent Rayleigh fading, but requires &Oscr;(|C|<sup>N<sub>t</sub></sup>) candidate evaluations per received vector. Sphere decoding reduces the number of candidate vectors examined; the computational cost depends on the channel and SNR.</span></div>
     <div class="check"><strong>Channel-state information at the receiver (CSIR)</strong><span>All three detectors assume that H is known exactly at the receiver. Channel-estimation error produces residual interference even after ZF detection.</span></div>
   </div>
 </section>
 
 <!-- ============================ 4 · LINEAR PRECODING AND EIGENBEAMFORMING ============================ -->
 <section class="panel" id="pc" role="tabpanel" aria-labelledby="tab-pc" hidden>
-  <div class="panel-head"><div><div class="eyebrow">Linear precoding, singular-value-decomposition eigenbeamforming, rank adaptation, and diversity</div><h2>With CSIT, F = V<sub>s</sub> and the combiner U<sub>s</sub><sup>H</sup> transform H into N<sub>s</sub> parallel scalar channels with gains &sigma;<sub>j</sub>; the transmitter selects N<sub>s</sub> according to the singular values and SNR</h2></div><div class="message">A precoder F &isin; C<sup>N<sub>t</sub>&times;N<sub>s</sub></sup> maps N<sub>s</sub> streams onto N<sub>t</sub> transmit antennas, with energy E<sub>x</sub>/N<sub>s</sub> per stream. The singular-value decomposition (SVD) is H = U&Sigma;V<sup>H</sup>. Selecting the first N<sub>s</sub> right singular vectors, F = V<sub>s</sub>, gives HF = U<sub>s</sub>&Sigma;<sub>s</sub>. Projection onto U<sub>s</sub><sup>H</sup> at the receiver preserves white noise and separates the streams exactly, giving &gamma;<sub>j</sub> = GE<sub>x</sub>&sigma;<sub>j</sub>&sup2;/(N<sub>s</sub>N<sub>0</sub>). Leaving a weak mode inactive allocates more power to the remaining streams. For i.i.d. Rayleigh fading and fixed N<sub>s</sub>, the weakest selected mode has diversity order (N<sub>r</sub>−N<sub>s</sub>+1)(N<sub>t</sub>−N<sub>s</sub>+1). One-stream transmission is strongest-mode MIMO beamforming; it reduces to MRT in MISO. At full loading, the weakest selected mode has order |N<sub>t</sub>−N<sub>r</sub>|+1.</div></div>
+  <div class="panel-head"><div><div class="eyebrow">Linear precoding, singular-value-decomposition eigenbeamforming, rank adaptation, and diversity</div><h2>SVD precoding and receive combining separate the channel into independent spatial modes</h2></div><div class="message">A precoder applies weights at the transmitter; a combiner applies weights at the receiver. The precoder F &isin; C<sup>N<sub>t</sub>&times;N<sub>s</sub></sup> maps N<sub>s</sub> streams onto N<sub>t</sub> transmit antennas, with energy E<sub>x</sub>/N<sub>s</sub> per stream. The singular-value decomposition (SVD) is H = U&Sigma;V<sup>H</sup>. Selecting the first N<sub>s</sub> right singular vectors, F = V<sub>s</sub>, gives HF = U<sub>s</sub>&Sigma;<sub>s</sub>. Projection onto U<sub>s</sub><sup>H</sup> at the receiver preserves white noise and separates the streams exactly, giving &gamma;<sub>j</sub> = GE<sub>x</sub>&sigma;<sub>j</sub>&sup2;/(N<sub>s</sub>N<sub>0</sub>). Rank adaptation selects the number of active streams. Leaving a mode with low channel gain inactive allocates more power to the remaining streams. For independent, identically distributed Rayleigh fading and fixed N<sub>s</sub>, the weakest selected mode has diversity order (N<sub>r</sub>−N<sub>s</sub>+1)(N<sub>t</sub>−N<sub>s</sub>+1). One-stream transmission is MIMO beamforming on the strongest channel mode; it reduces to MRT when there is one receive antenna. At the maximum stream count, the weakest selected mode has order |N<sub>t</sub>−N<sub>r</sub>|+1.</div></div>
   <div class="sticky-bar"><div class="toolbar">
-    <div class="mode-buttons mode-row"><button type="button" id="pcNew">New channel</button><button type="button" class="preset" id="pcEx1">Exercise: H<sub>1</sub> at 10 dB</button><button type="button" class="preset" id="pcEx2">Exercise: H<sub>2</sub> at 10 dB</button><button type="button" class="preset" id="pcRank">4&times;4 illustration: two strong modes</button></div>
+    <div class="mode-buttons mode-row"><button type="button" id="pcNew">Generate channel</button><button type="button" class="preset" id="pcEx1">Exercise: H<sub>1</sub> at 10 dB</button><button type="button" class="preset" id="pcEx2">Exercise: H<sub>2</sub> at 10 dB</button><button type="button" class="preset" id="pcRank">4&times;4 illustration: two strong modes</button></div>
     <div class="control-sections">
       <div class="control-section"><div class="control-section-title">Antennas and streams</div><div class="control-grid">
         <div class="ctrl"><label for="pcNt"><span>Transmit antennas N<sub>t</sub></span> <strong id="pcNtOut">2</strong></label><input id="pcNt" type="range" min="1" max="4" value="2" step="1"></div>
@@ -191,37 +245,39 @@
     <div class="summary-row"><div class="toolbar-metrics metrics-4">
       <div class="metric"><div class="name">Singular values</div><div class="value" id="pcSig">&mdash;</div><div class="small" id="pcSigSmall">&mdash;</div></div>
       <div class="metric"><div class="name">Stream SNRs</div><div class="value" id="pcGam">&mdash;</div><div class="small">GE<sub>x</sub>&sigma;<sub>j</sub>&sup2;/(N<sub>s</sub>N<sub>0</sub>)</div></div>
-      <div class="metric"><div class="name">Open-loop ZF</div><div class="value" id="pcZf">&mdash;</div><div class="small">worst of N<sub>t</sub> streams, no CSIT</div></div>
-      <div class="metric"><div class="name">Weakest-mode diversity order</div><div class="value" id="pcDiv">&mdash;</div><div class="small">(N<sub>r</sub>−N<sub>s</sub>+1)(N<sub>t</sub>−N<sub>s</sub>+1); i.i.d. Rayleigh, fixed N<sub>s</sub></div></div>
+      <div class="metric"><div class="name">ZF without transmitter channel knowledge</div><div class="value" id="pcZf">&mdash;</div><div class="small">lowest SNR among N<sub>t</sub> streams</div></div>
+      <div class="metric"><div class="name">Weakest-mode diversity order</div><div class="value" id="pcDiv">&mdash;</div><div class="small">(N<sub>r</sub>−N<sub>s</sub>+1)(N<sub>t</sub>−N<sub>s</sub>+1); independent Rayleigh fading, fixed N<sub>s</sub></div></div>
       <div class="metric"><div class="name">N<sub>s</sub> = 1 check</div><div class="value" id="pcMrt">&mdash;</div><div class="small" id="pcMrtSmall">GE<sub>x</sub>&sigma;<sub>1</sub>&sup2;/N<sub>0</sub></div></div>
-      <div class="metric lab-metric"><div class="name">Interactive lab</div><div class="value">SVD eigenmodes</div><button type="button" class="lab-toggle" aria-controls="lab-pc" aria-expanded="false">Open lab</button></div>
-    </div><div class="formula"><div>y = &radic;(GE<sub>x</sub>/N<sub>s</sub>) HFs + v, &Vert;F&Vert;<sub>F</sub>&sup2; = N<sub>s</sub></div><div>H = U&Sigma;V<sup>H</sup>, F = V<sub>s</sub> = V<sub>[:,1:N<sub>s</sub>]</sub></div><div>&#7929; = U<sub>s</sub><sup>H</sup>y = &radic;(GE<sub>x</sub>/N<sub>s</sub>) &Sigma;<sub>s</sub>s + &#7805;, &#7805; ~ CN(0, N<sub>0</sub>I), where CN denotes circularly symmetric complex Gaussian noise</div><div>&gamma;<sub>j</sub> = GE<sub>x</sub>&sigma;<sub>j</sub>&sup2;/(N<sub>s</sub>N<sub>0</sub>)</div><div>d = (N<sub>r</sub> &minus; N<sub>s</sub> + 1)(N<sub>t</sub> &minus; N<sub>s</sub> + 1)</div></div></div>
+    </div></div>
   </div></div>
+  <div class="lab-actions"><div class="metric lab-metric"><div class="name">Interactive activity</div><div class="value">SVD eigenmodes</div><button type="button" class="lab-toggle" aria-controls="lab-pc" aria-expanded="false">Open activity</button></div></div>
+  <details class="relations"><summary>Key equations</summary><div class="formula"><div>y = &radic;(GE<sub>x</sub>/N<sub>s</sub>) HFs + v, &Vert;F&Vert;<sub>F</sub>&sup2; = N<sub>s</sub></div><div>H = U&Sigma;V<sup>H</sup>, F = V<sub>s</sub> = V<sub>[:,1:N<sub>s</sub>]</sub></div><div>&#7929; = U<sub>s</sub><sup>H</sup>y = &radic;(GE<sub>x</sub>/N<sub>s</sub>) &Sigma;<sub>s</sub>s + &#7805;, &#7805; ~ CN(0, N<sub>0</sub>I), where CN denotes circularly symmetric complex Gaussian noise</div><div>&gamma;<sub>j</sub> = GE<sub>x</sub>&sigma;<sub>j</sub>&sup2;/(N<sub>s</sub>N<sub>0</sub>)</div><div>d = (N<sub>r</sub> &minus; N<sub>s</sub> + 1)(N<sub>t</sub> &minus; N<sub>s</sub> + 1)</div></div></details>
+
 
   <div class="lab-shell" id="lab-pc" hidden><iframe class="lab-frame" loading="lazy" title="SVD Eigenmodes and Rank Adaptation interactive lab" src="04_svd_eigenmodes.html?v=20261002"></iframe></div>
 
-  <div class="flow" aria-label="Eigenbeamforming transceiver"><div class="flow-step"><strong>N<sub>s</sub> streams</strong><span id="pcFlowS">&mdash;</span></div><div class="arrow">&rarr;</div><div class="flow-step hl"><strong>Precoder F = V<sub>s</sub></strong><span id="pcFlowF">&mdash;</span></div><div class="arrow">&rarr;</div><div class="flow-step"><strong>Channel H</strong><span id="pcFlowH">&mdash;</span></div><div class="arrow">&rarr;</div><div class="flow-step hl"><strong>Combiner U<sub>s</sub><sup>H</sup></strong><span>N<sub>r</sub> &rarr; N<sub>s</sub> outputs</span></div><div class="arrow">&rarr;</div><div class="flow-step"><strong>Parallel channels</strong><span id="pcFlowPar">&mdash;</span></div><div class="arrow">&rarr;</div><div class="flow-step"><strong>Detect</strong><span>scalar decisions</span></div></div>
-  <p class="flow-caption">The transmitter requires V<sub>s</sub> and therefore CSIT. With limited feedback, the receiver recommends a precoder from a shared codebook by reporting a precoding-matrix indicator (PMI), as in Long-Term Evolution and 5G New Radio. In MIMO orthogonal frequency-division multiplexing, this processing is performed separately on each subcarrier.</p>
+  <div class="flow" aria-label="Eigenbeamforming transceiver"><div class="flow-step"><strong>N<sub>s</sub> streams</strong><span id="pcFlowS">&mdash;</span></div><div class="arrow">&rarr;</div><div class="flow-step hl"><strong>Precoder F = V<sub>s</sub></strong><span id="pcFlowF">&mdash;</span></div><div class="arrow">&rarr;</div><div class="flow-step"><strong>Channel H</strong><span id="pcFlowH">&mdash;</span></div><div class="arrow">&rarr;</div><div class="flow-step hl"><strong>Combiner U<sub>s</sub><sup>H</sup></strong><span>N<sub>r</sub> &rarr; N<sub>s</sub> outputs</span></div><div class="arrow">&rarr;</div><div class="flow-step"><strong>Parallel channels</strong><span id="pcFlowPar">&mdash;</span></div><div class="arrow">&rarr;</div><div class="flow-step"><strong>Detect</strong><span>symbol decisions</span></div></div>
+  <p class="flow-caption">The transmitter requires V<sub>s</sub> and therefore CSIT. With limited feedback, the receiver recommends a precoder from a shared codebook by reporting a precoding matrix indicator (PMI), as in Long-Term Evolution and 5G New Radio. In MIMO orthogonal frequency-division multiplexing, this processing is performed separately on each subcarrier.</p>
 
   <div class="plots">
-    <div class="card"><div class="title">Rank adaptation: SNR of every eigenmode</div><canvas id="pcBars" role="img" aria-label="Bars of the post-processing SNR on each eigenmode for the chosen number of streams, with unused modes greyed and reference lines for rank-one transmission and open-loop ZF"></canvas><div class="legend"><span><i class="sw blue"></i>Mode used</span><span><i class="sw grey"></i>Inactive mode: potential SNR only</span><span><i class="sw green"></i>N<sub>s</sub> = 1 (beamforming)</span><span><i class="sw orange"></i>Open-loop ZF, worst</span></div><ul class="bullets" id="pcBarsNote"></ul></div>
-    <div class="card"><div class="title">SVD decouples the streams</div><div class="mat-pair"><div class="mat" id="pcMatH"></div><div class="mat" id="pcMatD"></div></div><ul class="bullets" id="pcMatNote"></ul></div>
+    <div class="card"><div class="title">Rank adaptation: SNR of every eigenmode</div><canvas id="pcBars" role="img" aria-label="Bars of the post-processing SNR on each eigenmode for the chosen number of streams, with unused modes greyed and reference lines for rank-one transmission and ZF without transmitter channel knowledge"></canvas><div class="legend"><span><i class="sw blue"></i>Mode used</span><span><i class="sw grey"></i>Inactive mode: potential SNR only</span><span><i class="sw green"></i>N<sub>s</sub> = 1 (beamforming)</span><span><i class="sw orange"></i>ZF without transmitter channel knowledge, worst</span></div><ul class="bullets" id="pcBarsNote"></ul></div>
+    <div class="card"><div class="title">SVD separates the streams</div><div class="mat-pair"><div class="mat" id="pcMatH"></div><div class="mat" id="pcMatD"></div></div><ul class="bullets" id="pcMatNote"></ul></div>
   </div>
   <div style="margin-top:14px">
     <div class="card review"><div class="title">Review questions</div>
-      <details><summary>1. Derive f<sub>MRT</sub> from the Cauchy&ndash;Schwarz inequality.</summary><p>|h<sup>T</sup>f|&sup2; = |(h*)<sup>H</sup>f|&sup2; &le; &Vert;h&Vert;&sup2;&Vert;f&Vert;&sup2; = &Vert;h&Vert;&sup2;, with equality if and only if f &prop; h*. With &Vert;f&Vert; = 1, f<sub>MRT</sub> = h*/&Vert;h&Vert; and SNR = GE<sub>x</sub>&Vert;h&Vert;&sup2;/N<sub>0</sub>. On Tab 1 the MRT chain always ends on the dashed circle.</p></details>
+      <details><summary>1. Derive f<sub>MRT</sub> from the Cauchy&ndash;Schwarz inequality.</summary><p>|h<sup>T</sup>f|&sup2; = |(h*)<sup>H</sup>f|&sup2; &le; &Vert;h&Vert;&sup2;&Vert;f&Vert;&sup2; = &Vert;h&Vert;&sup2;, with equality if and only if f &prop; h*. With &Vert;f&Vert; = 1, f<sub>MRT</sub> = h*/&Vert;h&Vert; and SNR = GE<sub>x</sub>&Vert;h&Vert;&sup2;/N<sub>0</sub>. On Tab 1 the sum of the MRT contribution vectors reaches the dashed reference circle.</p></details>
       <details><summary>2. Why does equal-weight repetition from all transmit antennas give no transmit diversity, and how do MRT and Alamouti avoid this?</summary><p>The receiver observes h<sub>eff</sub> = &Sigma;h<sub>m</sub>/&radic;N<sub>t</sub>. For independent CN(0,1) channel coefficients, where CN denotes a zero-mean, unit-variance circularly symmetric complex Gaussian distribution, h<sub>eff</sub> is also CN(0,1). It therefore behaves as one Rayleigh-fading channel with diversity order 1, and the antenna contributions can cancel. MRT uses CSIT to phase-align the contributions; Alamouti coding distributes the symbols orthogonally over two slots so that the receiver combines &Vert;h&Vert;&sup2;. Compare equal weights with MRT on Tab 1; Alamouti uses coding across two slots.</p></details>
       <details><summary>3. For 2&times;2 ZF, compute [(H<sup>H</sup>H)<sup>&minus;1</sup>]<sub>jj</sub> for H<sub>1</sub> and H<sub>2</sub>.</summary><p>H<sub>1</sub><sup>H</sup>H<sub>1</sub> = [1.25 1; 1 1.25], determinant 0.5625, diagonal of the inverse 1.25/0.5625 = 2.22. H<sub>2</sub><sup>H</sup>H<sub>2</sub> = [1.81 1.8; 1.8 1.81], determinant 0.0361, diagonal 50.1. At GE<sub>x</sub>/N<sub>0</sub> = 10 dB this gives 3.5 dB and &minus;10.0 dB per stream. Use the exercise presets on Tab 3.</p></details>
-      <details><summary>4. Explain noise enhancement and how MMSE mitigates it.</summary><p>ZF leaves noise covariance N<sub>0</sub>(H<sup>H</sup>H)<sup>&minus;1</sup>, whose diagonal grows like 1/&sigma;<sub>min</sub>&sup2; when the columns of H are nearly parallel. MMSE inverts H<sup>H</sup>H + &lambda;I instead, which caps the gain on weak modes and trades a little residual interference for much less noise. Compare the post-processing SNR and SINR curves on Tab 3.</p></details>
-      <details><summary>5. How does eigenbeamforming decouple the MIMO streams?</summary><p>With F = V<sub>s</sub> and combiner U<sub>s</sub><sup>H</sup>, U<sub>s</sub><sup>H</sup>HV<sub>s</sub> = &Sigma;<sub>s</sub> is diagonal, and U<sub>s</sub><sup>H</sup>v is still white because U<sub>s</sub> has orthonormal columns. Stream j sees only &sigma;<sub>j</sub>: &gamma;<sub>j</sub> = GE<sub>x</sub>&sigma;<sub>j</sub>&sup2;/(N<sub>s</sub>N<sub>0</sub>). The second panel above shows the off-diagonal entries vanishing.</p></details>
+      <details><summary>4. Explain noise enhancement and how MMSE mitigates it.</summary><p>ZF leaves noise covariance N<sub>0</sub>(H<sup>H</sup>H)<sup>&minus;1</sup>, whose diagonal grows like 1/&sigma;<sub>min</sub>&sup2; when the columns of H are nearly parallel. MMSE inverts H<sup>H</sup>H + &lambda;I instead, which limits noise amplification while allowing some interference to remain. Compare the post-processing SNR and SINR curves on Tab 3.</p></details>
+      <details><summary>5. How does eigenbeamforming decouple the MIMO streams?</summary><p>With F = V<sub>s</sub> and combiner U<sub>s</sub><sup>H</sup>, U<sub>s</sub><sup>H</sup>HV<sub>s</sub> = &Sigma;<sub>s</sub> is diagonal, and U<sub>s</sub><sup>H</sup>v is still white because U<sub>s</sub> has orthonormal columns. Stream j has only the channel gain &sigma;<sub>j</sub>: &gamma;<sub>j</sub> = GE<sub>x</sub>&sigma;<sub>j</sub>&sup2;/(N<sub>s</sub>N<sub>0</sub>). The second panel above shows the off-diagonal entries vanishing.</p></details>
     </div>
   </div>
 
   <div class="checklist">
-    <div class="check"><strong>Reliability, one stream</strong><span>CSIT optional: Alamouti without it, MRT (N<sub>s</sub> = 1) with it. Strongest-mode MIMO beamforming has diversity order N<sub>t</sub>N<sub>r</sub> under i.i.d. Rayleigh fading; MISO MRT has order N<sub>t</sub>.</span></div>
-    <div class="check"><strong>Peak rate, rich channel</strong><span>No CSIT: spatial multiplexing with ZF/MMSE detection, min(N<sub>t</sub>,N<sub>r</sub>) streams.</span></div>
+    <div class="check"><strong>Reliability, one stream</strong><span>CSIT optional: Alamouti without it, beamforming with it. MIMO beamforming on the strongest channel mode has diversity order N<sub>t</sub>N<sub>r</sub> under independent, identically distributed Rayleigh fading; MRT with one receive antenna has order N<sub>t</sub>.</span></div>
+    <div class="check"><strong>Multiple streams, suitable channel</strong><span>No CSIT: spatial multiplexing with ZF/MMSE detection, min(N<sub>t</sub>,N<sub>r</sub>) streams.</span></div>
     <div class="check"><strong>Rate and reliability</strong><span>CSIT: eigenbeamforming with N<sub>s</sub> chosen from the singular values and the SNR.</span></div>
-    <div class="check"><strong>Practical CSIT</strong><span>Limited feedback: PMI or beamforming codebook indices approximate V<sub>s</sub> with a few bits.</span></div>
+    <div class="check"><strong>Practical CSIT</strong><span>Limited feedback: PMI or beamforming codebook indices approximate V<sub>s</sub> with a limited number of feedback bits.</span></div>
   </div>
 </section>
 
@@ -306,10 +362,10 @@ function sub1(i){return String(i).split('').map(c=>'₀₁₂₃₄₅₆₇₈�
 const modeCols=['--blue','--orange','--green','--purple'];
 
 document.querySelectorAll('[role=tab]').forEach((b,i,all)=>b.addEventListener('click',()=>{all.forEach(x=>{const on=x===b;x.setAttribute('aria-selected',on);$(x.getAttribute('aria-controls')).hidden=!on});requestAnimationFrame(drawActive)}));
-function sizeLabFrame(frame){try{frame.style.height='760px';frame.style.height=Math.max(760,frame.contentDocument.documentElement.scrollHeight,frame.contentDocument.body.scrollHeight)+'px'}catch(e){frame.style.height='1100px'}}
+function sizeLabFrame(frame){try{frame.style.height='540px';frame.style.height=Math.max(540,frame.contentDocument.documentElement.scrollHeight,frame.contentDocument.body.scrollHeight)+'px'}catch(e){frame.style.height='1100px'}}
 document.querySelectorAll('.lab-frame').forEach(frame=>frame.addEventListener('load',()=>sizeLabFrame(frame)));
 /* A tab may hold two labs; opening one closes the other. */
-document.querySelectorAll('.lab-toggle').forEach(button=>button.addEventListener('click',()=>{const panel=button.closest('.panel'),open=$(button.getAttribute('aria-controls')).hidden;panel.querySelectorAll('.lab-toggle').forEach(b=>{const on=open&&b===button;$(b.getAttribute('aria-controls')).hidden=!on;b.setAttribute('aria-expanded',String(on));b.textContent=on?'Close lab':'Open lab'});panel.classList.toggle('lab-open',open);if(open){const frame=$(button.getAttribute('aria-controls')).querySelector('.lab-frame');sizeLabFrame(frame);setTimeout(()=>sizeLabFrame(frame),60)}}));
+document.querySelectorAll('.lab-toggle').forEach(button=>button.addEventListener('click',()=>{const panel=button.closest('.panel'),open=$(button.getAttribute('aria-controls')).hidden;panel.querySelectorAll('.lab-toggle').forEach(b=>{const on=open&&b===button;$(b.getAttribute('aria-controls')).hidden=!on;b.setAttribute('aria-expanded',String(on));b.textContent=on?'Close activity':'Open activity'});panel.classList.toggle('lab-open',open);if(open){const frame=$(button.getAttribute('aria-controls')).querySelector('.lab-frame');sizeLabFrame(frame);setTimeout(()=>sizeLabFrame(frame),60)}}));
 function drawActive(){const id=document.querySelector('[role=tab][aria-selected=true]').getAttribute('aria-controls'),panel=$(id),draw=({bf:drawBf,sm:drawSm,de:drawDe,pc:drawPc})[id];draw();panel.querySelectorAll('.lab-shell:not([hidden]) .lab-frame').forEach(sizeLabFrame)}
 function pressGroup(container,attr,value){container.querySelectorAll('['+attr+']').forEach(b=>b.setAttribute('aria-pressed',String(b.getAttribute(attr)===value)))}
 
@@ -339,7 +395,7 @@ function drawBf(){
   $('bfSel').textContent=fmtDb(toDb(selSnr));$('bfSelSmall').innerHTML=bfName[bfMode]+': GE<sub>x</sub>|h<sup>T</sup>f|²/N<sub>0</sub>';
   $('bfMrt').textContent=fmtDb(toDb(mrtSnr));
   $('bfLoss').textContent=fmtDb(toDb(sel/n2));
-  const fb={mrt:['full h','feedback or TDD sounding'],cb:[B+' bits','index of one of '+K+' codewords'],eq:['none','open loop'],slip:['full h','but the conjugate is dropped']}[bfMode];
+  const fb={mrt:['full h','feedback or TDD channel estimation'],cb:[B+' bits','index of one of '+K+' codewords'],eq:['none','weights do not depend on h'],slip:['full h','complex conjugation is omitted']}[bfMode];
   $('bfFb').textContent=fb[0];$('bfFbSmall').innerHTML=fb[1];
   $('bfAlaLine').innerHTML=Nt===2?'Alamouti (N<sub>t</sub> = 2, no CSIT): GE<sub>x</sub>&Vert;h&Vert;²/(2N<sub>0</sub>) = '+fmtDb(toDb(mrtSnr/2))+' here, 3.0 dB below MRT'
     :'Select N<sub>t</sub> = 2 to compare MRT with the Alamouti code at equal total transmit energy.';
@@ -347,7 +403,7 @@ function drawBf(){
   $('bfFlowCsit').innerHTML={mrt:'h exactly (feedback or TDD)',cb:'index k* = '+(pick.k+1)+', '+B+' bits',eq:'none',slip:'h known'}[bfMode];
   $('bfFlowF').innerHTML={mrt:'f = h*/&Vert;h&Vert;',cb:'f = f<sub>k*</sub> from the codebook',eq:'f = 1/&radic;N<sub>t</sub> on every antenna',slip:'incorrect f = h/&Vert;h&Vert;'}[bfMode];
   $('bfFlowEff').innerHTML='h<sup>T</sup>f = '+fmtC(eff);
-  $('bfFlowCap').innerHTML={mrt:'MRT requires the complete channel vector at the transmitter. In TDD, it can be inferred from uplink reference signals using h<sub>downlink</sub> ≈ h<sub>uplink</sub><sup>T</sup>. This requires calibrated radio-frequency chains and transmission within the coherence time.',cb:'The receiver selects a codeword and returns only its index: '+B+' bits per coherence time from a shared unit-norm codebook.',eq:'Without CSIT, the transmitter cannot direct the beam. Week 11 used Alamouti coding to obtain transmit diversity without CSIT.',slip:'The signal model is y = √(GE<sub>x</sub>) h<sup>T</sup>f s, which contains an ordinary transpose rather than a Hermitian transpose. Consequently, f must contain the complex conjugate of h.'}[bfMode];
+  $('bfFlowCap').innerHTML={mrt:'MRT requires the complete channel vector at the transmitter. In TDD, it can be inferred from uplink reference signals using h<sub>downlink</sub> ≈ h<sub>uplink</sub><sup>T</sup>. This requires calibrated radio-frequency chains and transmission within the coherence time.',cb:'The receiver selects a codeword and returns only its index: '+B+' bits per coherence time from a shared unit-norm codebook.',eq:'Without channel knowledge, the transmitter cannot choose weights matched to the channel. Week 11 used Alamouti coding to obtain transmit diversity without CSIT.',slip:'The signal model is y = √(GE<sub>x</sub>) h<sup>T</sup>f s, which contains an ordinary transpose rather than a Hermitian transpose. Consequently, f must contain the complex conjugate of h.'}[bfMode];
 
   /* --- phasor chains --- */
   const chains={};for(const k in W)chains[k]=h.map((x,m)=>mul(x,W[k][m]));
@@ -357,8 +413,8 @@ function drawBf(){
   ['eq','slip','cb','mrt'].filter(k=>k!==bfMode).concat([bfMode]).forEach(k=>{const on=k===bfMode;let p=C();zp.c.save();zp.c.globalAlpha=on?1:.28;chains[k].forEach(c=>{const q=add(p,c),[x0,y0]=zp.P(p),[x1,y1]=zp.P(q);arrowPx(zp.c,x0,y0,x1,y1,css(bfCol[k]),on?2.6:1.6);p=q});zp.c.restore();if(on){const[x,y]=zp.P(p);zp.c.fillStyle=css(bfCol[k]);zp.c.font='11px system-ui';zp.c.fillText('hᵀf',x+5,y-5)}});
   const pct=(100*sel/n2).toFixed(0);
   bullets($('bfPhNote'),[
-    'Each arrow is one antenna’s contribution h<sub>m</sub>f<sub>m</sub>, and the receiver sees their sum h<sup>T</sup>f. The dashed circle has radius &Vert;h&Vert; = '+n.toFixed(2)+', the Cauchy–Schwarz limit for any unit-norm f.',
-    {mrt:'MRT sets f<sub>m</sub> = h<sub>m</sub>*/&Vert;h&Vert;, so every contribution is |h<sub>m</sub>|²/&Vert;h&Vert;, real and positive. The chain lies on the real axis and ends exactly on the circle: |h<sup>T</sup>f|² = &Vert;h&Vert;².',
+    'Each arrow is one antenna’s contribution h<sub>m</sub>f<sub>m</sub>, and the receiver observes their sum h<sup>T</sup>f. The dashed circle has radius &Vert;h&Vert; = '+n.toFixed(2)+', the Cauchy–Schwarz limit for any unit-norm f.',
+    {mrt:'MRT sets f<sub>m</sub> = h<sub>m</sub>*/&Vert;h&Vert;, so every contribution is |h<sub>m</sub>|²/&Vert;h&Vert;, real and positive. The contribution vectors add along the real axis, and their sum reaches the reference circle: |h<sup>T</sup>f|² = &Vert;h&Vert;².',
       cb:'The receiver evaluates all K = '+K+' codewords and feeds back the index of the one with the largest gain, k* = '+(pick.k+1)+'. For B = '+B+' bits, the selected beam achieves '+pct+'% of &Vert;h&Vert;², or '+fmtDb(toDb(sel/n2))+' relative to MRT.',
       eq:'Without CSIT, the received contributions retain their random channel phases and sum to &Sigma;h<sub>m</sub>/&radic;N<sub>t</sub>. For independent CN(0,1) coefficients, this sum is also CN(0,1), so it behaves as a single Rayleigh-fading channel. Here |h<sup>T</sup>f|² = '+sel.toFixed(2)+' compared with &Vert;h&Vert;² = '+n2.toFixed(2)+'.',
       slip:'Using f = h/&Vert;h&Vert; without complex conjugation gives h<sub>m</sub>f<sub>m</sub> = h<sub>m</sub>²/&Vert;h&Vert;. This doubles the channel phases instead of cancelling them, and gives |h<sup>T</sup>f|² = '+sel.toFixed(2)+' for this channel, or '+pct+'% of the MRT bound.'}[bfMode],
@@ -410,17 +466,17 @@ function drawSm(){
   zm.c.save();zm.c.strokeStyle=css('--red');zm.c.lineWidth=2;s1.forEach(p=>{const[x,y]=zm.P(p);zm.c.beginPath();zm.c.arc(x,y,8,0,2*Math.PI);zm.c.stroke()});zm.c.restore();
   bullets($('smMixNote'),[
     'Receive antenna '+(rx+1)+' observes √(GE<sub>x</sub>/N<sub>t</sub>) &Sigma;<sub>m</sub> h<sub>'+(rx+1)+',m</sub>s<sub>m</sub> + v. The '+Mc+' blue points are the noiseless sums over every QPSK symbol combination.',
-    Nt>1?'The red circles show the locations produced by stream 1 alone. Superposition with the other streams produces 4<sup>N<sub>t</sub>−1</sup> = '+(Mc/4)+' possible locations around each circle. ZF separation of multiple independent streams requires enough receive observations and a full-column-rank channel.':'With N<sub>t</sub> = 1, there is one stream and no inter-stream interference; the points form a scaled and rotated QPSK constellation.',
-    'Separating the streams needs the whole vector y from all N<sub>r</sub> antennas. The detectors of Tab 3 invert the mixing that way.'
+    Nt>1?'The red circles show the locations produced by stream 1 alone. Superposition with the other streams produces 4<sup>N<sub>t</sub>−1</sup> = '+(Mc/4)+' possible locations around each circle. ZF separation of multiple independent streams requires enough receive observations and a channel with linearly independent columns.':'With N<sub>t</sub> = 1, there is one stream and no inter-stream interference; the points form a scaled and rotated QPSK constellation.',
+    'Stream separation uses the received vector y from all N<sub>r</sub> antennas. Tab 3 shows how ZF and MMSE use these observations to estimate the transmitted symbols.'
   ]);
 
   /* --- rate–diversity landscape --- */
-  $('smTblTitle').innerHTML='Rate&ndash;diversity landscape for '+Nt+'&times;'+Nr;
-  const rows=[['Alamouti','No',Nt===2?'1':'&mdash;',Nt===2?String(2*Nr):'needs N<sub>t</sub> = 2'],['MRT / rank-1 eigenbeamforming','Yes','1',String(Nt*Nr)],['Spatial multiplexing + ZF','No*',String(m),Nr>=Nt?String(Nr-Nt+1):'needs N<sub>r</sub> &ge; N<sub>t</sub>'],['Eigenbeamforming, N<sub>s</sub> = '+m,'Yes',String(m),String((Nr-m+1)*(Nt-m+1))]];
-  $('smTbl').innerHTML='<tr><th>Technique</th><th>CSIT</th><th>Streams</th><th>Diversity</th></tr>'+rows.map(r=>'<tr><td>'+r[0]+'</td><td class="num">'+r[1]+'</td><td class="num">'+r[2]+'</td><td class="num">'+r[3]+'</td></tr>').join('');
+  $('smTblTitle').innerHTML='Stream count and diversity order for '+Nt+'&times;'+Nr;
+  const rows=[['Alamouti','No',Nt===2?'1':'&mdash;',Nt===2?String(2*Nr):'needs N<sub>t</sub> = 2'],['Single-stream SVD beamforming (MRT with one receive antenna)','Yes','1',String(Nt*Nr)],['Spatial multiplexing + ZF','No*',String(m),Nr>=Nt?String(Nr-Nt+1):'needs N<sub>r</sub> &ge; N<sub>t</sub>'],['Eigenbeamforming, N<sub>s</sub> = '+m,'Yes',String(m),String((Nr-m+1)*(Nt-m+1))]];
+  $('smTbl').innerHTML='<tr><th>Technique</th><th>CSIT</th><th>Streams</th><th>Diversity order</th></tr>'+rows.map(r=>'<tr><td>'+r[0]+'</td><td class="num">'+r[1]+'</td><td class="num">'+r[2]+'</td><td class="num">'+r[3]+'</td></tr>').join('');
   bullets($('smTblNote'),[
     '*Spatial multiplexing requires channel knowledge only at the receiver. The listed diversity orders assume independent, identically distributed Rayleigh fading. The lecture table corresponds to the N<sub>r</sub> = 1 case in the first two rows.',
-    'Single-stream transmission can achieve diversity order N<sub>t</sub>N<sub>r</sub> = '+(Nt*Nr)+'. Full spatial multiplexing supports '+m+' streams with diversity order '+(Nr>=Nt?(Nr-Nt+1):(Nt-Nr+1))+'. Precoding in Tab 4 permits intermediate choices.'
+    'With transmitter channel knowledge, strongest-mode beamforming can achieve diversity order N<sub>t</sub>N<sub>r</sub> = '+(Nt*Nr)+'. With enough receive antennas, spatial multiplexing with ZF supports '+m+' streams with diversity order '+(Nr>=Nt?(Nr-Nt+1):'not applicable because Nᵣ < Nₜ')+'. Tab 4 shows how precoding selects the number of active streams.'
   ]);
 }
 
@@ -470,7 +526,7 @@ function drawDe(){
   const g0=A.Gi?A.Gi[jw][jw].re:Infinity;
   bullets($('deBarsNote'),[
     'Stream '+(jw+1)+': [(H<sup>H</sup>H)<sup>−1</sup>]<sub>jj</sub> = '+g0.toFixed(2)+' and GE<sub>x</sub>/(N<sub>t</sub>N<sub>0</sub>) = '+(rho/Nt).toFixed(2)+', so γ<sup>ZF</sup> = '+(rho/Nt).toFixed(2)+'/'+g0.toFixed(2)+' = '+A.zf[jw].toFixed(3)+' ('+fmtDb(zfDb[jw])+').'+(deck&&snr===10?' Compare the exercise solution: 3.5 dB for H<sub>1</sub>, −10.0 dB for H<sub>2</sub>.':''),
-    'The MMSE output SINR is at least the ZF output SNR under the stated model. Here it gains '+Math.max(0,mmDb[jm]-zfDb[jw]).toFixed(2)+' dB on the worst stream; the gain is largest on ill-conditioned channels at moderate SNR.'
+    'The MMSE output SINR is at least the ZF output SNR under the stated model. Here the difference is '+Math.max(0,mmDb[jm]-zfDb[jw]).toFixed(2)+' dB between the lowest ZF stream SNR and the lowest MMSE stream SINR. MMSE is useful when ZF would strongly amplify noise.'
   ]);
 
   /* --- detector output --- */
@@ -486,7 +542,7 @@ function drawDe(){
   bullets($('deConstNote'),[
     'Each colour marks a stream. The crosses are the ideal constellation points; red circles mark incorrect nearest-point decisions.',
     'ZF outputs are divided by α = √(GEₓ/Nₜ) before decisions, exactly as in the lecture exercise. A weak channel mode increases the noise spread.',
-    'Change SNR, channel, or constellation, then select New noise to compare independent noise realisations.'
+    'Change SNR, channel, or constellation, then select Generate noise to compare independent noise realisations.'
   ]);
 
   /* --- SNR sweep for this channel --- */
@@ -497,9 +553,9 @@ function drawDe(){
   z.c.restore();vline(z,snr,css('--red'),[4,4],1.4);
   const i0=xs.indexOf(0),i30=xs.indexOf(30),gapAt=i=>toDb(sw[i].mm[jw])-toDb(sw[i].zf[jw]);
   bullets($('deSweepNote'),[
-    'ZF (solid) rises exactly 1 dB per dB: γⱼ<sup>ZF</sup> is linear in GE<sub>x</sub>/N<sub>0</sub>, with a fixed offset −10log<sub>10</sub>(N<sub>t</sub>[(H<sup>H</sup>H)<sup>−1</sup>]<sub>jj</sub>).',
+    'For a fixed channel, the ZF output SNR (solid lines) increases by 1 dB for each 1 dB increase in the input SNR: γⱼ<sup>ZF</sup> is linear in GE<sub>x</sub>/N<sub>0</sub>, with a fixed offset −10log<sub>10</sub>(N<sub>t</sub>[(H<sup>H</sup>H)<sup>−1</sup>]<sub>jj</sub>).',
     'At high SNR, λ → 0 and the MMSE curves (dashed) approach the ZF curves; their difference on stream '+(jw+1)+' is '+gapAt(i30).toFixed(2)+' dB at 30 dB. At low SNR, MMSE approaches the matched filter H<sup>H</sup> and provides a '+gapAt(i0).toFixed(1)+' dB advantage at 0 dB.',
-    'This panel reproduces the lecture comparison of post-processing SNR for ZF and SINR for MMSE. Select the lecture example matrix and increase c to observe the increasing ZF noise penalty.'
+    'This panel reproduces the lecture comparison of post-processing SNR for ZF and SINR for MMSE. Select the lecture example matrix and increase c to observe the increase in ZF noise amplification.'
   ]);
 
   /* --- complexity --- */
@@ -509,8 +565,8 @@ function drawDe(){
   dot(z,Nt,Nt*Math.log10(Mc),css('--green'),6);dot(z,Nt,Math.log10(Nt*Mc),css('--green'),6);
   bullets($('deCplxNote'),[
     'ML evaluates every vector in C<sup>N<sub>t</sub></sup>: '+fmtCount(Math.pow(Mc,Nt))+' candidates per received vector for '+(mod==='qam16'?'16-QAM':'QPSK')+' at N<sub>t</sub> = '+Nt+', each needing an N<sub>r</sub>-length distance.',
-    'ZF/MMSE need one N<sub>t</sub>×N<sub>t</sub> inversion per coherence interval, and then N<sub>t</sub>|C| = '+Nt*Mc+' scalar comparisons per vector.',
-    'At N<sub>t</sub> = 8 with 16-QAM, ML would need 4.3 billion candidates per vector. Sphere decoding lowers the average cost but stays exponential in the worst case.'
+    'ZF/MMSE need one N<sub>t</sub>×N<sub>t</sub> inversion each time the channel estimate changes, and then N<sub>t</sub>|C| = '+Nt*Mc+' symbol comparisons per vector.',
+    'At N<sub>t</sub> = 8 with 16-QAM, ML would need 4.3 billion candidates per vector. Sphere decoding reduces the number of candidate vectors examined. Its computational cost depends on the channel and SNR.'
   ]);
 }
 
@@ -552,9 +608,9 @@ function drawPc(){
   hline(z,toDb(mrt),css('--green'),[6,4],1.8);if(zfW!=null&&toDb(zfW)>lo)hline(z,toDb(zfW),css('--orange'),[3,3],1.8);if(lo<0)hline(z,0,css('--text'),[2,3],1);
   const pcExNote=pcFixed&&pcFixed.name.startsWith('lecture')&&snr===10&&Ns===2?' Exercise check: '+(pcFixed.name.endsWith('₁')?'10.5 dB and 1.0 dB; with Nₛ = 1, 13.5 dB.':'12.6 dB and −13.0 dB; with Nₛ = 1, 15.6 dB.'):'';
   bullets($('pcBarsNote'),[
-    'Each transmitted mode gets power E<sub>x</sub>/N<sub>s</sub> and sees gain σ<sub>j</sub>². With N<sub>s</sub> = '+Ns+': '+gam.slice(0,Ns).map((g,j)=>'γ'+sub1(j+1)+' = '+rho.toFixed(1)+'·'+(sig[j]*sig[j]).toFixed(2)+'/'+Ns+' = '+fmtDb(toDb(g))).join(', ')+'.'+pcExNote,
-    'The green line represents N<sub>s</sub> = 1, or strongest-mode MIMO beamforming: all transmit power is allocated to σ<sub>1</sub>'+(Ns>1?', giving '+(10*Math.log10(Ns)).toFixed(1)+' dB more SNR than stream 1 under the selected equal-power division':'')+'. Increasing from N<sub>s</sub> to N<sub>s</sub> + 1 streams multiplies every stream’s power by N<sub>s</sub>/(N<sub>s</sub> + 1); the additional stream increases total rate only if its mode gain is sufficiently large.',
-    zfW!=null?'Orange: open-loop spatial multiplexing with ZF (no CSIT), worst stream '+fmtDb(toDb(zfW))+'. With CSIT, SVD precoding avoids channel inversion and therefore avoids ZF noise enhancement. Compare one stream with multiple streams using the mode SNRs.':'Open-loop ZF requires N<sub>r</sub> ≥ N<sub>t</sub>. Precoding with CSIT can also operate when N<sub>r</sub> < N<sub>t</sub>; compare the mode SNRs for different stream counts.'
+    'Each active mode is assigned transmit energy E<sub>x</sub>/N<sub>s</sub> and has channel power gain σ<sub>j</sub>². With N<sub>s</sub> = '+Ns+': '+gam.slice(0,Ns).map((g,j)=>'γ'+sub1(j+1)+' = '+rho.toFixed(1)+'·'+(sig[j]*sig[j]).toFixed(2)+'/'+Ns+' = '+fmtDb(toDb(g))).join(', ')+'.'+pcExNote,
+    'The green line represents N<sub>s</sub> = 1, or MIMO beamforming on the strongest channel mode: all transmit power is allocated to σ<sub>1</sub>'+(Ns>1?', giving '+(10*Math.log10(Ns)).toFixed(1)+' dB more SNR than stream 1 under the selected equal-power division':'')+'. Increasing from N<sub>s</sub> to N<sub>s</sub> + 1 streams multiplies every stream’s power by N<sub>s</sub>/(N<sub>s</sub> + 1); the additional stream increases total rate only if its mode gain is sufficiently large.',
+    zfW!=null?'Orange: spatial multiplexing with ZF and no transmitter channel knowledge; lowest stream SNR '+fmtDb(toDb(zfW))+'. With CSIT, SVD precoding avoids channel inversion and therefore avoids ZF noise enhancement. Compare one stream with multiple streams using the mode SNRs.':'ZF without transmitter channel knowledge requires N<sub>r</sub> ≥ N<sub>t</sub>. Precoding with CSIT can also operate when N<sub>r</sub> < N<sub>t</sub>; compare the mode SNRs for different stream counts.'
   ]);
 
   /* --- SVD matrices --- */
@@ -564,7 +620,7 @@ function drawPc(){
   $('pcMatD').innerHTML='|U<sub>s</sub><sup>H</sup>HV<sub>s</sub>| ='+D.map((row,i)=>'<br>&nbsp;['+row.map((v,k)=>{const a=Math.sqrt(abs2(v));return i===k?a.toFixed(2):'<span class="ok">'+(a<5e-3?'0.00':a.toFixed(2))+'</span>'}).join('  ')+']').join('');
   bullets($('pcMatNote'),[
     'Left: each receive antenna observes contributions from every transmit antenna, so the streams interfere. Right: after precoding with V<sub>s</sub> and combining with U<sub>s</sub><sup>H</sup>, the effective channel is diag(σ<sub>1</sub>, …, σ<sub>N<sub>s</sub></sub>), and the green off-diagonal entries are zero.',
-    'The transmitter must know V (CSIT, for example over a feedback link) and the receiver must know U. In return, detection is '+Ns+' independent scalar decisions, with no channel inversion or joint ML search.',
+    'The transmitter must know V (CSIT, for example over a feedback link) and the receiver must know U. The resulting detector makes '+Ns+' independent symbol decisions, with no channel inversion or joint ML search.',
     pcFixed&&pcFixed.name.startsWith('σ')?'Illustration of the lecture concept: two strong modes (σ = 2, 1.6) and two weak modes (0.25, 0.1). Compare N<sub>s</sub> = 2, 3, and 4 to see how the available power is divided among strong and weak modes.':'Generate a new channel and compare its strong and weak modes. Leaving a weak mode inactive allocates more power to the remaining streams.'
   ]);
 

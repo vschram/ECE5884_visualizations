@@ -20,16 +20,16 @@ button{font:inherit;font-size:.78rem;min-height:36px;padding:6px 8px;line-height
 @media(max-width:520px){main{padding:10px}.panel{padding:10px}.row{grid-template-columns:repeat(2,minmax(0,1fr));gap:5px 10px}.row>strong{grid-column:1/-1}.row label{min-height:30px}.metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.grid3{grid-template-columns:repeat(3,minmax(0,1fr))}button{min-height:40px}}
 .lab-relations{grid-column:1/-1;margin-top:10px;border:1px solid var(--line);border-radius:7px;background:#fff}.lab-relations summary{cursor:pointer;padding:8px;font-size:.8rem;font-weight:600}.lab-relations .formula{margin:0;border:0;border-top:1px solid var(--line);border-radius:0 0 7px 7px}input:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 </style></head><body><main>
-<h1>Singular-value decomposition eigenmodes and rank adaptation</h1><p class="intro">The singular-value decomposition (SVD) represents the channel as H = UΣV<sup>H</sup>. The right singular vectors in V steer transmitted symbols into mutually orthogonal channel directions, and the receiver projects onto the left singular vectors in U. This produces parallel scalar channels with gains σ₁ and σ₂. Rank adaptation selects how many strong modes carry data. Compare the mode SNRs when the same total energy is assigned to one or two streams. The diagram shows the normalised noiseless signal path; the complete noisy relation appears below it.</p>
+<h1>Singular-value decomposition eigenmodes and rank adaptation</h1><p class="intro">The singular-value decomposition (SVD) represents the channel as H = UΣV<sup>H</sup>. The right singular vectors in V map transmitted symbols into mutually orthogonal channel directions, and the receiver projects onto the left singular vectors in U. This produces separate single-stream channels with gains σ₁ and σ₂. A channel mode is an independent spatial direction. Rank adaptation selects how many of these modes carry data. Compare the mode SNRs when the same total energy is assigned to one or two streams. The diagram shows the signal path with unit scaling and no noise; the complete noisy relation appears below it.</p>
 <div class="layout"><section class="panel controls"><h2 style="font-size:1.05rem;margin-top:0">Constructed 2×2 channel</h2>
 <label>Strong singular value σ₁: <span id="s1Val" class="value"></span></label><input id="s1" type="range" min="0.5" max="3" step="0.05" value="2.20">
 <label>Weak singular value σ₂: <span id="s2Val" class="value"></span></label><input id="s2" type="range" min="0.05" max="2.2" step="0.05" value="0.45">
 <p class="order-note" id="orderNote"></p>
 <label>Transmit rotation V: <span id="vVal" class="value"></span></label><input id="vangle" type="range" min="-80" max="80" step="1" value="30">
 <label>Receive rotation U: <span id="uVal" class="value"></span></label><input id="uangle" type="range" min="-80" max="80" step="1" value="-20">
-<label>Total transmit signal-to-noise ratio (SNR), E<sub>x</sub>/N<sub>0</sub>: <span id="snrVal" class="value"></span></label><input id="snr" type="range" min="-5" max="30" step="1" value="12">
+<label>Transmit energy-to-noise ratio, E<sub>x</sub>/N<sub>0</sub>: <span id="snrVal" class="value"></span></label><input id="snr" type="range" min="-5" max="30" step="1" value="12">
 <div class="toggle"><button id="oneBtn">Use one spatial stream</button><button id="twoBtn" class="active">Use two spatial streams</button></div>
-<details class="lab-relations"><summary>Key relations</summary><div class="formula" id="formula"></div></details></section>
+<details class="lab-relations"><summary>Key equations</summary><div class="formula" id="formula"></div></details></section>
 <section class="panel"><div class="canvas-scroll"><canvas id="pipeline" width="790" height="420" aria-label="SVD precoding, channel action, and receive combining"></canvas></div><p class="scrollhint">Scroll horizontally inside the figure to follow the complete SVD processing chain.</p><div class="metrics"><div class="metric"><span>Mode 1 SNR</span><b id="g1"></b></div><div class="metric"><span>Mode 2 SNR</span><b id="g2"></b></div></div><p class="note" id="note"></p></section></div></main>
 <script>
 'use strict';
@@ -46,13 +46,13 @@ function draw(s1,s2,tV,tU){
  const scale=55/Math.max(s1,s2,1);arrow(...centers[2],[s1*u1[0],s1*u1[1]],scale,'#315d8a','σ₁u₁');if(Ns===2)arrow(...centers[2],[s2*u2[0],s2*u2[1]],scale,'#8a5a31','σ₂u₂');
  arrow(...centers[3],[s1,0],scale,'#315d8a','σ₁s₁');if(Ns===2)arrow(...centers[3],[0,s2],scale,'#8a5a31','σ₂s₂');
  ctx.strokeStyle='#aab3bb';ctx.lineWidth=2;ctx.setLineDash([5,5]);for(let i=0;i<3;i++){ctx.beginPath();ctx.moveTo(centers[i][0]+82,centers[i][1]);ctx.lineTo(centers[i+1][0]-82,centers[i+1][1]);ctx.stroke()}ctx.setLineDash([]);
- ctx.fillStyle='#5f6b76';ctx.font='12px system-ui';ctx.textAlign='center';ctx.fillText('x_sig = V₁:Ns s',195,154);ctx.fillText('y_sig = HV₁:Ns s = UΣ₁:Ns s',398,154);ctx.fillText('ỹ_sig = U₁:Nsᴴy_sig = diag(σⱼ)s',602,154);ctx.textAlign='left';ctx.fillStyle='#17202a';ctx.font='bold 14px system-ui';ctx.fillText('Normalised noiseless signal path',16,24)
+ ctx.fillStyle='#5f6b76';ctx.font='12px system-ui';ctx.textAlign='center';ctx.fillText('x_sig = V₁:Ns s',195,154);ctx.fillText('y_sig = HV₁:Ns s = UΣ₁:Ns s',398,154);ctx.fillText('ỹ_sig = U₁:Nsᴴy_sig = diag(σⱼ)s',602,154);ctx.textAlign='left';ctx.fillStyle='#17202a';ctx.font='bold 14px system-ui';ctx.fillText('Signal path: unit scaling, no noise',16,24)
 }
 function update(){
  const s1=+el.s1.value,requestedS2=+el.s2.value;el.s2.max=s1.toFixed(2);const wasClamped=requestedS2>s1;const s2=Math.min(requestedS2,s1);if(wasClamped)el.s2.value=s2;
  const tV=rad(+el.vangle.value),tU=rad(+el.uangle.value),snrDb=+el.snr.value,total=10**(snrDb/10);
  document.getElementById('s1Val').textContent=s1.toFixed(2);document.getElementById('s2Val').textContent=s2.toFixed(2);document.getElementById('vVal').textContent=`${el.vangle.value}°`;document.getElementById('uVal').textContent=`${el.uangle.value}°`;document.getElementById('snrVal').textContent=`${snrDb} dB`;
- document.getElementById('orderNote').textContent=`Singular values are ordered by convention: σ₁ ≥ σ₂ ≥ 0. The σ₂ slider maximum follows σ₁ (${s1.toFixed(2)}).${wasClamped?' σ₂ was reduced to preserve this ordering.':''}`;
+ document.getElementById('orderNote').textContent=`Singular values are ordered by convention: σ₁ ≥ σ₂ ≥ 0. The maximum allowed σ₂ equals σ₁ (${s1.toFixed(2)}).${wasClamped?' σ₂ was reduced to preserve this ordering.':''}`;
  const gamma1=total/Ns*s1*s1,gamma2=Ns===2?total/Ns*s2*s2:0;
  document.getElementById('g1').textContent=`${(10*Math.log10(gamma1)).toFixed(1)} dB`;document.getElementById('g2').textContent=Ns===2?`${(10*Math.log10(gamma2)).toFixed(1)} dB`:'not used';
  const diagText=Ns===1?'diag(σ₁)':'diag(σ₁,σ₂)';
