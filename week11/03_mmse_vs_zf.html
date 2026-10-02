@@ -3,6 +3,22 @@
 <style>
 :root{--ink:#17202a;--muted:#5f6b76;--line:#d9dee3;--panel:#f6f7f8;--accent:#234a73;--zf:#777f87;--mmse:#315d8a}
 *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--ink)}main{max-width:1100px;margin:auto;padding:22px}h1{font-size:1.45rem;margin:0 0 6px}.intro{color:var(--muted);line-height:1.45;margin:0 0 18px}.layout{display:grid;grid-template-columns:330px 1fr;gap:18px}.panel{min-width:0;border:1px solid var(--line);border-radius:10px;padding:16px}.controls{background:var(--panel)}label{display:block;margin-top:14px;font-size:.86rem}input[type=range]{width:100%}.value{font-weight:650;font-variant-numeric:tabular-nums}.buttons{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}button{border:1px solid #aab3bb;background:#fff;border-radius:7px;padding:8px 10px;cursor:pointer}.formula{margin-top:14px;padding:11px;background:white;border-left:4px solid var(--accent);font-family:Cambria,Georgia,serif;line-height:1.55}.control-note{font-size:.78rem;color:var(--muted);line-height:1.4;margin:8px 0 0}.scrollhint{display:none;margin:6px 0 0;color:var(--muted);font-size:.76rem}.canvas-scroll{width:100%;max-width:100%;overflow-x:auto}canvas{display:block;width:100%;height:auto;border:1px solid var(--line);border-radius:8px}.metrics{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}.card{border:1px solid var(--line);border-radius:8px;padding:11px}.card h3{font-size:.92rem;margin:0 0 8px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.small span{display:block;color:var(--muted);font-size:.7rem}.small b{font-size:.9rem;font-variant-numeric:tabular-nums}.note{font-size:.86rem;color:var(--muted);line-height:1.45;margin-top:12px}@media(max-width:850px){.layout{grid-template-columns:1fr}}@media(max-width:600px){.scrollhint{display:block}.canvas-scroll canvas{width:720px;max-width:none}}@media(max-width:590px){.metrics{grid-template-columns:1fr}.grid3{grid-template-columns:1fr}}
+
+/* Compact lab controls, with readable labels and touch targets. */
+main{padding:16px}.intro{margin-bottom:12px;font-size:.9rem}
+.layout{grid-template-columns:300px minmax(0,1fr);gap:12px;align-items:start}
+.panel{min-width:0;padding:12px}.controls label{font-size:.8rem;margin-top:9px;line-height:1.3}
+input[type=range]{display:block;height:26px;margin:2px 0 0;accent-color:var(--accent)}
+.buttons,.toggle{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin-top:10px}
+button{font:inherit;font-size:.78rem;min-height:36px;padding:6px 8px;line-height:1.25}
+.formula{padding:8px;margin-top:10px;font-size:.85rem;line-height:1.4;overflow-wrap:anywhere}
+.row{grid-template-columns:64px minmax(0,1fr) minmax(0,1fr);gap:8px;margin:8px 0;align-items:start}
+.row strong{font-size:.8rem;padding-top:2px}.row label{margin-top:0;min-height:34px}
+.metrics{gap:6px;margin-top:9px}.metric,.card{padding:8px;min-width:0}
+.grid3{grid-template-columns:repeat(3,minmax(0,1fr))}
+@media(max-width:850px){.layout{grid-template-columns:1fr}.controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 12px}.controls>h2,.controls>div,.controls>p{grid-column:1/-1}.controls>label{grid-column:1/-1}.controls>input{grid-column:1/-1}}
+@media(max-width:520px){main{padding:10px}.panel{padding:10px}.row{grid-template-columns:repeat(2,minmax(0,1fr));gap:5px 10px}.row>strong{grid-column:1/-1}.row label{min-height:30px}.metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.grid3{grid-template-columns:repeat(3,minmax(0,1fr))}button{min-height:40px}}
+.lab-relations{grid-column:1/-1;margin-top:10px;border:1px solid var(--line);border-radius:7px;background:#fff}.lab-relations summary{cursor:pointer;padding:8px;font-size:.8rem;font-weight:600}.lab-relations .formula{margin:0;border:0;border-top:1px solid var(--line);border-radius:0 0 7px 7px}input:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 </style></head><body><main>
 <h1>Minimum mean-square error versus zero-forcing detection</h1><p class="intro">Assuming perfect channel-state information at the receiver (CSIR) and a full-column-rank channel, zero-forcing (ZF) detection removes inter-stream interference exactly but can amplify noise. Minimum mean-square error (MMSE) detection allows some residual interference when doing so produces a higher output signal-to-interference-plus-noise ratio (SINR).</p>
 <div class="layout"><section class="panel controls"><h2 style="font-size:1.05rem;margin-top:0">Scenario</h2>
@@ -11,7 +27,7 @@
 <p class="control-note">ρ is a matrix coefficient. The normalised correlation between the channel columns is 2ρ/(1+ρ²).</p>
 <label>Total transmit signal-to-noise ratio (SNR), E<sub>x</sub>/N<sub>0</sub>: <span id="snrVal" class="value"></span></label><input id="snr" type="range" min="-10" max="35" step="1" value="5">
 <div class="buttons"><button data-preset="low">Low SNR</button><button data-preset="mid">Moderate SNR</button><button data-preset="high">High SNR</button></div>
-<div class="formula" id="formula"></div></section>
+<details class="lab-relations"><summary>Key relations</summary><div class="formula" id="formula"></div></details></section>
 <section class="panel"><div class="canvas-scroll"><canvas id="chart" width="740" height="360" aria-label="ZF and MMSE output SINR comparison"></canvas></div><p class="scrollhint">Scroll horizontally inside the chart to see the full ZF–MMSE comparison.</p>
 <div class="metrics"><div class="card"><h3>ZF, stream 1</h3><div class="grid3"><div class="small"><span>Output SINR</span><b id="zfSinr"></b></div><div class="small"><span>Interference / signal</span><b id="zfInt"></b></div><div class="small"><span>Noise / signal</span><b id="zfNoise"></b></div></div></div>
 <div class="card"><h3>MMSE, stream 1</h3><div class="grid3"><div class="small"><span>Output SINR</span><b id="mmseSinr"></b></div><div class="small"><span>Interference / signal</span><b id="mmseInt"></b></div><div class="small"><span>Noise / signal</span><b id="mmseNoise"></b></div></div></div></div>

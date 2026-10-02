@@ -24,12 +24,30 @@
 @media(max-width:900px){.toolbar-metrics{grid-auto-flow:row;grid-template-columns:repeat(3,minmax(0,1fr))}.tabs{grid-template-columns:repeat(2,1fr)}.plots{grid-template-columns:1fr 1fr}.plots:not(.two) .card:last-child{grid-column:1/-1}.checklist{grid-template-columns:1fr 1fr}.control-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.control-sections{grid-template-columns:1fr}.summary-row{grid-template-columns:1fr}.summary-row .toolbar-metrics,.summary-row .toolbar-metrics.metrics-4,.summary-row .toolbar-metrics.metrics-5,.summary-row .toolbar-metrics.metrics-6,.summary-row .toolbar-metrics.metrics-7{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:620px){.toolbar-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}body{padding:14px}.tabs{grid-template-columns:1fr 1fr}.panel-head{display:block}.plots,.two{grid-template-columns:1fr}.plots .card:last-child{grid-column:auto}.flow{display:grid;grid-template-columns:1fr 1fr}.arrow{display:none}.checklist{grid-template-columns:1fr 1fr}.mode-buttons .preset{margin-left:0}.control-section .control-grid{grid-template-columns:1fr 1fr}canvas{height:262px}}
 @media(max-width:390px){.tabs,.checklist,.flow,.control-grid,.control-section .control-grid,.summary-row .toolbar-metrics,.summary-row .toolbar-metrics.metrics-4,.summary-row .toolbar-metrics.metrics-5,.summary-row .toolbar-metrics.metrics-6,.summary-row .toolbar-metrics.metrics-7{grid-template-columns:1fr}.ctrl{min-width:100%}.ctrl label{flex-wrap:wrap}}
+
+/* Compact toolbar layout with readable controls at each breakpoint. */
+.toolbar{padding:9px 10px}.mode-row{margin-bottom:8px}.mode-buttons{gap:5px;align-items:center}
+.mode-buttons button{min-height:30px;padding:5px 8px;font-size:.72rem;line-height:1.3}
+.mode-buttons .preset{margin-left:0}.control-sections{grid-template-columns:1fr 1fr;gap:7px}
+.control-section{padding:7px 9px}.control-section-title{margin-bottom:5px}
+.control-section .control-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 10px}
+.control-grid{grid-template-columns:repeat(auto-fit,minmax(175px,1fr));gap:6px 10px}
+.ctrl label{font-size:.72rem;line-height:1.3;align-items:baseline}.ctrl label span{min-width:0}.ctrl input[type=range]{margin:0;min-height:25px}
+.summary-row{grid-template-columns:minmax(0,1.25fr) minmax(260px,1fr);gap:7px;margin-top:7px}
+.summary-row .toolbar-metrics.metrics-4{grid-template-columns:repeat(2,minmax(0,1fr))}
+.summary-row .toolbar-metrics.metrics-6,.summary-row .toolbar-metrics.metrics-7{grid-template-columns:repeat(3,minmax(0,1fr))}
+.summary-row .metric{padding:6px 7px}.summary-row .metric .value{font-size:.86rem}.summary-row .metric .small{font-size:.65rem;line-height:1.25}
+.summary-row .formula{padding:8px 9px;font-size:.68rem;line-height:1.3}.lab-metric button{margin-top:5px;padding:5px 8px;min-height:30px}
+.panel.lab-open>.sticky-bar .toolbar-metrics{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+@media(max-width:900px){.summary-row{grid-template-columns:1fr}.summary-row .toolbar-metrics.metrics-4{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(max-width:620px){.control-sections{grid-template-columns:1fr}.summary-row .toolbar-metrics.metrics-4,.summary-row .toolbar-metrics.metrics-6,.summary-row .toolbar-metrics.metrics-7{grid-template-columns:repeat(2,minmax(0,1fr))}.sticky-bar{position:static}.mode-buttons button{flex:1 1 auto}}
+@media(max-width:390px){.control-section .control-grid,.control-grid{grid-template-columns:1fr}.ctrl{min-width:0}.ctrl label{flex-wrap:wrap}.summary-row .toolbar-metrics.metrics-4,.summary-row .toolbar-metrics.metrics-6,.summary-row .toolbar-metrics.metrics-7{grid-template-columns:1fr 1fr}.panel.lab-open>.sticky-bar .lab-metric{display:block}.panel.lab-open>.sticky-bar .lab-metric button{width:100%;margin-top:5px}}
 </style>
 </head>
 <body>
 <h1>Week 10 · Diversity: Receive Combining, Transmit Diversity, and the Alamouti Code</h1>
-<p class="sub">Follow the Week 10 sequence: examine why Rayleigh deep fades motivate independent diversity branches and distinguish array gain
-from diversity gain; combine N<sub>r</sub> receive branches using selection combining (SC), equal-gain combining (EGC), and maximal-ratio combining (MRC);
+<p class="sub">Follow the Week 10 sequence: examine how large reductions in received signal power (deep fades) motivate independent diversity branches and distinguish array gain
+from diversity gain. Signal-to-noise ratio (SNR) measures signal power relative to noise power; an outage occurs when SNR is below the chosen threshold. Combine N<sub>r</sub> receive branches using selection combining (SC), equal-gain combining (EGC), and maximal-ratio combining (MRC);
 explain why fixed-weight repetition from several transmit antennas provides no diversity; and use the Alamouti code to obtain diversity order 2 without channel-state information at the transmitter (CSIT).</p>
 
 <nav class="tabs" role="tablist" aria-label="Week 10 topics">
@@ -43,9 +61,9 @@ explain why fixed-weight repetition from several transmit antennas provides no d
 
 <!-- ============================ 1 · DIVERSITY FUNDAMENTALS ============================ -->
 <section class="panel" id="fund" role="tabpanel" aria-labelledby="tab-fund">
-  <div class="panel-head"><div><div class="eyebrow">Motivation, diversity types, and array gain versus diversity gain</div><h2>Rayleigh fading frequently produces deep fades, whereas independent branches rarely fade simultaneously</h2></div><div class="message">With one antenna, |h|&sup2; is exponentially distributed: the instantaneous SNR is more than 10 dB below its mean 10% of the time and more than 20 dB below it 1% of the time. Average SNR alone therefore does not describe link reliability. Diversity provides several independently fading observations of the signal. Combining them raises the mean SNR (array gain) and reduces the probability of very low SNR more rapidly as the average SNR increases (diversity gain). Both benefits require sufficiently uncorrelated branches; for spatial diversity, the correlation depends on antenna spacing and angular spread.</div></div>
+  <div class="panel-head"><div><div class="eyebrow">Motivation, diversity types, and array gain versus diversity gain</div><h2>Independent branches reduce the probability of simultaneous deep fades</h2></div><div class="message">With one antenna, |h|&sup2; is exponentially distributed: a branch can experience a deep fade even when its average SNR is high. Average SNR alone therefore does not describe link reliability. Diversity provides several independently fading observations of the signal. Combining them raises the mean SNR (array gain) and reduces the probability of very low SNR more rapidly as the average SNR increases (diversity gain). Diversity gain requires sufficiently independent fading branches. MRC still provides array gain when the branches fade together. Spatial correlation depends on antenna spacing, angular spread, antenna patterns, and mutual coupling.</div></div>
   <div class="sticky-bar"><div class="toolbar">
-    <div class="mode-buttons mode-row"><button type="button" id="fdNew">New fading</button><button type="button" class="preset" id="fdSlide">Slide figure: one branch against two-branch MRC</button><button type="button" class="preset" id="fdCorrPreset">Fully correlated: d = 0</button></div>
+    <div class="mode-buttons mode-row"><button type="button" id="fdNew">New channel</button><button type="button" class="preset" id="fdSlide">Slide figure: one branch against two-branch MRC</button><button type="button" class="preset" id="fdCorrPreset">Fully correlated: d = 0</button></div>
     <div class="control-sections">
       <div class="control-section"><div class="control-section-title">Antennas</div><div class="control-grid">
         <div class="ctrl"><label for="fdNr"><span>Receive branches N<sub>r</sub></span> <strong id="fdNrOut">2</strong></label><input id="fdNr" type="range" min="1" max="6" value="2" step="1"></div>
@@ -56,26 +74,24 @@ explain why fixed-weight repetition from several transmit antennas provides no d
         <div class="ctrl"><label for="fdTh"><span>Outage threshold &gamma;<sub>0</sub></span> <strong id="fdThOut">7 dB</strong></label><input id="fdTh" type="range" min="-5" max="20" value="7" step="1"></div>
       </div></div>
     </div>
-    <div class="summary-row"><div class="toolbar-metrics metrics-6">
-      <div class="metric"><div class="name">Adjacent correlation</div><div class="value" id="fdRho">&mdash;</div><div class="small" id="fdRhoSmall">&mdash;</div></div>
+    <div class="summary-row"><div class="toolbar-metrics metrics-4">
+      <div class="metric"><div class="name">Adjacent correlation</div><div class="value" id="fdRho">&mdash;</div><div class="small">isotropic scattering model</div></div>
       <div class="metric"><div class="name">Array gain (MRC)</div><div class="value" id="fdAg">&mdash;</div><div class="small">A<sub>g</sub> = &gamma;&#772;<sub>&Sigma;</sub>/&gamma;&#772; = N<sub>r</sub></div></div>
       <div class="metric"><div class="name">One-branch outage</div><div class="value" id="fdPs">&mdash;</div><div class="small">1 &minus; e<sup>&minus;&gamma;<sub>0</sub>/&gamma;&#772;</sup></div></div>
       <div class="metric"><div class="name">MRC outage</div><div class="value" id="fdPm">&mdash;</div><div class="small" id="fdPmSmall">&mdash;</div></div>
-      <div class="metric"><div class="name">Gain at 1% outage</div><div class="value" id="fdG1">&mdash;</div><div class="small">MRC against one branch</div></div>
-      <div class="metric"><div class="name">Diversity contribution at 1% outage</div><div class="value" id="fdGd">&mdash;</div><div class="small">total gain &minus; array gain</div></div>
-    </div><div class="formula"><div>y[n] = &radic;G h s[n] + v[n], E|h<sub>i</sub>|&sup2; = 1</div><div>&gamma;<sub>i</sub> = GE<sub>x</sub>|h<sub>i</sub>|&sup2;/N<sub>0</sub>, &gamma;&#772; = GE<sub>x</sub>/N<sub>0</sub></div><div>Array gain A<sub>g</sub> = &gamma;&#772;<sub>&Sigma;</sub>/&gamma;&#772;; diversity order M: P&#772;<sub>s</sub> &asymp; c&gamma;&#772;<sup>&minus;M</sup></div><div>&rho;(d) &asymp; J<sub>0</sub>(2&pi;d/&lambda;), first zero near 0.38&lambda;</div><div id="fdEig">&mdash;</div></div></div>
+    </div><div class="formula"><div>y[n] = &radic;G h s[n] + v[n], E|h<sub>i</sub>|&sup2; = 1</div><div>&gamma;<sub>i</sub> = GE<sub>x</sub>|h<sub>i</sub>|&sup2;/N<sub>0</sub>, &gamma;&#772; = GE<sub>x</sub>/N<sub>0</sub></div><div>Array gain A<sub>g</sub> = &gamma;&#772;<sub>&Sigma;</sub>/&gamma;&#772;; diversity order M: P&#772;<sub>s</sub> &asymp; c&gamma;&#772;<sup>&minus;M</sup></div><div>&rho;(d) &asymp; J<sub>0</sub>(2&pi;d/&lambda;), first zero near 0.38&lambda;</div></div></div>
   </div></div>
 
   <div class="plots">
     <div class="card"><div class="title">Fading over time: each branch and the MRC output</div><canvas id="fdEnv" role="img" aria-label="Instantaneous SNR of each receive branch and of the MRC output over time, with the outage threshold and strips marking outage intervals"></canvas><div class="legend"><span><i class="sw orange"></i>Branch 1 alone</span><span><i class="sw grey"></i>Other branches</span><span><i class="sw blue"></i>MRC output &gamma;&#772;&Vert;h&Vert;&sup2;</span><span><i class="sw red"></i>&gamma;<sub>0</sub></span><span>Strips: time in outage</span></div><ul class="bullets" id="fdEnvNote"></ul></div>
-    <div class="card"><div class="title">Spatial correlation versus antenna spacing</div><canvas id="fdCorr" role="img" aria-label="Correlation J0 of two antennas against their spacing in wavelengths, with the envelope correlation and the selected spacing marked"></canvas><div class="legend"><span><i class="sw blue"></i>&rho; = J<sub>0</sub>(2&pi;d/&lambda;)</span><span><i class="sw cyan"></i>Envelope correlation &asymp; &rho;&sup2;</span><span><i class="sw orange"></i>Selected antenna pairs</span></div><ul class="bullets" id="fdCorrNote"></ul></div>
-    <div class="card"><div class="title">Array gain shifts the distribution; diversity changes its lower-tail slope</div><canvas id="fdCdf" role="img" aria-label="Cumulative distribution of the combined SNR normalized to the average branch SNR, for one branch, array gain only, independent MRC and MRC at the chosen spacing"></canvas><div class="legend"><span><i class="sw grey"></i>One branch</span><span><i class="sw purple"></i>Array gain only (d = 0)</span><span><i class="sw green"></i>MRC, independent identically distributed branches</span><span><i class="sw blue"></i>MRC at selected spacing</span></div><ul class="bullets" id="fdCdfNote"></ul></div>
+    <div class="card"><div class="title">Spatial correlation versus antenna spacing</div><canvas id="fdCorr" role="img" aria-label="Correlation J0 of two antennas against their spacing in wavelengths, with the selected spacing marked"></canvas><div class="legend"><span><i class="sw blue"></i>&rho; = J<sub>0</sub>(2&pi;d/&lambda;)</span><span><i class="sw orange"></i>Selected antenna pairs</span></div><ul class="bullets" id="fdCorrNote"></ul></div>
+    <div class="card"><div class="title">Array gain and diversity gain at low SNR</div><canvas id="fdCdf" role="img" aria-label="Cumulative distribution of the combined SNR normalized to the average branch SNR, for one branch, array gain only, independent MRC and MRC at the chosen spacing"></canvas><div class="legend"><span><i class="sw grey"></i>One branch</span><span><i class="sw purple"></i>Array gain only (d = 0)</span><span><i class="sw green"></i>MRC, independent identically distributed branches</span><span><i class="sw blue"></i>MRC at selected spacing</span></div><ul class="bullets" id="fdCdfNote"></ul></div>
   </div>
 
   <div class="checklist">
     <div class="check"><strong>Temporal diversity</strong><span>Repeat or code the data over time and interleave across intervals separated by more than the coherence time. This increases latency and provides no independent fading observations on a static channel.</span></div>
     <div class="check"><strong>Frequency diversity</strong><span>Code across OFDM subcarriers separated by more than the coherence bandwidth (Week 9). This requires a signal bandwidth greater than B<sub>c</sub>.</span></div>
-    <div class="check"><strong>Polarization diversity</strong><span>Two orthogonal polarizations on co-located elements. At most two branches, often with unequal power.</span></div>
+    <div class="check"><strong>Polarization diversity</strong><span>Two orthogonal antenna polarizations at the same location. The fades need sufficient independence to provide diversity.</span></div>
     <div class="check"><strong>Spatial diversity</strong><span>Use several antennas with sufficiently low channel correlation. This does not consume additional time or bandwidth resources and is the focus of Week 10.</span></div>
   </div>
   <div class="checklist">
@@ -90,7 +106,7 @@ explain why fixed-weight repetition from several transmit antennas provides no d
 <section class="panel" id="simo" role="tabpanel" aria-labelledby="tab-simo" hidden>
   <div class="panel-head"><div><div class="eyebrow">SIMO receive diversity: selection, equal-gain, and maximal-ratio combining</div><h2>SC selects the strongest branch, EGC aligns all branch phases, and MRC applies channel-dependent amplitude and phase weights</h2></div><div class="message">A single-input multiple-output (SIMO) receiver with N<sub>r</sub> antennas observes y = &radic;G h s + v and forms z = w<sup>H</sup>y. Selection combining (SC) retains the strongest branch. Equal-gain combining (EGC) aligns the phases and applies equal magnitudes. By the Cauchy&ndash;Schwarz inequality, maximal-ratio combining (MRC), with w &prop; h, maximizes the output SNR and gives &gamma;<sub>MRC</sub> = &Sigma;&gamma;<sub>i</sub>. For independent, identically distributed Rayleigh branches, SC and MRC both achieve diversity order N<sub>r</sub>, but MRC has the larger array gain. The receiver must estimate h; the least-squares (LS) option demonstrates the effect of estimation error.</div></div>
   <div class="sticky-bar"><div class="toolbar">
-    <div class="mode-buttons mode-row" id="siModes"><button type="button" data-si="sc" aria-pressed="false">SC</button><button type="button" data-si="egc" aria-pressed="false">EGC</button><button type="button" data-si="mrc" aria-pressed="true">MRC</button><button type="button" id="siNew">New channel</button><button type="button" id="siNewNoise">New noise</button><button type="button" class="preset" id="siEx1">Exercise: three-branch combining</button><button type="button" class="preset" id="siEx2">Exercise: outage with SC</button><button type="button" class="preset" id="siEx3">Exercise: estimating the channel</button></div>
+    <div class="mode-buttons mode-row" id="siModes"><button type="button" data-si="sc" aria-pressed="false">SC</button><button type="button" data-si="egc" aria-pressed="false">EGC</button><button type="button" data-si="mrc" aria-pressed="true">MRC</button><button type="button" id="siNew">New channel</button><button type="button" id="siNewNoise">Generate noise</button><button type="button" class="preset" id="siEx1">Exercise: three-branch combining</button><button type="button" class="preset" id="siEx2">Exercise: outage with SC</button><button type="button" class="preset" id="siEx3">Exercise: estimating the channel</button></div>
     <div class="control-sections">
       <div class="control-section"><div class="control-section-title">Receiver</div><div class="control-grid">
         <div class="ctrl"><label for="siNr"><span>Receive branches N<sub>r</sub></span> <strong id="siNrOut">3</strong></label><input id="siNr" type="range" min="1" max="6" value="3" step="1"></div>
@@ -109,17 +125,17 @@ explain why fixed-weight repetition from several transmit antennas provides no d
       <div class="metric"><div class="name">MRC over SC</div><div class="value" id="siGain">&mdash;</div><div class="small">this channel</div></div>
       <div class="metric"><div class="name">Average SNR</div><div class="value" id="siAvg">&mdash;</div><div class="small" id="siAvgSmall">&mdash;</div></div>
       <div class="metric"><div class="name">SC outage</div><div class="value" id="siPoSc">&mdash;</div><div class="small">[1 &minus; e<sup>&minus;&gamma;<sub>0</sub>/&gamma;&#772;</sup>]<sup>N<sub>r</sub></sup></div></div>
-      <div class="metric"><div class="name">MRC outage</div><div class="value" id="siPoMrc">&mdash;</div><div class="small">Gamma(N<sub>r</sub>, &gamma;&#772;) CDF</div></div>
+      <div class="metric"><div class="name">MRC outage</div><div class="value" id="siPoMrc">&mdash;</div><div class="small">independent Rayleigh branches</div></div>
       <div class="metric"><div class="name">Equivalent one-antenna average SNR</div><div class="value" id="siEq">&mdash;</div><div class="small" id="siEqSmall">required to match the SC outage</div></div>
       <div class="metric lab-metric"><div class="name">Interactive lab</div><div class="value">Selection versus maximal-ratio combining</div><button type="button" class="lab-toggle" aria-controls="lab-simo-01" aria-expanded="false">Open lab</button></div>
       <div class="metric lab-metric"><div class="name">Interactive lab</div><div class="value">Diversity order</div><button type="button" class="lab-toggle" aria-controls="lab-simo-02" aria-expanded="false">Open lab</button></div>
-    </div><div class="formula"><div>SC: &gamma; = max<sub>i</sub>&gamma;<sub>i</sub>; EGC: GE<sub>x</sub>(&Sigma;|h<sub>i</sub>|)&sup2;/(N<sub>r</sub>N<sub>0</sub>)</div><div>MRC: w = h, &gamma; = GE<sub>x</sub>&Vert;h&Vert;&sup2;/N<sub>0</sub> = &Sigma;&gamma;<sub>i</sub></div><div>SC: P<sub>out</sub> = [1 &minus; e<sup>&minus;&gamma;<sub>0</sub>/&gamma;&#772;</sup>]<sup>N<sub>r</sub></sup>, &gamma;&#772;<sub>SC</sub> = &gamma;&#772;&Sigma;<sub>k=1</sub><sup>N<sub>r</sub></sup>1/k</div><div>MRC: P<sub>out</sub> = 1 &minus; e<sup>&minus;x</sup>&Sigma;<sub>k&lt;N<sub>r</sub></sub>x<sup>k</sup>/k!, x = &gamma;<sub>0</sub>/&gamma;&#772;</div><div id="siLsLine">&mdash;</div></div></div>
+    </div><div class="formula"><div>SC: &gamma; = max<sub>i</sub>&gamma;<sub>i</sub>; EGC: GE<sub>x</sub>(&Sigma;|h<sub>i</sub>|)&sup2;/(N<sub>r</sub>N<sub>0</sub>)</div><div>MRC: w = h, &gamma; = GE<sub>x</sub>&Vert;h&Vert;&sup2;/N<sub>0</sub> = &Sigma;&gamma;<sub>i</sub></div><div>SC: P<sub>out</sub> = [1 &minus; e<sup>&minus;&gamma;<sub>0</sub>/&gamma;&#772;</sup>]<sup>N<sub>r</sub></sup>, &gamma;&#772;<sub>SC</sub> = &gamma;&#772;&Sigma;<sub>k=1</sub><sup>N<sub>r</sub></sup>1/k</div><div id="siLsLine">&mdash;</div></div></div>
   </div></div>
 
   <div class="lab-shell" id="lab-simo-01" hidden><iframe class="lab-frame" loading="lazy" title="Selection combining and maximal-ratio combining interactive lab" src="01_sc_vs_mrc_explorer.html?v=20260924"></iframe></div>
   <div class="lab-shell" id="lab-simo-02" hidden><iframe class="lab-frame" loading="lazy" title="Diversity Order Explorer interactive lab" src="02_diversity_order_explorer.html?v=20260924"></iframe></div>
 
-  <div class="flow" aria-label="SIMO receiver chain"><div class="flow-step"><strong>N<sub>r</sub> antennas</strong><span>y<sub>i</sub> = &radic;G h<sub>i</sub>s + v<sub>i</sub></span></div><div class="arrow">&rarr;</div><div class="flow-step"><strong>Channel estimate</strong><span id="siFlowEst">&mdash;</span></div><div class="arrow">&rarr;</div><div class="flow-step hl"><strong id="siFlowName">MRC</strong><span id="siFlowRule">&mdash;</span></div><div class="arrow">&rarr;</div><div class="flow-step"><strong>Normalize</strong><span>z = w<sup>H</sup>y / w<sup>H</sup>&#293;</span></div><div class="arrow">&rarr;</div><div class="flow-step"><strong>Detect</strong><span>nearest QPSK point</span></div></div>
+  <div class="flow" aria-label="SIMO receiver chain"><div class="flow-step"><strong>N<sub>r</sub> antennas</strong><span>y<sub>i</sub> = &radic;G h<sub>i</sub>s + v<sub>i</sub></span></div><div class="arrow">&rarr;</div><div class="flow-step"><strong>Channel estimate</strong><span id="siFlowEst">&mdash;</span></div><div class="arrow">&rarr;</div><div class="flow-step hl"><strong id="siFlowName">MRC</strong><span id="siFlowRule">&mdash;</span></div><div class="arrow">&rarr;</div><div class="flow-step"><strong>Scale output</strong><span>z = w<sup>H</sup>y / w<sup>H</sup>&#293;</span></div><div class="arrow">&rarr;</div><div class="flow-step"><strong>Detect</strong><span>nearest quadrature phase-shift keying (QPSK) symbol</span></div></div>
   <p class="flow-caption" id="siFlowCap">&mdash;</p>
 
   <div class="plots">
@@ -127,14 +143,13 @@ explain why fixed-weight repetition from several transmit antennas provides no d
     <div class="card"><div class="title">Complex-plane vector addition of w<sub>i</sub>*h<sub>i</sub>/&Vert;w&Vert;</div><canvas id="siPhasor" role="img" aria-label="Branch channel phasors, the uncombined sum, and the phase-aligned vector sums for SC, EGC and MRC; the squared length of each vector sum times the average SNR is the combined SNR"></canvas><div class="legend"><span><i class="sw grey"></i>No phase alignment</span><span><i class="sw orange"></i>SC</span><span><i class="sw green"></i>EGC</span><span><i class="sw purple"></i>MRC</span><span>Dashed circle: &Vert;h&Vert;</span></div><ul class="bullets" id="siPhasorNote"></ul></div>
     <div class="card"><div class="title" id="siConstTitle">After the combiner: z for 300 QPSK symbols</div><canvas id="siConst" role="img" aria-label="Constellation of the combiner output for 300 QPSK symbols with symbol errors marked"></canvas><div class="legend"><span><i class="sw blue"></i>Correct</span><span><i class="sw red"></i>Symbol error</span><span><i class="sw grey"></i>Ideal points</span></div><ul class="bullets" id="siConstNote"></ul></div>
   </div>
-  <div class="plots" style="margin-top:14px">
+  <div class="plots two" style="margin-top:14px">
     <div class="card"><div class="title">Outage probability versus average branch SNR</div><canvas id="siOut" role="img" aria-label="Outage probability of one branch, selection combining and maximal-ratio combining versus average branch SNR, with the SNR a single antenna needs for the same outage"></canvas><div class="legend"><span><i class="sw grey"></i>One antenna</span><span><i class="sw orange"></i>SC</span><span><i class="sw purple"></i>MRC</span><span><i class="sw green"></i>Selected &gamma;&#772;</span></div><ul class="bullets" id="siOutNote"></ul></div>
-    <div class="card"><div class="title">BPSK error probability: exact and the slide's bounds</div><canvas id="siBer" role="img" aria-label="Exact BPSK bit error probability with selection and maximal-ratio combining and the Chernoff bounds from the diversity order slide"></canvas><div class="legend"><span><i class="sw grey"></i>One antenna</span><span><i class="sw orange"></i>SC</span><span><i class="sw purple"></i>MRC</span><span>Dashed: slide bounds</span></div><ul class="bullets" id="siBerNote"></ul></div>
-    <div class="card"><div class="title">Diversity order as a slope: decades per 10 dB</div><canvas id="siSlope" role="img" aria-label="Local slope of the outage and error probability curves in decades per 10 dB against average SNR, approaching the number of branches"></canvas><div class="legend"><span><i class="sw orange"></i>SC outage</span><span><i class="sw purple"></i>MRC outage</span><span><i class="sw cyan"></i>MRC BPSK</span><span><i class="sw red"></i>M = N<sub>r</sub></span></div><ul class="bullets" id="siSlopeNote"></ul></div>
+    <div class="card"><div class="title">BPSK error probability and lecture bounds</div><canvas id="siBer" role="img" aria-label="Exact BPSK bit error probability with selection and maximal-ratio combining and the error-probability upper bounds from the diversity order slide"></canvas><div class="legend"><span><i class="sw grey"></i>One antenna</span><span><i class="sw orange"></i>SC</span><span><i class="sw purple"></i>MRC</span><span>Dashed: slide bounds</span></div><ul class="bullets" id="siBerNote"></ul></div>
   </div>
   <div class="checklist">
-    <div class="check"><strong>Selection combining (SC)</strong><span>Requires only identification of the strongest branch, so a single radio-frequency chain can be switched among antennas. Diversity order N<sub>r</sub>; array gain &Sigma;1/k.</span></div>
-    <div class="check"><strong>Equal-gain combining (EGC)</strong><span>Requires the phase of every branch but not its magnitude. It is within approximately 1 dB of MRC for similar branch strengths, but can produce a lower SNR than SC when one branch dominates.</span></div>
+    <div class="check"><strong>Selection combining (SC)</strong><span>Requires only identification of the strongest branch, so one radio-frequency receiver path can be switched among antennas. Diversity order N<sub>r</sub>; array gain &Sigma;1/k.</span></div>
+    <div class="check"><strong>Equal-gain combining (EGC)</strong><span>Requires the phase of every branch but not its magnitude. It can produce a lower SNR than SC when one branch dominates.</span></div>
     <div class="check"><strong>Maximal-ratio combining (MRC)</strong><span>Requires the magnitude and phase of every branch. It maximizes output SNR and is therefore at least as effective as SC or EGC for the same channel. Diversity order N<sub>r</sub>; array gain N<sub>r</sub>.</span></div>
     <div class="check"><strong>Limitations</strong><span>Branch correlation and channel-estimation error reduce the gain. For a fixed estimation-error variance, a weak branch has the largest relative estimation error.</span></div>
   </div>
@@ -155,10 +170,9 @@ explain why fixed-weight repetition from several transmit antennas provides no d
         <div class="ctrl"><label for="miTh"><span>Outage threshold &gamma;<sub>0</sub></span> <strong id="miThOut">5 dB</strong></label><input id="miTh" type="range" min="-5" max="20" value="5" step="1"></div>
       </div></div>
     </div>
-    <div class="summary-row"><div class="toolbar-metrics metrics-7">
+    <div class="summary-row"><div class="toolbar-metrics metrics-6">
       <div class="metric"><div class="name">Antenna 1 alone</div><div class="value" id="miA1">&mdash;</div><div class="small">full E<sub>x</sub> on one antenna</div></div>
       <div class="metric"><div class="name">Repetition</div><div class="value" id="miRep">&mdash;</div><div class="small">GE<sub>x</sub>|&Sigma;h<sub>k</sub>|&sup2;/(M<sub>t</sub>N<sub>0</sub>)</div></div>
-      <div class="metric"><div class="name">Delay diversity</div><div class="value" id="miDel">&mdash;</div><div class="small">ideal receiver, &Vert;h&Vert;&sup2;/M<sub>t</sub></div></div>
       <div class="metric"><div class="name">Alamouti</div><div class="value" id="miAla">&mdash;</div><div class="small" id="miAlaSmall">GE<sub>x</sub>&Vert;h&Vert;&sup2;/(2N<sub>0</sub>)</div></div>
       <div class="metric"><div class="name">MRT (CSIT)</div><div class="value" id="miMrt">&mdash;</div><div class="small">GE<sub>x</sub>&Vert;h&Vert;&sup2;/N<sub>0</sub></div></div>
       <div class="metric"><div class="name">Repetition / MRT</div><div class="value" id="miRatio">&mdash;</div><div class="small">|&Sigma;h<sub>k</sub>|&sup2; / (M<sub>t</sub>&Vert;h&Vert;&sup2;)</div></div>
@@ -168,37 +182,34 @@ explain why fixed-weight repetition from several transmit antennas provides no d
 
   <div class="lab-shell" id="lab-miso" hidden><iframe class="lab-frame" loading="lazy" title="Fixed-weight spatial repetition interactive lab" src="03_repetition_failure_explorer.html?v=20260924"></iframe></div>
 
-  <div class="flow-label">Open loop: no CSIT</div>
+  <div class="flow-label">Without transmitter channel knowledge</div>
   <div class="flow" id="miFlowOpen" aria-label="Open-loop transmit diversity"><div class="flow-step"><strong>Symbols</strong><span>s[n], total energy E<sub>x</sub></span></div><div class="arrow">&rarr;</div><div class="flow-step hl"><strong id="miFlowTxName">Repetition</strong><span id="miFlowTx">&mdash;</span></div><div class="arrow">&rarr;</div><div class="flow-step"><strong>Channel</strong><span id="miFlowCh">&mdash;</span></div><div class="arrow">&rarr;</div><div class="flow-step"><strong>One RX antenna</strong><span id="miFlowRx">&mdash;</span></div><div class="arrow">&rarr;</div><div class="flow-step"><strong>Receiver</strong><span id="miFlowDet">&mdash;</span></div></div>
-  <div class="flow-label">Closed loop: CSIT</div>
-  <div class="flow dim" id="miFlowClosed" aria-label="Closed-loop maximum-ratio transmission"><div class="flow-step"><strong>Pilots</strong><span>user estimates h</span></div><div class="arrow">&rarr;</div><div class="flow-step"><strong>Feedback</strong><span>CSIT at the base station, kept up to date</span></div><div class="arrow">&rarr;</div><div class="flow-step hl"><strong>Precode</strong><span>f = h*/&Vert;h&Vert;</span></div><div class="arrow">&rarr;</div><div class="flow-step"><strong>Channel</strong><span>paths add in phase</span></div><div class="arrow">&rarr;</div><div class="flow-step"><strong>Detect</strong><span>&gamma; = GE<sub>x</sub>&Vert;h&Vert;&sup2;/N<sub>0</sub></span></div></div>
+  <div class="flow-label">With transmitter channel knowledge</div>
+  <div class="flow dim" id="miFlowClosed" aria-label="Closed-loop maximum-ratio transmission"><div class="flow-step"><strong>Pilots</strong><span>user estimates h</span></div><div class="arrow">&rarr;</div><div class="flow-step"><strong>Feedback</strong><span>CSIT at the base station, kept up to date</span></div><div class="arrow">&rarr;</div><div class="flow-step hl"><strong>Apply transmit weights</strong><span>f = h*/&Vert;h&Vert;</span></div><div class="arrow">&rarr;</div><div class="flow-step"><strong>Channel</strong><span>paths add in phase</span></div><div class="arrow">&rarr;</div><div class="flow-step"><strong>Detect</strong><span>&gamma; = GE<sub>x</sub>&Vert;h&Vert;&sup2;/N<sub>0</sub></span></div></div>
 
-  <div class="plots">
-    <div class="card"><div class="title" id="miPhTitle">Complex-plane addition of the received antenna contributions h<sub>k</sub>f<sub>k</sub></div><canvas id="miPhasor" role="img" aria-label="Phasor diagram of the per-antenna channel contributions and the resulting effective channel for the selected strategy"></canvas><div class="legend" id="miPhLegend"></div><ul class="bullets" id="miPhNote"></ul></div>
-    <div class="card"><div class="title">Effective channel across frequency</div><canvas id="miFreq" role="img" aria-label="Effective received SNR against normalized frequency for repetition, delay diversity and MRT, with the frequency average of delay diversity"></canvas><div class="legend"><span><i class="sw orange"></i>Repetition (flat)</span><span><i class="sw green"></i>Delay diversity |H(f)|&sup2;</span><span><i class="sw cyan"></i>Its average &Vert;h&Vert;&sup2;/M<sub>t</sub></span><span><i class="sw blue"></i>MRT</span></div><ul class="bullets" id="miFreqNote"></ul></div>
-    <div class="card"><div class="title">Distribution of the effective channel gain</div><canvas id="miCdf" role="img" aria-label="Cumulative distribution of the effective channel gain for SISO, simulated repetition, delay diversity or Alamouti, and MRT"></canvas><div class="legend"><span><i class="sw grey"></i>SISO</span><span><i class="sw orange"></i>Repetition, simulated</span><span><i class="sw green" id="miCdfGreen"></i><span id="miCdfGreenLabel">Delay / Alamouti</span></span><span><i class="sw blue"></i>MRT</span></div><ul class="bullets" id="miCdfNote"></ul></div>
+  <div class="plots two">
+    <div class="card"><div class="title" id="miPhTitle">Complex-plane addition of the received antenna contributions h<sub>k</sub>f<sub>k</sub></div><canvas id="miPhasor" role="img" aria-label="Complex-vector diagram of the per-antenna channel contributions and the resulting effective channel for the selected strategy"></canvas><div class="legend" id="miPhLegend"></div><ul class="bullets" id="miPhNote"></ul></div>
+    <div class="card"><div class="title">Effective channel across frequency</div><canvas id="miFreq" role="img" aria-label="Effective received SNR against normalized frequency for repetition, delay diversity and MRT, with the frequency average of delay diversity"></canvas><div class="legend"><span><i class="sw orange"></i>Repetition (constant across frequency)</span><span><i class="sw green"></i>Delay diversity |H(f)|&sup2;</span><span><i class="sw blue"></i>MRT</span></div><ul class="bullets" id="miFreqNote"></ul></div>
   </div>
-  <div class="plots two" style="margin-top:14px">
-    <div class="card"><div class="title">Outage probability against GE<sub>x</sub>/N<sub>0</sub></div><canvas id="miOut" role="img" aria-label="Outage probability against SNR for repetition, delay diversity or Alamouti, and MRT"></canvas><div class="legend"><span><i class="sw orange"></i>Repetition = SISO</span><span><i class="sw green"></i>Delay (ideal) / Alamouti</span><span><i class="sw blue"></i>MRT</span><span><i class="sw red"></i>Your SNR</span></div><ul class="bullets" id="miOutNote"></ul></div>
+  <div class="plots" style="margin-top:14px;grid-template-columns:1fr">
     <div class="card"><div class="title">Received SNR of each strategy for the selected channel</div><canvas id="miBars" role="img" aria-label="Horizontal bars of the received SNR on the current channel for a single antenna, repetition, delay diversity, Alamouti, MRT and MRT without the conjugate"></canvas><div class="legend"><span><i class="sw grey"></i>No diversity</span><span><i class="sw green"></i>Open loop, order M<sub>t</sub></span><span><i class="sw blue"></i>Closed loop</span><span><i class="sw red"></i>Incorrect MRT weight</span></div><ul class="bullets" id="miBarsNote"></ul></div>
   </div>
 </section>
 
 <!-- ============================ 4 · THE ALAMOUTI CODE ============================ -->
 <section class="panel" id="ala" role="tabpanel" aria-labelledby="tab-ala" hidden>
-  <div class="panel-head"><div><div class="eyebrow">The Alamouti space-time code</div><h2>Conjugation and a sign change create an orthogonal channel matrix, enabling diversity order 2 and linear detection without CSIT</h2></div><div class="message">The two antennas transmit (s[0], s[1])/&radic;2 in the first slot and (&minus;s*[1], s*[0])/&radic;2 in the second while h<sub>1</sub> and h<sub>2</sub> remain constant. Stacking y[0] and y*[1] gives &#7929; = &radic;(G/2) H s + &#7805;, where H<sup>H</sup>H = (|h<sub>1</sub>|&sup2; + |h<sub>2</sub>|&sup2;) I and H<sup>H</sup> denotes the Hermitian transpose. The matched filter H<sup>H</sup> therefore separates the two symbols exactly, and each symbol has SNR GE<sub>x</sub>&alpha;/(2N<sub>0</sub>). This is 3.01 dB below MRT, which requires CSIT. The alternative-code buttons remove the sign change or both the sign change and conjugation to demonstrate why both operations are necessary for orthogonality.</div></div>
+  <div class="panel-head"><div><div class="eyebrow">The Alamouti space-time code</div><h2>Conjugation and a sign change create an orthogonal channel matrix, enabling diversity order 2 and linear detection without CSIT</h2></div><div class="message">The two antennas transmit (s[0], s[1])/&radic;2 in the first slot and (&minus;s*[1], s*[0])/&radic;2 in the second while h<sub>1</sub> and h<sub>2</sub> remain constant. Stacking y[0] and y*[1] gives &#7929; = &radic;(G/2) H s + &#7805;, where H<sup>H</sup>H = (|h<sub>1</sub>|&sup2; + |h<sub>2</sub>|&sup2;) I and H<sup>H</sup> denotes the conjugate transpose. Multiplying by H<sup>H</sup>, the matched-filter operation, removes interference between the two symbols, and each symbol has SNR GE<sub>x</sub>&alpha;/(2N<sub>0</sub>). This is 3.01 dB below MRT, which requires CSIT.</div></div>
   <div class="sticky-bar"><div class="toolbar">
-    <div class="mode-buttons mode-row" id="alModes"><button type="button" data-al="ala" aria-pressed="true">Alamouti</button><button type="button" data-al="nosign" aria-pressed="false">No sign change</button><button type="button" data-al="same" aria-pressed="false">Same block in both slots</button><button type="button" id="alNew">New channel</button><button type="button" id="alNewNoise">New noise</button><button type="button" class="preset" id="alEx">Exercise channel: h<sub>1</sub> = 0.6 + j0.2, h<sub>2</sub> = &minus;0.5 + j0.1</button></div>
+    <div class="mode-buttons mode-row" id="alModes"><button type="button" data-al="ala" aria-pressed="true">Alamouti</button><button type="button" id="alNew">New channel</button><button type="button" id="alNewNoise">Generate noise</button><button type="button" class="preset" id="alEx">Exercise channel: h<sub>1</sub> = 0.6 + j0.2, h<sub>2</sub> = &minus;0.5 + j0.1</button></div>
     <div class="control-grid">
       <div class="ctrl"><label for="alSnr"><span>GE<sub>x</sub>/N<sub>0</sub> (total energy)</span> <strong id="alSnrOut">10 dB</strong></label><input id="alSnr" type="range" min="0" max="30" value="10" step="1"></div>
       <div class="ctrl"><label for="alTh"><span>Outage threshold &gamma;<sub>0</sub></span> <strong id="alThOut">5 dB</strong></label><input id="alTh" type="range" min="-5" max="20" value="5" step="1"></div>
     </div>
     <div class="summary-row"><div class="toolbar-metrics metrics-7">
       <div class="metric"><div class="name">&alpha; = |h<sub>1</sub>|&sup2; + |h<sub>2</sub>|&sup2;</div><div class="value" id="alAlpha">&mdash;</div><div class="small">diagonal of H<sup>H</sup>H</div></div>
-      <div class="metric"><div class="name">Cross-talk</div><div class="value" id="alOff">&mdash;</div><div class="small">|(H<sup>H</sup>H)<sub>12</sub>| / &alpha;</div></div>
+      <div class="metric"><div class="name">Interference between symbols</div><div class="value" id="alOff">&mdash;</div><div class="small">|(H<sup>H</sup>H)<sub>12</sub>| / &alpha;</div></div>
       <div class="metric"><div class="name">Alamouti SNR</div><div class="value" id="alGa">&mdash;</div><div class="small">GE<sub>x</sub>&alpha;/(2N<sub>0</sub>)</div></div>
       <div class="metric"><div class="name">MRT SNR with CSIT</div><div class="value" id="alGm">&mdash;</div><div class="small">GE<sub>x</sub>&alpha;/N<sub>0</sub> = Alamouti + 3.01 dB</div></div>
-      <div class="metric"><div class="name">Detector signal-to-interference-plus-noise ratio</div><div class="value" id="alSinr">&mdash;</div><div class="small" id="alSinrSmall">lower SINR of the two symbols</div></div>
       <div class="metric"><div class="name">Symbol errors</div><div class="value" id="alErr">&mdash;</div><div class="small">of the 300 plotted symbols</div></div>
       <div class="metric lab-metric"><div class="name">Interactive lab</div><div class="value">Alamouti detection</div><button type="button" class="lab-toggle" aria-controls="lab-ala" aria-expanded="false">Open lab</button></div>
     </div><div class="formula"><div>S = (1/&radic;2)[s[0] s[1]; &minus;s*[1] s*[0]], rows = slots, columns = antennas</div><div>&#7929; = [y[0], y*[1]]<sup>T</sup> = &radic;(G/2) H s + &#7805;, H = [h<sub>1</sub> h<sub>2</sub>; h<sub>2</sub>* &minus;h<sub>1</sub>*]</div><div>H<sup>H</sup>H = &alpha;I, H<sup>H</sup>&#7805; ~ CN(0, &alpha;N<sub>0</sub>I)</div><div>&#349;[k] = argmin<sub>a</sub> |(H<sup>H</sup>&#7929;)<sub>k</sub> &minus; &radic;(G/2)&alpha;a|&sup2;</div></div></div>
@@ -206,28 +217,27 @@ explain why fixed-weight repetition from several transmit antennas provides no d
 
   <div class="lab-shell" id="lab-ala" hidden><iframe class="lab-frame" loading="lazy" title="Alamouti Detection interactive lab" src="04_alamouti_detection_lab.html?v=20260924"></iframe></div>
 
-  <div class="flow" aria-label="Alamouti transceiver"><div class="flow-step"><strong>Two symbols</strong><span>s[0], s[1]</span></div><div class="arrow">&rarr;</div><div class="flow-step hl"><strong>Encoder</strong><span id="alFlowEnc">2 slots &times; 2 antennas, &divide;&radic;2</span></div><div class="arrow">&rarr;</div><div class="flow-step"><strong>Channel</strong><span>h<sub>1</sub>, h<sub>2</sub> constant for both slots</span></div><div class="arrow">&rarr;</div><div class="flow-step"><strong>Stack</strong><span id="alFlowStack">&#7929; = [y[0], y*[1]]</span></div><div class="arrow">&rarr;</div><div class="flow-step hl"><strong>Matched filter</strong><span>H<sup>H</sup>&#7929;</span></div><div class="arrow">&rarr;</div><div class="flow-step"><strong>Detect</strong><span id="alFlowDet">two separate scalar decisions</span></div></div>
+  <div class="flow" aria-label="Alamouti transceiver"><div class="flow-step"><strong>Two symbols</strong><span>s[0], s[1]</span></div><div class="arrow">&rarr;</div><div class="flow-step hl"><strong>Encoder</strong><span id="alFlowEnc">2 slots &times; 2 antennas, &divide;&radic;2</span></div><div class="arrow">&rarr;</div><div class="flow-step"><strong>Channel</strong><span>h<sub>1</sub>, h<sub>2</sub> constant for both slots</span></div><div class="arrow">&rarr;</div><div class="flow-step"><strong>Form received vector</strong><span id="alFlowStack">&#7929; = [y[0], y*[1]]</span></div><div class="arrow">&rarr;</div><div class="flow-step hl"><strong>Matched filter</strong><span>H<sup>H</sup>&#7929;</span></div><div class="arrow">&rarr;</div><div class="flow-step"><strong>Detect</strong><span id="alFlowDet">two separate scalar decisions</span></div></div>
 
-  <div class="plots">
+  <div class="plots two">
     <div class="card"><div class="title">Transmission grid and the resulting channel matrix</div><div class="stgrid" id="alGrid"></div><div class="mat" id="alMat"></div><ul class="bullets" id="alGridNote"></ul></div>
     <div class="card"><div class="title">Matched-filter outputs for 150 symbol pairs, this channel</div><canvas id="alConst" role="img" aria-label="Normalized matched-filter outputs for the two symbols over 150 random symbol pairs on the current channel, with errors marked"></canvas><div class="legend"><span><i class="sw blue"></i>z<sub>0</sub> (estimate of s[0])</span><span><i class="sw purple"></i>z<sub>1</sub> (estimate of s[1])</span><span><i class="sw red"></i>Symbol error</span></div><ul class="bullets" id="alConstNote"></ul></div>
-    <div class="card"><div class="title">QPSK bit error rate over Rayleigh fading</div><canvas id="alBer" role="img" aria-label="Bit error rate against SNR for SISO, Alamouti and MRT from theory, with the simulated linear detector for the selected code"></canvas><div class="legend"><span><i class="sw grey"></i>SISO</span><span><i class="sw green"></i>Alamouti, theory</span><span><i class="sw blue"></i>MRT, theory</span><span><i class="sw orange"></i>Dots: selected code, simulated</span></div><ul class="bullets" id="alBerNote"></ul></div>
   </div>
   <div class="plots two" style="margin-top:14px">
     <div class="card"><div class="title">Received SNR over 60 fading blocks</div><canvas id="alBlocks" role="img" aria-label="Received SNR per fading block for a single antenna, repetition, Alamouti and MRT, with the outage threshold"></canvas><div class="legend"><span><i class="sw grey"></i>Antenna 1 alone</span><span><i class="sw orange"></i>Repetition</span><span><i class="sw green"></i>Alamouti</span><span><i class="sw blue"></i>MRT</span><span><i class="sw red"></i>&gamma;<sub>0</sub></span></div><ul class="bullets" id="alBlocksNote"></ul></div>
     <div class="card review"><div class="title">Review questions</div>
-      <details><summary>1. Define array gain and diversity order. How many branches give order 4 with MRC?</summary><p>Array gain is the increase in average SNR, A<sub>g</sub> = &gamma;&#772;<sub>&Sigma;</sub>/&gamma;&#772;. Diversity order M is the high-SNR slope, P&#772;<sub>s</sub> &asymp; c&gamma;&#772;<sup>&minus;M</sup>: M decades per 10 dB. MRC over N<sub>r</sub> independent, identically distributed branches has order N<sub>r</sub>, so four independent branches are needed. Check this result on the slope panel of Tab 2.</p></details>
-      <details><summary>2. Derive the MRC weights for y = &radic;G h s + v.</summary><p>The SNR of z = w<sup>H</sup>y is |w<sup>H</sup>h|&sup2;GE<sub>x</sub>/(&Vert;w&Vert;&sup2;N<sub>0</sub>). By Cauchy&ndash;Schwarz, |w<sup>H</sup>h|&sup2; &le; &Vert;w&Vert;&sup2;&Vert;h&Vert;&sup2;, with equality for w &prop; h. Hence &gamma;<sub>MRC</sub> = GE<sub>x</sub>&Vert;h&Vert;&sup2;/N<sub>0</sub> = &Sigma;&gamma;<sub>i</sub>: the dashed circle on the phasor panel of Tab 2.</p></details>
-      <details><summary>3. Why does sending s/&radic;2 on both transmit antennas fail?</summary><p>The receiver sees h<sub>eff</sub> = (h<sub>1</sub> + h<sub>2</sub>)/&radic;2. For independent, identically distributed CN(0,1) channels, h<sub>eff</sub> is again CN(0,1), which has the same distribution as a SISO channel. The diversity order therefore remains 1, and the two channel contributions can cancel. See the cumulative-distribution panel in Tab 3.</p></details>
-      <details><summary>4. Show that H<sup>H</sup>H is diagonal for the Alamouti code.</summary><p>With H = [h<sub>1</sub> h<sub>2</sub>; h<sub>2</sub>* &minus;h<sub>1</sub>*], the off-diagonal entry is h<sub>1</sub>*h<sub>2</sub> + h<sub>2</sub>(&minus;h<sub>1</sub>*) = 0, and both diagonal entries are |h<sub>1</sub>|&sup2; + |h<sub>2</sub>|&sup2;. Remove the sign change above: the off-diagonal entry becomes 2h<sub>1</sub>*h<sub>2</sub>.</p></details>
+      <details><summary>1. Define array gain and diversity order. How many branches give order 4 with MRC?</summary><p>Array gain is the increase in average SNR, A<sub>g</sub> = &gamma;&#772;<sub>&Sigma;</sub>/&gamma;&#772;. Diversity order M is the high-SNR slope, P&#772;<sub>s</sub> &asymp; c&gamma;&#772;<sup>&minus;M</sup>: M decades per 10 dB. MRC over N<sub>r</sub> independent, identically distributed branches has order N<sub>r</sub>, so four independent branches are needed. Check this result on the outage plot in Tab 2.</p></details>
+      <details><summary>2. Derive the MRC weights for y = &radic;G h s + v.</summary><p>The SNR of z = w<sup>H</sup>y is |w<sup>H</sup>h|&sup2;GE<sub>x</sub>/(&Vert;w&Vert;&sup2;N<sub>0</sub>). By Cauchy&ndash;Schwarz, |w<sup>H</sup>h|&sup2; &le; &Vert;w&Vert;&sup2;&Vert;h&Vert;&sup2;, with equality for w &prop; h. Hence &gamma;<sub>MRC</sub> = GE<sub>x</sub>&Vert;h&Vert;&sup2;/N<sub>0</sub> = &Sigma;&gamma;<sub>i</sub>: the dashed circle on the complex-vector panel of Tab 2.</p></details>
+      <details><summary>3. Why does sending s/&radic;2 from both antennas provide no diversity?</summary><p>The receiver observes h<sub>eff</sub> = (h<sub>1</sub> + h<sub>2</sub>)/&radic;2. For independent, identically distributed CN(0,1) channels, h<sub>eff</sub> is again CN(0,1), which has the same distribution as a SISO channel. The diversity order therefore remains 1, and the two channel contributions can cancel. See the complex-vector panel and repetition lab in Tab 3.</p></details>
+      <details><summary>4. Show that H<sup>H</sup>H is diagonal for the Alamouti code.</summary><p>With H = [h<sub>1</sub> h<sub>2</sub>; h<sub>2</sub>* &minus;h<sub>1</sub>*], the off-diagonal entry is h<sub>1</sub>*h<sub>2</sub> + h<sub>2</sub>(&minus;h<sub>1</sub>*) = 0, and both diagonal entries are |h<sub>1</sub>|&sup2; + |h<sub>2</sub>|&sup2;.</p></details>
       <details><summary>5. Explain the 3 dB gap between Alamouti and MRT.</summary><p>Both received SNRs depend on &Vert;h&Vert;&sup2;, so both schemes have diversity order 2. Without CSIT, Alamouti divides E<sub>x</sub> equally between the antennas and cannot direct the transmitted signal toward the receiver, giving GE<sub>x</sub>&alpha;/(2N<sub>0</sub>). MRT uses CSIT to align the channel contributions and gives GE<sub>x</sub>&alpha;/N<sub>0</sub>, which is twice the received SNR in every fading block.</p></details>
     </div>
   </div>
   <div class="checklist">
-    <div class="check"><strong>Receive combining</strong><span>SC: &gamma;&#772;<sub>SC</sub> = &gamma;&#772;&Sigma;1/k. MRC: w = h, &gamma; = &Sigma;&gamma;<sub>i</sub>. Both reach order N<sub>r</sub>.</span></div>
+    <div class="check"><strong>Receive combining</strong><span>SC: &gamma;&#772;<sub>SC</sub> = &gamma;&#772;&Sigma;1/k. MRC: w = h, &gamma; = &Sigma;&gamma;<sub>i</sub>. Both achieve diversity order N<sub>r</sub>.</span></div>
     <div class="check"><strong>Fixed-weight repetition</strong><span>h<sub>eff</sub> = &Sigma;h<sub>k</sub>/&radic;M<sub>t</sub> ~ CN(0,1): diversity order 1, with possible destructive addition. It does not provide transmit diversity.</span></div>
-    <div class="check"><strong>Alamouti (no CSIT)</strong><span>H<sup>H</sup>H = &alpha;I, &gamma; = GE<sub>x</sub>&alpha;/(2N<sub>0</sub>). Order 2, rate 1 for M<sub>t</sub> = 2, linear detection.</span></div>
-    <div class="check"><strong>MRT (CSIT)</strong><span>f = h*/&Vert;h&Vert;, &gamma; = GE<sub>x</sub>&Vert;h&Vert;&sup2;/N<sub>0</sub>. Order M<sub>t</sub> and 3 dB above Alamouti, but needs feedback. Week 11.</span></div>
+    <div class="check"><strong>Alamouti (no CSIT)</strong><span>H<sup>H</sup>H = &alpha;I, &gamma; = GE<sub>x</sub>&alpha;/(2N<sub>0</sub>). Diversity order 2; two symbols in two time slots; separate symbol decisions.</span></div>
+    <div class="check"><strong>MRT (CSIT)</strong><span>f = h*/&Vert;h&Vert;, &gamma; = GE<sub>x</sub>&Vert;h&Vert;&sup2;/N<sub>0</sub>. Diversity order M<sub>t</sub>; for two antennas, 3 dB above Alamouti, but requires transmitter channel knowledge.</span></div>
   </div>
 </section>
 
@@ -338,13 +348,10 @@ function drawFund(){
   const q1=-Math.log1p(-0.01),q1m=rank===1?q1*Nr:g[Math.floor(0.01*FD_K)],gain1=toDb(q1m/q1),div1=gain1-toDb(Nr);
   const pS=-Math.expm1(-x0),pMc=cdfFrac(g,x0),pIid=gammaCdf(Nr,x0);
   $('fdRho').textContent=Nr>1?'ρ = '+rho.toFixed(2):'—';
-  $('fdRhoSmall').innerHTML=Nr>1?'envelope &asymp; &rho;&sup2; = '+(rho*rho).toFixed(2):'one branch only';
   $('fdAg').textContent=fmtDb(toDb(Nr));
   $('fdPs').textContent=fmtP(pS);
   $('fdPm').textContent=pMc>0?fmtP(pMc):'< '+expo(1/FD_K);
   $('fdPmSmall').innerHTML='simulation; independent-branch theory '+fmtP(pIid);
-  $('fdG1').textContent=fmtDb(gain1);$('fdGd').textContent=fmtDb(div1);
-  $('fdEig').innerHTML='Eigenvalues of R: '+eig.map(v=>v.toFixed(2)).join(', ')+' &rArr; rank '+rank+', '+(rank===Nr?'full diversity order '+Nr:'diversity order '+rank);
 
   /* --- fading envelope --- */
   const P=fdProcesses(),br=[];
@@ -362,9 +369,9 @@ function drawFund(){
   for(let t=0;t<FD_T;t++){const px=z.X(tx(t));if(br[0][t]*gb<g0){out1++;z.c.fillStyle=css('--orange');z.c.fillRect(px,bot-15,dx+.6,6)}if(Nr>1&&mrc[t]*gb<g0){outM++;z.c.fillStyle=css('--blue');z.c.fillRect(px,bot-7,dx+.6,6)}}
   const deep=toDb(Math.min(...br[0]));
   bullets($('fdEnvNote'),[
-    'Branch 1 alone is below γ₀ for '+(100*out1/FD_T).toFixed(0)+'% of this window (orange strip), and its deepest fade here is '+Math.abs(deep).toFixed(0)+' dB below its mean. Such fades are not rare: for Rayleigh fading, Pr(|h|² &lt; 0.01) = 1%.',
-    Nr>1?'The MRC output is below γ₀ for '+(100*outM/FD_T).toFixed(0)+'% of the time (blue strip). An outage needs '+(rho*rho<0.3?'every branch to fade at once, which independent branches rarely do.':'every branch to fade at once, but with these correlated branches the fades largely coincide.'):'Increase N<sub>r</sub> to add branches and the MRC output.',
-    Nr>1?'The MRC output is on average '+toDb(Nr).toFixed(1)+' dB higher (array gain), and its low-SNR intervals are less severe (diversity gain). The slide <em>Single branch versus two-branch MRC</em> illustrates the same distinction.':'The slide <em>Why diversity?</em> shows that the average SNR, here '+gdb+' dB, does not by itself determine the probability of link failure.'
+    'Branch 1 alone is below γ₀ for '+(100*out1/FD_T).toFixed(0)+'% of this window (orange strip), and its deepest fade here is '+Math.abs(deep).toFixed(0)+' dB below its mean. This illustrates why average SNR alone does not determine reliability.',
+    Nr>1?'The MRC output is below γ₀ for '+(100*outM/FD_T).toFixed(0)+'% of the time (blue strip). An outage needs '+(rho*rho<0.3?'all branch SNRs to be low simultaneously; independent branches make this less likely.':'all branch SNRs to be low simultaneously; correlation makes simultaneous low values more likely.'):'Increase N<sub>r</sub> to add branches and the MRC output.',
+    Nr>1?'The MRC output is on average '+toDb(Nr).toFixed(1)+' dB higher (array gain). Independent fading also makes simultaneous deep fades less likely; fully correlated fading retains only the array gain.':'The slide <em>Why diversity?</em> shows that the average SNR, here '+gdb+' dB, does not by itself determine the probability of link failure.'
   ]);
 
   /* --- spatial correlation --- */
@@ -372,14 +379,9 @@ function drawFund(){
   const ds=range(0,1.5,0.005);
   hline(z,0,css('--muted'),[3,3],1);
   line(z,ds.map(x=>[x,besselJ0(2*Math.PI*x)]),css('--blue'),2.2);
-  line(z,ds.map(x=>[x,Math.pow(besselJ0(2*Math.PI*x),2)]),css('--cyan'),1.8,[6,4]);
   const zero=2.404825557695773/(2*Math.PI);vline(z,zero,css('--muted'),[3,3],1);plotLabel(z,z.X(zero),z.Y(0.93),'first zero 0.38λ',css('--muted'));
   if(Nr>1)for(let k=1;k<Nr;k++){const x=k*d;if(x<=1.5){dot(z,x,besselJ0(2*Math.PI*x),css('--orange'),k===1?5.5:3.5)}}
-  bullets($('fdCorrNote'),[
-    Nr>1?'Adjacent antennas at d = '+d.toFixed(2)+'λ have ρ = J₀(2πd/λ) = '+rho.toFixed(2)+', an envelope correlation of about '+(rho*rho).toFixed(2)+'.'+(Nr>2?' Smaller dots are the pairs further apart ('+Array.from({length:Nr-2},(_,k)=>(k+2)+'d').join(', ')+').':''):'With one branch there is nothing to correlate. Add a second antenna.',
-    'The first zero is at 0.38λ, and beyond about 0.2λ the envelope correlation is already below 0.5. This assumes isotropic scattering around the antennas; an elevated base station sees a narrow angular spread and needs spacings of many wavelengths.',
-    rank<Nr?'At d = 0 every branch sees the same channel: R has rank 1, the branches fade together, and only the array gain remains.':'R is full rank, so the diversity order is '+Nr+'. Its smallest eigenvalue, '+eig[eig.length-1].toFixed(2)+', influences the SNR at which the curve approaches its asymptotic slope.'
-  ]);
+  bullets($('fdCorrNote'), ['Under the two-dimensional isotropic scattering model, ρ(d) ≈ J₀(2πd/λ), with its first zero near 0.38λ. Real correlation also depends on angular spread, antenna patterns and mutual coupling.','At zero spacing, the branches fade together. Independent branches make simultaneous deep fades less likely.']);
 
   /* --- CDF of the normalized combined SNR --- */
   z=ax($('fdCdf'),-30,15,-4,0,'γ_Σ / γ̄ (dB)','Pr(γ_Σ/γ̄ < x)',{xticks:9,yticks:4,yfmt:decade});
@@ -389,9 +391,9 @@ function drawFund(){
   if(Nr>1){logCurve(z,xs,x=>-Math.expm1(-fromDb(x)/Nr),css('--purple'),2,[6,4]);logCurve(z,xs,x=>gammaCdf(Nr,fromDb(x)),css('--green'),1.8,[3,3]);logCurve(z,xs,x=>cdfFrac(g,fromDb(x)),css('--blue'),2.4)}
   dot(z,toDb(q1),-2,css('--muted'),4.5);if(Nr>1)dot(z,toDb(q1m),-2,css('--blue'),4.5);
   bullets($('fdCdfNote'),[
-    'At 1% outage, one branch is '+Math.abs(toDb(q1)).toFixed(1)+' dB below its mean'+(Nr>1?'; MRC at this spacing is '+fmtDb(toDb(q1m))+' relative to γ̄. The total gain is '+gain1.toFixed(1)+' dB.':'.'),
-    Nr>1?'Array gain alone (purple, d = 0) shifts the one-branch curve right by 10 log₁₀N<sub>r</sub> = '+toDb(Nr).toFixed(1)+' dB but keeps its slope of one decade per 10 dB.':'With one branch, the lower tail falls by one decade per 10 dB: diversity order 1.',
-    Nr>1?'Independent branches also steepen the lower tail to '+Nr+' decades per 10 dB (green). The resulting SNR advantage is '+div1.toFixed(1)+' dB at 1% outage here, and it increases for more stringent outage targets.':'',
+    'At 1% outage, one branch is '+Math.abs(toDb(q1)).toFixed(1)+' dB below its mean'+(Nr>1?'; MRC at this spacing is '+fmtDb(toDb(q1m))+' relative to γ̄.':'.'),
+    Nr>1?'Array gain alone (purple, d = 0) shifts the one-branch curve right by 10 log₁₀N<sub>r</sub> = '+toDb(Nr).toFixed(1)+' dB but keeps its slope of one decade per 10 dB.':'With one branch, the low-SNR region falls by one decade per 10 dB: diversity order 1.',
+    Nr>1?'Independent branches steepen the lower tail to '+Nr+' decades per 10 dB (green): this is diversity gain.':'',
     Nr>1&&rho*rho>0.5?'At this spacing, the blue curve lies between the fully correlated and independent cases. Although the full-rank channel retains the same asymptotic diversity order, correlation reduces the SNR advantage at practical outage probabilities.':''
   ]);
 }
@@ -440,7 +442,7 @@ function drawSimo(){
   $('siFlowEst').innerHTML=p.ls?'LS from '+p.Ntr+' pilot'+(p.Ntr>1?'s':'')+', var N<sub>0</sub>/E<sub>tr</sub>':'&#293; = h (known exactly)';
   $('siFlowName').textContent=siNames[siComb];
   $('siFlowRule').innerHTML={sc:'keep branch i* = argmax |&#293;<sub>i</sub>|',egc:'w<sub>i</sub> = e<sup>j&ang;&#293;<sub>i</sub></sup>, equal gains, sum',mrc:'w<sub>i</sub> = &#293;<sub>i</sub>, weight and sum'}[siComb];
-  $('siFlowCap').textContent={sc:'SC needs only to know which branch is strongest, so a single receive chain can be switched between antennas.',egc:'EGC needs the phase of every branch, but not the amplitudes; each branch needs its own receive chain.',mrc:'MRC needs the amplitude and the phase of every branch and one receive chain per antenna. It is the spatial matched filter.'}[siComb];
+  $('siFlowCap').textContent={sc:'SC needs only to know which branch is strongest, so a single receiver signal-processing path can be switched between antennas.',egc:'EGC needs the phase of every branch, but not the amplitudes; each branch needs its own receiver signal-processing path.',mrc:'MRC needs the amplitude and the phase of every branch and one receiver signal-processing path per antenna. Its weights align the branch phases and account for their amplitudes.'}[siComb];
 
   /* --- per-branch SNR bars --- */
   const ymax=Math.max(p.mrc,p.predMrc,...p.gi,1e-3)*1.2;
@@ -455,7 +457,7 @@ function drawSimo(){
   ]);
 
   /* --- phasor chains --- */
-  const chains=[{k:'sum',col:'--muted',label:'no co-phasing',off:0},{k:'sc',col:'--orange',label:'SC',off:28},{k:'egc',col:'--green',label:'EGC',off:14},{k:'mrc',col:'--purple',label:'MRC',off:0}];
+  const chains=[{k:'sum',col:'--muted',label:'no phase alignment',off:0},{k:'sc',col:'--orange',label:'SC',off:28},{k:'egc',col:'--green',label:'EGC',off:14},{k:'mrc',col:'--purple',label:'MRC',off:0}];
   const pts=[C(Math.sqrt(p.hn2)*1.02,0),C(-0.2,0)];p.h.forEach(v=>pts.push(v));
   chains.forEach(ch=>{let s=C();p.contrib(p.W[ch.k]).forEach(c=>{s=add(s,c);pts.push(s)});ch.end=s});
   z=cfit($('siPhasor'),pts,34);
@@ -467,7 +469,7 @@ function drawSimo(){
     'Each chain adds w<sub>i</sub>*h<sub>i</sub>/‖w‖, so the squared length of the chain times γ̄ is the combined SNR. The branch colours match the thin arrows h<sub>i</sub>.',
     Nr>1?'Without phase alignment (grey), the branches add with their random phases: |Σh<sub>i</sub>|²γ̄/N<sub>r</sub> = '+fmtDb(toDb(p.plain))+'. Fixed-weight repetition produces the same form of addition at the transmitter (Tab 3). Phase alignment places every contribution on the real axis.':'',
     'MRC reaches the dashed circle of radius ‖h‖, the Cauchy–Schwarz maximum for a unit-norm weight vector. EGC shortens the strong segments and lengthens the weak ones; SC keeps only one segment.',
-    p.ls?'With LS weights, the MRC segments are slightly rotated off the axis and fall short of the circle: '+fmtDb(toDb(p.mrc))+' realized against '+fmtDb(toDb(p.predMrc))+' predicted from ĥ.':''
+    p.ls?'With LS weights, the MRC segments are slightly rotated off the axis and fall short of the circle: '+fmtDb(toDb(p.mrc))+' actual SNR compared with '+fmtDb(toDb(p.predMrc))+' predicted from ĥ.':''
   ]);
 
   /* --- constellation after the combiner --- */
@@ -481,7 +483,7 @@ function drawSimo(){
   $('siConstTitle').textContent='After the '+siNames[siComb]+' combiner: z for '+SI_NS+' QPSK symbols';
   const gSel=p[siComb];
   bullets($('siConstNote'),[
-    errs+' of '+SI_NS+' symbols in error ('+(100*errs/SI_NS).toFixed(1)+'%). At the realized '+siNames[siComb]+' SNR of '+fmtDb(toDb(gSel))+', QPSK theory gives 2Q(√γ) − Q²(√γ) = '+fmtP(serQpsk(gSel))+'.',
+    errs+' of '+SI_NS+' symbols in error ('+(100*errs/SI_NS).toFixed(1)+'%). The points illustrate scalar symbol decisions after combining.',
     'Compare the three combiners for this channel. The received-symbol clusters become more concentrated from SC to MRC, consistent with the SNR values in the bar chart.',
     p.ls?'Relative channel-estimation error variance, var/|h<sub>i</sub>|²: '+p.h.map((v,i)=>'branch '+(i+1)+' '+fmtDb(toDb(p.varE/Math.max(abs2(v),1e-12)))).join(', ')+'. Because the absolute error variance N₀/E<sub>tr</sub> is equal on every branch, the weakest branch has the largest error relative to its channel power.':'The receiver currently has exact channel knowledge. Select the least-squares estimate to examine the effect of a finite-length pilot sequence.'
   ]);
@@ -510,27 +512,12 @@ function drawSimo(){
   const bS=berSc(Nr,g),bM=berMrc(Nr,g),b1=berMrc(1,g);
   const t4=1e-4,x4s=solveDb(x=>berSc(Nr,fromDb(x)),t4,-10,70),x4m=solveDb(x=>berMrc(Nr,fromDb(x)),t4,-10,70),x41=solveDb(x=>berMrc(1,fromDb(x)),t4,-10,70);
   bullets($('siBerNote'),[
-    'Exact BPSK error probability (solid) with the Chernoff bounds of the slide <em>Diversity order</em> (dashed). At γ̄ = '+gdb+' dB: one antenna '+fmtP(b1)+(Nr>1?', SC '+fmtP(bS)+', MRC '+fmtP(bM)+'.':'.'),
-    Nr>1?'At 10⁻⁴, one antenna requires '+fmtDb(x41)+', SC '+fmtDb(x4s)+' and MRC '+fmtDb(x4m)+'. Both combiners have the same asymptotic slope, while MRC provides an additional '+(x4s-x4m).toFixed(1)+' dB horizontal shift, called array gain.':'',
+    'Exact BPSK error probability (solid) with the error-probability upper bounds of the slide <em>Diversity order</em> (dashed). At γ̄ = '+gdb+' dB: one antenna '+fmtP(b1)+(Nr>1?', SC '+fmtP(bS)+', MRC '+fmtP(bM)+'.':'.'),
+    Nr>1?'At 10⁻⁴, one antenna requires '+fmtDb(x41)+', SC '+fmtDb(x4s)+' and MRC '+fmtDb(x4m)+'. Both combiners have the same asymptotic slope, while MRC provides an additional '+(x4s-x4m).toFixed(1)+' dB horizontal shift. Both achieve full diversity order.':'',
     Nr>1?'The bounds reproduce the correct high-SNR slope but lie above the exact curves. They are useful for determining diversity order, not for predicting the exact SNR required at a given error probability.':''
   ]);
 
-  /* --- local slope --- */
-  const slope=(fn,x)=>-10*(Math.log10(Math.max(fn(x+0.25),1e-300))-Math.log10(Math.max(fn(x-0.25),1e-300)))/0.5;
-  const ymx=Math.max(2,Nr+1),sx=range(0,30,0.25);
-  z=ax($('siSlope'),0,30,0,ymx,'Average branch SNR γ̄ (dB)','Decades per 10 dB',{xticks:6,yticks:ymx});
-  hline(z,Nr,css('--red'),[6,4],1.6);plotLabel(z,z.X(0),z.Y(Nr)-3,'M = N_r = '+Nr,css('--red'));
-  clipPlot(z);
-  line(z,sx.map(x=>[x,slope(d=>scOut(Nr,fromDb(d),g0),x)]),css('--orange'),2.2);
-  line(z,sx.map(x=>[x,slope(d=>mrcOut(Nr,fromDb(d),g0),x)]),css('--purple'),2.2,[6,3]);
-  line(z,sx.map(x=>[x,slope(d=>berMrc(Nr,fromDb(d)),x)]),css('--cyan'),2);
-  z.c.restore();
-  const tab=[10,20,30].map(x=>scOut(Nr,fromDb(x),g0)),tab1=[10,20,30].map(x=>scOut(1,fromDb(x),g0));
-  bullets($('siSlopeNote'),[
-    'The slope −10·dlog₁₀P/dγ̄<sub>dB</sub> approaches N<sub>r</sub> = '+Nr+' only at high SNR. That limit is the diversity order: P ≈ cγ̄<sup>−'+Nr+'</sup>.',
-    'SC outage at γ₀ = '+g0db+' dB for γ̄ = 10, 20, 30 dB: N<sub>r</sub> = 1: '+tab1.map(fmtP).join(', ')+(Nr>1?'; N<sub>r</sub> = '+Nr+': '+tab.map(fmtP).join(', '):'')+'.',
-    Nr>1?'From 10 to 20 dB the SC outage falls by '+Math.log10(tab[0]/tab[1]).toFixed(2)+' decades, and from 20 to 30 dB by '+Math.log10(tab[1]/tab[2]).toFixed(2)+'. Estimating the slope before the curve reaches its high-SNR region underestimates the diversity order.':''
-  ]);
+
 }
 ['siNr','siSnr','siTh','siCsi','siNtr'].forEach(id=>$(id).addEventListener('input',drawSimo));
 $('siModes').addEventListener('click',e=>{const b=e.target.closest('[data-si]');if(!b)return;siComb=b.dataset.si;drawSimo()});
@@ -552,7 +539,7 @@ function drawMiso(){
   $('miMtOut').textContent=Mt;$('miRotOut').textContent=$('miRot').value+'°';$('miSnrOut').textContent=gdb+' dB';$('miThOut').textContent=g0db+' dB';
   let sum=C(),sq=C();h.forEach(v=>{sum=add(sum,v);sq=add(sq,mul(v,v))});
   const n2=h.reduce((a,v)=>a+abs2(v),0),a1=g*abs2(h[0]),rep=g*abs2(sum)/Mt,del=g*n2/Mt,ala=Mt===2?g*n2/2:null,mrt=g*n2,slip=g*abs2(sq)/n2;
-  $('miA1').textContent=fmtDb(toDb(a1));$('miRep').textContent=fmtDb(toDb(rep));$('miDel').textContent=fmtDb(toDb(del));
+  $('miA1').textContent=fmtDb(toDb(a1));$('miRep').textContent=fmtDb(toDb(rep));
   $('miAla').textContent=ala==null?'—':fmtDb(toDb(ala));$('miAlaSmall').innerHTML=ala==null?'defined here for M<sub>t</sub> = 2':'GE<sub>x</sub>&Vert;h&Vert;&sup2;/(2N<sub>0</sub>)';
   $('miMrt').textContent=fmtDb(toDb(mrt));$('miRatio').textContent=(100*rep/mrt).toFixed(1)+'%';
   pressGroup($('miModes'),'data-mi',miMode);
@@ -561,22 +548,22 @@ function drawMiso(){
   $('miFlowTx').innerHTML=miMode==='delay'?'antenna k+1 sends s[n&minus;k]/&radic;M<sub>t</sub>':'every antenna sends s[n]/&radic;M<sub>t</sub>';
   $('miFlowCh').innerHTML=miMode==='delay'?'copies arrive one symbol apart':'complex amplitudes add before reception';
   $('miFlowRx').innerHTML=miMode==='delay'?'M<sub>t</sub>-tap SISO channel (ISI)':'y = &radic;G h<sub>eff</sub>s + v';
-  $('miFlowDet').innerHTML=miMode==='delay'?'equalizer or coded OFDM collects &Vert;h&Vert;&sup2;/M<sub>t</sub>':'one flat channel: order 1';
+  $('miFlowDet').innerHTML=miMode==='delay'?'ML sequence detector or coded OFDM extracts diversity':'one effective channel: diversity order 1';
 
   /* --- phasor --- */
   const pts=[C(Math.sqrt(n2)*1.02,0),C(-Math.sqrt(n2)*.3,0)];h.forEach(v=>pts.push(v,scale(v,1/Math.sqrt(Mt))));let s=C();h.forEach(v=>{s=add(s,scale(v,1/Math.sqrt(Mt)));pts.push(s)});
   const z=cfit($('miPhasor'),pts,0),O=z.P(C()),R=Math.sqrt(n2);
-  z.c.save();z.c.setLineDash([4,4]);z.c.strokeStyle=css('--blue');z.c.globalAlpha=.55;z.c.beginPath();z.c.arc(O[0],O[1],R*z.s,0,2*Math.PI);z.c.stroke();z.c.strokeStyle=css('--green');z.c.beginPath();z.c.arc(O[0],O[1],R/Math.sqrt(Mt)*z.s,0,2*Math.PI);z.c.stroke();z.c.restore();
+  z.c.save();z.c.setLineDash([4,4]);z.c.strokeStyle=css('--blue');z.c.globalAlpha=.55;z.c.beginPath();z.c.arc(O[0],O[1],R*z.s,0,2*Math.PI);z.c.stroke();z.c.restore();
   h.forEach((v,i)=>{const e=z.P(v);arrowPx(z.c,O[0],O[1],e[0],e[1],css(branchCols[i%6]),1.1,[2,2]);z.c.fillStyle=css(branchCols[i%6]);z.c.font='10px system-ui';z.c.fillText('h'+sub1(i+1),e[0]+4,e[1]-3)});
   if(miMode==='rep'){let a=C();h.forEach((v,i)=>{const p0=z.P(a);a=add(a,scale(v,1/Math.sqrt(Mt)));const p1=z.P(a);arrowPx(z.c,p0[0],p0[1],p1[0],p1[1],css(branchCols[i%6]),2.6)});const e=z.P(a);arrowPx(z.c,O[0],O[1],e[0],e[1],css('--red'),3.2);z.c.fillStyle=css('--red');z.c.font='bold 11px system-ui';z.c.fillText('h_eff',e[0]+5,e[1]+12)}
   else if(miMode==='delay'){h.forEach((v,i)=>{const e=z.P(scale(v,1/Math.sqrt(Mt)));arrowPx(z.c,O[0],O[1],e[0],e[1],css(branchCols[i%6]),3);z.c.fillStyle=css(branchCols[i%6]);z.c.font='bold 10px system-ui';z.c.fillText('tap '+i,e[0]+5,e[1]+12)})}
   else{let a=C();h.forEach((v,i)=>{const p0=z.P(a);a=add(a,C(abs2(v)/R,0));const p1=z.P(a);arrowPx(z.c,p0[0],p0[1]-3,p1[0],p1[1]-3,css(branchCols[i%6]),3)});z.c.fillStyle=css('--blue');z.c.font='bold 11px system-ui';const e=z.P(a);z.c.fillText('‖h‖',e[0]-18,e[1]-10)}
   $('miPhTitle').innerHTML={rep:'Repetition: vector sum of h<sub>k</sub>/&radic;M<sub>t</sub>',delay:'Delay diversity: h<sub>k</sub>/&radic;M<sub>t</sub> represented as separate channel taps',mrt:'MRT: vector sum of h<sub>k</sub>f<sub>k</sub> = |h<sub>k</sub>|&sup2;/&Vert;h&Vert;'}[miMode];
-  $('miPhLegend').innerHTML='<span>Thin vectors: h<sub>k</sub></span><span>Thick vectors: effective received contributions</span><span><i class="sw blue"></i>Radius &Vert;h&Vert; (MRT)</span><span><i class="sw green"></i>Radius &Vert;h&Vert;/&radic;M<sub>t</sub></span>';
+  $('miPhLegend').innerHTML='<span>Thin vectors: h<sub>k</sub></span><span>Thick vectors: effective received contributions</span><span><i class="sw blue"></i>Radius &Vert;h&Vert; (MRT)</span>';
   const phNotes={
-    rep:['The receiver sees a single channel h<sub>eff</sub> = Σh<sub>k</sub>/√M<sub>t</sub> (red): |h<sub>eff</sub>|² = '+(abs2(sum)/Mt).toFixed(3)+' compared with ‖h‖² = '+n2.toFixed(3)+'. Repetition therefore provides '+(100*rep/mrt).toFixed(1)+'% of the MRT benchmark for this channel.','Vary <em>Extra phase on h₂</em>. At some phase differences, the channel contributions cancel; a transmitter without channel knowledge cannot prevent this cancellation.','For independent, identically distributed CN(0,1) channels, h<sub>eff</sub> is also CN(0,1). It therefore has the same distribution as a SISO channel and diversity order 1.'],
-    delay:['The copies arrive one symbol apart, so they form separate coefficients, or taps, of a SISO channel with memory: y[n] = √(G/M<sub>t</sub>)Σh<sub>k</sub>s[n−k] + v[n].','An ideal equalizer, or coded orthogonal frequency-division multiplexing (OFDM), combines the tap energies: ‖h‖²/M<sub>t</sub> = '+(n2/Mt).toFixed(3)+', shown by the green reference circle. This quantity has diversity order M<sub>t</sub>, independent of the channel phases.','The trade-off is intersymbol interference (ISI), which the receiver must mitigate. Delay diversity converts spatial diversity into frequency diversity.'],
-    mrt:['The weight f<sub>k</sub> = h<sub>k</sub>*/‖h‖ rotates each antenna contribution onto the real axis, so their sum reaches the blue reference circle of radius ‖h‖.','This method requires CSIT: the receiver must estimate h and feed it back, and the estimate must remain valid when the base station transmits.','MRT has diversity order M<sub>t</sub> and an array gain of 10log₁₀M<sub>t</sub> = '+toDb(Mt).toFixed(1)+' dB relative to the green reference level for delay diversity and Alamouti.']};
+    rep:['The receiver sees a single channel h<sub>eff</sub> = Σh<sub>k</sub>/√M<sub>t</sub> (red): |h<sub>eff</sub>|² = '+(abs2(sum)/Mt).toFixed(3)+' compared with ‖h‖² = '+n2.toFixed(3)+'. Repetition therefore provides '+(100*rep/mrt).toFixed(1)+'% of the MRT reference for this channel.','Vary <em>Extra phase on h₂</em>. At some phase differences, the channel contributions cancel; a transmitter without channel knowledge cannot prevent this cancellation.','For independent, identically distributed CN(0,1) channels, h<sub>eff</sub> is also CN(0,1). It therefore has the same distribution as a SISO channel and diversity order 1.'],
+    delay:['The copies arrive one symbol apart, so they form separate coefficients, or taps, of a SISO channel with memory: y[n] = √(G/M<sub>t</sub>)Σh<sub>k</sub>s[n−k] + v[n].','A maximum-likelihood (ML) sequence detector, or suitable coded orthogonal frequency-division multiplexing (OFDM), is needed to extract diversity from the channel with memory.','The delayed streams cause interference between successive symbols, called intersymbol interference (ISI), which the receiver must account for. Delay diversity converts spatial diversity into frequency diversity.'],
+    mrt:['The weight f<sub>k</sub> = h<sub>k</sub>*/‖h‖ rotates each antenna contribution onto the real axis, so their sum reaches the blue reference circle of radius ‖h‖.','This method requires CSIT: the receiver must estimate h and feed it back, and the estimate must remain valid when the base station transmits.','MRT uses CSIT to align and weight the paths. With two antennas and equal total energy, its SNR is 3 dB above Alamouti.']};
   bullets($('miPhNote'),phNotes[miMode]);
 
   /* --- frequency response --- */
@@ -586,57 +573,25 @@ function drawMiso(){
   clipPlot(zf);
   line(zf,fs.map((f,i)=>[f,Math.max(lo2-2,toDb(vals[i]))]),css('--green'),2.4);
   zf.c.restore();
-  hline(zf,toDb(del),css('--cyan'),[6,4],1.6);hline(zf,toDb(rep),css('--orange'),[],1.8);hline(zf,toDb(mrt),css('--blue'),[],1.8);hline(zf,g0db,css('--red'),[3,3],1.2);
   for(let k=0;k<16;k++){const f=k/16;dot(zf,f,Math.max(lo2,toDb(Hf(f))),css('--green'),2.6)}
   dot(zf,0,Math.max(lo2,toDb(rep)),css('--orange'),5);
   plotLabel(zf,zf.X(1),zf.Y(toDb(mrt))-3,'MRT',css('--blue'));plotLabel(zf,zf.X(1),zf.Y(g0db)-3,'γ₀',css('--red'));
   const below=vals.filter(v=>v<g0).length/vals.length;
   bullets($('miFreqNote'),[
     'Delay diversity makes the channel frequency-selective: |H(f)|² = |Σh<sub>k</sub>e<sup>−j2πfk</sup>|²/M<sub>t</sub> ranges from '+fmtDb(toDb(Math.min(...vals)))+' to '+fmtDb(toDb(Math.max(...vals)))+', and '+(100*below).toFixed(0)+'% of the band is below γ₀.',
-    'Its frequency average is exactly ‖h‖²/M<sub>t</sub> (cyan), the sum of the normalised path powers. Coding and interleaving across subcarriers can exploit this frequency diversity; the dots show 16 example subcarriers, as introduced in Week 9.',
-    'Repetition is the f = 0 point of this curve (orange dot): one flat value, which may be a fade. MRT is flat at ‖h‖², '+toDb(Mt).toFixed(1)+' dB above the cyan average.'
-  ]);
-
-  /* --- CDF --- */
-  const gs=miRepSamples(Mt),xs=range(-30,15,0.25);
-  let zc=ax($('miCdf'),-30,15,-4,0,'Effective gain γ / (GE_x/N₀) (dB)','Pr(gain < x)',{xticks:9,yticks:4,yfmt:decade});
-  logCurve(zc,xs,x=>-Math.expm1(-fromDb(x)),css('--muted'),3.4);
-  logCurve(zc,xs,x=>cdfFrac(gs,fromDb(x)),css('--orange'),1.8,[4,3]);
-  logCurve(zc,xs,x=>gammaCdf(Mt,Mt*fromDb(x)),css('--green'),2.2);
-  logCurve(zc,xs,x=>gammaCdf(Mt,fromDb(x)),css('--blue'),2.2);
-  $('miCdfGreenLabel').textContent=Mt===2?'Delay (ideal) / Alamouti':'Delay diversity (ideal)';
-  const q=-Math.log1p(-0.01);
-  bullets($('miCdfNote'),[
-    'The simulated repetition gain (orange, '+MI_K.toLocaleString()+' draws of |Σh<sub>k</sub>|²/M<sub>t</sub>) lies on the SISO curve: the same exponential distribution, diversity order 1. At 1%, both are '+Math.abs(toDb(q)).toFixed(1)+' dB below the mean.',
-    (Mt===2?'Delay diversity with an ideal receiver and Alamouti':'Delay diversity with an ideal receiver')+' have gain ‖h‖²/M<sub>t</sub>: diversity order '+Mt+' and mean 1, so they provide no array gain. Relative to the SISO curve, the lower tail moves left and the upper tail moves right while the mean remains unchanged.',
-    'MRT has the same order '+Mt+' and is shifted right by '+toDb(Mt).toFixed(1)+' dB: an array gain that only CSIT can provide.'
-  ]);
-
-  /* --- outage --- */
-  const xo=range(-5,30,0.25);
-  let zo=ax($('miOut'),-5,30,-6,0,'GE_x/N₀ (dB)','Outage probability',{xticks:7,yticks:6,yfmt:decade});
-  logCurve(zo,xo,x=>-Math.expm1(-g0/fromDb(x)),css('--orange'),2.4);
-  logCurve(zo,xo,x=>gammaCdf(Mt,Mt*g0/fromDb(x)),css('--green'),2.4);
-  logCurve(zo,xo,x=>gammaCdf(Mt,g0/fromDb(x)),css('--blue'),2.4);
-  vline(zo,gdb,css('--red'),[6,4],1.4);
-  const pr=-Math.expm1(-g0/g),pd=gammaCdf(Mt,Mt*g0/g),pm=gammaCdf(Mt,g0/g),lp=v=>Math.max(-6.5,Math.log10(Math.max(v,1e-300)));
-  dot(zo,gdb,lp(pr),css('--orange'),4.5);dot(zo,gdb,lp(pd),css('--green'),4.5);dot(zo,gdb,lp(pm),css('--blue'),4.5);
-  const t3=1e-3,xr=solveDb(x=>-Math.expm1(-g0/fromDb(x)),t3,-20,80),xd=solveDb(x=>gammaCdf(Mt,Mt*g0/fromDb(x)),t3,-20,80),xm=solveDb(x=>gammaCdf(Mt,g0/fromDb(x)),t3,-20,80);
-  bullets($('miOutNote'),[
-    'At GE<sub>x</sub>/N₀ = '+gdb+' dB and γ₀ = '+g0db+' dB: repetition '+fmtP(pr)+', '+(Mt===2?'delay diversity or Alamouti ':'delay diversity ')+fmtP(pd)+', MRT '+fmtP(pm)+'.',
-    'For 10⁻³ outage, repetition needs '+fmtDb(xr)+', '+(Mt===2?'Alamouti ':'delay diversity ')+fmtDb(xd)+' and MRT '+fmtDb(xm)+'. The open-loop and closed-loop curves are parallel ('+Mt+' decades per 10 dB), '+(xd-xm).toFixed(1)+' dB apart.',
-    'Repetition follows the SISO curve exactly: without CSIT or a suitable space-time or delay-diversity code, additional transmit antennas do not improve the diversity order or outage probability.'
+    'Delay diversity creates an ISI channel. An ML sequence detector or coded OFDM is needed to extract its diversity.',
+    'The frequency response varies because the delayed streams form separate channel taps. Repetition instead superimposes the paths at the same time.'
   ]);
 
   /* --- this channel: bars --- */
-  const rows=[['Antenna 1 alone',a1,'--muted'],['Repetition',rep,'--muted'],['Delay diversity (ideal)',del,'--green'],['Alamouti',ala,'--green'],['MRT',mrt,'--blue'],['Incorrect MRT weight (no conjugate)',slip,'--red']];
+  const rows=[['Antenna 1 alone',a1,'--muted'],['Repetition',rep,'--muted'],['Alamouti',ala,'--green'],['MRT',mrt,'--blue'],['Incorrect MRT weight (no conjugate)',slip,'--red']];
   const vv=rows.filter(r=>r[1]!=null).map(r=>toDb(r[1])),blo=Math.floor(Math.min(-5,...vv)/5)*5,bhi=Math.ceil((Math.max(...vv)+6)/5)*5;
   let zb=ax($('miBars'),blo,bhi,0,rows.length,'Received SNR (dB)','',{xticks:Math.min(8,(bhi-blo)/5),yticks:rows.length,yfmt:()=>''});
   rows.forEach(([name,v,col],i)=>{const y=rows.length-1-i;if(v==null){zb.c.fillStyle=css('--muted');zb.c.font='10px system-ui';zb.c.textAlign='left';zb.c.textBaseline='middle';zb.c.fillText(name+': not defined for M_t = '+Mt,zb.X(blo)+6,zb.Y(y+.5));return}const d=toDb(v);box(zb,blo,d,y+.2,y+.8,css(col),.75);zb.c.fillStyle=css('--text');zb.c.font='10px system-ui';zb.c.textAlign='left';zb.c.textBaseline='middle';const lbl=name+'  '+fmtDb(d),wT=zb.c.measureText(lbl).width;let px=zb.X(d)+5;if(px+wT>zb.w-zb.m.r-3)px=zb.X(blo)+5;zb.c.fillText(lbl,px,zb.Y(y+.5))});
   vline(zb,0,css('--muted'),[2,3],1);
   bullets($('miBarsNote'),[
     'Repetition gives '+fmtDb(toDb(rep))+' compared with '+fmtDb(toDb(a1))+' for antenna 1 alone. '+(rep<a1?'For this channel, adding the second antenna reduces the received SNR by '+(toDb(a1)-toDb(rep)).toFixed(1)+' dB because the channel contributions are separated by '+Math.abs(((argDeg(h[1])-argDeg(h[0])+540)%360)-180).toFixed(0)+'°.':'For this channel, the contributions add constructively; however, a transmitter without channel knowledge cannot ensure this outcome.'),
-    Mt===2?'Alamouti ('+fmtDb(toDb(ala))+') adds powers, not amplitudes, so it cannot cancel; MRT ('+fmtDb(toDb(mrt))+') is exactly 3.0 dB higher with CSIT.':'With M<sub>t</sub> = '+Mt+', MRT is '+toDb(Mt).toFixed(1)+' dB above the ideal delay-diversity level.',
+    Mt===2?'Alamouti ('+fmtDb(toDb(ala))+') adds powers, not amplitudes, so it cannot cancel; MRT ('+fmtDb(toDb(mrt))+') is exactly 3.0 dB higher with CSIT.':'MRT uses channel knowledge at the transmitter to align and weight the paths.',
     'Using the incorrect weight f = h/‖h‖, without complex conjugation, doubles the channel phases rather than cancelling them. The resulting SNR is '+fmtDb(toDb(slip))+', which is '+(toDb(mrt)-toDb(slip)).toFixed(1)+' dB below MRT.'
   ]);
 }
@@ -649,66 +604,42 @@ $('miEx').addEventListener('click',()=>{miFixed=[C(.6,.2),C(-.5,.1)];$('miMt').v
    4 · THE ALAMOUTI CODE
    ================================================================== */
 let alSeed=1,alNoise=1,alFixed=null,alVar='ala';
-const alMc={},AL_NP=150,AL_BLOCKS=60,AL_SNRS=range(0,30,2.5),AL_MC=20000;
-function alMatrix(v,h1,h2){if(v==='ala')return[[h1,h2],[conj(h2),scale(conj(h1),-1)]];if(v==='nosign')return[[h1,h2],[conj(h2),conj(h1)]];return[[h1,h2],[h1,h2]]}
+const AL_NP=150,AL_BLOCKS=60;
+function alMatrix(v,h1,h2){return [[h1,h2],[conj(h2),scale(conj(h1),-1)]]}
 function gram(H){const e=(i,j)=>add(mul(conj(H[0][i]),H[0][j]),mul(conj(H[1][i]),H[1][j]));return[[e(0,0),e(0,1)],[e(1,0),e(1,1)]]}
 /* ỹ = √½ H s + ṽ; normalized matched filter z_k = (Hᴴỹ)_k / (√½ (HᴴH)_kk). */
 function alDetect(H,D,yt){const r0=add(mul(conj(H[0][0]),yt[0]),mul(conj(H[1][0]),yt[1])),r1=add(mul(conj(H[0][1]),yt[0]),mul(conj(H[1][1]),yt[1]));return[scale(r0,1/(Math.SQRT1_2*Math.max(D[0][0].re,1e-12))),scale(r1,1/(Math.SQRT1_2*Math.max(D[1][1].re,1e-12)))]}
 function alReceive(H,s0,s1,n0,n1,sd){return[add(scale(add(mul(H[0][0],s0),mul(H[0][1],s1)),Math.SQRT1_2),scale(n0,sd)),add(scale(add(mul(H[1][0],s0),mul(H[1][1],s1)),Math.SQRT1_2),scale(n1,sd))]}
 function alBlocks(){const r=rng(8800+alSeed),b=[];for(let i=0;i<AL_BLOCKS;i++)b.push([cn(r),cn(r)]);return b}
 function alChannel(){if(alFixed)return alFixed;return alBlocks()[0]}
-function alBerSim(v){if(alMc[v])return alMc[v];const out=AL_SNRS.map((db,j)=>{const r=rng(9100+31*j+(v==='ala'?0:v==='nosign'?7:13)),sd=Math.sqrt(1/fromDb(db));let err=0;for(let b=0;b<AL_MC;b++){const h1=cn(r),h2=cn(r),H=alMatrix(v,h1,h2),D=gram(H),k0=Math.floor(r()*4),k1=Math.floor(r()*4),s0=qpsk[k0],s1=qpsk[k1],z=alDetect(H,D,alReceive(H,s0,s1,cn(r),cn(r),sd));[[z[0],s0],[z[1],s1]].forEach(([zz,s])=>{if((zz.re>=0)!==(s.re>=0))err++;if((zz.im>=0)!==(s.im>=0))err++})}return err/(4*AL_MC)});alMc[v]=out;return out}
 function drawAla(){
   const gdb=+$('alSnr').value,g=fromDb(gdb),N0=1/g,g0db=+$('alTh').value,g0=fromDb(g0db),[h1,h2]=alChannel(),H=alMatrix(alVar,h1,h2),D=gram(H),alpha=abs2(h1)+abs2(h2);
   $('alSnrOut').textContent=gdb+' dB';$('alThOut').textContent=g0db+' dB';
   pressGroup($('alModes'),'data-al',alVar);
   const offMag=Math.sqrt(abs2(D[0][1])),ga=g*alpha/2,gm=g*alpha;
-  const sinr=k=>{const l=1-k,dk=D[k][k].re;return(.5*dk*dk)/(.5*abs2(D[k][l])+dk*N0)},sw=Math.min(sinr(0),sinr(1));
   $('alAlpha').textContent=alpha.toFixed(3);$('alOff').textContent=offMag/alpha<1e-9?'0 (exact)':(offMag/Math.max(D[0][0].re,1e-12)).toFixed(3);
-  $('alGa').textContent=fmtDb(toDb(ga));$('alGm').textContent=fmtDb(toDb(gm));$('alSinr').textContent=fmtDb(toDb(sw));
-  $('alSinrSmall').innerHTML=alVar==='ala'?'equal to Alamouti SNR; no cross-interference':'cross-interference and noise after H<sup>H</sup>';
-  $('alFlowEnc').innerHTML={ala:'(s[0], s[1]) then (&minus;s*[1], s*[0]), &divide;&radic;2',nosign:'(s[0], s[1]) then (s*[1], s*[0]), &divide;&radic;2',same:'(s[0], s[1]) in both slots, &divide;&radic;2'}[alVar];
-  $('alFlowStack').innerHTML=alVar==='same'?'&#7929; = [y[0], y[1]]':'&#7929; = [y[0], y*[1]]';
-  $('alFlowDet').textContent=alVar==='ala'?'two separate scalar decisions':'each decision contains cross-interference';
+  $('alGa').textContent=fmtDb(toDb(ga));$('alGm').textContent=fmtDb(toDb(gm));
+  $('alFlowEnc').innerHTML='(s[0], s[1]) then (&minus;s*[1], s*[0]), &divide;&radic;2';
+  $('alFlowStack').innerHTML='&#7929; = [y[0], y*[1]]';
+  $('alFlowDet').textContent='two separate scalar decisions';
 
   /* --- grid and matrix --- */
-  const slot1={ala:['−s₁*/√2','s₀*/√2'],nosign:['s₁*/√2','s₀*/√2'],same:['s₀/√2','s₁/√2']}[alVar];
+  const slot1=['−s₁*/√2','s₀*/√2'];
   $('alGrid').innerHTML='<div class="h"></div><div class="h">TX antenna 1</div><div class="h">TX antenna 2</div><div class="h">slot 0</div><div>s₀/√2</div><div>s₁/√2</div><div class="h">slot 1</div><div class="'+(alVar==='same'?'':'cj')+'">'+slot1[0]+'</div><div class="'+(alVar==='same'?'':'cj')+'">'+slot1[1]+'</div>';
   const zero=offMag<1e-9*alpha;
   $('alMat').innerHTML='h₁ = '+fmtC(h1)+', h₂ = '+fmtC(h2)+'<br>H = [ '+fmtC(H[0][0])+' , '+fmtC(H[0][1])+' ;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+fmtC(H[1][0])+' , '+fmtC(H[1][1])+' ]<br>H<sup>H</sup>H = [ '+D[0][0].re.toFixed(3)+' , <span class="'+(zero?'ok':'bad')+'">'+(zero?'0':fmtC(D[0][1],3))+'</span> ;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="'+(zero?'ok':'bad')+'">'+(zero?'0':fmtC(D[1][0],3))+'</span> , '+D[1][1].re.toFixed(3)+' ]';
-  bullets($('alGridNote'),{
-    ala:['The columns of H are orthogonal for every h₁ and h₂: H<sup>H</sup>H = αI with α = '+alpha.toFixed(3)+'. The sign change and the conjugation (orange cells) are both needed.','The receiver conjugates y[1], so every entry of ỹ is linear in s[0] and s[1]. Conjugating white CN(0, N₀) noise leaves it white, so H<sup>H</sup>ṽ ~ CN(0, αN₀I): two independent scalar detections with equal noise.'],
-    nosign:['Without the minus sign, H<sup>H</sup>H has the off-diagonal entry 2h₁*h₂ = '+fmtC(scale(mul(conj(h1),h2),2),3)+': the matched-filter estimate of s[0] contains a contribution from s[1].','A joint maximum-likelihood (ML) detector over all 16 symbol pairs could still separate them, but the linear, decoupled detector described in the lecture no longer applies.'],
-    same:['Sending the same block twice makes the two rows of H equal: rank 1. Two slots deliver one equation twice for two unknowns, so s[0] and s[1] cannot be separated at all.','This is repetition in time as well as in space. It is the exact opposite of the orthogonal structure that the Alamouti code builds.']}[alVar]);
-
-  /* --- constellation of matched-filter outputs --- */
+  bullets($('alGridNote'), ['The columns of H are orthogonal: HᴴH = αI. Conjugation and the minus sign make the cross terms cancel.','Conjugating the second observation gives a model linear in both symbols. The matched-filter noise has covariance αN₀I, allowing two independent scalar decisions.']);
   const r=rng(6600+alNoise),sd=Math.sqrt(N0),pts=[];let errs=0;
-  for(let n=0;n<AL_NP;n++){const k0=Math.floor(r()*4),k1=Math.floor(r()*4),z=alDetect(H,D,alReceive(H,qpsk[k0],qpsk[k1],cn(r),cn(r),sd));const e0=nearestQpsk(z[0])!==k0,e1=nearestQpsk(z[1])!==k1;errs+=e0+e1;pts.push({z:z[0],e:e0,c:'--blue'},{z:z[1],e:e1,c:'--purple'})}
-  let lim=1.5;pts.forEach(o=>lim=Math.max(lim,Math.min(4,1.1*Math.max(Math.abs(o.z.re),Math.abs(o.z.im)))));lim=Math.ceil(lim*2)/2;
-  const zc=constPlane($('alConst'),lim);zc.clip();
-  pts.forEach(o=>{const q=zc.P(o.z);zc.c.fillStyle=o.e?css('--red'):css(o.c);zc.c.globalAlpha=o.e?.9:.45;zc.c.beginPath();zc.c.arc(q[0],q[1],o.e?2.8:2,0,2*Math.PI);zc.c.fill()});
-  zc.c.globalAlpha=1;zc.c.strokeStyle=css('--muted');zc.c.lineWidth=1.6;qpsk.forEach(v=>{const q=zc.P(v);zc.c.beginPath();zc.c.arc(q[0],q[1],6,0,2*Math.PI);zc.c.stroke()});zc.c.restore();
+  for(let n=0;n<AL_NP;n++){
+    const k0=Math.floor(r()*4),k1=Math.floor(r()*4),z=alDetect(H,D,alReceive(H,qpsk[k0],qpsk[k1],cn(r),cn(r),sd));
+    [0,1].forEach(k=>{const error=nearestQpsk(z[k])!==[k0,k1][k];errs+=error;pts.push({z:z[k],error,color:k?'--purple':'--blue'});});
+  }
+  let lim=1.5;pts.forEach(p=>lim=Math.max(lim,Math.min(4,1.1*Math.max(Math.abs(p.z.re),Math.abs(p.z.im)))));lim=Math.ceil(lim*2)/2;
+  const plane=constPlane($('alConst'),lim);plane.clip();
+  pts.forEach(p=>{const xy=plane.P(p.z);plane.c.fillStyle=css(p.error?'--red':p.color);plane.c.globalAlpha=p.error?.9:.45;plane.c.beginPath();plane.c.arc(xy[0],xy[1],p.error?2.8:2,0,2*Math.PI);plane.c.fill();});
+  plane.c.globalAlpha=1;plane.c.strokeStyle=css('--muted');qpsk.forEach(p=>{const xy=plane.P(p);plane.c.beginPath();plane.c.arc(xy[0],xy[1],6,0,2*Math.PI);plane.c.stroke();});plane.c.restore();
   $('alErr').textContent=errs+' / '+(2*AL_NP);
-  bullets($('alConstNote'),[
-    alVar==='ala'?'Both estimates z₀ and z₁ form four distinct clusters. After H<sup>H</sup>, each estimate contains its intended symbol and noise only, at SNR GE<sub>x</sub>α/(2N₀) = '+fmtDb(toDb(ga))+'.':'The clusters overlap because each estimate contains cross-interference from the other symbol in addition to noise. Increasing GE<sub>x</sub>/N₀ reduces the noise but not this interference.',
-    errs+' of '+(2*AL_NP)+' symbols in error. '+(alVar==='ala'?'QPSK theory at the Alamouti SNR gives an error rate of '+fmtP(serQpsk(ga))+'.':'The worse detector SINR is '+fmtDb(toDb(sw))+', against '+fmtDb(toDb(ga))+' for the Alamouti code on the same channel.'),
-    'Select <em>New channel</em> to observe how the spread of the Alamouti clusters varies with α = |h₁|² + |h₂|², the sum of two independent channel powers.'
-  ]);
-
-  /* --- BER --- */
-  const sim=alBerSim(alVar),xs=range(0,30,0.25);
-  const zb=ax($('alBer'),0,30,-6,0,'GE_x/N₀ (dB)','Bit error rate',{xticks:6,yticks:6,yfmt:decade});
-  logCurve(zb,xs,x=>berMrc(1,fromDb(x)/2),css('--muted'),2);
-  logCurve(zb,xs,x=>berMrc(2,fromDb(x)/4),css('--green'),2.4);
-  logCurve(zb,xs,x=>berMrc(2,fromDb(x)/2),css('--blue'),2.4);
-  AL_SNRS.forEach((db,j)=>{if(sim[j]*4*AL_MC>=5&&Math.log10(sim[j])>=-6)dot(zb,db,Math.log10(sim[j]),css('--orange'),4)});
-  vline(zb,gdb,css('--red'),[6,4],1.2);
-  const t4=1e-4,xa=solveDb(x=>berMrc(2,fromDb(x)/4),t4,-10,80),xm=solveDb(x=>berMrc(2,fromDb(x)/2),t4,-10,80),x1=solveDb(x=>berMrc(1,fromDb(x)/2),t4,-10,80);
-  bullets($('alBerNote'),[
-    'Lines: QPSK theory over Rayleigh fading. At 10⁻⁴, SISO needs '+fmtDb(x1)+', Alamouti '+fmtDb(xa)+' and MRT '+fmtDb(xm)+': Alamouti is '+(xa-xm).toFixed(1)+' dB to the right of MRT, with the same order-2 slope.',
-    'Dots: the linear matched-filter detector for the selected code, simulated over '+AL_MC.toLocaleString()+' Rayleigh blocks per point; points with fewer than 5 bit errors are not shown. '+(alVar==='ala'?'The simulated values agree with the Alamouti curve, confirming that linear detection is optimal for this code.':'At high SNR, the bit error rate approaches a nonzero limit, called an error floor, because cross-interference does not decrease with the noise power.'),
-    'Both curves have slope 2 because the SNR depends on |h₁|² + |h₂|²: a deep fade needs both paths to fade at once.'
-  ]);
+  bullets($('alConstNote'), ['After Hᴴ, each output contains its intended symbol and noise only. The per-symbol SNR is GEₓα/(2N₀) = '+fmtDb(toDb(ga))+'.',errs+' of '+(2*AL_NP)+' symbols in error. Each output is detected by its own nearest-symbol decision.','Select New channel to see the effect of α = |h₁|² + |h₂|².']);
 
   /* --- SNR per block --- */
   const blocks=alBlocks(),per=blocks.map(([a,b])=>({s:g*abs2(a),r:g*abs2(add(a,b))/2,a:g*(abs2(a)+abs2(b))/2,m:g*(abs2(a)+abs2(b))}));
@@ -722,7 +653,7 @@ function drawAla(){
   const cnt=k=>per.filter(o=>o[k]<g0).length;
   bullets($('alBlocksNote'),[
     'At every block, Alamouti (green) is exactly 3.01 dB below MRT (blue): both follow |h₁|² + |h₂|², and MRT has twice the power at the receiver because it phase-aligns the paths.',
-    'Blocks below γ₀ = '+g0db+' dB: antenna 1 alone '+cnt('s')+', repetition '+cnt('r')+', Alamouti '+cnt('a')+', MRT '+cnt('m')+' of '+AL_BLOCKS+'. Repetition fades as often as a single antenna, but at different blocks.',
+    'Blocks below γ₀ = '+g0db+' dB: antenna 1 alone '+cnt('s')+', repetition '+cnt('r')+', Alamouti '+cnt('a')+', MRT '+cnt('m')+' of '+AL_BLOCKS+'. Under the independent Rayleigh model, repetition and a single antenna have the same outage probability; their low-SNR blocks need not coincide.',
     alFixed?'The exercise channel is shown in the other panels; this panel always shows the random sequence.':'The first block (dot) is the channel shown in the other panels.'
   ]);
 }
