@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Week 10 Guided Walkthrough</title>
+<title>Week 11 Guided Walkthrough</title>
 <style>
 :root{--bg:#f7f8fb;--surface:#fff;--surface2:#eef2f7;--border:#dfe5ec;--text:#172033;--muted:#667085;--blue:#2563eb;--orange:#ea580c;--green:#059669;--red:#dc2626;--purple:#7c3aed;--cyan:#0891b2;--amber:#ca8a04;--pink:#db2777;--shadow:0 1px 2px rgba(16,24,40,.04)}
 @media(prefers-color-scheme:dark){:root{--bg:#0e1117;--surface:#171b24;--surface2:#222938;--border:#303949;--text:#e8edf5;--muted:#99a4b5;--shadow:none}}
@@ -45,12 +45,12 @@
 </style>
 </head>
 <body>
-<h1>Week 10 · Diversity: Receive Combining, Transmit Diversity, and the Alamouti Code</h1>
-<p class="sub">Follow the Week 10 sequence: examine how large reductions in received signal power (deep fades) motivate independent diversity branches and distinguish array gain
+<h1>Week 11 · Diversity: Receive Combining, Transmit Diversity, and the Alamouti Code</h1>
+<p class="sub">Follow the Week 11 sequence: examine how large reductions in received signal power (deep fades) motivate independent diversity branches and distinguish array gain
 from diversity gain. Signal-to-noise ratio (SNR) measures signal power relative to noise power; an outage occurs when SNR is below the chosen threshold. Combine N<sub>r</sub> receive branches using selection combining (SC), equal-gain combining (EGC), and maximal-ratio combining (MRC);
 explain why fixed-weight repetition from several transmit antennas provides no diversity; and use the Alamouti code to obtain diversity order 2 without channel-state information at the transmitter (CSIT).</p>
 
-<nav class="tabs" role="tablist" aria-label="Week 10 topics">
+<nav class="tabs" role="tablist" aria-label="Week 11 topics">
   <button type="button" role="tab" id="tab-fund" aria-controls="fund" aria-selected="true">1 &middot; Diversity Fundamentals</button>
   <button type="button" role="tab" id="tab-simo" aria-controls="simo" aria-selected="false">2 &middot; Receive Diversity (SIMO)</button>
   <button type="button" role="tab" id="tab-miso" aria-controls="miso" aria-selected="false">3 &middot; Transmit Diversity (MISO)</button>
@@ -92,13 +92,13 @@ explain why fixed-weight repetition from several transmit antennas provides no d
     <div class="check"><strong>Temporal diversity</strong><span>Repeat or code the data over time and interleave across intervals separated by more than the coherence time. This increases latency and provides no independent fading observations on a static channel.</span></div>
     <div class="check"><strong>Frequency diversity</strong><span>Code across OFDM subcarriers separated by more than the coherence bandwidth (Week 9). This requires a signal bandwidth greater than B<sub>c</sub>.</span></div>
     <div class="check"><strong>Polarization diversity</strong><span>Two orthogonal antenna polarizations at the same location. The fades need sufficient independence to provide diversity.</span></div>
-    <div class="check"><strong>Spatial diversity</strong><span>Use several antennas with sufficiently low channel correlation. This does not consume additional time or bandwidth resources and is the focus of Week 10.</span></div>
+    <div class="check"><strong>Spatial diversity</strong><span>Use several antennas with sufficiently low channel correlation. This does not consume additional time or bandwidth resources and is the focus of Week 11.</span></div>
   </div>
   <div class="checklist">
     <div class="check"><strong>Single-input single-output (SISO), 1&times;1</strong><span>Weeks 5&ndash;9: y = &radic;G h s + v. A Rayleigh-fading channel provides diversity order 1.</span></div>
     <div class="check"><strong>Single-input multiple-output (SIMO), 1&times;N<sub>r</sub></strong><span>Receive diversity: SC, EGC, and MRC combine N<sub>r</sub> observations. See Tab 2.</span></div>
     <div class="check"><strong>Multiple-input single-output (MISO), M<sub>t</sub>&times;1</strong><span>Transmit diversity: fixed-weight repetition provides no diversity, Alamouti requires no CSIT, and MRT requires CSIT. See Tabs 3 and 4.</span></div>
-    <div class="check"><strong>Multiple-input multiple-output (MIMO), M<sub>t</sub>&times;N<sub>r</sub></strong><span>Week 11 considers spatial multiplexing, MIMO detection, and the trade-off between diversity and data rate.</span></div>
+    <div class="check"><strong>Multiple-input multiple-output (MIMO), M<sub>t</sub>&times;N<sub>r</sub></strong><span>Later lectures consider spatial multiplexing, MIMO detection, and the trade-off between diversity and data rate.</span></div>
   </div>
 </section>
 
